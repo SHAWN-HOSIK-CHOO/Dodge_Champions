@@ -159,7 +159,7 @@ namespace Character
             }
             
             _hasAnimator = TryGetComponent(out _animator);
-
+            
             JumpAndGravity();
             GroundedCheck();
             Move();

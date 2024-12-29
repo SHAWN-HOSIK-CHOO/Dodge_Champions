@@ -103,11 +103,6 @@ public class BallScript : MonoBehaviour
     //     {
     //         Debug.Log("Hit");
     //         
-    //         if (this.transform.CompareTag("Fake"))
-    //         {
-    //             //other.gameObject.GetComponent<CharacterManager>().NotifyHitServerRPC();
-    //         }
-    //         
     //         currentCollideCount++;
     //
     //         if (currentCollideCount >= _targetCollideCount)

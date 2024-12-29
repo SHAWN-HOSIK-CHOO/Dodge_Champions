@@ -298,7 +298,7 @@ GameObject:
   - component: {fileID: 231023461}
   - component: {fileID: 231023460}
   - component: {fileID: 231023459}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 413520143}
   - component: {fileID: 413520142}
   - component: {fileID: 413520141}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -715,7 +715,7 @@ GameObject:
   - component: {fileID: 463238650}
   - component: {fileID: 463238649}
   - component: {fileID: 463238648}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1155,7 +1155,7 @@ GameObject:
   - component: {fileID: 1117566358}
   - component: {fileID: 1117566357}
   - component: {fileID: 1117566356}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1263,7 +1263,7 @@ GameObject:
   - component: {fileID: 1179931477}
   - component: {fileID: 1179931476}
   - component: {fileID: 1179931475}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1676,7 +1676,7 @@ MonoBehaviour:
   localPlayerBallSpawnTransform: {fileID: 0}
   mouseColliderLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 65
   currentTargetPosition: {x: 0, y: 0, z: 0}
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}

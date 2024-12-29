@@ -89,7 +89,7 @@ namespace Character
                 _localCharacterMovement.SetThrowAnimation(true); // Animation 동작이 완료되면 throw = false 만드는 콜백 존재함
                 _ballLauncher.ThrowBallServerRPC(currentTargetPosition, 10f, 1.3f);
                 
-                FixPlayerForwardDirection(50f);
+                FixPlayerForwardDirection(100f);
             }
         }
 
