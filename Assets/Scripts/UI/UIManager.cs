@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using Game;
 using UnityEngine;
 using TMPro;
 
@@ -27,6 +28,13 @@ namespace UI
         [Header("Game Start Info Panel")] 
         public GameObject startPanel;
         public TMP_Text startText;
+
+        [Header("Dodge")] public GameObject dodgeText;
+
+        private void Start()
+        {
+            dodgeText.SetActive(false);
+        }
 
         public void StartGameCountDown(float time = 5f)
         {

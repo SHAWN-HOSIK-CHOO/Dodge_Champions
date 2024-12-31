@@ -1,5 +1,5 @@
 using System;
-using Character;
+using CharacterAttributes;
 using UnityEngine;
 
 namespace Ball
@@ -14,9 +14,6 @@ public class BallScript : MonoBehaviour
     private float _maxHeight;
     private float _timeElapsed;
     private bool _isInitialized;
-
-    public int currentCollideCount = 0;
-    private int _targetCollideCount = 1;
 
     private Rigidbody rb;
 
@@ -96,22 +93,6 @@ public class BallScript : MonoBehaviour
         rb.isKinematic = false;
         rb.linearVelocity = direction * _throwSpeed;
     }
-    
-    // private void OnCollisionEnter(Collision other)
-    // {
-    //     if (other.transform.CompareTag("Player"))
-    //     {
-    //         Debug.Log("Hit");
-    //         
-    //         currentCollideCount++;
-    //
-    //         if (currentCollideCount >= _targetCollideCount)
-    //         {
-    //             Destroy(this.gameObject);
-    //         }
-    //     }
-    // }
-    
 }
 
 }
