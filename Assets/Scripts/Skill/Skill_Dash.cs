@@ -20,7 +20,7 @@ namespace Skill
             }
             else
             {
-                Debug.Log("Wrong input type for dash input");
+                Debug.LogError("Wrong input type for dash input");
                 yield break;
             }
 
@@ -43,7 +43,7 @@ namespace Skill
                 // 벽 충돌 처리
                 if ((flags & CollisionFlags.Sides) != 0)
                 {
-                    Debug.Log("Collision detected, bouncing back");
+                    //Debug.Log("Collision detected, bouncing back");
                     Vector3 collisionNormal = -_direction; // 충돌 방향 반대
                     Vector3 bounceDirection = Vector3.Reflect(_direction, collisionNormal).normalized;
 

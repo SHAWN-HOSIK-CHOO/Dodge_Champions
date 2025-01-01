@@ -59,8 +59,11 @@ namespace CharacterAttributes
 
        public void CallBack_LaunchBallOnAnimation()
        {
-          instantiatedBall.transform.parent = null;
-          instantiatedBall.GetComponent<BallScript>().StartCommand(instantiatedBall.transform.position);
+          if (instantiatedBall != null)
+          {
+             instantiatedBall.transform.parent = null;
+             instantiatedBall.GetComponent<BallScript>().StartCommand(instantiatedBall.transform.position);
+          }
        }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using CharacterAttributes;
 using Game;
 using Skill;
+using Tests;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -100,9 +101,9 @@ namespace GameInput
             {
                 _localCharacterMovement.SetThrowAnimation(true); // Animation 동작이 완료되면 throw = false 만드는 콜백 존재함
 
-                float multiplyFactor = CharacterManager.SCurrentComboStack + 1f;
+                float multiplyFactor = Mathf.Clamp(CharacterManager.SCurrentComboStack + 1f,0f,2f);
                 
-                Debug.Log("Multiply Factor : " + CharacterManager.SCurrentComboStack);
+                //Debug.Log("Multiply Factor : " + CharacterManager.SCurrentComboStack);
                 
                 _characterBallLauncher.ThrowBallServerRPC(currentTargetPosition, ballLaunchSpeedBase * multiplyFactor * 0.7f, 0.3f);
                 
@@ -114,13 +115,19 @@ namespace GameInput
         {
             if (GameManager.Instance.isGameReadyToStart)
             {
-                Debug.Log("Skill Button Pressed");
+                //Debug.Log("Skill Button Pressed");
                 if (_characterController == null)
                 {
                     Debug.LogError("CharacterController is missing on this GameObject!");
                     return;
                 }
                 Vector3 currentDirection = _characterController.velocity.normalized;
+
+                if (currentDirection == Vector3.zero)
+                {
+                    currentDirection = -_localCharacterMovement.transform.forward;
+                }
+                
                 var     input            = new DashInput
                                            {
                                                TargetVector = currentDirection
@@ -133,7 +140,7 @@ namespace GameInput
         {
             if (GameManager.Instance.isGameReadyToStart)
             {
-                Debug.Log("Skill Button Released");
+                //Debug.Log("Skill Button Released");
             }
         }
         
@@ -167,8 +174,6 @@ namespace GameInput
             Vector3 worldAimTarget = currentTargetPosition;
             worldAimTarget.y = _localCharacterMovement.transform.position.y;
             Vector3 aimDirection = ( worldAimTarget - _localCharacterMovement.transform.position ).normalized;
-
-            //debugTransform.position = worldAimTarget;
             
             _localCharacterMovement.transform.forward = Vector3.Lerp(_localCharacterMovement.transform.forward, aimDirection, Time.deltaTime * lerpFactor);
         }

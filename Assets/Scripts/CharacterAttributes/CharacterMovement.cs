@@ -16,14 +16,10 @@ namespace CharacterAttributes
         
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
-        public float moveSpeed = 2.0f;
+        public float moveSpeed = 2f;
 
         [Tooltip("Sprint speed of the character in m/s")]
-        public float sprintSpeed = 5.335f;
-
-        [Tooltip("How fast the character turns to face movement direction")]
-        [Range(0.0f, 0.3f)]
-        public float rotationSmoothTime = 0.12f;
+        public float sprintSpeed = 5.33f;
 
         [Tooltip("Acceleration and deceleration")]
         public float speedChangeRate = 10.0f;
@@ -75,6 +71,12 @@ namespace CharacterAttributes
         [Tooltip("For locking the camera position on all axis")]
         public bool lockCameraPosition = false;
 
+        [Header("Animation blend tree")] 
+        [Range(0, 1)]
+        public float walkAnimationTargetValue = 0.3f;
+        [Range(0, 1)] 
+        public float runAnimationTargetValue = 1f;
+
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
@@ -82,7 +84,6 @@ namespace CharacterAttributes
         // player
         private float _speed;
         private float _animationBlend;
-        private float _targetRotation = 0.0f;
         private float _rotationVelocity;
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
@@ -98,6 +99,12 @@ namespace CharacterAttributes
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
         private int _animIDThrow;
+
+        private int _animIDXVelocity;
+        private int _animIDZVelocity;
+        
+        private float xVelocity = 0f;
+        private float zVelocity = 0f;
         
         //animation layer transit
         public int   targetLayerIndex = 1;  // A 레이어의 인덱스 (Base Layer는 0)
@@ -185,11 +192,8 @@ namespace CharacterAttributes
             _animIDFreeFall    = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
             _animIDThrow       = Animator.StringToHash("Throw");
-        }
-
-        public CharacterController GetCharacterController()
-        {
-            return characterController;
+            _animIDXVelocity = Animator.StringToHash("X_Velocity");
+            _animIDZVelocity = Animator.StringToHash("Z_Velocity");
         }
         
         private void GroundedCheck()
@@ -199,6 +203,9 @@ namespace CharacterAttributes
             grounded = Physics.CheckSphere(spherePosition, groundedRadius, groundLayers,
                                            QueryTriggerInteraction.Ignore);
 
+            // 디버깅용 구체 그리기
+            Debug.DrawLine(transform.position, spherePosition, grounded ? Color.green : Color.red);
+            
             if (_hasAnimator)
             {
                 _animator.SetBool(_animIDGrounded,grounded);
@@ -219,21 +226,25 @@ namespace CharacterAttributes
             cinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + cameraAngleOverride,
                                                                           _cinemachineTargetYaw, 0.0f);
         }
-
+        
         private void Move()
         {
+            // 입력이 없다면 속도를 0으로 설정
             float targetSpeed = InputManager.Instance.sprint ? sprintSpeed : moveSpeed;
-        
+            float animationTargetValue =
+                InputManager.Instance.sprint ? runAnimationTargetValue : walkAnimationTargetValue;
+            
             if (InputManager.Instance.move == Vector2.zero)
             {
                 targetSpeed = 0.0f;
             }
         
-            float currentHorizontalSpeed = new Vector3(characterController.velocity.x,0.0f,characterController.velocity.z).magnitude;
+            // 현재 속도 계산
+            float currentHorizontalSpeed = new Vector3(characterController.velocity.x, 0.0f, characterController.velocity.z).magnitude;
             float speedOffset = 0.1f;
         
-            if (currentHorizontalSpeed < targetSpeed - speedOffset ||
-                currentHorizontalSpeed > targetSpeed + speedOffset)
+            // 속도를 부드럽게 보간
+            if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
             {
                 _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed, Time.deltaTime * speedChangeRate);
                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -243,32 +254,55 @@ namespace CharacterAttributes
                 _speed = targetSpeed;
             }
             
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * speedChangeRate);
-            if (_animationBlend < 0.01f) _animationBlend = 0f;
         
-            Vector3 inputDirection = new Vector3(InputManager.Instance.move.x, 0.0f, InputManager.Instance.move.y)
-               .normalized;
+            // 입력 방향 계산
+            Vector3 inputDirection = new Vector3(InputManager.Instance.move.x, 0.0f, InputManager.Instance.move.y).normalized;
+            
+            // x, z 속도 계산 (블렌딩 추가)
+            float targetXVelocity = 0f;
+            float targetZVelocity = 0f;
         
             if (InputManager.Instance.move != Vector2.zero)
             {
-                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z)  * Mathf.Rad2Deg +
-                                  _mainCamera.transform.eulerAngles.y;
-                
-                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-                                                       rotationSmoothTime);
-                
-                transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-            }
-            
-            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-            characterController.Move(targetDirection.normalized                 * (_speed * Time.deltaTime) +
-                                      new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+                // 메인 카메라를 기준으로 이동 방향 설정
+                Vector3 cameraForward = _mainCamera.transform.forward;
+                cameraForward.y = 0;
+                cameraForward.Normalize();
         
+                Vector3 cameraRight = _mainCamera.transform.right;
+                cameraRight.y = 0;
+                cameraRight.Normalize();
+        
+                Vector3 moveDirection = cameraForward * inputDirection.z + cameraRight * inputDirection.x;
+        
+                // 이동 처리
+                characterController.Move(moveDirection.normalized                   * (_speed * Time.deltaTime) +
+                                         new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+        
+                // 목표 속도 설정
+                targetXVelocity = Vector3.Dot(moveDirection.normalized, cameraRight) * animationTargetValue;
+                targetZVelocity = Vector3.Dot(moveDirection.normalized, cameraForward) * animationTargetValue;
+            }
+            else
+            {
+                // 입력이 없을 때 수직 이동만 적용
+                characterController.Move(new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            }
+        
+            // xVelocity와 zVelocity를 부드럽게 변화
+            xVelocity = Mathf.Lerp(xVelocity, targetXVelocity, Time.deltaTime * speedChangeRate);
+            zVelocity = Mathf.Lerp(zVelocity, targetZVelocity, Time.deltaTime * speedChangeRate);
+            
+            // 애니메이션 업데이트
             if (_hasAnimator)
             {
-                _animator.SetFloat(_animIDSpeed,_animationBlend);
+                _animator.SetFloat(_animIDXVelocity, xVelocity); // 좌/우 (-1: 왼쪽, 1: 오른쪽)
+                _animator.SetFloat(_animIDZVelocity, zVelocity); // 앞/뒤 (-1: 뒤로, 1: 앞으로)
                 _animator.SetFloat(_animIDMotionSpeed, 1);
             }
+        
+            // 플레이어의 회전을 화면 중심으로 고정
+            transform.rotation = Quaternion.Euler(0.0f, _mainCamera.transform.eulerAngles.y, 0.0f);
         }
         
         private void JumpAndGravity()
@@ -381,8 +415,6 @@ namespace CharacterAttributes
                               new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z),
                               groundedRadius);
         }
-        
-        
 
         private void OnFootstep(AnimationEvent animationEvent)
         {

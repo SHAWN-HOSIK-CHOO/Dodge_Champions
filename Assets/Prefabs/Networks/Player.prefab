@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1665524194517032170}
   serializedVersion: 2
   m_LocalRotation: {x: -0.96800065, y: 0.021465624, z: -0.24117687, w: 0.06593746}
-  m_LocalPosition: {x: 0.32, y: 0.261, z: -0.078}
+  m_LocalPosition: {x: 0.157, y: 0.163, z: -0.114}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 4932488042450195369}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.862, z: 0.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -118,7 +118,7 @@ Transform:
   m_GameObject: {fileID: 8245154934698328548}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.617, z: 0}
+  m_LocalPosition: {x: 0, y: 1.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -149,7 +149,7 @@ Transform:
   m_GameObject: {fileID: 8937768142425520819}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.795, z: 0}
+  m_LocalPosition: {x: 0, y: 1.458, z: 0.223}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -619,6 +619,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5615815007780928290, guid: 7ae956b4f54394e80818898d8f4d30c6, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 19f26b9685b0ea442b55a1224064ef1e, type: 2}
     - target: {fileID: 5659221110375059724, guid: 7ae956b4f54394e80818898d8f4d30c6, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -898,13 +902,12 @@ MonoBehaviour:
   ballSpawnPosition: {fileID: 1665524194517032170}
   capsuleStart: {fileID: 5759675378368499457}
   capsuleEnd: {fileID: 2324964516495127949}
-  capsuleRadius: 0.4
+  capsuleRadius: 0.35
   ballLayer:
     serializedVersion: 2
     m_Bits: 1536
   iFrameStart: {fileID: 8096547814979788987}
-  iFrameEnd: {fileID: 6367419888552321522}
-  iFrameCapsuleRadius: 2
+  iFrameSphereRadius: 2
   iFrameLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -913,8 +916,7 @@ MonoBehaviour:
   - {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
   - {fileID: 2708598583397607911, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
   comboValidateTimeInSeconds: 5
-  justDodgeWindow: 2.5
-  justDodgeEffect: {fileID: 5112403345868107898, guid: 6f34ef0d986e9db4199cf75805f79753, type: 3}
+  justDodgeEffect: {fileID: 1141330259687333427, guid: 6718dc24203da53468af9ada8fef7d6d, type: 3}
 --- !u!114 &3722002437378119709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -929,9 +931,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   characterController: {fileID: 0}
-  moveSpeed: 3
-  sprintSpeed: 5.335
-  rotationSmoothTime: 0.12
+  moveSpeed: 2
+  sprintSpeed: 5.33
   speedChangeRate: 10
   landingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
   footstepAudioClips:
@@ -946,7 +947,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
   - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
   footstepAudioVolume: 0.5
-  jumpHeight: 1.2
+  jumpHeight: 1
   gravity: -15
   jumpTimeout: 0.5
   fallTimeout: 0.15
@@ -961,6 +962,8 @@ MonoBehaviour:
   bottomClamp: 10
   cameraAngleOverride: 0
   lockCameraPosition: 0
+  walkAnimationTargetValue: 0.3
+  runAnimationTargetValue: 1
   targetLayerIndex: 1
   transitionSpeed: 1
 --- !u!114 &1529968451222059001
@@ -1028,3 +1031,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   currentSkill: {fileID: 11400000, guid: 148ff11d9190aee4a9c10193f24f4318, type: 2}
+  isSkillActivated: 0

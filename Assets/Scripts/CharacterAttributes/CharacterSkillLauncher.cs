@@ -11,7 +11,9 @@ namespace CharacterAttributes
         private Coroutine           _skillCoroutine;
 
         public SkillBase currentSkill = null;
-
+        
+        public bool isSkillActivated = false;
+        
         public override void OnNetworkSpawn()
         {
             _characterController = this.GetComponent<CharacterController>();
@@ -21,7 +23,7 @@ namespace CharacterAttributes
         {
             if (_skillCoroutine != null)
             {
-                Debug.Log("Current skill is still active");
+                //Debug.Log("Current skill is still active");
             }
             else
             {
@@ -31,10 +33,12 @@ namespace CharacterAttributes
 
         private IEnumerator SkillCoroutine(ISkillInput input)
         {
+            isSkillActivated = true;
             yield return currentSkill.Activate(_characterController, input);
             
-            Debug.Log("Skill coroutine ended");
-            _skillCoroutine = null;
+            //Debug.Log("Skill coroutine ended");
+            isSkillActivated = false;
+            _skillCoroutine  = null;
         }
     }
 }

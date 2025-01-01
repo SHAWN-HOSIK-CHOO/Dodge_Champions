@@ -7,6 +7,8 @@ using Unity.Netcode;
 using UnityEngine;
 using TMPro;
 using UI;
+using Tests;
+using UnityEngine.Serialization;
 
 namespace CharacterAttributes
 {
@@ -27,10 +29,9 @@ namespace CharacterAttributes
        [Space(5)]
        [Header("I-Frame raycast settings")]
        public Transform iFrameStart;
-       public Transform iFrameEnd;
-       public float     iFrameCapsuleRadius = 0.6f;
+       public float     iFrameSphereRadius = 0.6f;
        public LayerMask iFrameLayer;
-
+       
        [Space(5)]
        [Header("Hit Effects (When ball hit)")]
        public        GameObject[] pfHitEffects                = new GameObject[3];
@@ -46,9 +47,9 @@ namespace CharacterAttributes
        [Tooltip("I-Frame (Just Dodge)")]
        private Coroutine _justDodgeCoroutine;
        private Coroutine  _justDodgeSuccessEffectCoroutine;
-       public  float      justDodgeWindow  = 0.2f;
-       private bool       _isBallDestroyed = false;
        public  GameObject justDodgeEffect;
+
+       private CharacterSkillLauncher _characterSkillLauncher;
        
        public override void OnNetworkSpawn()
        {
@@ -64,6 +65,10 @@ namespace CharacterAttributes
                GameManager.Instance.localPlayerBallSpawnPosition = ballSpawnPosition.transform;
                this.gameObject.layer                             = LayerMask.NameToLayer("LocalPlayer");
                InputManager.Instance.InitCallWhenLocalPlayerSpawned();
+               
+               //Tests
+                // if((int)OwnerClientId == 1)
+                //  PracticeMachineManager.Instance.StartPractice(this.gameObject);
            }
            else
            {
@@ -71,73 +76,63 @@ namespace CharacterAttributes
                GameManager.Instance.enemyPlayer   = this.gameObject;
                this.gameObject.layer              = LayerMask.NameToLayer("EnemyPlayer");
            }
-       }
 
+           _characterSkillLauncher = this.GetComponent<CharacterSkillLauncher>();
+       }
+       
        private void Update()
        {
-           DetectIFrame();
+           if (_characterSkillLauncher.isSkillActivated)
+           {
+               DetectIFrame();
+           }
+           
            DetectBallHit();
        }
 
        private void DetectIFrame()
        {
-           Vector3 start = iFrameStart.position;
-           Vector3 end   = iFrameEnd.position;
+           Vector3 sphereCenter = iFrameStart.position;
 
-           Collider[] hitColliders = Physics.OverlapCapsule(start, end, iFrameCapsuleRadius, iFrameLayer);
-
+           Collider[] hitColliders = Physics.OverlapSphere(sphereCenter, iFrameSphereRadius, iFrameLayer);
+           
            if (IsOwner)
            {
                foreach (Collider coll in hitColliders)
                {
-                   if (coll.CompareTag("Fake"))
+                   if (coll.CompareTag("Fake") && coll != null)
                    {
-                       if (_justDodgeCoroutine != null)
-                       {
-                            StopCoroutine(_justDodgeCoroutine);    
-                       }
-
-                       _justDodgeCoroutine = StartCoroutine(CoHandleJustDodgeWindow(coll));
-                       
+                       Debug.Log("Just Dodge 성공!");
+                       UIManager.Instance.dodgeText.SetActive(true);
+                       NotifyJustDodgeSuccessServerRPC(coll.transform.position);
+                       Destroy(coll.gameObject);
+                       break;
+                   }
+               }
+           }
+           else
+           {
+               foreach (Collider coll in hitColliders)
+               {
+                   if (coll.CompareTag("Real") && coll != null)
+                   {
+                       Destroy(coll.gameObject);
                        break;
                    }
                }
            }
        }
 
-       private IEnumerator CoHandleJustDodgeWindow(Collider detectedBall)
+       [ServerRpc]
+       private void NotifyJustDodgeSuccessServerRPC(Vector3 effectPosition)
        {
-           float startTime = Time.time;
-           _isBallDestroyed = false;
+           NotifyJustDodgeSuccessClientRPC(effectPosition);
+       }
 
-           while (Time.time - startTime <= justDodgeWindow)
-           {
-               // 공이 파괴된 상태인지 확인
-               if (_isBallDestroyed || detectedBall == null)
-               {
-                   Debug.Log("공 파괴 감지됨. 저스트 회피 실패.");
-                   UIManager.Instance.dodgeText.SetActive(false);
-                   yield break;
-               }
-
-               yield return null;
-           }
-
-           Debug.Log("성공이 코 앞");
-           
-           // 저스트 회피 성공 처리
-           if (!_isBallDestroyed && detectedBall != null)
-           {
-               Debug.Log("Just Dodge 성공!");
-               UIManager.Instance.dodgeText.SetActive(true);
-               TriggerJustDodgeEffects(detectedBall.transform.position);
-
-               // Destroy를 호출하기 전에 공 파괴 상태를 업데이트
-               _isBallDestroyed = true;
-               Destroy(detectedBall.gameObject);
-           }
-
-           _justDodgeCoroutine = null;
+       [ClientRpc]
+       private void NotifyJustDodgeSuccessClientRPC(Vector3 effectPosition)
+       {
+           TriggerJustDodgeEffects(effectPosition);
        }
        
        private void TriggerJustDodgeEffects(Vector3 collPosition)
@@ -152,6 +147,12 @@ namespace CharacterAttributes
        
        private void DetectBallHit()
        {
+           if (_characterSkillLauncher.isSkillActivated)
+           {
+               // I-Frame 활성화 중이므로 Hit 무시
+               return;
+           }
+           
            Vector3 start = capsuleStart.position;
            Vector3 end   = capsuleEnd.position;
 
@@ -161,12 +162,9 @@ namespace CharacterAttributes
            {
                foreach (Collider coll in hitColliders)
                {
-                   if (coll.CompareTag("Fake"))
+                   if (coll.CompareTag("Fake") && coll != null)
                    {
                        NotifyHitServerRPC(coll.transform.position);
-
-                       // 공 파괴 상태 업데이트
-                       _isBallDestroyed = true;
 
                        Destroy(coll.gameObject);
                        break;
@@ -177,7 +175,7 @@ namespace CharacterAttributes
            {
                foreach (Collider coll in hitColliders)
                {
-                   if (coll.CompareTag("Real"))
+                   if (coll.CompareTag("Real") && coll != null)
                    {
                        Destroy(coll.gameObject);
                        break;
@@ -215,31 +213,11 @@ namespace CharacterAttributes
                Gizmos.DrawWireSphere(end,   capsuleRadius);
            }
            
-           if (iFrameStart != null && iFrameEnd != null)
+           if (iFrameStart != null)
            {
-               Gizmos.color = Color.blue;
-
-               Vector3 start = iFrameStart.position;
-               Vector3 end   = iFrameEnd.position;
-
-               // 캡슐의 중심축 벡터 계산
-               Vector3 capsuleAxis = end - start;
-               float   distance    = capsuleAxis.magnitude;
-
-               // 캡슐의 중심 위치
-               Vector3 center = (start + end) * 0.5f;
-
-               // 원통 부분
-               Quaternion rotation       = Quaternion.FromToRotation(Vector3.up, capsuleAxis.normalized);
-               Matrix4x4  originalMatrix = Gizmos.matrix;
-
-               Gizmos.matrix = Matrix4x4.TRS(center, rotation, new Vector3(iFrameCapsuleRadius * 2, distance * 0.5f, iFrameCapsuleRadius * 2));
-               Gizmos.DrawWireCube(Vector3.zero, new Vector3(1, 1, 1)); // 원통 부분
-
-               // 원 부분 (캡슐의 끝부분)
-               Gizmos.matrix = originalMatrix;
-               Gizmos.DrawWireSphere(start, iFrameCapsuleRadius);
-               Gizmos.DrawWireSphere(end,   iFrameCapsuleRadius);
+               Gizmos.color = Color.magenta;
+               Vector3 sphereCenter = iFrameStart.position;
+               Gizmos.DrawWireSphere(sphereCenter, iFrameSphereRadius);
            }
        }
        
@@ -252,7 +230,7 @@ namespace CharacterAttributes
        [ClientRpc]
        private void NotifyHitClientRPC(Vector3 hitPosition)
        {
-           //Debug.Log("Player" + OwnerClientId + " is Hit");
+           Debug.Log("Player" + OwnerClientId + " is Hit");
 
            if (SCurrentComboStack >= 2)
            {
@@ -298,6 +276,8 @@ namespace CharacterAttributes
                GameObject effect = Instantiate(justDodgeEffect, hitPosition, Quaternion.identity);
                yield return new WaitForSeconds(sec);
                Destroy(effect.gameObject);
+               //Debug
+               UIManager.Instance.dodgeText.SetActive(false);
            }
            else
            {

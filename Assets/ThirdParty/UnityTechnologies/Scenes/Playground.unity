@@ -1237,7 +1237,11 @@ PrefabInstance:
     - target: {fileID: 4710479796705361752, guid: 4473d57e333fb2346a30968c2f1a71c4, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 4d05a8ca201b0af4c9fea20315f5cf52, type: 2}
+      objectReference: {fileID: 9100000, guid: 19f26b9685b0ea442b55a1224064ef1e, type: 2}
+    - target: {fileID: 4710479796705361752, guid: 4473d57e333fb2346a30968c2f1a71c4, type: 3}
+      propertyPath: m_WarningMessage
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4989027866614068802, guid: 4473d57e333fb2346a30968c2f1a71c4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.025193622
