@@ -11,6 +11,7 @@ namespace CharacterAttributes
         private Coroutine           _skillCoroutine;
 
         public SkillBase currentSkill = null;
+        public SkillBase ultraSkill   = null;
         
         public bool isSkillActivated = false;
         

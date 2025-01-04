@@ -67,8 +67,8 @@ namespace CharacterAttributes
                InputManager.Instance.InitCallWhenLocalPlayerSpawned();
                
                //Tests
-                // if((int)OwnerClientId == 1)
-                //  PracticeMachineManager.Instance.StartPractice(this.gameObject);
+               //if((int)OwnerClientId == 1)
+                  //PracticeMachineManager.Instance.StartPractice(this.gameObject);
            }
            else
            {
@@ -78,6 +78,28 @@ namespace CharacterAttributes
            }
 
            _characterSkillLauncher = this.GetComponent<CharacterSkillLauncher>();
+           SetSpawnPositionServerRPC((int)OwnerClientId);
+       }
+       
+       [ServerRpc(RequireOwnership = false)]
+       private void SetSpawnPositionServerRPC(int clientID)
+       {
+           if (clientID < 0 || clientID >= GameManager.Instance.spawnTransforms.Length)
+           {
+               Debug.LogError($"Invalid clientID: {clientID}, cannot set spawn position.");
+               return;
+           }
+           
+           SetSpawnPositionClientRPC(clientID);
+       }
+
+       [ClientRpc]
+       private void SetSpawnPositionClientRPC(int clientID)
+       {
+           Transform spawnTransform = GameManager.Instance.spawnTransforms[clientID];
+           //Debug.Log($"Setting spawn position for clientID {clientID} at {spawnTransform.position}");
+           this.transform.position = spawnTransform.position;
+           this.transform.rotation = spawnTransform.rotation;
        }
        
        private void Update()
@@ -177,6 +199,7 @@ namespace CharacterAttributes
                {
                    if (coll.CompareTag("Real") && coll != null)
                    {
+                       Debug.Log("Ball hit detect from none owner");
                        Destroy(coll.gameObject);
                        break;
                    }

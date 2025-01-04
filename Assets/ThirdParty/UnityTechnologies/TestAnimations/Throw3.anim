@@ -63784,7 +63784,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 1.2666667
+  - time: 1.2333333
     functionName: CallBack_LaunchBallOnAnimation
     data: 
     objectReferenceParameter: {fileID: 0}

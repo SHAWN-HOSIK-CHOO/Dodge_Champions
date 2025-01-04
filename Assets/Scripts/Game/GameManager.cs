@@ -16,6 +16,8 @@ namespace Game
         public GameObject enemyPlayerBall;
         public Transform  localPlayerBallSpawnPosition;
 
+        public Transform[] spawnTransforms = new Transform[2];
+
         private void Awake()
         {
             if (_instance == null)

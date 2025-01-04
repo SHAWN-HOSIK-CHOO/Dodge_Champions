@@ -121,18 +121,36 @@ namespace GameInput
                     Debug.LogError("CharacterController is missing on this GameObject!");
                     return;
                 }
-                Vector3 currentDirection = _characterController.velocity.normalized;
 
-                if (currentDirection == Vector3.zero)
+                switch (_characterSkillLauncher.currentSkill.ThisSkillType)
                 {
-                    currentDirection = -_localCharacterMovement.transform.forward;
+                    case ESkillInputType.Vector3Target:
+                    {
+                        Vector3 currentDirection = _characterController.velocity.normalized;
+
+                        if (currentDirection == Vector3.zero)
+                        {
+                            currentDirection = -_localCharacterMovement.transform.forward;
+                        }
+
+                        var input = new TargetVector3Input
+                                    {
+                                        TargetVector = currentDirection
+                                    };
+                        
+                        _characterSkillLauncher.StartSkill(input);
+                        break;
+                    }
+                    case ESkillInputType.Scalar3Value:
+                    {
+                        break;
+                    }
+                    case ESkillInputType.JustBoolean:
+                    {
+                        break;
+                    }
                 }
                 
-                var     input            = new DashInput
-                                           {
-                                               TargetVector = currentDirection
-                                           };
-                _characterSkillLauncher.StartSkill(input);
             }
         }
 
@@ -182,10 +200,11 @@ namespace GameInput
         {
             Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
             Ray     ray               = Camera.main.ScreenPointToRay(screenCenterPoint);
-            if (Physics.Raycast(ray,out RaycastHit hit, 60f, mouseColliderLayerMask))
+            if (Physics.Raycast(ray,out RaycastHit hit, 999f, mouseColliderLayerMask))
             {
                 currentTargetPosition = hit.point;
 
+                //debugTransform.transform.position = hit.point;
                 FixPlayerForwardDirection(25f);
             }
             

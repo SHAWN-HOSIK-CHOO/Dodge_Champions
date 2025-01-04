@@ -118,7 +118,7 @@ Transform:
   m_GameObject: {fileID: 8245154934698328548}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.6, z: 0}
+  m_LocalPosition: {x: 0, y: 1.38, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -902,7 +902,7 @@ MonoBehaviour:
   ballSpawnPosition: {fileID: 1665524194517032170}
   capsuleStart: {fileID: 5759675378368499457}
   capsuleEnd: {fileID: 2324964516495127949}
-  capsuleRadius: 0.35
+  capsuleRadius: 0.8
   ballLayer:
     serializedVersion: 2
     m_Bits: 1536

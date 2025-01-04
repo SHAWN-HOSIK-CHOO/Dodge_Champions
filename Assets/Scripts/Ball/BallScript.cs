@@ -57,11 +57,11 @@ namespace Ball
                 
                 transform.position = CalculateParabolicPosition(_startPosition, _targetPosition, _maxHeight, t, isHorizontalThrow);
                 
-                if (t >= 0.8f) 
-                {
-                    _isInitialized = false;
-                    ActivateRigidbodyWithVelocity(t);
-                }
+                // if (t >= 0.8f) 
+                // {
+                //     _isInitialized = false;
+                //     ActivateRigidbodyWithVelocity(t);
+                // }
             }
         }
 

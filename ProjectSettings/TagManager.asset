@@ -9,6 +9,7 @@ TagManager:
   - Fake
   - Floor
   - Wall
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
@@ -21,8 +22,8 @@ TagManager:
   - LocalPlayer
   - FakePf
   - RealPf
-  - 
-  - 
+  - GamePropsEnvs
+  - Camera
   - 
   - 
   - 
