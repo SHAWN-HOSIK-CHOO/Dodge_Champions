@@ -5,7 +5,7 @@ using Game;
 using UnityEngine;
 using TMPro;
 
-namespace UI
+namespace GameUI
 {
     public class UIManager : MonoBehaviour
     {

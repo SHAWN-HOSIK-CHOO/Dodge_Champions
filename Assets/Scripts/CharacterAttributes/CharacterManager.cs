@@ -6,7 +6,7 @@ using GameInput;
 using Unity.Netcode;
 using UnityEngine;
 using TMPro;
-using UI;
+using GameUI;
 using Tests;
 using UnityEngine.Serialization;
 
@@ -342,7 +342,7 @@ namespace CharacterAttributes
 
            if (_isAllClientsConnected)
            {
-               UIManager.Instance.StartGameCountDown(5f);
+               GameManager.Instance.StartRound();
            }
        }
    }
