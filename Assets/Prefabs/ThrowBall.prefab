@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -3459955154645213614}
   - component: {fileID: 4087217534100808488}
   - component: {fileID: 526145525461709329}
+  - component: {fileID: 337700927132362547}
   m_Layer: 10
   m_Name: ThrowBall
   m_TagString: Real
@@ -149,4 +150,25 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Radius: 0.099999994
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!135 &337700927132362547
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3869145152564536287}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 2112
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.12
   m_Center: {x: 0, y: 0, z: 0}

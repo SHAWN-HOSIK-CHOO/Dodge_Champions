@@ -10,6 +10,7 @@ TagManager:
   - Floor
   - Wall
   - FxTemporaire
+  - Useless
   layers:
   - Default
   - TransparentFX

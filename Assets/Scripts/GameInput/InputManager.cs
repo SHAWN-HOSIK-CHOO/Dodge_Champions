@@ -86,9 +86,11 @@ namespace GameInput
             SprintInput(value.isPressed);
         }
 
+        //public int attackChancesRemaining = 0;
+        
         private void OnAttackPressed(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart)
+            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn)
             {
                 _localCharacterMovement.LayerTransition(true);
                 _characterBallLauncher.SpawnBallServerRPC();
@@ -97,7 +99,7 @@ namespace GameInput
 
         private void OnAttackReleased(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart)
+            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn)
             {
                 _localCharacterMovement.SetThrowAnimation(true); // Animation 동작이 완료되면 throw = false 만드는 콜백 존재함
 

@@ -128,6 +128,8 @@ namespace CharacterAttributes
                        UIManager.Instance.dodgeText.SetActive(true);
                        NotifyJustDodgeSuccessServerRPC(coll.transform.position);
                        Destroy(coll.gameObject);
+                       //턴 획득
+                       GameManager.Instance.SwapTurnServerRPC();
                        break;
                    }
                }
@@ -199,7 +201,7 @@ namespace CharacterAttributes
                {
                    if (coll.CompareTag("Real") && coll != null)
                    {
-                       Debug.Log("Ball hit detect from none owner");
+                       //Debug.Log("Ball hit detect from none owner");
                        Destroy(coll.gameObject);
                        break;
                    }
@@ -245,7 +247,7 @@ namespace CharacterAttributes
        }
        
        [ServerRpc(RequireOwnership = false)]
-       public void NotifyHitServerRPC(Vector3 hitPosition)
+       private void NotifyHitServerRPC(Vector3 hitPosition)
        {
            NotifyHitClientRPC(hitPosition);
        }
@@ -254,6 +256,7 @@ namespace CharacterAttributes
        private void NotifyHitClientRPC(Vector3 hitPosition)
        {
            Debug.Log("Player" + OwnerClientId + " is Hit");
+           //체력 조절
 
            if (SCurrentComboStack >= 2)
            {
@@ -269,11 +272,9 @@ namespace CharacterAttributes
            {
                StopCoroutine(_comboTimerCoroutine);
            }
-
-           // 콤보 증가 전에 이펙트를 실행
+           
            _currentHitDisplayCoroutine = StartCoroutine(CoDisplayHitEffectForNSec(hitPosition, 0.5f));
-
-           // 콤보를 증가시키고 타이머 시작
+           
            SCurrentComboStack   = Mathf.Clamp(SCurrentComboStack + 1, 0, 2);
            _comboTimerCoroutine = StartCoroutine(CoComboValidateTimer(comboValidateTimeInSeconds));
        }
@@ -331,6 +332,9 @@ namespace CharacterAttributes
            _isAllClientsConnected = readyFlag;
            Debug.Log($"All clients ready: {_isAllClientsConnected}");
             
+           if(_isAllClientsConnected && IsServer && IsOwner)
+               GameManager.Instance.StartRoundServerRPC();
+           
            UpdateReadyFlagClientRpc(_isAllClientsConnected);
        }
 
@@ -339,11 +343,6 @@ namespace CharacterAttributes
        {
            _isAllClientsConnected = readyFlag;
            Debug.Log($"isReady updated on client: {_isAllClientsConnected}");
-
-           if (_isAllClientsConnected)
-           {
-               GameManager.Instance.StartRound();
-           }
        }
    }
 }

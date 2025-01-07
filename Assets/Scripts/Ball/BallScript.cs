@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using CharacterAttributes;
+using Game;
 using UnityEngine;
 
 namespace Ball
@@ -56,12 +58,6 @@ namespace Ball
                 float t = _timeElapsed / travelDuration;
                 
                 transform.position = CalculateParabolicPosition(_startPosition, _targetPosition, _maxHeight, t, isHorizontalThrow);
-                
-                // if (t >= 0.8f) 
-                // {
-                //     _isInitialized = false;
-                //     ActivateRigidbodyWithVelocity(t);
-                // }
             }
         }
 
@@ -83,15 +79,57 @@ namespace Ball
             }
         }
 
-        void ActivateRigidbodyWithVelocity(float t)
+        private void OnTriggerEnter(Collider other)
         {
-            float nextT = t + 0.01f;
-            Vector3 currentPos = transform.position;
-            Vector3 nextPos = CalculateParabolicPosition(_startPosition, _targetPosition, _maxHeight, nextT, isHorizontalThrow);
-            Vector3 direction = (nextPos - currentPos).normalized;
+            if (other.CompareTag("Floor") || other.CompareTag("Wall"))
+            {
+                if(this.CompareTag("Fake"))
+                    GameManager.Instance.SwapTurnServerRPC();
+                
+                // 태그 변경
+                this.gameObject.tag = "Useless";
+                _canStart           = false;
 
-            rb.isKinematic = false;
-            rb.linearVelocity = direction * _throwSpeed;
+                // 충돌 법선 계산: 충돌체의 중심 기준
+                Vector3 collisionNormal = (transform.position - other.bounds.center).normalized;
+
+                // 기존 이동 방향 (입사 벡터)
+                Vector3 incomingVelocity = (_targetPosition - _startPosition).normalized * _throwSpeed;
+
+                // 반사 벡터 계산
+                Vector3 reflectedVelocity = Vector3.Reflect(incomingVelocity, collisionNormal);
+
+                // 튕기기 시작
+                StartBounce(reflectedVelocity);
+            }
         }
+
+        private void StartBounce(Vector3 initialVelocity)
+        {
+            StartCoroutine(BounceEffect(initialVelocity));
+        }
+
+        private IEnumerator BounceEffect(Vector3 velocity)
+        {
+            float duration    = 1f; // 튕기는 효과 지속 시간
+            float elapsedTime = 0f;
+
+            while (elapsedTime < duration)
+            {
+                // 중력 효과 추가
+                velocity += Physics.gravity * Time.deltaTime;
+
+                // 공의 위치 갱신
+                transform.position += velocity * Time.deltaTime;
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            
+            Destroy(this.gameObject);
+            
+        }
+
+
     }
 }

@@ -33,6 +33,9 @@ namespace Game
 
         public GameObject uiManager;
 
+        public int  currentAttackPlayerID   = -1;
+        public bool isLocalPlayerAttackTurn = false;
+
         private void Awake()
         {
             if (_instance == null)
@@ -52,13 +55,44 @@ namespace Game
         public GameObject localPlayer = null;
         public GameObject enemyPlayer = null;
 
-        public void StartRound()
+        [ServerRpc(RequireOwnership = false)]
+        public void SwapTurnServerRPC()
         {
+            SwapTurnClientRPC();
+            //Debug.Log("Called from : " + localClientID + " by : " + OwnerClientId);
+        }
+
+        [ClientRpc]
+        private void SwapTurnClientRPC()
+        {
+            //Debug.Log("Executed from : " + localClientID);
+            currentAttackPlayerID   = currentAttackPlayerID == 0 ? 1 : 0;
+            isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
+        }
+        
+        [ServerRpc]
+        public void StartRoundServerRPC()
+        {
+            Debug.Log($"Called on Host: {IsHost}, Server: {IsServer}, Client: {IsClient}");
+            
             uiManager.SetActive(false);
             cutSceneCamera.SetActive(true);
             
             int randomNumber = Random.Range(0, 2);
+            
+            Debug.Log("Random Number : " + randomNumber);
+            
+            StartRoundClientRPC(randomNumber);
+        }
+
+        [ClientRpc]
+        private void StartRoundClientRPC(int randomNumber)
+        {
             _isHeads = randomNumber == 0;
+
+            currentAttackPlayerID = _isHeads ? 0 : 1;
+
+            isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
             
             if (_cutSceneCoroutine != null)
             {
@@ -86,11 +120,13 @@ namespace Game
         {
             if (_isHeads)
             {
+                Debug.Log("Activated Heads Coin");
                 headsCoin.SetActive(true);
                 tailsCoin.SetActive(false);
             }
             else
             {
+                Debug.Log("Activated Tails Coin");
                 tailsCoin.SetActive(true);
                 headsCoin.SetActive(false);
             }
