@@ -13,6 +13,11 @@ namespace Skill
    {
       public Vector3 TargetScale;
    }
+
+   public struct IntegerIndex : ISkillInput
+   {
+      public int Index;
+   }
    
    public struct HealInput : ISkillInput
    {

@@ -60,7 +60,7 @@ namespace Skill
                 yield return null; // 다음 프레임 대기
             }
 
-            Debug.Log("Dash ended");
+            //Debug.Log("Dash ended");
         }
     }
 }

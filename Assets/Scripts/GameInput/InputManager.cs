@@ -20,6 +20,7 @@ namespace GameInput
         private CharacterSkillLauncher _characterSkillLauncher;
         private CharacterManager       _characterManager;
         private CharacterController    _characterController;
+        private CharacterStatus        _characterStatus;
         
         public Transform localPlayerBallSpawnTransform;
         public LayerMask mouseColliderLayerMask = new LayerMask();
@@ -37,6 +38,7 @@ namespace GameInput
             _characterSkillLauncher       = GameManager.Instance.localPlayer.GetComponent<CharacterSkillLauncher>();
             _characterManager             = GameManager.Instance.localPlayer.GetComponent<CharacterManager>();
             _characterController          = GameManager.Instance.localPlayer.GetComponent<CharacterController>();
+            _characterStatus              = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>();
             localPlayerBallSpawnTransform = GameManager.Instance.localPlayerBallSpawnPosition;
         }
         
@@ -86,11 +88,16 @@ namespace GameInput
             SprintInput(value.isPressed);
         }
 
-        //public int attackChancesRemaining = 0;
+        public  bool canThrowBall       = false;
+
+        public void RequestTurnSwapToEnemy()
+        {
+            _characterManager.RequestTurnSwapServerRPC();
+        }
         
         private void OnAttackPressed(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn)
+            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall)
             {
                 _localCharacterMovement.LayerTransition(true);
                 _characterBallLauncher.SpawnBallServerRPC();
@@ -99,17 +106,15 @@ namespace GameInput
 
         private void OnAttackReleased(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn)
+            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall)
             {
                 _localCharacterMovement.SetThrowAnimation(true); // Animation 동작이 완료되면 throw = false 만드는 콜백 존재함
-
-                float multiplyFactor = Mathf.Clamp(CharacterManager.SCurrentComboStack + 1f,0f,2f);
                 
-                //Debug.Log("Multiply Factor : " + CharacterManager.SCurrentComboStack);
-                
-                _characterBallLauncher.ThrowBallServerRPC(currentTargetPosition, ballLaunchSpeedBase * multiplyFactor * 0.7f, 0.3f);
+                _characterBallLauncher.ThrowBallServerRPC(currentTargetPosition, ballLaunchSpeedBase, 0.3f);
                 
                 FixPlayerForwardDirection(0f);
+                _characterManager.IncreaseThrowCount();
+                canThrowBall = false;
             }
         }
 

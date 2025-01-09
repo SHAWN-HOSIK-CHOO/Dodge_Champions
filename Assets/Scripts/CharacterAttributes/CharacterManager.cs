@@ -35,13 +35,7 @@ namespace CharacterAttributes
        [Space(5)]
        [Header("Hit Effects (When ball hit)")]
        public        GameObject[] pfHitEffects                = new GameObject[3];
-       public static int          SCurrentComboStack          = 0;
-       private       Coroutine    _currentHitDisplayCoroutine = null;
-       
-       [Space(5)]
-       [Header("Combo")]
-       public  float     comboValidateTimeInSeconds = 5f;
-       private Coroutine _comboTimerCoroutine       = null;
+       private       Coroutine _currentHitDisplayCoroutine = null;
        
        [Space(5)]
        [Tooltip("I-Frame (Just Dodge)")]
@@ -50,6 +44,10 @@ namespace CharacterAttributes
        public  GameObject justDodgeEffect;
 
        private CharacterSkillLauncher _characterSkillLauncher;
+       
+       [Header("Throw Counts")]
+       public  int  maxThrowCount      = 5;
+       private int  _currentThrowCount = 0;
        
        public override void OnNetworkSpawn()
        {
@@ -65,10 +63,6 @@ namespace CharacterAttributes
                GameManager.Instance.localPlayerBallSpawnPosition = ballSpawnPosition.transform;
                this.gameObject.layer                             = LayerMask.NameToLayer("LocalPlayer");
                InputManager.Instance.InitCallWhenLocalPlayerSpawned();
-               
-               //Tests
-               //if((int)OwnerClientId == 1)
-                  //PracticeMachineManager.Instance.StartPractice(this.gameObject);
            }
            else
            {
@@ -78,29 +72,29 @@ namespace CharacterAttributes
            }
 
            _characterSkillLauncher = this.GetComponent<CharacterSkillLauncher>();
-           SetSpawnPositionServerRPC((int)OwnerClientId);
+           //SetSpawnPositionServerRPC((int)OwnerClientId);
        }
        
-       [ServerRpc(RequireOwnership = false)]
-       private void SetSpawnPositionServerRPC(int clientID)
-       {
-           if (clientID < 0 || clientID >= GameManager.Instance.spawnTransforms.Length)
-           {
-               Debug.LogError($"Invalid clientID: {clientID}, cannot set spawn position.");
-               return;
-           }
-           
-           SetSpawnPositionClientRPC(clientID);
-       }
-
-       [ClientRpc]
-       private void SetSpawnPositionClientRPC(int clientID)
-       {
-           Transform spawnTransform = GameManager.Instance.spawnTransforms[clientID];
-           //Debug.Log($"Setting spawn position for clientID {clientID} at {spawnTransform.position}");
-           this.transform.position = spawnTransform.position;
-           this.transform.rotation = spawnTransform.rotation;
-       }
+       // [ServerRpc(RequireOwnership = false)]
+       // private void SetSpawnPositionServerRPC(int clientID)
+       // {
+       //     if (clientID < 0 || clientID >= GameManager.Instance.spawnTransforms.Length)
+       //     {
+       //         Debug.LogError($"Invalid clientID: {clientID}, cannot set spawn position.");
+       //         return;
+       //     }
+       //     
+       //     SetSpawnPositionClientRPC(clientID);
+       // }
+       //
+       // [ClientRpc]
+       // private void SetSpawnPositionClientRPC(int clientID)
+       // {
+       //     Transform spawnTransform = GameManager.Instance.spawnTransforms[clientID];
+       //     //Debug.Log($"Setting spawn position for clientID {clientID} at {spawnTransform.position}");
+       //     this.transform.position = spawnTransform.position;
+       //     this.transform.rotation = spawnTransform.rotation;
+       // }
        
        private void Update()
        {
@@ -128,8 +122,6 @@ namespace CharacterAttributes
                        UIManager.Instance.dodgeText.SetActive(true);
                        NotifyJustDodgeSuccessServerRPC(coll.transform.position);
                        Destroy(coll.gameObject);
-                       //턴 획득
-                       GameManager.Instance.SwapTurnServerRPC();
                        break;
                    }
                }
@@ -157,6 +149,14 @@ namespace CharacterAttributes
        private void NotifyJustDodgeSuccessClientRPC(Vector3 effectPosition)
        {
            TriggerJustDodgeEffects(effectPosition);
+
+           //만약 내가 공을 던진 사람이고 상대방이 Just Dodge로 피한 사람이면
+           if (!IsOwner)
+           {
+               //턴을 넘겨준다
+               ResetThrowCountBeforeTurnSwap();
+               GameManager.Instance.SwapTurnServerRPC();
+           }
        }
        
        private void TriggerJustDodgeEffects(Vector3 collPosition)
@@ -258,39 +258,42 @@ namespace CharacterAttributes
            Debug.Log("Player" + OwnerClientId + " is Hit");
            //체력 조절
 
-           if (SCurrentComboStack >= 2)
+           if (!IsOwner) // 즉, 내가 공을 맞았고, 상대가 던진 사람이라면
            {
-               SCurrentComboStack = 2; // 최대 콤보를 초과하면 유지
+               //먼저 상대의 throw count를 올린다.
+               IncreaseThrowCount();
+               //만약 상대의 맥스 카운트에 도달하지 않았다면
+               if (_currentThrowCount < maxThrowCount)
+               {
+                   //한번 더 던질 수 있게 한다,
+                   InputManager.Instance.canThrowBall = true;
+                   //Debug.Log("Current Throw Count / Max : "+_currentThrowCount + " / " + maxThrowCount);
+               }
+               else
+               {
+                   //그게 아니라면 턴을 넘겨받는다.
+                   InputManager.Instance.canThrowBall = false;
+                   GameManager.Instance.SwapTurnServerRPC();
+                   ResetThrowCountBeforeTurnSwap();
+               }
            }
 
            if (_currentHitDisplayCoroutine != null)
            {
                StopCoroutine(_currentHitDisplayCoroutine);
            }
-
-           if (_comboTimerCoroutine != null)
-           {
-               StopCoroutine(_comboTimerCoroutine);
-           }
            
            _currentHitDisplayCoroutine = StartCoroutine(CoDisplayHitEffectForNSec(hitPosition, 0.5f));
-           
-           SCurrentComboStack   = Mathf.Clamp(SCurrentComboStack + 1, 0, 2);
-           _comboTimerCoroutine = StartCoroutine(CoComboValidateTimer(comboValidateTimeInSeconds));
        }
 
-       IEnumerator CoComboValidateTimer(float comboValidateTime)
+       public void IncreaseThrowCount()
        {
-           float elapsedTime = 0f;
+           _currentThrowCount++;
+       }
 
-           while (elapsedTime < comboValidateTime)
-           {
-               elapsedTime += Time.deltaTime;
-               yield return null;
-           }
-
-           // 콤보 초기화
-           SCurrentComboStack = 0;
+       public void ResetThrowCountBeforeTurnSwap()
+       {
+           _currentThrowCount = 0;
        }
        
        IEnumerator CoDisplayHitEffectForNSec(Vector3 hitPosition,float sec = 0.5f, bool isJustDodge = false)
@@ -305,9 +308,29 @@ namespace CharacterAttributes
            }
            else
            {
-               GameObject effect = Instantiate(pfHitEffects[SCurrentComboStack], hitPosition, Quaternion.identity);
+               GameObject effect = Instantiate(pfHitEffects[2], hitPosition, Quaternion.identity);
                yield return new WaitForSeconds(sec);
                Destroy(effect.gameObject);
+           }
+       }
+
+       [ServerRpc]
+       public void RequestTurnSwapServerRPC()
+       {
+           RequestTurnSwapClientRPC();
+       }
+
+       [ClientRpc]
+       private void RequestTurnSwapClientRPC()
+       {
+           //"내가 공을 안 맞았으니 턴을 넘겨라"고 지시하고
+           //상대방이 그 명령을 받았다면
+           if (!IsOwner)
+           {
+               //Debug.Log(OwnerClientId+"가 턴 스왑 요청을 받음");
+               //해야할 초기화를 하고 턴을 넘겨준다.
+               ResetThrowCountBeforeTurnSwap();
+               GameManager.Instance.SwapTurnServerRPC();
            }
        }
        
@@ -332,8 +355,8 @@ namespace CharacterAttributes
            _isAllClientsConnected = readyFlag;
            Debug.Log($"All clients ready: {_isAllClientsConnected}");
             
-           if(_isAllClientsConnected && IsServer && IsOwner)
-               GameManager.Instance.StartRoundServerRPC();
+           //if(_isAllClientsConnected && IsServer && IsOwner)
+               //GameManager.Instance.StartRoundServerRPC();
            
            UpdateReadyFlagClientRpc(_isAllClientsConnected);
        }

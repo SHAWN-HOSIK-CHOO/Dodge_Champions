@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b0d41581c324be448a752f89eadeecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isHorizontalThrow: 0
+  isHorizontalThrow: 1
 --- !u!135 &6277498973621325976
 SphereCollider:
   m_ObjectHideFlags: 0

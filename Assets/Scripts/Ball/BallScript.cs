@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using CharacterAttributes;
 using Game;
+using GameInput;
 using UnityEngine;
 
 namespace Ball
@@ -83,8 +84,12 @@ namespace Ball
         {
             if (other.CompareTag("Floor") || other.CompareTag("Wall"))
             {
-                if(this.CompareTag("Fake"))
-                    GameManager.Instance.SwapTurnServerRPC();
+                //상대방이 던진 공이 나를 맞추지 못하고, 내가 Just Dodge를 한 것도 아니며, 벽과 땅에 닿았다면
+                if (this.CompareTag("Fake"))
+                {
+                    //상대방에게 턴을 넘기라고 RPC로 지시한다.
+                    InputManager.Instance.RequestTurnSwapToEnemy();
+                }
                 
                 // 태그 변경
                 this.gameObject.tag = "Useless";

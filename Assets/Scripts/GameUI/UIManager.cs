@@ -4,6 +4,7 @@ using System.Globalization;
 using Game;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace GameUI
 {
@@ -30,6 +31,9 @@ namespace GameUI
         public TMP_Text startText;
 
         [Header("Dodge")] public GameObject dodgeText;
+
+        [Header("State, 0 for attack 1 for defense")]
+        public Image[] statesUIImages = new Image[2];
 
         private void Start()
         {

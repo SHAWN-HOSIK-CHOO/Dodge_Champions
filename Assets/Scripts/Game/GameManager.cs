@@ -1,4 +1,6 @@
 using System.Collections;
+using CharacterAttributes;
+using GameInput;
 using UnityEngine;
 using Unity.Netcode;
 using GameUI;
@@ -36,7 +38,7 @@ namespace Game
         public int  currentAttackPlayerID   = -1;
         public bool isLocalPlayerAttackTurn = false;
 
-        private void Awake()
+        public override void OnNetworkSpawn()
         {
             if (_instance == null)
             {
@@ -48,6 +50,19 @@ namespace Game
                 Destroy(this.gameObject);
             }
         }
+
+        // private void Awake()
+        // {
+        //     if (_instance == null)
+        //     {
+        //         _instance = this;
+        //         DontDestroyOnLoad(this.gameObject);
+        //     }
+        //     else
+        //     {
+        //         Destroy(this.gameObject);
+        //     }
+        // }
 
         public int localClientID;
         public int enemyClientID;
@@ -68,12 +83,25 @@ namespace Game
             //Debug.Log("Executed from : " + localClientID);
             currentAttackPlayerID   = currentAttackPlayerID == 0 ? 1 : 0;
             isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
+            
+            if (isLocalPlayerAttackTurn)
+            {
+                UIManager.Instance.statesUIImages[0].gameObject.SetActive(true);
+                UIManager.Instance.statesUIImages[1].gameObject.SetActive(false);
+                InputManager.Instance.canThrowBall = true;
+            }
+            else
+            {
+                UIManager.Instance.statesUIImages[0].gameObject.SetActive(false);
+                UIManager.Instance.statesUIImages[1].gameObject.SetActive(true);
+                InputManager.Instance.canThrowBall = false;
+            }
         }
         
         [ServerRpc]
         public void StartRoundServerRPC()
         {
-            Debug.Log($"Called on Host: {IsHost}, Server: {IsServer}, Client: {IsClient}");
+            //Debug.Log($"Called on Host: {IsHost}, Server: {IsServer}, Client: {IsClient}");
             
             uiManager.SetActive(false);
             cutSceneCamera.SetActive(true);
@@ -113,6 +141,18 @@ namespace Game
             
             uiManager.SetActive(true);
             cutSceneCamera.SetActive(false);
+            if (isLocalPlayerAttackTurn)
+            {
+                UIManager.Instance.statesUIImages[0].gameObject.SetActive(true);
+                UIManager.Instance.statesUIImages[1].gameObject.SetActive(false);
+                InputManager.Instance.canThrowBall = true;
+            }
+            else
+            {
+                UIManager.Instance.statesUIImages[0].gameObject.SetActive(false);
+                UIManager.Instance.statesUIImages[1].gameObject.SetActive(true);
+                InputManager.Instance.canThrowBall = false;
+            }
             UIManager.Instance.StartGameCountDown(5f);
         }
         
