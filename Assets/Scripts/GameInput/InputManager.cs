@@ -214,7 +214,11 @@ namespace GameInput
                 //debugTransform.transform.position = hit.point;
                 FixPlayerForwardDirection(25f);
             }
-            
+
+            // if (Input.GetKeyDown(KeyCode.Escape))
+            // {
+            //     Cursor.lockState = CursorLockMode.None;
+            // }
         }
     }
 }

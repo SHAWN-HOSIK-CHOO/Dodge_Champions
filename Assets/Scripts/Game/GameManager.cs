@@ -51,19 +51,6 @@ namespace Game
             }
         }
 
-        // private void Awake()
-        // {
-        //     if (_instance == null)
-        //     {
-        //         _instance = this;
-        //         DontDestroyOnLoad(this.gameObject);
-        //     }
-        //     else
-        //     {
-        //         Destroy(this.gameObject);
-        //     }
-        // }
-
         public int localClientID;
         public int enemyClientID;
 
@@ -170,6 +157,19 @@ namespace Game
                 tailsCoin.SetActive(true);
                 headsCoin.SetActive(false);
             }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void EndGameServerRPC(int winnerID)
+        {
+            EndGameClientRPC(winnerID);
+        }
+
+        [ClientRpc]
+        private void EndGameClientRPC(int winnerID)
+        {
+            UIManager.Instance.GameOverUI(winnerID);
+            isGameReadyToStart = false;
         }
     }
 }

@@ -176,7 +176,7 @@ namespace CharacterAttributes
 
         private void LateUpdate()
         {
-            if (!IsOwner)
+            if (!IsOwner || !GameManager.Instance.isGameReadyToStart)
             {
                 return;
             }

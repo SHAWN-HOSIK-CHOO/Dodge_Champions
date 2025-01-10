@@ -24,6 +24,7 @@ namespace GameUI
             {
                 Destroy(this.gameObject);
             }
+            startPanel.SetActive(false);
         }
         
         [Header("Game Start Info Panel")] 
@@ -35,11 +36,39 @@ namespace GameUI
         [Header("State, 0 for attack 1 for defense")]
         public Image[] statesUIImages = new Image[2];
 
+        [Header("Players' Hp bar")] 
+        public Image playerFill;
+        public Image enemyFill;
+
         private void Start()
         {
             dodgeText.SetActive(false);
+            ResetFill(playerFill);
+            ResetFill(enemyFill);
         }
 
+        private void ResetFill(Image fillImage)
+        {
+            if (fillImage != null)
+            {
+                fillImage.fillAmount = 1.0f; 
+            }
+        }
+
+        public void ChangeFillWithRatio(float fillRatio, bool isThisPlayer)
+        {
+            if (isThisPlayer)
+            {
+                // 만약 플레이어가 맞은거면
+                playerFill.fillAmount = fillRatio;
+            }
+            else
+            {
+                // 상대가 맞은거라면
+                enemyFill.fillAmount = fillRatio;
+            }
+        }
+        
         public void StartGameCountDown(float time = 5f)
         {
             StartCoroutine(CoStartCountDown(5f));
@@ -60,6 +89,19 @@ namespace GameUI
             startPanel.SetActive(false);
 
             GameManager.Instance.isGameReadyToStart = true;
+        }
+
+        public void GameOverUI(int winnerID)
+        {
+            startPanel.SetActive(true);
+            if (GameManager.Instance.localClientID == winnerID)
+            {
+                startText.text = "You Win!";
+            }
+            else
+            {
+                startText.text = "You Lose!";
+            }
         }
     }
 }

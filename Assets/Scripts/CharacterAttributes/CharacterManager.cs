@@ -72,29 +72,7 @@ namespace CharacterAttributes
            }
 
            _characterSkillLauncher = this.GetComponent<CharacterSkillLauncher>();
-           //SetSpawnPositionServerRPC((int)OwnerClientId);
        }
-       
-       // [ServerRpc(RequireOwnership = false)]
-       // private void SetSpawnPositionServerRPC(int clientID)
-       // {
-       //     if (clientID < 0 || clientID >= GameManager.Instance.spawnTransforms.Length)
-       //     {
-       //         Debug.LogError($"Invalid clientID: {clientID}, cannot set spawn position.");
-       //         return;
-       //     }
-       //     
-       //     SetSpawnPositionClientRPC(clientID);
-       // }
-       //
-       // [ClientRpc]
-       // private void SetSpawnPositionClientRPC(int clientID)
-       // {
-       //     Transform spawnTransform = GameManager.Instance.spawnTransforms[clientID];
-       //     //Debug.Log($"Setting spawn position for clientID {clientID} at {spawnTransform.position}");
-       //     this.transform.position = spawnTransform.position;
-       //     this.transform.rotation = spawnTransform.rotation;
-       // }
        
        private void Update()
        {
@@ -188,7 +166,10 @@ namespace CharacterAttributes
                {
                    if (coll.CompareTag("Fake") && coll != null)
                    {
-                       NotifyHitServerRPC(coll.transform.position);
+                       //TODO: Damage는 ballscipt에서 받아오기
+                       int damage = 10;
+                       
+                       NotifyHitServerRPC(coll.transform.position, damage);
 
                        Destroy(coll.gameObject);
                        break;
@@ -247,17 +228,19 @@ namespace CharacterAttributes
        }
        
        [ServerRpc(RequireOwnership = false)]
-       private void NotifyHitServerRPC(Vector3 hitPosition)
+       private void NotifyHitServerRPC(Vector3 hitPosition, int damage)
        {
-           NotifyHitClientRPC(hitPosition);
+           NotifyHitClientRPC(hitPosition, damage);
        }
 
        [ClientRpc]
-       private void NotifyHitClientRPC(Vector3 hitPosition)
+       private void NotifyHitClientRPC(Vector3 hitPosition, int damage)
        {
            Debug.Log("Player" + OwnerClientId + " is Hit");
            //체력 조절
 
+           this.GetComponent<CharacterStatus>().HandleHit(10);
+           
            if (!IsOwner) // 즉, 내가 공을 맞았고, 상대가 던진 사람이라면
            {
                //먼저 상대의 throw count를 올린다.
