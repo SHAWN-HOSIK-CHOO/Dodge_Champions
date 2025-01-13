@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using Ball;
 using Game;
 using GameInput;
 using Unity.Netcode;
@@ -73,7 +74,7 @@ namespace CharacterAttributes
 
            _characterSkillLauncher = this.GetComponent<CharacterSkillLauncher>();
        }
-       
+
        private void Update()
        {
            if (_characterSkillLauncher.isSkillActivated)
@@ -127,9 +128,10 @@ namespace CharacterAttributes
        private void NotifyJustDodgeSuccessClientRPC(Vector3 effectPosition)
        {
            TriggerJustDodgeEffects(effectPosition);
+           this.GetComponent<CharacterStatus>().IncreaseDodgeSuccessCount();
 
-           //만약 내가 공을 던진 사람이고 상대방이 Just Dodge로 피한 사람이면
-           if (!IsOwner)
+           //만약 내가 공을 던진 사람이고 상대방이 Just Dodge로 피한 사람이고, 상대 턴이 아니라면(내 턴이라면)
+           if (!IsOwner && GameManager.Instance.isLocalPlayerAttackTurn)
            {
                //턴을 넘겨준다
                ResetThrowCountBeforeTurnSwap();
@@ -166,10 +168,10 @@ namespace CharacterAttributes
                {
                    if (coll.CompareTag("Fake") && coll != null)
                    {
-                       //TODO: Damage는 ballscipt에서 받아오기
-                       int damage = 10;
+                       int damage         = coll.GetComponent<BallScript>().ballDamage;
+                       int hitEffectIndex = coll.GetComponent<BallScript>().hitEffectIndex;
                        
-                       NotifyHitServerRPC(coll.transform.position, damage);
+                       NotifyHitServerRPC(coll.transform.position, damage, hitEffectIndex);
 
                        Destroy(coll.gameObject);
                        break;
@@ -228,18 +230,19 @@ namespace CharacterAttributes
        }
        
        [ServerRpc(RequireOwnership = false)]
-       private void NotifyHitServerRPC(Vector3 hitPosition, int damage)
+       private void NotifyHitServerRPC(Vector3 hitPosition, int damage, int effectIndex = 0)
        {
-           NotifyHitClientRPC(hitPosition, damage);
+           NotifyHitClientRPC(hitPosition, damage, effectIndex);
        }
 
        [ClientRpc]
-       private void NotifyHitClientRPC(Vector3 hitPosition, int damage)
+       private void NotifyHitClientRPC(Vector3 hitPosition, int damage, int effectIndex = 0)
        {
            Debug.Log("Player" + OwnerClientId + " is Hit");
            //체력 조절
 
-           this.GetComponent<CharacterStatus>().HandleHit(10);
+           this.GetComponent<CharacterStatus>().HandleHit(damage);
+           this.GetComponent<CharacterStatus>().IncreaseHitCount();
            
            if (!IsOwner) // 즉, 내가 공을 맞았고, 상대가 던진 사람이라면
            {
@@ -266,7 +269,7 @@ namespace CharacterAttributes
                StopCoroutine(_currentHitDisplayCoroutine);
            }
            
-           _currentHitDisplayCoroutine = StartCoroutine(CoDisplayHitEffectForNSec(hitPosition, 0.5f));
+           _currentHitDisplayCoroutine = StartCoroutine(CoDisplayHitEffectForNSec(hitPosition, 0.5f, false, effectIndex));
        }
 
        public void IncreaseThrowCount()
@@ -278,8 +281,9 @@ namespace CharacterAttributes
        {
            _currentThrowCount = 0;
        }
-       
-       IEnumerator CoDisplayHitEffectForNSec(Vector3 hitPosition,float sec = 0.5f, bool isJustDodge = false)
+
+       IEnumerator CoDisplayHitEffectForNSec(Vector3 hitPosition, float sec = 0.5f, bool isJustDodge = false,
+                                             int     effectIndex = 0)
        {
            if (isJustDodge)
            {
@@ -291,7 +295,7 @@ namespace CharacterAttributes
            }
            else
            {
-               GameObject effect = Instantiate(pfHitEffects[2], hitPosition, Quaternion.identity);
+               GameObject effect = Instantiate(pfHitEffects[effectIndex], hitPosition, Quaternion.identity);
                yield return new WaitForSeconds(sec);
                Destroy(effect.gameObject);
            }
@@ -331,7 +335,7 @@ namespace CharacterAttributes
                SetReadyFlagServerRpc(true); 
            }
        }
-
+       
        [ServerRpc(RequireOwnership = false)]
        private void SetReadyFlagServerRpc(bool readyFlag)
        {
@@ -343,7 +347,7 @@ namespace CharacterAttributes
            
            UpdateReadyFlagClientRpc(_isAllClientsConnected);
        }
-
+       
        [ClientRpc]
        private void UpdateReadyFlagClientRpc(bool readyFlag)
        {

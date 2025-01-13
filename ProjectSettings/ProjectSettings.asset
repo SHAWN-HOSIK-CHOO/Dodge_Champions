@@ -12,9 +12,9 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: Dodge&Throw
-  defaultCursor: {fileID: 0}
+  companyName: CHOOSIK
+  productName: DodgeChampions
+  defaultCursor: {fileID: 2800000, guid: 44a99ee545fd8ba46a452b12c1f9378b, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 1
@@ -288,7 +288,14 @@ PlayerSettings:
   AndroidAppBundleSizeToValidate: 150
   AndroidReportGooglePlayAppDependencies: 1
   androidSymbolsSizeThreshold: 800
-  m_BuildTargetIcons: []
+  m_BuildTargetIcons:
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 39c7d9871e6be494ca3679c479cc515a, type: 3}
+      m_Width: 128
+      m_Height: 128
+      m_Kind: 0
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: iPhone
     m_Icons:
@@ -946,7 +953,7 @@ PlayerSettings:
   cloudProjectId: b5338a20-2652-4361-a12f-87db6eba78b5
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Dodge&Throw
+  projectName: Dodge_Champions
   organizationId: myfirstsol
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

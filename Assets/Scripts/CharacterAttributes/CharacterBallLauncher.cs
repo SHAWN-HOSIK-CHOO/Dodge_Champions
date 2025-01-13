@@ -10,15 +10,20 @@ namespace CharacterAttributes
        public GameObject pfCurrentBall = null;
        public GameObject instantiatedBall;
 
+       public float ballThrowSpeed = 42f;
+       public float ballHeight     = 0.3f;
+
        public override void OnNetworkSpawn()
        {
           if (IsOwner)
           {
-             pfCurrentBall = GameManager.Instance.localPlayerBall;
+             pfCurrentBall       = GameManager.Instance.localPlayerBall;
+             //Debug.Log("Owner tag and layer : " +pfCurrentBall.tag + " : " + LayerMask.LayerToName(pfCurrentBall.layer));
           }
           else
           {
-             pfCurrentBall = GameManager.Instance.enemyPlayerBall;
+             pfCurrentBall       = GameManager.Instance.enemyPlayerBall;
+             //.Log("Enemy tag and layer : " +pfCurrentBall.tag + " : " + LayerMask.LayerToName(pfCurrentBall.layer));
           }
        }
 
@@ -35,17 +40,19 @@ namespace CharacterAttributes
 
           instantiatedBall = Instantiate(pfCurrentBall, ballSpawnPosition.position, ballSpawnPosition.rotation);
           instantiatedBall.transform.SetParent(ballSpawnPosition);
+          //Debug.Log("Instantiated tag and layer : " + instantiatedBall.tag + " : " + LayerMask.LayerToName(instantiatedBall.layer));
        }
        
        [ServerRpc]
-       public void ThrowBallServerRPC(Vector3 targetPosition, float speed = 1f, float height = 2f)
+       public void ThrowBallServerRPC(Vector3 targetPosition)
        {
-          ThrowBallClientRPC(targetPosition, speed, height);
+          ThrowBallClientRPC(targetPosition, ballHeight);
        }
 
        [ClientRpc]
-       private void ThrowBallClientRPC(Vector3 targetPosition, float speed = 1f, float height = 2f)
+       private void ThrowBallClientRPC(Vector3 targetPosition, float height = 2f)
        {
+          float speed = instantiatedBall.GetComponent<BallScript>().ReturnsCalculatedBallSpeed();
           LaunchBall(targetPosition,speed, height);
        }
        
@@ -53,7 +60,7 @@ namespace CharacterAttributes
        {
           if (instantiatedBall != null)
           {
-             instantiatedBall.GetComponent<BallScript>().Initialize(targetPosition,speed,height);
+             instantiatedBall.GetComponent<BallScript>().Initialize(targetPosition,speed,height,false,IsOwner);
           }
        }
 

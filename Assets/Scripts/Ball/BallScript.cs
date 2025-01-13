@@ -9,16 +9,22 @@ namespace Ball
 {
     public class BallScript : MonoBehaviour
     {
-        private bool _canStart = false;
+        protected bool _canStart = false;
         
-        private Vector3 _startPosition;
-        private Vector3 _targetPosition;
-        private float _throwSpeed;
-        private float _maxHeight;
-        private float _timeElapsed;
-        private bool _isInitialized;
+        protected Vector3 _startPosition;
+        protected Vector3 _targetPosition;
+        protected float   _throwSpeed;
+        protected float   _maxHeight;
+        protected float   _timeElapsed;
+        protected bool    _isInitialized;
+        protected bool    _didOwnerSpawnThisBall;
 
         private Rigidbody rb;
+
+        public int ballDamage     = 10;
+        public int hitEffectIndex = 0;
+
+        public float ballLaunchSpeed = 42f;
 
         [Header("Curve mode")] public bool isHorizontalThrow = false;
 
@@ -28,17 +34,28 @@ namespace Ball
             rb.isKinematic = true;
         }
 
-        public void Initialize(Vector3 target, float speed, float height, 
-             bool horizontalThrow = false)
+        public void SetBallDamage(int dmg)
         {
-            _startPosition    = Vector3.zero;
-            _targetPosition   = target;
-            _throwSpeed       = speed;
-            _maxHeight        = height;
-            _timeElapsed      = 0f;
-            isHorizontalThrow = horizontalThrow;
-            _isInitialized    = true;
-            _canStart         = false;
+            ballDamage = dmg;
+        }
+
+        public virtual float ReturnsCalculatedBallSpeed()
+        {
+            return ballLaunchSpeed;
+        }
+        
+        public virtual void Initialize(Vector3 target, float speed, float height, 
+             bool horizontalThrow = false, bool isThisOwner = true)
+        {
+            _startPosition         = Vector3.zero;
+            _targetPosition        = target;
+            _throwSpeed            = speed;
+            _maxHeight             = height;
+            _timeElapsed           = 0f;
+            isHorizontalThrow      = horizontalThrow;
+            _isInitialized         = true;
+            _canStart              = false;
+            _didOwnerSpawnThisBall = isThisOwner;
         }
 
         public void StartCommand(Vector3 startPosition)
@@ -54,14 +71,19 @@ namespace Ball
         {
             if (_isInitialized && _canStart)
             {
-                _timeElapsed += Time.deltaTime;
-                float travelDuration = Vector3.Distance(_startPosition, _targetPosition) / _throwSpeed;
-                float t = _timeElapsed / travelDuration;
-                
-                transform.position = CalculateParabolicPosition(_startPosition, _targetPosition, _maxHeight, t, isHorizontalThrow);
+                BallUpdate();
             }
         }
 
+        protected virtual void BallUpdate()
+        {
+            _timeElapsed += Time.deltaTime;
+            float travelDuration = Vector3.Distance(_startPosition, _targetPosition) / _throwSpeed;
+            float t              = _timeElapsed                                      / travelDuration;
+                
+            transform.position = CalculateParabolicPosition(_startPosition, _targetPosition, _maxHeight, t, isHorizontalThrow);
+        }
+        
         Vector3 CalculateParabolicPosition(Vector3 start, Vector3 target, float maxHeight, float t, bool horizontal)
         {
             // 수평 또는 수직 궤적에 따라 Lerp 방향 변경

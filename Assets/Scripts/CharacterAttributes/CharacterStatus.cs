@@ -10,6 +10,10 @@ namespace CharacterAttributes
    {
       public int maxHp = 100;
 
+      [Header("공에서 사용")]
+      public int justDodgeSuccessCounts = 0;
+      public int hitCounts              = 0;
+
       // 기본적으로 서버에서만 쓰기 가능하도록 설정
       public NetworkVariable<int> playerHealth = new NetworkVariable<int>(
                                                                           100, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server
@@ -32,8 +36,8 @@ namespace CharacterAttributes
             playerHealth.Value = maxHp;
          }
       }
-
-      private void Start()
+      
+      public void LateInitialize()
       {
          playerHealth.OnValueChanged += OnHealthChanged;
          isHpZero.OnValueChanged     += OnIsHpZeroChanged;
@@ -80,6 +84,16 @@ namespace CharacterAttributes
             GameManager.Instance.EndGameServerRPC(winnerID);
             Debug.Log("Winner is : " + winnerID);
          }
+      }
+
+      public void IncreaseDodgeSuccessCount()
+      {
+         justDodgeSuccessCounts++;
+      }
+
+      public void IncreaseHitCount()
+      {
+         hitCounts++;
       }
    }
 }

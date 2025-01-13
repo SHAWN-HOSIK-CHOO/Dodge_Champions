@@ -110,7 +110,7 @@ namespace GameInput
             {
                 _localCharacterMovement.SetThrowAnimation(true); // Animation 동작이 완료되면 throw = false 만드는 콜백 존재함
                 
-                _characterBallLauncher.ThrowBallServerRPC(currentTargetPosition, ballLaunchSpeedBase, 0.3f);
+                _characterBallLauncher.ThrowBallServerRPC(currentTargetPosition);
                 
                 FixPlayerForwardDirection(0f);
                 _characterManager.IncreaseThrowCount();

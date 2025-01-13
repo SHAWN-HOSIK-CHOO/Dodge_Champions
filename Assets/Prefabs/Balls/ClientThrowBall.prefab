@@ -11,13 +11,13 @@ GameObject:
   - component: {fileID: 4685419216508797338}
   - component: {fileID: 5618242393991566731}
   - component: {fileID: 2674220559104114502}
-  - component: {fileID: -3459955154645213614}
-  - component: {fileID: 4087217534100808488}
-  - component: {fileID: 526145525461709329}
-  - component: {fileID: 337700927132362547}
-  m_Layer: 10
-  m_Name: ThrowBall
-  m_TagString: Real
+  - component: {fileID: 747986119133393713}
+  - component: {fileID: 3434381129254218302}
+  - component: {fileID: 6277498973621325976}
+  - component: {fileID: -8196940152460230207}
+  m_Layer: 9
+  m_Name: ClientThrowBall
+  m_TagString: Fake
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -90,7 +90,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &-3459955154645213614
+--- !u!54 &747986119133393713
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,7 +117,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &4087217534100808488
+--- !u!114 &3434381129254218302
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,8 +129,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b0d41581c324be448a752f89eadeecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ballDamage: 10
   isHorizontalThrow: 1
---- !u!135 &526145525461709329
+--- !u!135 &6277498973621325976
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,7 +152,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.099999994
   m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &337700927132362547
+--- !u!135 &-8196940152460230207
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

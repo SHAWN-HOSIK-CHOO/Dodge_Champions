@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using CharacterAttributes;
 using GameInput;
+using GameLobby;
 using UnityEngine;
 using Unity.Netcode;
 using GameUI;
 using UnityEngine.Playables;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
@@ -38,6 +41,8 @@ namespace Game
         public int  currentAttackPlayerID   = -1;
         public bool isLocalPlayerAttackTurn = false;
 
+        private BallSkillDataBase _ballSkillDataBase;
+
         public override void OnNetworkSpawn()
         {
             if (_instance == null)
@@ -49,6 +54,14 @@ namespace Game
             {
                 Destroy(this.gameObject);
             }
+
+            _ballSkillDataBase = this.GetComponent<BallSkillDataBase>();
+            localPlayerBall =
+                _ballSkillDataBase.pfPlayerBalls[PlayerSelectionManager.Instance.GetLocalPlayerSelection().BallIndex];
+            
+            enemyPlayerBall = _ballSkillDataBase.pfEnemyBalls[PlayerSelectionManager.Instance.GetEnemySelection().BallIndex];
+            
+            //TODO: 스킬도 설정
         }
 
         public int localClientID;

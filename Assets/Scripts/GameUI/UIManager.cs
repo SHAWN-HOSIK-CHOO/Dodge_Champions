@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using CharacterAttributes;
 using Game;
+using GameLobby;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -40,11 +42,26 @@ namespace GameUI
         public Image playerFill;
         public Image enemyFill;
 
+        [Header("Debug Area")] 
+        public TMP_Text playerBallSkillIndex;
+        public TMP_Text enemyBallSkillIndex;
+        
         private void Start()
         {
+            GameManager.Instance.localPlayer.GetComponent<CharacterStatus>().LateInitialize();
+            GameManager.Instance.enemyPlayer.GetComponent<CharacterStatus>().LateInitialize();
+            
             dodgeText.SetActive(false);
             ResetFill(playerFill);
             ResetFill(enemyFill);
+            
+            //Debug
+            playerBallSkillIndex.text = "Player : " +PlayerSelectionManager.Instance.GetLocalPlayerSelection().BallIndex +
+                                        " and skill" + PlayerSelectionManager.Instance.GetLocalPlayerSelection()
+                                                                             .SkillIndex;
+            enemyBallSkillIndex.text = "Enemy : "+PlayerSelectionManager.Instance.GetEnemySelection().BallIndex +
+                                        " and skill" + PlayerSelectionManager.Instance.GetEnemySelection()
+                                                                             .SkillIndex;
         }
 
         private void ResetFill(Image fillImage)

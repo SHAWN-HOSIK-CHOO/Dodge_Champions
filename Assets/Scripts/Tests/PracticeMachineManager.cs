@@ -8,22 +8,6 @@ namespace Tests
 {
     public class PracticeMachineManager : MonoBehaviour
     {
-        private static PracticeMachineManager _instance = null;
-        public static  PracticeMachineManager Instance => _instance == null ? null : _instance;
-
-        private void Awake()
-        {
-            if (_instance == null)
-            {
-                _instance = this;
-                DontDestroyOnLoad(this.gameObject);
-            }
-            else
-            {
-                Destroy(this.gameObject);
-            }
-        }
-
         public GameObject pfBall;
         public GameObject trackingPlayer;
         public Transform  ballSpawnTransform;
@@ -31,14 +15,29 @@ namespace Tests
         public bool  stopPractice       = false;
         public float ballSpawnFrequency = 3f;
         public float ballSpeed          = 10f;
-
+        public float machineLastingTime = 10f;
+        
         private GameObject _currentBall;
+        private Transform  _machineSpawnTransform;
+
+        public void Initialize(GameObject ball, Transform machineSpawnTransform, float ballSpawnFreq, float ballSpeedF, float machineTime)
+        {
+            pfBall                 = ball;
+            _machineSpawnTransform = machineSpawnTransform;
+            ballSpawnFrequency     = ballSpawnFreq;
+            ballSpeed              = ballSpeedF;
+            machineLastingTime     = machineTime;
+
+            this.transform.position = _machineSpawnTransform.position;
+            this.transform.rotation = _machineSpawnTransform.rotation;
+        }
         
         public void StartPractice(GameObject target)
         {
             trackingPlayer = target;
-
+            
             StartCoroutine(CoStartPractice());
+            StartCoroutine(CoStopPracticeAfterTime(machineLastingTime)); 
         }
 
         private IEnumerator CoStartPractice()
@@ -50,9 +49,16 @@ namespace Tests
                 Vector3 targetVector = new Vector3(trackingPlayer.transform.position.x,
                                                    trackingPlayer.transform.position.y - 0.3f,
                                                    trackingPlayer.transform.position.z);
-                _currentBall.GetComponent<BallScript>().Initialize(targetVector,ballSpeed,0.2f);
+                _currentBall.GetComponent<BallScript>().Initialize(targetVector, ballSpeed, 0.2f);
                 _currentBall.GetComponent<BallScript>().StartCommand(ballSpawnTransform.position);
             }
         }
+
+        private IEnumerator CoStopPracticeAfterTime(float time)
+        {
+            yield return new WaitForSeconds(time);
+            stopPractice = true; 
+        }
     }
 }
+
