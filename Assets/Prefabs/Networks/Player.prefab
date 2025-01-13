@@ -1020,8 +1020,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   pfCurrentBall: {fileID: 0}
   instantiatedBall: {fileID: 0}
-  ballThrowSpeed: 42
-  ballHeight: 0.3
 --- !u!114 &5161227602539144612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1051,7 +1049,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  maxHp: 100
+  maxHp: 200
+  justDodgeSuccessCounts: 0
+  hitCounts: 0
   playerHealth:
     m_InternalValue: 10
   isThisPlayer: 1

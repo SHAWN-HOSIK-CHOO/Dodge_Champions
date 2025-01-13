@@ -10,9 +10,6 @@ namespace CharacterAttributes
        public GameObject pfCurrentBall = null;
        public GameObject instantiatedBall;
 
-       public float ballThrowSpeed = 42f;
-       public float ballHeight     = 0.3f;
-
        public override void OnNetworkSpawn()
        {
           if (IsOwner)
@@ -46,13 +43,14 @@ namespace CharacterAttributes
        [ServerRpc]
        public void ThrowBallServerRPC(Vector3 targetPosition)
        {
-          ThrowBallClientRPC(targetPosition, ballHeight);
+          ThrowBallClientRPC(targetPosition);
        }
 
        [ClientRpc]
-       private void ThrowBallClientRPC(Vector3 targetPosition, float height = 2f)
+       private void ThrowBallClientRPC(Vector3 targetPosition)
        {
-          float speed = instantiatedBall.GetComponent<BallScript>().ReturnsCalculatedBallSpeed();
+          float speed  = instantiatedBall.GetComponent<BallScript>().GetCalculatedBallSpeed();
+          float height = instantiatedBall.GetComponent<BallScript>().GetCalculatedBallHeight();
           LaunchBall(targetPosition,speed, height);
        }
        

@@ -97,7 +97,7 @@ namespace CharacterAttributes
                {
                    if (coll.CompareTag("Fake") && coll != null)
                    {
-                       Debug.Log("Just Dodge 성공!");
+                       //Debug.Log("Just Dodge 성공!");
                        UIManager.Instance.dodgeText.SetActive(true);
                        NotifyJustDodgeSuccessServerRPC(coll.transform.position);
                        Destroy(coll.gameObject);
@@ -129,6 +129,7 @@ namespace CharacterAttributes
        {
            TriggerJustDodgeEffects(effectPosition);
            this.GetComponent<CharacterStatus>().IncreaseDodgeSuccessCount();
+           Debug.Log(OwnerClientId + " Dodge Success : " + GetComponent<CharacterStatus>().justDodgeSuccessCounts);
 
            //만약 내가 공을 던진 사람이고 상대방이 Just Dodge로 피한 사람이고, 상대 턴이 아니라면(내 턴이라면)
            if (!IsOwner && GameManager.Instance.isLocalPlayerAttackTurn)
@@ -170,6 +171,8 @@ namespace CharacterAttributes
                    {
                        int damage         = coll.GetComponent<BallScript>().ballDamage;
                        int hitEffectIndex = coll.GetComponent<BallScript>().hitEffectIndex;
+                       
+                       Debug.Log("Damage : " + damage + " hit index : " + hitEffectIndex);
                        
                        NotifyHitServerRPC(coll.transform.position, damage, hitEffectIndex);
 

@@ -53,7 +53,7 @@ namespace Ball
             Vector3 targetVector = new Vector3(trackingPlayer.transform.position.x,
                                                trackingPlayer.transform.position.y - 0.3f,
                                                trackingPlayer.transform.position.z);
-            _instantiatedBall.GetComponent<BallScript>().Initialize(targetVector, _throwSpeed, 0.2f);
+            _instantiatedBall.GetComponent<BallScript>().Initialize(targetVector, ballLaunchSpeed, 0.2f);
             _instantiatedBall.GetComponent<BallScript>().SetBallDamage(damage);
             _instantiatedBall.GetComponent<BallScript>().StartCommand(ballSpawnTransform.position);
          }

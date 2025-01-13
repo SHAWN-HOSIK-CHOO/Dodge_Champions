@@ -13,11 +13,9 @@ namespace Ball
         
         protected Vector3 _startPosition;
         protected Vector3 _targetPosition;
-        protected float   _throwSpeed;
-        protected float   _maxHeight;
         protected float   _timeElapsed;
         protected bool    _isInitialized;
-        protected bool    _didOwnerSpawnThisBall;
+        protected bool    _ownerSpawnThisBall;
 
         private Rigidbody rb;
 
@@ -25,6 +23,7 @@ namespace Ball
         public int hitEffectIndex = 0;
 
         public float ballLaunchSpeed = 42f;
+        public float ballHeight      = 0.3f;
 
         [Header("Curve mode")] public bool isHorizontalThrow = false;
 
@@ -39,23 +38,28 @@ namespace Ball
             ballDamage = dmg;
         }
 
-        public virtual float ReturnsCalculatedBallSpeed()
+        public virtual float GetCalculatedBallSpeed()
         {
             return ballLaunchSpeed;
+        }
+
+        public virtual float GetCalculatedBallHeight()
+        {
+            return ballHeight;
         }
         
         public virtual void Initialize(Vector3 target, float speed, float height, 
              bool horizontalThrow = false, bool isThisOwner = true)
         {
-            _startPosition         = Vector3.zero;
-            _targetPosition        = target;
-            _throwSpeed            = speed;
-            _maxHeight             = height;
-            _timeElapsed           = 0f;
-            isHorizontalThrow      = horizontalThrow;
-            _isInitialized         = true;
-            _canStart              = false;
-            _didOwnerSpawnThisBall = isThisOwner;
+            _startPosition      = Vector3.zero;
+            _targetPosition     = target;
+            ballLaunchSpeed     = speed;
+            ballHeight          = height;
+            _timeElapsed        = 0f;
+            isHorizontalThrow   = horizontalThrow;
+            _isInitialized      = true;
+            _canStart           = false;
+            _ownerSpawnThisBall = isThisOwner;
         }
 
         public void StartCommand(Vector3 startPosition)
@@ -78,10 +82,10 @@ namespace Ball
         protected virtual void BallUpdate()
         {
             _timeElapsed += Time.deltaTime;
-            float travelDuration = Vector3.Distance(_startPosition, _targetPosition) / _throwSpeed;
+            float travelDuration = Vector3.Distance(_startPosition, _targetPosition) / ballLaunchSpeed;
             float t              = _timeElapsed                                      / travelDuration;
                 
-            transform.position = CalculateParabolicPosition(_startPosition, _targetPosition, _maxHeight, t, isHorizontalThrow);
+            transform.position = CalculateParabolicPosition(_startPosition, _targetPosition, ballHeight, t, isHorizontalThrow);
         }
         
         Vector3 CalculateParabolicPosition(Vector3 start, Vector3 target, float maxHeight, float t, bool horizontal)
@@ -121,7 +125,7 @@ namespace Ball
                 Vector3 collisionNormal = (transform.position - other.bounds.center).normalized;
 
                 // 기존 이동 방향 (입사 벡터)
-                Vector3 incomingVelocity = (_targetPosition - _startPosition).normalized * _throwSpeed;
+                Vector3 incomingVelocity = (_targetPosition - _startPosition).normalized * ballLaunchSpeed;
 
                 // 반사 벡터 계산
                 Vector3 reflectedVelocity = Vector3.Reflect(incomingVelocity, collisionNormal);

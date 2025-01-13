@@ -8,7 +8,7 @@ namespace CharacterAttributes
 {
    public class CharacterStatus : NetworkBehaviour
    {
-      public int maxHp = 100;
+      public int maxHp = 200;
 
       [Header("공에서 사용")]
       public int justDodgeSuccessCounts = 0;
@@ -16,7 +16,7 @@ namespace CharacterAttributes
 
       // 기본적으로 서버에서만 쓰기 가능하도록 설정
       public NetworkVariable<int> playerHealth = new NetworkVariable<int>(
-                                                                          100, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server
+                                                                          200, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server
                                                                          );
 
       public bool isThisPlayer = true;
@@ -94,6 +94,11 @@ namespace CharacterAttributes
       public void IncreaseHitCount()
       {
          hitCounts++;
+      }
+
+      public int GetHitHp()
+      {
+         return maxHp - playerHealth.Value;
       }
    }
 }
