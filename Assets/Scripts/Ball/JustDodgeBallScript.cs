@@ -14,10 +14,14 @@ namespace Ball
                 int successCount = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>()
                                               .justDodgeSuccessCounts;
 
-                if (successCount >= 2)
+                if (successCount >= 4)
                 {
                     hitEffectIndex =  2;
                     ballDamage     *= 2;
+                }
+                else if (successCount >= 2)
+                {
+                    hitEffectIndex =  2;
                 }
                 else
                 {
@@ -31,10 +35,14 @@ namespace Ball
                 int successCount = GameManager.Instance.enemyPlayer.GetComponent<CharacterStatus>()
                                               .justDodgeSuccessCounts;
                 
-                if (successCount >= 2)
+                if (successCount >= 4)
                 {
                     hitEffectIndex =  2;
                     ballDamage     *= 2;
+                }
+                else if (successCount >= 2)
+                {
+                    hitEffectIndex =  2;
                 }
                 else
                 {

@@ -729,10 +729,14 @@ MonoBehaviour:
   - {fileID: 3869145152564536287, guid: 6cf37366fb21ccc4e8889336dca5114a, type: 3}
   - {fileID: 7080387402365349509, guid: 417f7aa4bc61b7c45b2e662dca82cedf, type: 3}
   - {fileID: 3869145152564536287, guid: 07956c3e488dab0438ebeeba45ae54f0, type: 3}
+  - {fileID: 3869145152564536287, guid: f96ce6f7f15e0414f96a3fb54598b1d2, type: 3}
+  - {fileID: 3869145152564536287, guid: 20bf9f567acff7049930e5f54ebdf69c, type: 3}
   pfEnemyBalls:
   - {fileID: 3869145152564536287, guid: 80d707e4d02a1f343ab773fba2ecaa39, type: 3}
   - {fileID: 7080387402365349509, guid: 93567dcf09d80e2409043c093b9d3ac7, type: 3}
   - {fileID: 3869145152564536287, guid: 2396f3f1b9b7f3544a68665c1ef61543, type: 3}
+  - {fileID: 3869145152564536287, guid: 6163401c4ac279649a1e515abc77fc82, type: 3}
+  - {fileID: 3869145152564536287, guid: 82ecd5040a95af941b530373ee2eb3e4, type: 3}
   soSkills:
   - {fileID: 11400000, guid: 148ff11d9190aee4a9c10193f24f4318, type: 2}
 --- !u!1 &378662256

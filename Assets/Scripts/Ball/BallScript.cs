@@ -24,6 +24,7 @@ namespace Ball
 
         public float ballLaunchSpeed = 42f;
         public float ballHeight      = 0.3f;
+        public bool  isInfinite      = false;
 
         [Header("Curve mode")] public bool isHorizontalThrow = false;
 

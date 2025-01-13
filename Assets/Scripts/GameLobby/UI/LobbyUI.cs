@@ -30,7 +30,7 @@ namespace GameLobby.UI
             ballDropdown.ClearOptions();
             ballDropdown.AddOptions(new System.Collections.Generic.List<string>
                                     {
-                                        "BasicBall","AutoBall","DodgeBall"
+                                        "BasicBall","AutoBall","DodgeBall","RevengeBall","InfiniteBall"
                                     });
 
             // Example options for SkillDropdown

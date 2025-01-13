@@ -35,7 +35,7 @@ namespace CharacterAttributes
        
        [Space(5)]
        [Header("Hit Effects (When ball hit)")]
-       public        GameObject[] pfHitEffects                = new GameObject[3];
+       public        GameObject[] pfHitEffects                = new GameObject[6];
        private       Coroutine _currentHitDisplayCoroutine = null;
        
        [Space(5)]
@@ -169,12 +169,13 @@ namespace CharacterAttributes
                {
                    if (coll.CompareTag("Fake") && coll != null)
                    {
-                       int damage         = coll.GetComponent<BallScript>().ballDamage;
-                       int hitEffectIndex = coll.GetComponent<BallScript>().hitEffectIndex;
+                       int  damage         = coll.GetComponent<BallScript>().ballDamage;
+                       int  hitEffectIndex = coll.GetComponent<BallScript>().hitEffectIndex;
+                       bool isInfinite     = coll.GetComponent<BallScript>().isInfinite;
                        
-                       Debug.Log("Damage : " + damage + " hit index : " + hitEffectIndex);
+                       //Debug.Log("Damage : " + damage + " hit index : " + hitEffectIndex);
                        
-                       NotifyHitServerRPC(coll.transform.position, damage, hitEffectIndex);
+                       NotifyHitServerRPC(coll.transform.position, damage, hitEffectIndex, isInfinite);
 
                        Destroy(coll.gameObject);
                        break;
@@ -233,21 +234,26 @@ namespace CharacterAttributes
        }
        
        [ServerRpc(RequireOwnership = false)]
-       private void NotifyHitServerRPC(Vector3 hitPosition, int damage, int effectIndex = 0)
+       private void NotifyHitServerRPC(Vector3 hitPosition, int damage, int effectIndex = 0, bool isInfinite = false)
        {
-           NotifyHitClientRPC(hitPosition, damage, effectIndex);
+           NotifyHitClientRPC(hitPosition, damage, effectIndex, isInfinite);
        }
 
        [ClientRpc]
-       private void NotifyHitClientRPC(Vector3 hitPosition, int damage, int effectIndex = 0)
+       private void NotifyHitClientRPC(Vector3 hitPosition, int damage, int effectIndex = 0, bool isInfinite = false)
        {
            Debug.Log("Player" + OwnerClientId + " is Hit");
            //체력 조절
 
            this.GetComponent<CharacterStatus>().HandleHit(damage);
            this.GetComponent<CharacterStatus>().IncreaseHitCount();
+
+           if (!IsOwner && isInfinite)
+           {
+               InputManager.Instance.canThrowBall = true;
+           }
            
-           if (!IsOwner) // 즉, 내가 공을 맞았고, 상대가 던진 사람이라면
+           if (!IsOwner && !isInfinite) // 즉, 내가 공을 맞았고, 상대가 던진 사람이라면 그리고 무한볼이 아니라면
            {
                //먼저 상대의 throw count를 올린다.
                IncreaseThrowCount();
