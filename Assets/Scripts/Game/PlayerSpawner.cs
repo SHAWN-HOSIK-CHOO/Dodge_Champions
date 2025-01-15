@@ -1,4 +1,5 @@
 using System;
+using GameUI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -45,6 +46,7 @@ namespace Game
          if (!_isSpawned &&Input.GetKeyDown(KeyCode.Z))
          {
             SpawnPlayers();
+            //UIManager.Instance.Initialize();
          }
       }
    }

@@ -45,6 +45,11 @@ namespace Ball
 
       protected override void BallUpdate()
       {
+         if (trackingPlayer == null)
+         {
+            Destroy(this.gameObject);
+         }
+         
          if (_currentTime >= ballShootFrequency)
          {
             _currentTime = 0f;

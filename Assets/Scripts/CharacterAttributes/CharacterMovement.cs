@@ -143,11 +143,20 @@ namespace CharacterAttributes
                     cinemachineCameraTarget.transform;
                 GameManager.Instance.cinemachineCamera.transform.rotation = Quaternion.Euler(20f,0f,0f);
             }
-            
         }
 
         private void Start()
         {
+            if (_animator == null)
+            {
+                _animator = GetComponent<Animator>();
+            }
+
+            if (characterController == null)
+            {
+                characterController = GetComponent<CharacterController>();
+            }
+            
             _cinemachineTargetYaw = cinemachineCameraTarget.transform.rotation.eulerAngles.y;
             _hasAnimator          = TryGetComponent(out _animator);
             characterController  = GetComponent<CharacterController>();
@@ -158,6 +167,11 @@ namespace CharacterAttributes
             _fallTimeoutDelta = fallTimeout;
 
             _upperLayerWeight.OnValueChanged += OnUpperLayerWeightChanged;
+        }
+
+        public override void OnDestroy()
+        {
+            _upperLayerWeight.OnValueChanged -= OnUpperLayerWeightChanged;
         }
 
         private void Update()
@@ -435,5 +449,6 @@ namespace CharacterAttributes
                 AudioSource.PlayClipAtPoint(landingAudioClip, transform.TransformPoint(characterController.center), footstepAudioVolume);
             }
         }
+        
     }
 }

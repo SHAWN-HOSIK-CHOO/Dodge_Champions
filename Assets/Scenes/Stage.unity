@@ -3029,12 +3029,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInput: {fileID: 1604548710}
-  localPlayerBallSpawnTransform: {fileID: 0}
   mouseColliderLayerMask:
     serializedVersion: 2
     m_Bits: 65
   currentTargetPosition: {x: 0, y: 0, z: 0}
-  ballLaunchSpeedBase: 42
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}
   jump: 0

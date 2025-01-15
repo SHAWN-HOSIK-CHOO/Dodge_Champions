@@ -49,9 +49,12 @@ namespace CharacterAttributes
        [ClientRpc]
        private void ThrowBallClientRPC(Vector3 targetPosition)
        {
-          float speed  = instantiatedBall.GetComponent<BallScript>().GetCalculatedBallSpeed();
-          float height = instantiatedBall.GetComponent<BallScript>().GetCalculatedBallHeight();
-          LaunchBall(targetPosition,speed, height);
+          if (instantiatedBall != null)
+          {
+             float speed  = instantiatedBall.GetComponent<BallScript>().GetCalculatedBallSpeed();
+             float height = instantiatedBall.GetComponent<BallScript>().GetCalculatedBallHeight();
+             LaunchBall(targetPosition,speed, height);
+          }
        }
        
        private void LaunchBall( Vector3 targetPosition, float speed = 1f, float height = 2f)

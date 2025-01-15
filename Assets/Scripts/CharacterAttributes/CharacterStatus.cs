@@ -35,10 +35,7 @@ namespace CharacterAttributes
          {
             playerHealth.Value = maxHp;
          }
-      }
-      
-      public void LateInitialize()
-      {
+         
          playerHealth.OnValueChanged += OnHealthChanged;
          isHpZero.OnValueChanged     += OnIsHpZeroChanged;
       }
@@ -80,9 +77,9 @@ namespace CharacterAttributes
       {
          if (newValue)
          {
-            int winnerID = 1 - (int)OwnerClientId;
-            GameManager.Instance.EndGameServerRPC(winnerID);
-            Debug.Log("Winner is : " + winnerID);
+            int loserID = (int)OwnerClientId;
+            GameManager.Instance.EndGameServerRPC(loserID);
+            Debug.Log("loser is : " +loserID);
          }
       }
 

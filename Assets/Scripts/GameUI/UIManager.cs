@@ -45,12 +45,14 @@ namespace GameUI
         [Header("Debug Area")] 
         public TMP_Text playerBallSkillIndex;
         public TMP_Text enemyBallSkillIndex;
-        
+
         private void Start()
         {
-            GameManager.Instance.localPlayer.GetComponent<CharacterStatus>().LateInitialize();
-            GameManager.Instance.enemyPlayer.GetComponent<CharacterStatus>().LateInitialize();
-            
+            Initialize();
+        }
+
+        public void Initialize()
+        {
             dodgeText.SetActive(false);
             ResetFill(playerFill);
             ResetFill(enemyFill);
@@ -59,11 +61,11 @@ namespace GameUI
             playerBallSkillIndex.text = "Player : " +PlayerSelectionManager.Instance.GetLocalPlayerSelection().BallIndex +
                                         " and skill" + PlayerSelectionManager.Instance.GetLocalPlayerSelection()
                                                                              .SkillIndex;
-            enemyBallSkillIndex.text = "Enemy : "+PlayerSelectionManager.Instance.GetEnemySelection().BallIndex +
-                                        " and skill" + PlayerSelectionManager.Instance.GetEnemySelection()
-                                                                             .SkillIndex;
+            enemyBallSkillIndex.text = "Enemy : "   +PlayerSelectionManager.Instance.GetEnemySelection().BallIndex +
+                                       " and skill" + PlayerSelectionManager.Instance.GetEnemySelection()
+                                                                            .SkillIndex;
         }
-
+        
         private void ResetFill(Image fillImage)
         {
             if (fillImage != null)
@@ -76,12 +78,10 @@ namespace GameUI
         {
             if (isThisPlayer)
             {
-                // 만약 플레이어가 맞은거면
                 playerFill.fillAmount = fillRatio;
             }
             else
             {
-                // 상대가 맞은거라면
                 enemyFill.fillAmount = fillRatio;
             }
         }
@@ -108,16 +108,16 @@ namespace GameUI
             GameManager.Instance.isGameReadyToStart = true;
         }
 
-        public void GameOverUI(int winnerID)
+        public void GameOverUI(int loserID)
         {
             startPanel.SetActive(true);
-            if (GameManager.Instance.localClientID == winnerID)
+            if (GameManager.Instance.localClientID == loserID)
             {
-                startText.text = "You Win!";
+                startText.text = "You Lose!";
             }
             else
             {
-                startText.text = "You Lose!";
+                startText.text = "You Win!";
             }
         }
     }

@@ -8,7 +8,6 @@ using Unity.Netcode;
 using UnityEngine;
 using TMPro;
 using GameUI;
-using Tests;
 using UnityEngine.Serialization;
 
 namespace CharacterAttributes
@@ -52,18 +51,13 @@ namespace CharacterAttributes
        
        public override void OnNetworkSpawn()
        {
-           if (IsServer) 
-           {
-               NetworkManager.OnClientConnectedCallback += OnClientConnected;
-           }
-
            if (IsOwner)
            {
+               Debug.Log("Called by " + (int)OwnerClientId);
                GameManager.Instance.localClientID                = (int)OwnerClientId;
                GameManager.Instance.localPlayer                  = this.gameObject;
-               GameManager.Instance.localPlayerBallSpawnPosition = ballSpawnPosition.transform;
                this.gameObject.layer                             = LayerMask.NameToLayer("LocalPlayer");
-               InputManager.Instance.InitCallWhenLocalPlayerSpawned();
+               InputManager.Instance.InitCallWhenLocalPlayerSpawned(this.gameObject);
            }
            else
            {
@@ -74,7 +68,7 @@ namespace CharacterAttributes
 
            _characterSkillLauncher = this.GetComponent<CharacterSkillLauncher>();
        }
-
+       
        private void Update()
        {
            if (_characterSkillLauncher.isSkillActivated)
@@ -329,19 +323,22 @@ namespace CharacterAttributes
                GameManager.Instance.SwapTurnServerRPC();
            }
        }
-       
-       public bool IsAllClientsConnected()
-       {
-           return _isAllClientsConnected;
-       }
-        
+
        private void OnClientConnected(ulong clientId)
        {
            int connectedClients = NetworkManager.ConnectedClientsList.Count;
-            
+           
            if (connectedClients >= 2)
            {
                SetReadyFlagServerRpc(true); 
+           }
+       }
+
+       private void OnClientDisconnected(ulong clientID)
+       {
+           if (NetworkManager.ConnectedClientsList.Count <= 1)
+           {
+               NetworkManager.Singleton.Shutdown();
            }
        }
        
@@ -350,9 +347,6 @@ namespace CharacterAttributes
        {
            _isAllClientsConnected = readyFlag;
            Debug.Log($"All clients ready: {_isAllClientsConnected}");
-            
-           //if(_isAllClientsConnected && IsServer && IsOwner)
-               //GameManager.Instance.StartRoundServerRPC();
            
            UpdateReadyFlagClientRpc(_isAllClientsConnected);
        }

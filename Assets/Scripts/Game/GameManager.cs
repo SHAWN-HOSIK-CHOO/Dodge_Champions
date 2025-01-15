@@ -7,6 +7,7 @@ using UnityEngine;
 using Unity.Netcode;
 using GameUI;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace Game
@@ -24,9 +25,6 @@ namespace Game
 
         public GameObject localPlayerBall;
         public GameObject enemyPlayerBall;
-        public Transform  localPlayerBallSpawnPosition;
-
-        public Transform[] spawnTransforms = new Transform[2];
 
         public  PlayableDirector cutSceneDirector = null;
         private Coroutine        _cutSceneCoroutine = null;
@@ -74,14 +72,12 @@ namespace Game
         public void SwapTurnServerRPC()
         {
             SwapTurnClientRPC();
-            //Debug.Log("Called from : " + localClientID + " by : " + OwnerClientId);
         }
 
         [ClientRpc]
         private void SwapTurnClientRPC()
         {
-            //Debug.Log("Executed from : " + localClientID);
-            currentAttackPlayerID   = currentAttackPlayerID == 0 ? 1 : 0;
+            currentAttackPlayerID   = currentAttackPlayerID == localClientID ? enemyClientID : localClientID;
             isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
             
             if (isLocalPlayerAttackTurn)
@@ -101,25 +97,24 @@ namespace Game
         [ServerRpc]
         public void StartRoundServerRPC()
         {
-            //Debug.Log($"Called on Host: {IsHost}, Server: {IsServer}, Client: {IsClient}");
-            
             uiManager.SetActive(false);
             cutSceneCamera.SetActive(true);
             
             int randomNumber = Random.Range(0, 2);
+            _isHeads = randomNumber == 0;
+
+            currentAttackPlayerID = _isHeads ? localClientID : enemyClientID;
             
-            Debug.Log("Random Number : " + randomNumber);
-            
-            StartRoundClientRPC(randomNumber);
+            StartRoundClientRPC(currentAttackPlayerID, randomNumber);
         }
 
         [ClientRpc]
-        private void StartRoundClientRPC(int randomNumber)
+        private void StartRoundClientRPC(int attackPlayerID, int randomNumber)
         {
             _isHeads = randomNumber == 0;
-
-            currentAttackPlayerID = _isHeads ? 0 : 1;
-
+            
+            currentAttackPlayerID   = attackPlayerID;
+            
             isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
             
             if (_cutSceneCoroutine != null)
@@ -173,16 +168,37 @@ namespace Game
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void EndGameServerRPC(int winnerID)
+        public void EndGameServerRPC(int loserID)
         {
-            EndGameClientRPC(winnerID);
+            EndGameClientRPC(loserID);
         }
 
         [ClientRpc]
-        private void EndGameClientRPC(int winnerID)
+        private void EndGameClientRPC(int loserID)
         {
-            UIManager.Instance.GameOverUI(winnerID);
+            Debug.Log("End Game RPC Called");
+            UIManager.Instance.GameOverUI(loserID);
             isGameReadyToStart = false;
+            StartCoroutine(CoReturnLobbyAfterNSeconds(2.5f));
+        }
+
+        IEnumerator CoReturnLobbyAfterNSeconds(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            PlayerSelectionManager.DestroyAllSingletonsAndEnd();
+        }
+        
+        private void OnApplicationQuit()
+        {
+            if (NetworkManager.Singleton == null)
+            {
+                return;
+            }
+            
+            if (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
+            {
+                NetworkManager.Singleton.Shutdown(); 
+            }
         }
     }
 }

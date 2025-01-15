@@ -1,5 +1,12 @@
+using Game;
+using GameInput;
+using GameUI;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Services.Relay;
+using Unity.Services.Core;  // Unity Services 초기화 관련 API
+
+using UnityEngine.SceneManagement;
 
 namespace GameLobby
 {
@@ -49,7 +56,19 @@ namespace GameLobby
                 player1Selection.OnValueChanged += OnPlayer1SelectionChanged;
             }
         }
-
+        
+        public static void DestroyAllSingletonsAndEnd()
+        {
+            // 마우스 커서 상태 초기화
+            Cursor.lockState = CursorLockMode.None;
+            NetworkManager.Singleton.Shutdown();
+            
+            Destroy(InputManager.Instance.gameObject);
+            Destroy(UIManager.Instance.gameObject);
+            Destroy(GameManager.Instance.gameObject);
+            SceneManager.LoadScene("Lobby");
+        }
+        
         public override void OnDestroy()
         {
             if (player0Selection != null)

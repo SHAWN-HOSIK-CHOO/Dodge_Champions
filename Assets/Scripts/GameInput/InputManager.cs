@@ -2,7 +2,6 @@ using System;
 using CharacterAttributes;
 using Game;
 using Skill;
-using Tests;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,24 +21,26 @@ namespace GameInput
         private CharacterController    _characterController;
         private CharacterStatus        _characterStatus;
         
-        public Transform localPlayerBallSpawnTransform;
         public LayerMask mouseColliderLayerMask = new LayerMask();
       
         public Vector3 currentTargetPosition;
 
-        public float ballLaunchSpeedBase = 10f;
-
-        //public Transform debugTransform;
-
-        public void InitCallWhenLocalPlayerSpawned()
+        public void InitCallWhenLocalPlayerSpawned(GameObject localPlayerGameObject)
         {
-            _localCharacterMovement       = GameManager.Instance.localPlayer.GetComponent<CharacterMovement>();
-            _characterBallLauncher        = GameManager.Instance.localPlayer.GetComponent<CharacterBallLauncher>();
-            _characterSkillLauncher       = GameManager.Instance.localPlayer.GetComponent<CharacterSkillLauncher>();
-            _characterManager             = GameManager.Instance.localPlayer.GetComponent<CharacterManager>();
-            _characterController          = GameManager.Instance.localPlayer.GetComponent<CharacterController>();
-            _characterStatus              = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>();
-            localPlayerBallSpawnTransform = GameManager.Instance.localPlayerBallSpawnPosition;
+            _localCharacterMovement = localPlayerGameObject.GetComponent<CharacterMovement>();
+            _characterBallLauncher  = localPlayerGameObject.GetComponent<CharacterBallLauncher>();
+            _characterSkillLauncher = localPlayerGameObject.GetComponent<CharacterSkillLauncher>();
+            _characterManager       = localPlayerGameObject.GetComponent<CharacterManager>();
+            _characterController    = localPlayerGameObject.GetComponent<CharacterController>();
+            _characterStatus        = localPlayerGameObject.GetComponent<CharacterStatus>();
+            
+            playerInput.actions["Attack"].started  += OnAttackPressed;
+            playerInput.actions["Attack"].canceled += OnAttackReleased;
+
+            playerInput.actions["Action"].started  += OnActionPressed;
+            playerInput.actions["Action"].canceled += OnActionReleased;
+            
+            Cursor.lockState = CursorLockMode.Locked;
         }
         
         private void Awake()
@@ -53,14 +54,15 @@ namespace GameInput
             {
                 Destroy(this.gameObject);
             }
+        }
 
-            playerInput.actions["Attack"].started  += OnAttackPressed;
-            playerInput.actions["Attack"].canceled += OnAttackReleased;
+        private void OnDisable()
+        {
+            playerInput.actions["Attack"].started  -= OnAttackPressed;
+            playerInput.actions["Attack"].canceled -= OnAttackReleased;
 
-            playerInput.actions["Action"].started  += OnActionPressed;
-            playerInput.actions["Action"].canceled += OnActionReleased;
-
-            Cursor.lockState = CursorLockMode.Locked;
+            playerInput.actions["Action"].started  -= OnActionPressed;
+            playerInput.actions["Action"].canceled -= OnActionReleased;
         }
 
         public Vector2 move;
@@ -95,7 +97,7 @@ namespace GameInput
             _characterManager.RequestTurnSwapServerRPC();
         }
         
-        private void OnAttackPressed(InputAction.CallbackContext ctx)
+        public void OnAttackPressed(InputAction.CallbackContext ctx)
         {
             if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall)
             {
@@ -104,7 +106,7 @@ namespace GameInput
             }
         }
 
-        private void OnAttackReleased(InputAction.CallbackContext ctx)
+        public void OnAttackReleased(InputAction.CallbackContext ctx)
         {
             if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall)
             {
@@ -118,7 +120,7 @@ namespace GameInput
             }
         }
 
-        private void OnActionPressed(InputAction.CallbackContext ctx)
+        public void OnActionPressed(InputAction.CallbackContext ctx)
         {
             if (GameManager.Instance.isGameReadyToStart)
             {
@@ -161,7 +163,7 @@ namespace GameInput
             }
         }
 
-        private void OnActionReleased(InputAction.CallbackContext ctx)
+        public void OnActionReleased(InputAction.CallbackContext ctx)
         {
             if (GameManager.Instance.isGameReadyToStart)
             {
