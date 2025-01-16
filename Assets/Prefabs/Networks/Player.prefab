@@ -548,12 +548,16 @@ PrefabInstance:
       value: 0.28
       objectReference: {fileID: 0}
     - target: {fileID: 4738558639147882546, guid: 7ae956b4f54394e80818898d8f4d30c6, type: 3}
+      propertyPath: m_Center.y
+      value: 0.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738558639147882546, guid: 7ae956b4f54394e80818898d8f4d30c6, type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4738558639147882546, guid: 7ae956b4f54394e80818898d8f4d30c6, type: 3}
       propertyPath: m_IncludeLayers.m_Bits
-      value: 0
+      value: 2112
       objectReference: {fileID: 0}
     - target: {fileID: 4791417316637652490, guid: 7ae956b4f54394e80818898d8f4d30c6, type: 3}
       propertyPath: m_Layer
@@ -921,6 +925,7 @@ MonoBehaviour:
   - {fileID: 2504214343621411470, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
   - {fileID: 2433282508537954060, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
   - {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
+  - {fileID: 5137123306192418792, guid: 5a8d99fb95262ea458a7b580f2a1611c, type: 3}
   justDodgeEffect: {fileID: 1141330259687333427, guid: 6718dc24203da53468af9ada8fef7d6d, type: 3}
   maxThrowCount: 5
 --- !u!114 &3722002437378119709
@@ -962,7 +967,7 @@ MonoBehaviour:
   groundedRadius: 0.28
   groundLayers:
     serializedVersion: 2
-    m_Bits: 65
+    m_Bits: 2113
   cinemachineCameraTarget: {fileID: 4173441517314474597}
   topClamp: 11
   bottomClamp: 10
@@ -972,6 +977,8 @@ MonoBehaviour:
   runAnimationTargetValue: 1
   targetLayerIndex: 1
   transitionSpeed: 1
+  lockSeconds: 3
+  shouldLockMovement: 0
 --- !u!114 &1529968451222059001
 MonoBehaviour:
   m_ObjectHideFlags: 0

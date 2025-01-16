@@ -1,5 +1,5 @@
 {
-    "name": "StarterAssets",
+    "name": "GameInputSystem",
     "maps": [
         {
             "name": "Player",

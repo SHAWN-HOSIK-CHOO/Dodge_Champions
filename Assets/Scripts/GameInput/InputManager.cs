@@ -99,7 +99,7 @@ namespace GameInput
         
         public void OnAttackPressed(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall)
+            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
             {
                 _localCharacterMovement.LayerTransition(true);
                 _characterBallLauncher.SpawnBallServerRPC();
@@ -108,7 +108,7 @@ namespace GameInput
 
         public void OnAttackReleased(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall)
+            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
             {
                 _localCharacterMovement.SetThrowAnimation(true); // Animation 동작이 완료되면 throw = false 만드는 콜백 존재함
                 
@@ -122,7 +122,7 @@ namespace GameInput
 
         public void OnActionPressed(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart)
+            if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
             {
                 //Debug.Log("Skill Button Pressed");
                 if (_characterController == null)
@@ -165,7 +165,7 @@ namespace GameInput
 
         public void OnActionReleased(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart)
+            if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
             {
                 //Debug.Log("Skill Button Released");
             }

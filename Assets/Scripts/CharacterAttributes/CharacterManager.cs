@@ -14,8 +14,6 @@ namespace CharacterAttributes
 {
    public class CharacterManager : NetworkBehaviour
    { 
-       private bool       _isAllClientsConnected = false;
-       
        [Header("Ball spawn positions, normally under right hand")]
        public  GameObject ballSpawnPosition;
        
@@ -34,7 +32,7 @@ namespace CharacterAttributes
        
        [Space(5)]
        [Header("Hit Effects (When ball hit)")]
-       public        GameObject[] pfHitEffects                = new GameObject[6];
+       public        GameObject[] pfHitEffects                = new GameObject[7];
        private       Coroutine _currentHitDisplayCoroutine = null;
        
        [Space(5)]
@@ -48,6 +46,8 @@ namespace CharacterAttributes
        [Header("Throw Counts")]
        public  int  maxThrowCount      = 5;
        private int  _currentThrowCount = 0;
+
+       private Coroutine _pushCoroutine = null;
        
        public override void OnNetworkSpawn()
        {
@@ -273,8 +273,52 @@ namespace CharacterAttributes
            }
            
            _currentHitDisplayCoroutine = StartCoroutine(CoDisplayHitEffectForNSec(hitPosition, 0.5f, false, effectIndex));
+
+           //TODO: 코드 다시 작성하기, 현재 effectIndex로 공 종류 구분 중
+           if (effectIndex == 6)
+           {
+               //상대를 미는 공이라면
+               if (_pushCoroutine != null)
+               {
+                   StopCoroutine(_pushCoroutine);
+               }
+
+               float pushStrength = 8f;
+               float duration     = 0.2f;
+               
+               // 새 밀림 효과 시작
+               _pushCoroutine = StartCoroutine(CoPush(hitPosition, pushStrength, duration));
+           }
        }
 
+       private IEnumerator CoPush(Vector3 hitPosition, float pushStrength, float duration)
+       {
+           var characterController = this.GetComponent<CharacterController>();
+           if (characterController == null)
+           {
+               Debug.LogWarning("CharacterController is missing");
+               yield break;
+           }
+
+           // 밀리는 방향 계산
+           Vector3 pushDirection = (this.transform.position - hitPosition).normalized;
+
+           float elapsedTime = 0f;
+
+           while (elapsedTime < duration)
+           {
+               // 밀림 효과 적용
+               characterController.Move(pushDirection * (pushStrength * Time.deltaTime));
+
+               // 시간 경과
+               elapsedTime += Time.deltaTime;
+               yield return null;
+           }
+
+           // Coroutine 종료
+           _pushCoroutine = null;
+       }
+       
        public void IncreaseThrowCount()
        {
            _currentThrowCount++;
@@ -322,40 +366,6 @@ namespace CharacterAttributes
                ResetThrowCountBeforeTurnSwap();
                GameManager.Instance.SwapTurnServerRPC();
            }
-       }
-
-       private void OnClientConnected(ulong clientId)
-       {
-           int connectedClients = NetworkManager.ConnectedClientsList.Count;
-           
-           if (connectedClients >= 2)
-           {
-               SetReadyFlagServerRpc(true); 
-           }
-       }
-
-       private void OnClientDisconnected(ulong clientID)
-       {
-           if (NetworkManager.ConnectedClientsList.Count <= 1)
-           {
-               NetworkManager.Singleton.Shutdown();
-           }
-       }
-       
-       [ServerRpc(RequireOwnership = false)]
-       private void SetReadyFlagServerRpc(bool readyFlag)
-       {
-           _isAllClientsConnected = readyFlag;
-           Debug.Log($"All clients ready: {_isAllClientsConnected}");
-           
-           UpdateReadyFlagClientRpc(_isAllClientsConnected);
-       }
-       
-       [ClientRpc]
-       private void UpdateReadyFlagClientRpc(bool readyFlag)
-       {
-           _isAllClientsConnected = readyFlag;
-           Debug.Log($"isReady updated on client: {_isAllClientsConnected}");
        }
    }
 }

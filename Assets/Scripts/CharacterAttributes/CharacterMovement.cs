@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Game;
 using GameInput;
 using Unity.Cinemachine;
@@ -120,6 +121,13 @@ namespace CharacterAttributes
         private const float Threshold = 0.01f;
 
         private bool _hasAnimator;
+
+        //땅에 떨어졌을때 벌칙
+        [Header("Lock penalty seconds")] 
+        public float lockSeconds = 3f;
+        public  bool      shouldLockMovement = false;
+        private Coroutine _lockMoveCoroutine;
+        
         
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
@@ -176,7 +184,7 @@ namespace CharacterAttributes
 
         private void Update()
         {
-            if (!IsOwner || !GameManager.Instance.isGameReadyToStart)
+            if (!IsOwner || !GameManager.Instance.isGameReadyToStart || shouldLockMovement)
             {
                 return;
             }
@@ -449,6 +457,81 @@ namespace CharacterAttributes
                 AudioSource.PlayClipAtPoint(landingAudioClip, transform.TransformPoint(characterController.center), footstepAudioVolume);
             }
         }
+
+        public void HandleFloorFall(Transform[] spawnTransforms)
+        {
+            if (IsOwner)
+            {
+                int index = -1;
+                if ((int)OwnerClientId == 0)
+                {
+                    //호스트라면 (항상 0)
+                    index = 0;
+                }
+                else
+                {
+                    //클라이언트라면 (ex). 2,3,4,5,...)
+                    index = 1;
+                }
+
+                if (index < 0 || index >= spawnTransforms.Length)
+                {
+                    Debug.LogError("Invalid Index");
+                }
+                else
+                {
+                    PlacePositionServerRPC(spawnTransforms[index].position, spawnTransforms[index].rotation);
+                }
+            }
+        }
+
+        private IEnumerator CoLockMoveForNSecs(float nSec)
+        {
+            shouldLockMovement = true;
+            yield return new WaitForSeconds(nSec);
+            shouldLockMovement = false;
+            
+        }
         
+        [ServerRpc]
+        private void PlacePositionServerRPC(Vector3 positions, Quaternion rotations)
+        {
+            PlacePositionClientRPC(positions, rotations);
+        }
+
+        [ClientRpc]
+        private void PlacePositionClientRPC(Vector3 positions, Quaternion rotations)
+        {
+            //위험한 코드. 동기화 우려. 차라리 input을 막는게
+            if (_lockMoveCoroutine != null)
+            {
+                StopCoroutine(_lockMoveCoroutine);
+            }
+            _lockMoveCoroutine = StartCoroutine(CoLockMoveForNSecs(lockSeconds));
+            
+            if (!IsOwner)
+            {
+                return;
+            }
+            
+            Debug.Log($"ServerRPC executed. Position: {positions}, Rotation: {rotations}, Owner: {OwnerClientId}");
+
+            if (characterController != null)
+            {
+                characterController.enabled = false;
+            }
+            
+            // 서버에서 위치 변경
+            this.transform.position = positions;
+            this.transform.rotation = rotations;
+
+            if (characterController != null)
+            {
+                characterController.enabled = true;
+            }
+            
+            if(GameManager.Instance.isLocalPlayerAttackTurn)
+                GameManager.Instance.SwapTurnServerRPC();
+        }
     }
 }

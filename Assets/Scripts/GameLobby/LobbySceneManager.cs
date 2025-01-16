@@ -12,6 +12,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEditor;
+using Random = UnityEngine.Random;
 
 
 namespace GameLobby
@@ -21,6 +22,8 @@ namespace GameLobby
         public GameObject pfNetworkManager;
         
         public Button         startNetworkManager;
+
+        public Color[] clearColors = new Color[10];
         
         [Header("Phase 0")]
         public Button         hostButton;
@@ -36,14 +39,22 @@ namespace GameLobby
         [Header("Phase 2")] 
         public Button startGameButton;
 
-        public bool isDebug = true;
+        [Header("Dancer")] 
+        public Animator dancerAnimator;
+        private static readonly int    Start1 = Animator.StringToHash("Start");
+        
         [Header("Debug")]
         public Button startHostDb;
-        public Button startClientDb;
-        public Button exitApplicationDb;
-        
+        public                  Button startClientDb;
+        public                  Button exitApplicationDb;
+
         async void Start()
         {
+            int randomColorIndex = Random.Range(0, clearColors.Length);
+            
+            if(Camera.main != null)
+                Camera.main.backgroundColor = clearColors[randomColorIndex];
+            
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
             {
                 await UnityServices.InitializeAsync();
@@ -64,6 +75,8 @@ namespace GameLobby
             
             if(NetworkManager.Singleton != null)
                 NetworkManager.Singleton.OnClientConnectedCallback += Callback_onClientsConnected;
+            
+            dancerAnimator.SetBool(Start1,true);
             
             SetPhase0Objects(true);
             SetPhase1Objects(false);
@@ -101,7 +114,7 @@ namespace GameLobby
             ballDropdown.ClearOptions();
             ballDropdown.AddOptions(new System.Collections.Generic.List<string>
                                     {
-                                        "BasicBall","AutoBall","DodgeBall","RevengeBall","InfiniteBall"
+                                        "BasicBall","AutoBall","DodgeBall","RevengeBall","InfiniteBall", "HardBall"
                                     });
 
             // Example options for SkillDropdown
