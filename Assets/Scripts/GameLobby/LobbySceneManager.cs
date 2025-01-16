@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Game;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -45,8 +46,9 @@ namespace GameLobby
         
         [Header("Debug")]
         public Button startHostDb;
-        public                  Button startClientDb;
-        public                  Button exitApplicationDb;
+        public Button startClientDb;
+        public Button exitApplicationDb;
+        public Button singlePlayButtonDb;
 
         async void Start()
         {
@@ -136,6 +138,9 @@ namespace GameLobby
             SetPhase0Objects(false);
             SetPhase1Objects(false);
             SetPhase2Objects(true);
+
+            //여기서 멀티모드 선언
+            GameMode.Instance.CurrentGameMode = EGameMode.MULTIPLAER;
         }
         
         private IEnumerator CoRestartNetworkManager()
@@ -269,6 +274,12 @@ namespace GameLobby
             {
                 Debug.LogError("NetworkManager is null");
             }
+        }
+
+        public void Debug_ToSinglePlayer()
+        {
+            GameMode.Instance.CurrentGameMode = EGameMode.SINGLEPLAYER;
+            SceneManager.LoadScene("SinglePlayStage");
         }
     }
 }

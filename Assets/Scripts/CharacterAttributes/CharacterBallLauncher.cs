@@ -1,5 +1,6 @@
 using Ball;
 using Game;
+using SinglePlayer;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,15 +13,13 @@ namespace CharacterAttributes
 
        public override void OnNetworkSpawn()
        {
-          if (IsOwner)
+          if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
           {
-             pfCurrentBall       = GameManager.Instance.localPlayerBall;
-             //Debug.Log("Owner tag and layer : " +pfCurrentBall.tag + " : " + LayerMask.LayerToName(pfCurrentBall.layer));
+             pfCurrentBall = IsOwner ? GameManager.Instance.localPlayerBall : GameManager.Instance.enemyPlayerBall;
           }
-          else
+          else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
           {
-             pfCurrentBall       = GameManager.Instance.enemyPlayerBall;
-             //.Log("Enemy tag and layer : " +pfCurrentBall.tag + " : " + LayerMask.LayerToName(pfCurrentBall.layer));
+             pfCurrentBall = SinglePlayerGM.Instance.pfCurrentBall;
           }
        }
 

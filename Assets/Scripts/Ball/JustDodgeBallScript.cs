@@ -1,5 +1,6 @@
 using CharacterAttributes;
 using Game;
+using SinglePlayer;
 using UnityEngine;
 
 namespace Ball
@@ -11,8 +12,19 @@ namespace Ball
             base.Initialize(target, speed, height, horizontalThrow, isThisOwner);
             if (_ownerSpawnThisBall)
             {
-                int successCount = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>()
-                                              .justDodgeSuccessCounts;
+                int successCount = 0;
+                
+                if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                {
+                    successCount = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>()
+                                                  .justDodgeSuccessCounts;
+                }
+                else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+                {
+                    successCount = SinglePlayerGM.Instance.localPlayer.GetComponent<CharacterStatus>()
+                                                 .justDodgeSuccessCounts;
+                }
+                
 
                 if (successCount >= 4)
                 {
@@ -63,8 +75,18 @@ namespace Ball
             
             if (_ownerSpawnThisBall)
             {
-                int successCount = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>()
+                int successCount = 0;
+                
+                if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                {
+                    successCount = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>()
                                               .justDodgeSuccessCounts;
+                }
+                else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+                {
+                    successCount = SinglePlayerGM.Instance.localPlayer.GetComponent<CharacterStatus>()
+                                                 .justDodgeSuccessCounts;
+                }
                 
                 multiplyFactor = 1 + Mathf.Lerp(0,1,successCount);
             }

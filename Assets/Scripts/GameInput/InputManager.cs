@@ -1,6 +1,7 @@
 using System;
 using CharacterAttributes;
 using Game;
+using SinglePlayer;
 using Skill;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -99,76 +100,118 @@ namespace GameInput
         
         public void OnAttackPressed(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+            if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                _localCharacterMovement.LayerTransition(true);
-                _characterBallLauncher.SpawnBallServerRPC();
+                if(SinglePlayerGM.Instance.isGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                    AttackPressed();
             }
+            else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                {
+                    AttackPressed();
+                }
+        }
+
+        private void AttackPressed()
+        {
+            _localCharacterMovement.LayerTransition(true);
+            _characterBallLauncher.SpawnBallServerRPC();
         }
 
         public void OnAttackReleased(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+            if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                _localCharacterMovement.SetThrowAnimation(true); // Animation 동작이 완료되면 throw = false 만드는 콜백 존재함
-                
-                _characterBallLauncher.ThrowBallServerRPC(currentTargetPosition);
-                
-                FixPlayerForwardDirection(0f);
-                _characterManager.IncreaseThrowCount();
-                canThrowBall = false;
+                if(SinglePlayerGM.Instance.isGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                    AttackReleased();
             }
+            else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                {
+                    AttackReleased();
+                }
         }
 
+        private void AttackReleased()
+        {
+            _localCharacterMovement.SetThrowAnimation(true); // Animation 동작이 완료되면 throw = false 만드는 콜백 존재함
+                
+            _characterBallLauncher.ThrowBallServerRPC(currentTargetPosition);
+                
+            FixPlayerForwardDirection(0f);
+            _characterManager.IncreaseThrowCount();
+            canThrowBall = false;
+        }
+        
         public void OnActionPressed(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+            if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                //Debug.Log("Skill Button Pressed");
-                if (_characterController == null)
+                if(SinglePlayerGM.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+                    ActionPressed();
+            }
+            else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
                 {
-                    Debug.LogError("CharacterController is missing on this GameObject!");
-                    return;
+                    ActionPressed();
                 }
+        }
 
-                switch (_characterSkillLauncher.currentSkill.ThisSkillType)
+        private void ActionPressed()
+        {
+            if (_characterController == null)
+            {
+                Debug.LogError("CharacterController is missing on this GameObject!");
+                return;
+            }
+
+            switch (_characterSkillLauncher.currentSkill.ThisSkillType)
+            {
+                case ESkillInputType.Vector3Target:
                 {
-                    case ESkillInputType.Vector3Target:
+                    Vector3 currentDirection = _characterController.velocity.normalized;
+
+                    if (currentDirection == Vector3.zero)
                     {
-                        Vector3 currentDirection = _characterController.velocity.normalized;
+                        currentDirection = -_localCharacterMovement.transform.forward;
+                    }
 
-                        if (currentDirection == Vector3.zero)
-                        {
-                            currentDirection = -_localCharacterMovement.transform.forward;
-                        }
-
-                        var input = new TargetVector3Input
-                                    {
-                                        TargetVector = currentDirection
-                                    };
+                    var input = new TargetVector3Input
+                                {
+                                    TargetVector = currentDirection
+                                };
                         
-                        _characterSkillLauncher.StartSkill(input);
-                        break;
-                    }
-                    case ESkillInputType.Scalar3Value:
-                    {
-                        break;
-                    }
-                    case ESkillInputType.JustBoolean:
-                    {
-                        break;
-                    }
+                    _characterSkillLauncher.StartSkill(input);
+                    break;
                 }
-                
+                case ESkillInputType.Scalar3Value:
+                {
+                    break;
+                }
+                case ESkillInputType.JustBoolean:
+                {
+                    break;
+                }
             }
         }
 
         public void OnActionReleased(InputAction.CallbackContext ctx)
         {
-            if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+            if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                //Debug.Log("Skill Button Released");
+                if(SinglePlayerGM.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+                    ActionReleased();
             }
+            else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+             if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+             {
+                 ActionReleased();
+             }
+        }
+
+        private void ActionReleased()
+        {
+            
         }
         
         private void MoveInput(Vector2 newMovementVector)

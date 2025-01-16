@@ -41,6 +41,8 @@ namespace Game
 
         private BallSkillDataBase _ballSkillDataBase;
 
+        public bool isSinglePlayerMode = false;
+
         public override void OnNetworkSpawn()
         {
             if (_instance == null)
@@ -56,8 +58,16 @@ namespace Game
             _ballSkillDataBase = this.GetComponent<BallSkillDataBase>();
             localPlayerBall =
                 _ballSkillDataBase.pfPlayerBalls[PlayerSelectionManager.Instance.GetLocalPlayerSelection().BallIndex];
-            
-            enemyPlayerBall = _ballSkillDataBase.pfEnemyBalls[PlayerSelectionManager.Instance.GetEnemySelection().BallIndex];
+
+            if (isSinglePlayerMode)
+            {
+                //enemyClientID = 1;
+            }
+            else
+            {
+                enemyPlayerBall = _ballSkillDataBase.pfEnemyBalls[PlayerSelectionManager.Instance.GetEnemySelection().BallIndex];
+            }
+            //enemyPlayerBall = _ballSkillDataBase.pfEnemyBalls[PlayerSelectionManager.Instance.GetEnemySelection().BallIndex];
             
             //TODO: 스킬도 설정
         }

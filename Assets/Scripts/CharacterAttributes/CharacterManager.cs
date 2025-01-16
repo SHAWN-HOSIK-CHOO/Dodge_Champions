@@ -8,6 +8,7 @@ using Unity.Netcode;
 using UnityEngine;
 using TMPro;
 using GameUI;
+using SinglePlayer;
 using UnityEngine.Serialization;
 
 namespace CharacterAttributes
@@ -51,21 +52,29 @@ namespace CharacterAttributes
        
        public override void OnNetworkSpawn()
        {
-           if (IsOwner)
+           if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
            {
-               Debug.Log("Called by " + (int)OwnerClientId);
-               GameManager.Instance.localClientID                = (int)OwnerClientId;
-               GameManager.Instance.localPlayer                  = this.gameObject;
-               this.gameObject.layer                             = LayerMask.NameToLayer("LocalPlayer");
+               if (IsOwner)
+               {
+                   Debug.Log("Called by " + (int)OwnerClientId);
+                   GameManager.Instance.localClientID = (int)OwnerClientId;
+                   GameManager.Instance.localPlayer   = this.gameObject;
+                   this.gameObject.layer              = LayerMask.NameToLayer("LocalPlayer");
+                   InputManager.Instance.InitCallWhenLocalPlayerSpawned(this.gameObject);
+               }
+               else
+               {
+                   GameManager.Instance.enemyClientID = (int)OwnerClientId;
+                   GameManager.Instance.enemyPlayer   = this.gameObject;
+                   this.gameObject.layer              = LayerMask.NameToLayer("EnemyPlayer");
+               }
+           }
+           else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+           {
+               this.gameObject.layer = LayerMask.NameToLayer("LocalPlayer");
                InputManager.Instance.InitCallWhenLocalPlayerSpawned(this.gameObject);
            }
-           else
-           {
-               GameManager.Instance.enemyClientID = (int)OwnerClientId;
-               GameManager.Instance.enemyPlayer   = this.gameObject;
-               this.gameObject.layer              = LayerMask.NameToLayer("EnemyPlayer");
-           }
-
+           
            _characterSkillLauncher = this.GetComponent<CharacterSkillLauncher>();
        }
        
@@ -91,8 +100,6 @@ namespace CharacterAttributes
                {
                    if (coll.CompareTag("Fake") && coll != null)
                    {
-                       //Debug.Log("Just Dodge 성공!");
-                       UIManager.Instance.dodgeText.SetActive(true);
                        NotifyJustDodgeSuccessServerRPC(coll.transform.position);
                        Destroy(coll.gameObject);
                        break;
@@ -125,13 +132,24 @@ namespace CharacterAttributes
            this.GetComponent<CharacterStatus>().IncreaseDodgeSuccessCount();
            Debug.Log(OwnerClientId + " Dodge Success : " + GetComponent<CharacterStatus>().justDodgeSuccessCounts);
 
-           //만약 내가 공을 던진 사람이고 상대방이 Just Dodge로 피한 사람이고, 상대 턴이 아니라면(내 턴이라면)
-           if (!IsOwner && GameManager.Instance.isLocalPlayerAttackTurn)
+           if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
            {
-               //턴을 넘겨준다
-               ResetThrowCountBeforeTurnSwap();
-               GameManager.Instance.SwapTurnServerRPC();
+               //만약 내가 공을 던진 사람이고 상대방이 Just Dodge로 피한 사람이고, 상대 턴이 아니라면(내 턴이라면)
+               if (!IsOwner && GameManager.Instance.isLocalPlayerAttackTurn)
+               {
+                   //턴을 넘겨준다
+                   ResetThrowCountBeforeTurnSwap();
+                   GameManager.Instance.SwapTurnServerRPC();
+               }
            }
+           else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+           {
+               if (!SinglePlayerGM.Instance.isPlayerTurn)
+               {
+                   SinglePlayerGM.Instance.SwitchTurn();
+               }
+           }
+           
        }
        
        private void TriggerJustDodgeEffects(Vector3 collPosition)
@@ -166,8 +184,6 @@ namespace CharacterAttributes
                        int  damage         = coll.GetComponent<BallScript>().ballDamage;
                        int  hitEffectIndex = coll.GetComponent<BallScript>().hitEffectIndex;
                        bool isInfinite     = coll.GetComponent<BallScript>().isInfinite;
-                       
-                       //Debug.Log("Damage : " + damage + " hit index : " + hitEffectIndex);
                        
                        NotifyHitServerRPC(coll.transform.position, damage, hitEffectIndex, isInfinite);
 
@@ -230,7 +246,14 @@ namespace CharacterAttributes
        [ServerRpc(RequireOwnership = false)]
        private void NotifyHitServerRPC(Vector3 hitPosition, int damage, int effectIndex = 0, bool isInfinite = false)
        {
-           NotifyHitClientRPC(hitPosition, damage, effectIndex, isInfinite);
+           if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+           {
+               NotifyHitClientRPC(hitPosition, damage, effectIndex, isInfinite);
+           }
+           else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+           {
+               NotifyHitSinglePlayer(hitPosition, damage, effectIndex, isInfinite);
+           }
        }
 
        [ClientRpc]
@@ -241,7 +264,7 @@ namespace CharacterAttributes
 
            this.GetComponent<CharacterStatus>().HandleHit(damage);
            this.GetComponent<CharacterStatus>().IncreaseHitCount();
-
+           
            if (!IsOwner && isInfinite)
            {
                InputManager.Instance.canThrowBall = true;
@@ -283,8 +306,37 @@ namespace CharacterAttributes
                    StopCoroutine(_pushCoroutine);
                }
 
-               float pushStrength = 8f;
-               float duration     = 0.2f;
+               float pushStrength = 30f;
+               float duration     = 0.1f;
+               
+               // 새 밀림 효과 시작
+               _pushCoroutine = StartCoroutine(CoPush(hitPosition, pushStrength, duration));
+           }
+       }
+
+       private void NotifyHitSinglePlayer(Vector3 hitPosition, int damage, int effectIndex = 0, bool isInfinite = false)
+       {
+           this.GetComponent<CharacterStatus>().HandleHit(damage);
+           this.GetComponent<CharacterStatus>().IncreaseHitCount();
+           
+           if (_currentHitDisplayCoroutine != null)
+           {
+               StopCoroutine(_currentHitDisplayCoroutine);
+           }
+           
+           _currentHitDisplayCoroutine = StartCoroutine(CoDisplayHitEffectForNSec(hitPosition, 0.5f, false, effectIndex));
+
+           //TODO: 코드 다시 작성하기, 현재 effectIndex로 공 종류 구분 중
+           if (effectIndex == 6)
+           {
+               //상대를 미는 공이라면
+               if (_pushCoroutine != null)
+               {
+                   StopCoroutine(_pushCoroutine);
+               }
+
+               float pushStrength = 30f;
+               float duration     = 0.1f;
                
                // 새 밀림 효과 시작
                _pushCoroutine = StartCoroutine(CoPush(hitPosition, pushStrength, duration));
@@ -337,8 +389,6 @@ namespace CharacterAttributes
                GameObject effect = Instantiate(justDodgeEffect, hitPosition, Quaternion.identity);
                yield return new WaitForSeconds(sec);
                Destroy(effect.gameObject);
-               //Debug
-               UIManager.Instance.dodgeText.SetActive(false);
            }
            else
            {
@@ -351,7 +401,14 @@ namespace CharacterAttributes
        [ServerRpc]
        public void RequestTurnSwapServerRPC()
        {
-           RequestTurnSwapClientRPC();
+           if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+           {
+               RequestTurnSwapClientRPC();
+           }
+           else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+           {
+               SinglePlayerGM.Instance.SwitchTurn();
+           }
        }
 
        [ClientRpc]

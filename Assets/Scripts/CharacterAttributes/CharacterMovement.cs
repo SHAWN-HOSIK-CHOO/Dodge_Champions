@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Game;
 using GameInput;
+using SinglePlayer;
 using Unity.Cinemachine;
 using UnityEngine;
 using Unity.Netcode;
@@ -142,14 +143,27 @@ namespace CharacterAttributes
 
             if (IsOwner)
             {
-                if (_mainCamera == null)
+                if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
                 {
-                    _mainCamera = GameManager.Instance.mainCamera;
+                    if (_mainCamera == null)
+                    {
+                        _mainCamera = GameManager.Instance.mainCamera;
+                    }
+                    
+                    GameManager.Instance.cinemachineCamera.GetComponent<CinemachineCamera>().Follow =
+                        cinemachineCameraTarget.transform;
+                    GameManager.Instance.cinemachineCamera.transform.rotation = Quaternion.Euler(20f,0f,0f);
                 }
-
-                GameManager.Instance.cinemachineCamera.GetComponent<CinemachineCamera>().Follow =
-                    cinemachineCameraTarget.transform;
-                GameManager.Instance.cinemachineCamera.transform.rotation = Quaternion.Euler(20f,0f,0f);
+                else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+                {
+                    if (_mainCamera == null)
+                    {
+                        _mainCamera = SinglePlayerGM.Instance.mainCamera;
+                    }
+                    SinglePlayerGM.Instance.cinemachineCameraSinglePlayer.GetComponent<CinemachineCamera>().Follow =
+                        cinemachineCameraTarget.transform;
+                    SinglePlayerGM.Instance.cinemachineCameraSinglePlayer.transform.rotation = Quaternion.Euler(20f,0f,0f);
+                }
             }
         }
 
@@ -184,9 +198,18 @@ namespace CharacterAttributes
 
         private void Update()
         {
-            if (!IsOwner || !GameManager.Instance.isGameReadyToStart || shouldLockMovement)
+            
+            if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
             {
-                return;
+                if (!IsOwner || !GameManager.Instance.isGameReadyToStart || shouldLockMovement)
+                {
+                    return;
+                }
+            }
+            else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+            {
+                if(!SinglePlayerGM.Instance.isGameReadyToStart || shouldLockMovement)
+                    return;
             }
             
             _hasAnimator = TryGetComponent(out _animator);
@@ -198,9 +221,17 @@ namespace CharacterAttributes
 
         private void LateUpdate()
         {
-            if (!IsOwner || !GameManager.Instance.isGameReadyToStart)
+            if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
             {
-                return;
+                if (!IsOwner || !GameManager.Instance.isGameReadyToStart)
+                {
+                    return;
+                }
+            }
+            else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+            {
+                if(SinglePlayerGM.Instance.isGameReadyToStart)
+                    return;
             }
             
             CameraRotation();
@@ -508,9 +539,10 @@ namespace CharacterAttributes
                 StopCoroutine(_lockMoveCoroutine);
             }
             _lockMoveCoroutine = StartCoroutine(CoLockMoveForNSecs(lockSeconds));
-            
+
             if (!IsOwner)
             {
+                this.GetComponent<CharacterManager>().ResetThrowCountBeforeTurnSwap();
                 return;
             }
             
@@ -529,9 +561,21 @@ namespace CharacterAttributes
             {
                 characterController.enabled = true;
             }
-            
-            if(GameManager.Instance.isLocalPlayerAttackTurn)
-                GameManager.Instance.SwapTurnServerRPC();
+
+            if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+            {
+                if (GameManager.Instance.isLocalPlayerAttackTurn)
+                {
+                    GameManager.Instance.SwapTurnServerRPC();
+                }
+            }
+            else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+            {
+                if (SinglePlayerGM.Instance.isPlayerTurn)
+                {
+                    SinglePlayerGM.Instance.SwitchTurn();
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 using CharacterAttributes;
 using Game;
+using SinglePlayer;
 using UnityEngine;
 
 namespace Ball
@@ -11,8 +12,17 @@ namespace Ball
             base.Initialize(target, speed, height, horizontalThrow, isThisOwner);
             if (_ownerSpawnThisBall)
             {
-                int hitCount = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>().hitCounts;
-
+                int hitCount = 0;
+                
+                if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                {
+                    hitCount = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>().hitCounts;
+                }
+                else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+                {
+                    hitCount = SinglePlayerGM.Instance.localPlayer.GetComponent<CharacterStatus>().hitCounts;
+                }
+                
                 if (hitCount >= 8)
                 {
                     hitEffectIndex =  4;

@@ -2,6 +2,7 @@ using System;
 using Game;
 using GameInput;
 using GameLobby;
+using SinglePlayer;
 using UnityEngine;
 
 namespace Ball
@@ -17,7 +18,7 @@ namespace Ball
       public  float ballShootFrequency = 3f;
       private float _currentTime       = 0f;
 
-      public int damage = 5;
+      public int damage = 2;
 
       private void Start()
       {
@@ -31,15 +32,23 @@ namespace Ball
       public override void Initialize(Vector3 target, float speed, float height, bool horizontalThrow = false, bool isThisOwner = true)
       {
          base.Initialize(target, speed, height, horizontalThrow, isThisOwner);
-         if (isThisOwner)
+
+         if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
          {
-            trackingPlayer = GameManager.Instance.enemyPlayer;
-            Debug.Log("Tracking Enemy");
+            if (isThisOwner)
+            {
+               trackingPlayer = GameManager.Instance.enemyPlayer;
+               Debug.Log("Tracking Enemy");
+            }
+            else
+            {
+               trackingPlayer = GameManager.Instance.localPlayer;
+               Debug.Log("Tracking Local");
+            }
          }
-         else
+         else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
          {
-            trackingPlayer = GameManager.Instance.localPlayer;
-            Debug.Log("Tracking Local");
+            trackingPlayer = SinglePlayerGM.Instance.enemyNpc;
          }
       }
 
