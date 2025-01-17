@@ -49,6 +49,9 @@ namespace CharacterAttributes
        private int  _currentThrowCount = 0;
 
        private Coroutine _pushCoroutine = null;
+
+       [Header("Turn Time")] 
+       public float turnTimeInSeconds = 30f;
        
        public override void OnNetworkSpawn()
        {
@@ -61,12 +64,14 @@ namespace CharacterAttributes
                    GameManager.Instance.localPlayer   = this.gameObject;
                    this.gameObject.layer              = LayerMask.NameToLayer("LocalPlayer");
                    InputManager.Instance.InitCallWhenLocalPlayerSpawned(this.gameObject);
+                   //TODO: Set turn time, Throw time(input manager) ,Skill cooldown도 설정(skillLauncher 통해서),
                }
                else
                {
                    GameManager.Instance.enemyClientID = (int)OwnerClientId;
                    GameManager.Instance.enemyPlayer   = this.gameObject;
                    this.gameObject.layer              = LayerMask.NameToLayer("EnemyPlayer");
+                   //TODO: Set turn time 공에 따라....
                }
            }
            else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
@@ -256,6 +261,8 @@ namespace CharacterAttributes
            }
        }
 
+       public bool hitApproved = false;
+       
        [ClientRpc]
        private void NotifyHitClientRPC(Vector3 hitPosition, int damage, int effectIndex = 0, bool isInfinite = false)
        {
@@ -267,7 +274,8 @@ namespace CharacterAttributes
            
            if (!IsOwner && isInfinite)
            {
-               InputManager.Instance.canThrowBall = true;
+               hitApproved = true;
+               //InputManager.Instance.canThrowBall = true;
            }
            
            if (!IsOwner && !isInfinite) // 즉, 내가 공을 맞았고, 상대가 던진 사람이라면 그리고 무한볼이 아니라면
@@ -278,13 +286,14 @@ namespace CharacterAttributes
                if (_currentThrowCount < maxThrowCount)
                {
                    //한번 더 던질 수 있게 한다,
-                   InputManager.Instance.canThrowBall = true;
+                   hitApproved = true;
+                   //InputManager.Instance.canThrowBall = true;
                    //Debug.Log("Current Throw Count / Max : "+_currentThrowCount + " / " + maxThrowCount);
                }
                else
                {
                    //그게 아니라면 턴을 넘겨받는다.
-                   InputManager.Instance.canThrowBall = false;
+                   hitApproved = false;
                    GameManager.Instance.SwapTurnServerRPC();
                    ResetThrowCountBeforeTurnSwap();
                }
@@ -313,7 +322,7 @@ namespace CharacterAttributes
                _pushCoroutine = StartCoroutine(CoPush(hitPosition, pushStrength, duration));
            }
        }
-
+       
        private void NotifyHitSinglePlayer(Vector3 hitPosition, int damage, int effectIndex = 0, bool isInfinite = false)
        {
            this.GetComponent<CharacterStatus>().HandleHit(damage);

@@ -1,4 +1,5 @@
 using System;
+using CharacterAttributes;
 using GameInput;
 using Unity.Netcode;
 using UnityEngine;
@@ -49,9 +50,10 @@ namespace SinglePlayer
             {
                 if (_isGameReadyToStart != value) // 값이 변경될 때만 수행
                 {
-                    _isGameReadyToStart                = value;
-                    isPlayerTurn                       = true;
-                    InputManager.Instance.canThrowBall = true;
+                    _isGameReadyToStart                                      = value;
+                    isPlayerTurn                                             = true;
+                    InputManager.Instance.canThrowBall                       = true;
+                    localPlayer.GetComponent<CharacterManager>().hitApproved = true;
                     attackImage.gameObject.SetActive(true);
                     defenseImage.gameObject.SetActive(false);
                 }
@@ -140,13 +142,15 @@ namespace SinglePlayer
             {
                 attackImage.gameObject.SetActive(true);
                 defenseImage.gameObject.SetActive(false);
-                InputManager.Instance.canThrowBall = true;
+                localPlayer.GetComponent<CharacterManager>().hitApproved = true;
+                InputManager.Instance.canThrowBall                       = true;
             }
             else
             {
                 attackImage.gameObject.SetActive(false);
                 defenseImage.gameObject.SetActive(true);
-                InputManager.Instance.canThrowBall = false;
+                localPlayer.GetComponent<CharacterManager>().hitApproved = false;
+                InputManager.Instance.canThrowBall                       = false;
             }
             
             PreSwitchTurnActions();

@@ -539,7 +539,7 @@ namespace CharacterAttributes
                 StopCoroutine(_lockMoveCoroutine);
             }
             _lockMoveCoroutine = StartCoroutine(CoLockMoveForNSecs(lockSeconds));
-
+            
             if (!IsOwner)
             {
                 this.GetComponent<CharacterManager>().ResetThrowCountBeforeTurnSwap();

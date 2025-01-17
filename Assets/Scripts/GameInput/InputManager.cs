@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using CharacterAttributes;
 using Game;
+using GameUI;
 using SinglePlayer;
 using Skill;
 using UnityEngine;
@@ -100,13 +102,16 @@ namespace GameInput
         
         public void OnAttackPressed(InputAction.CallbackContext ctx)
         {
+            Debug.Log($"Canthrowball : {canThrowBall} and hitApproved : {_characterManager.hitApproved}");
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.IsGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                if(SinglePlayerGM.Instance.IsGameReadyToStart && _characterManager.hitApproved && 
+                   SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
                     AttackPressed();
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-                if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                if (GameManager.Instance.isGameReadyToStart && _characterManager.hitApproved && 
+                    GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
                 {
                     AttackPressed();
                 }
@@ -122,12 +127,19 @@ namespace GameInput
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.IsGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                if (SinglePlayerGM.Instance.IsGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn  && _characterManager.hitApproved && 
+                    canThrowBall                               && !_localCharacterMovement.shouldLockMovement)
+                {
+                    //TODO: Fill image 초기화
                     AttackReleased();
+                }
+                    
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-                if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && 
+                    canThrowBall && _characterManager.hitApproved && !_localCharacterMovement.shouldLockMovement)
                 {
+                    UIManager.Instance.coolDownImage.fillAmount = 0f; 
                     AttackReleased();
                 }
         }
@@ -140,18 +152,60 @@ namespace GameInput
                 
             FixPlayerForwardDirection(0f);
             _characterManager.IncreaseThrowCount();
+
+            if (_allowThrowAfterNSecCoroutine == null)
+            {
+                _allowThrowAfterNSecCoroutine = StartCoroutine(CoAllowThrowAfterNSec());
+            }
+        }
+
+        public float throwCountDown = 0.8f;
+        
+        private Coroutine _allowThrowAfterNSecCoroutine = null;
+        private IEnumerator CoAllowThrowAfterNSec()
+        {
+            float elapsedTime = 0f;
             canThrowBall = false;
+           
+            while (elapsedTime < throwCountDown)
+            {
+                elapsedTime += Time.deltaTime;                           
+                float fillAmount = elapsedTime / throwCountDown;          
+
+                if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                {
+                    UIManager.Instance.coolDownImage.fillAmount = fillAmount; 
+                }
+                else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+                {
+                   
+                }
+                yield return null;                                       
+            }
+
+            if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+            {
+                UIManager.Instance.coolDownImage.fillAmount = 1f; 
+            }
+            else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+            {
+                   
+            }
+           
+            canThrowBall = true;
+            
+            _allowThrowAfterNSecCoroutine = null;
         }
         
         public void OnActionPressed(InputAction.CallbackContext ctx)
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+                if(SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
                     ActionPressed();
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-                if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+                if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
                 {
                     ActionPressed();
                 }
@@ -165,6 +219,8 @@ namespace GameInput
                 return;
             }
 
+            _characterSkillLauncher.StartSkillCoolDown();
+            
             switch (_characterSkillLauncher.currentSkill.ThisSkillType)
             {
                 case ESkillInputType.Vector3Target:
@@ -199,11 +255,11 @@ namespace GameInput
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+                if(SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
                     ActionReleased();
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-             if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+             if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
              {
                  ActionReleased();
              }

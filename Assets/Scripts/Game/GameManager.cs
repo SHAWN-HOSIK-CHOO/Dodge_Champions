@@ -41,8 +41,6 @@ namespace Game
 
         private BallSkillDataBase _ballSkillDataBase;
 
-        public bool isSinglePlayerMode = false;
-
         public override void OnNetworkSpawn()
         {
             if (_instance == null)
@@ -58,16 +56,9 @@ namespace Game
             _ballSkillDataBase = this.GetComponent<BallSkillDataBase>();
             localPlayerBall =
                 _ballSkillDataBase.pfPlayerBalls[PlayerSelectionManager.Instance.GetLocalPlayerSelection().BallIndex];
-
-            if (isSinglePlayerMode)
-            {
-                //enemyClientID = 1;
-            }
-            else
-            {
-                enemyPlayerBall = _ballSkillDataBase.pfEnemyBalls[PlayerSelectionManager.Instance.GetEnemySelection().BallIndex];
-            }
-            //enemyPlayerBall = _ballSkillDataBase.pfEnemyBalls[PlayerSelectionManager.Instance.GetEnemySelection().BallIndex];
+            
+            enemyPlayerBall = _ballSkillDataBase.pfEnemyBalls[PlayerSelectionManager.Instance.GetEnemySelection().BallIndex];
+            
             
             //TODO: 스킬도 설정
         }
@@ -84,24 +75,68 @@ namespace Game
             SwapTurnClientRPC();
         }
 
+        private float     _turnTime             = 0f;
+        private Coroutine _timeCheckerCoroutine = null;
+        
         [ClientRpc]
         private void SwapTurnClientRPC()
         {
             currentAttackPlayerID   = currentAttackPlayerID == localClientID ? enemyClientID : localClientID;
             isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
+
+            _turnTime                                       = 0f;
+            UIManager.Instance.turnCoolDownImage.fillAmount = 0f;
             
             if (isLocalPlayerAttackTurn)
             {
                 UIManager.Instance.statesUIImages[0].gameObject.SetActive(true);
                 UIManager.Instance.statesUIImages[1].gameObject.SetActive(false);
+                UIManager.Instance.coolDownImage.gameObject.SetActive(true);
+                _turnTime = localPlayer.GetComponent<CharacterManager>().turnTimeInSeconds;
+                localPlayer.GetComponent<CharacterManager>().hitApproved = true;
+                enemyPlayer.GetComponent<CharacterManager>().hitApproved = false;
                 InputManager.Instance.canThrowBall = true;
             }
             else
             {
                 UIManager.Instance.statesUIImages[0].gameObject.SetActive(false);
                 UIManager.Instance.statesUIImages[1].gameObject.SetActive(true);
+                UIManager.Instance.coolDownImage.gameObject.SetActive(false);
+                _turnTime = enemyPlayer.GetComponent<CharacterManager>().turnTimeInSeconds;
                 InputManager.Instance.canThrowBall = false;
+                localPlayer.GetComponent<CharacterManager>().hitApproved = false;
+                enemyPlayer.GetComponent<CharacterManager>().hitApproved = true;
             }
+
+            if (_timeCheckerCoroutine != null)
+            {
+                StopCoroutine(_timeCheckerCoroutine);
+            }
+            _timeCheckerCoroutine = StartCoroutine(CoTurnTimeChecker(_turnTime));
+        }
+
+        private IEnumerator CoTurnTimeChecker(float times)
+        {
+            float elapsedTime = 0f;
+
+            while (elapsedTime <= times)
+            {
+                elapsedTime += Time.deltaTime;
+                float ratio = elapsedTime / times;
+
+                UIManager.Instance.turnCoolDownImage.fillAmount = ratio;
+                
+                yield return null;
+            }
+
+            UIManager.Instance.turnCoolDownImage.fillAmount = 1f;
+            
+            if (IsOwner)
+            {
+                SwapTurnServerRPC();
+            }
+            
+            _timeCheckerCoroutine = null;
         }
         
         [ServerRpc]
@@ -126,7 +161,7 @@ namespace Game
             currentAttackPlayerID   = attackPlayerID;
             
             isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
-            
+
             if (_cutSceneCoroutine != null)
             {
                 StopCoroutine(CoSetGameOrder());
@@ -151,14 +186,34 @@ namespace Game
                 UIManager.Instance.statesUIImages[0].gameObject.SetActive(true);
                 UIManager.Instance.statesUIImages[1].gameObject.SetActive(false);
                 InputManager.Instance.canThrowBall = true;
+                localPlayer.GetComponent<CharacterManager>().hitApproved = true;
             }
             else
             {
                 UIManager.Instance.statesUIImages[0].gameObject.SetActive(false);
                 UIManager.Instance.statesUIImages[1].gameObject.SetActive(true);
                 InputManager.Instance.canThrowBall = false;
+                localPlayer.GetComponent<CharacterManager>().hitApproved = false;
             }
+            
             UIManager.Instance.StartGameCountDown(5f);
+            UIManager.Instance.coolDownImage.gameObject.SetActive(isLocalPlayerAttackTurn);
+            
+        }
+
+        //TODO: 이거 반드시 해결 이런식으로 사용 X
+        public void JustForTheBeginningCoroutine()
+        {
+            if (isLocalPlayerAttackTurn)
+            {
+                _turnTime = localPlayer.GetComponent<CharacterManager>().turnTimeInSeconds;
+            }
+            else
+            {
+                _turnTime = enemyPlayer.GetComponent<CharacterManager>().turnTimeInSeconds;
+            }
+            
+            _timeCheckerCoroutine = StartCoroutine(CoTurnTimeChecker(_turnTime));
         }
         
         public void Callback_Timeline_SetActiveAppropriateCoin()

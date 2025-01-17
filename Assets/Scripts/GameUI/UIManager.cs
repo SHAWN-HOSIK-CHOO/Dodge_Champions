@@ -42,6 +42,15 @@ namespace GameUI
         public Image playerFill;
         public Image enemyFill;
 
+        [Header("Throw CoolDown")] 
+        public Image coolDownImage;
+
+        [Header("Skill CoolDown")] 
+        public Image skillCoolDownImage;
+
+        [Header("Turn CoolDown")] 
+        public Image turnCoolDownImage;
+
         [Header("Debug Area")] 
         public TMP_Text playerBallSkillIndex;
         public TMP_Text enemyBallSkillIndex;
@@ -106,6 +115,7 @@ namespace GameUI
             startPanel.SetActive(false);
 
             GameManager.Instance.isGameReadyToStart = true;
+            GameManager.Instance.JustForTheBeginningCoroutine();
         }
 
         public void GameOverUI(int loserID)

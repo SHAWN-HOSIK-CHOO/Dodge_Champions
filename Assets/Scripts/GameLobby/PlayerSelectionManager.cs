@@ -31,7 +31,6 @@ namespace GameLobby
     }
    public class PlayerSelectionManager : NetworkBehaviour
     {
-        // 모든 플레이어의 선택 데이터를 서버에서 관리
         private NetworkVariable<PlayerSelectionData> player0Selection = new NetworkVariable<PlayerSelectionData>();
         private NetworkVariable<PlayerSelectionData> player1Selection = new NetworkVariable<PlayerSelectionData>();
 
