@@ -118,6 +118,15 @@ namespace Ball
                     //상대방에게 턴을 넘기라고 RPC로 지시한다.
                     InputManager.Instance.RequestTurnSwapToEnemy();
                 }
+
+                if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+                {
+                    //싱글플레이 모드에서는 플레이어 위주로 회피, 피격, 적중 판단이 진행된다
+                    if (this.CompareTag("Real"))
+                    {
+                        InputManager.Instance.RequestTurnSwapToEnemy();
+                    }
+                }
                 
                 // 태그 변경
                 this.gameObject.tag = "Useless";

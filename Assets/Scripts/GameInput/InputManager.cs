@@ -102,7 +102,7 @@ namespace GameInput
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.isGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                if(SinglePlayerGM.Instance.IsGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
                     AttackPressed();
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
@@ -122,7 +122,7 @@ namespace GameInput
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.isGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                if(SinglePlayerGM.Instance.IsGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
                     AttackReleased();
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
@@ -147,7 +147,7 @@ namespace GameInput
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+                if(SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
                     ActionPressed();
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
@@ -199,7 +199,7 @@ namespace GameInput
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
+                if(SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement)
                     ActionReleased();
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)

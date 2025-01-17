@@ -1,5 +1,6 @@
 using System;
 using GameInput;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,8 @@ namespace SinglePlayer
             {
                 Destroy(this.gameObject);
             }
+            
+            Initialize();
         }
 
         public GameObject cinemachineCameraSinglePlayer;
@@ -28,33 +31,91 @@ namespace SinglePlayer
         public GameObject localPlayer;
         public GameObject pfEnemyNpc;
 
-        public  Transform  enemySpawnTransform = null;
+        public GameObject pfSinglePlayerSpawner = null;
+        public Transform  playerSpawnTransform  = null;
+        public Transform  enemySpawnTransform   = null;
         public GameObject enemyNpc;
 
         public GameObject pfCurrentBall;
         
         public bool isPlayerTurn = false;
 
-        public bool isGameReadyToStart = false;
+        private bool _isGameReadyToStart;
+
+        public bool IsGameReadyToStart
+        {
+            get => _isGameReadyToStart;
+            set
+            {
+                if (_isGameReadyToStart != value) // 값이 변경될 때만 수행
+                {
+                    _isGameReadyToStart                = value;
+                    isPlayerTurn                       = true;
+                    InputManager.Instance.canThrowBall = true;
+                    attackImage.gameObject.SetActive(true);
+                    defenseImage.gameObject.SetActive(false);
+                }
+            }
+        }
+
 
         [Header("UI")] 
         public Image playerFillImage;
         public Image attackImage;
         public Image defenseImage;
 
-        public void Initialize(GameObject player)
+        private SinglePlayerSpawner _singlePlayerSpawner;
+        private GameObject          _singlePlayerSpawnerGameObject = null;
+
+        private void Start()
         {
-            localPlayer = player;
             StartGame();
         }
 
+        public void Initialize()
+        {
+            InitializeDefaultProperties();
+            InitializeSinglePlayerSpawner();
+        }
+
+        private void InitializeDefaultProperties()
+        {
+            IsGameReadyToStart                 = false;
+            isPlayerTurn                       = false;
+            InputManager.Instance.canThrowBall = false;
+        }
+        private void InitializeSinglePlayerSpawner()
+        {
+            if (NetworkManager.Singleton == null)
+            {
+                Debug.LogError("NetworkManager is missing");
+            }
+            
+            _singlePlayerSpawnerGameObject = Instantiate(pfSinglePlayerSpawner, Vector3.zero,Quaternion.identity );
+            NetworkObject networkObject = _singlePlayerSpawnerGameObject.GetComponent<NetworkObject>();
+            if (networkObject == null)
+            {
+                Debug.LogError("Single Player Spawner 's Network object is null");
+            }
+
+            if (NetworkManager.Singleton.IsHost)
+            {
+                networkObject.Spawn();
+
+                _singlePlayerSpawner = _singlePlayerSpawnerGameObject.GetComponent<SinglePlayerSpawner>();
+                localPlayer          = _singlePlayerSpawner.SpawnLocalPlayer(playerSpawnTransform);
+            }
+            else
+            {
+                Debug.LogError("Cannot spawn net objects on a non-host client");
+            }
+        }
+        
         public void StartGame()
         {
             DisplayCutScene(0);
             SpawnEnemy();
-            isGameReadyToStart                 = true;
-            isPlayerTurn                       = true;
-            InputManager.Instance.canThrowBall = true;
+            IsGameReadyToStart = true;
         }
 
         public void EndGame(bool didPlayerWin)
@@ -71,6 +132,8 @@ namespace SinglePlayer
 
         public void SwitchTurn()
         {
+            Debug.Log($"Requested turn swap to -> {!isPlayerTurn}");
+            
             isPlayerTurn = !isPlayerTurn;
 
             if (isPlayerTurn)
@@ -78,6 +141,12 @@ namespace SinglePlayer
                 attackImage.gameObject.SetActive(true);
                 defenseImage.gameObject.SetActive(false);
                 InputManager.Instance.canThrowBall = true;
+            }
+            else
+            {
+                attackImage.gameObject.SetActive(false);
+                defenseImage.gameObject.SetActive(true);
+                InputManager.Instance.canThrowBall = false;
             }
             
             PreSwitchTurnActions();

@@ -208,7 +208,7 @@ namespace CharacterAttributes
             }
             else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(!SinglePlayerGM.Instance.isGameReadyToStart || shouldLockMovement)
+                if(!SinglePlayerGM.Instance.IsGameReadyToStart || shouldLockMovement)
                     return;
             }
             
@@ -230,7 +230,7 @@ namespace CharacterAttributes
             }
             else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.isGameReadyToStart)
+                if(!SinglePlayerGM.Instance.IsGameReadyToStart)
                     return;
             }
             
