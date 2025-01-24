@@ -1,0 +1,18 @@
+{
+    "name": "FreeNet",
+    "rootNamespace": "",
+    "references": [
+        "GUID:bccedd11c5a90844fba7e978fd92f3b1",
+        "GUID:1491147abca9d7d4bb7105af628b223e",
+        "GUID:68bd7fdb68ef2684e982e8a9825b18a5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -521,7 +521,6 @@ namespace CharacterAttributes
             shouldLockMovement = true;
             yield return new WaitForSeconds(nSec);
             shouldLockMovement = false;
-            
         }
         
         [ServerRpc]
