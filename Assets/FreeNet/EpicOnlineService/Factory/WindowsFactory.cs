@@ -7,7 +7,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class WindowsFactory : IEOSPlatformFactory
+public class WindowsFactory : IEOS_PlatformFactory
 {
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
     private IntPtr handle;
@@ -46,7 +46,7 @@ public class WindowsFactory : IEOSPlatformFactory
 #endif
         return true;
     }
-    public bool MakePlatform(Credential credential, out PlatformInterface OutIPlatform)
+    public bool MakePlatform(EOS_Credential credential, out PlatformInterface OutIPlatform)
     {
         OutIPlatform = null;
         if (!InitPlatform(credential)) return false;
@@ -77,7 +77,7 @@ public class WindowsFactory : IEOSPlatformFactory
 #endif
         return true;
     }
-    private bool InitPlatform(Credential credential)
+    private bool InitPlatform(EOS_Credential credential)
     {
         var initializeOptions = new InitializeOptions()
         {
@@ -113,22 +113,13 @@ public class WindowsFactory : IEOSPlatformFactory
         });
         return result == Result.Success;
     }
-    private bool CreatePlatform(Credential credential, out PlatformInterface OutIPlatform)
+    private bool CreatePlatform(EOS_Credential credential, out PlatformInterface OutIPlatform)
     {
         OutIPlatform = null;
         string XAudio29DllPath = EOS_SDK_PluginPath("xaudio2_9redist");
         if (!File.Exists(XAudio29DllPath))
         {
             Debug.LogError($"[CreatePlatform] 파일을 찾을 수 없음: {XAudio29DllPath}");
-            return false;
-        }
-        var IntegratedPlatformOptions = new CreateIntegratedPlatformOptionsContainerOptions();
-        var OptionsContainer = new IntegratedPlatformOptionsContainer();
-        var result = IntegratedPlatformInterface.CreateIntegratedPlatformOptionsContainer(ref IntegratedPlatformOptions, out OptionsContainer);
-        if (result != Result.Success)
-        {
-            Debug.LogError($"CreateIntegratedPlatformOptionsContainer fail: {result}");
-            OptionsContainer.Release();
             return false;
         }
         var options = new WindowsOptions()
@@ -151,13 +142,22 @@ public class WindowsFactory : IEOSPlatformFactory
                     XAudio29DllPath = XAudio29DllPath,
                 }
             },
-#if UNITY_EDITOR
-            Flags = PlatformFlags.LoadingInEditor,
-#else
-            Flags = PlatformFlags.WindowsEnableOverlayD3D10,
-#endif
-            IntegratedPlatformOptionsContainerHandle = OptionsContainer
         };
+        var OptionsContainer = new IntegratedPlatformOptionsContainer();
+        var IntegratedPlatformOptions = new CreateIntegratedPlatformOptionsContainerOptions();
+        var result = IntegratedPlatformInterface.CreateIntegratedPlatformOptionsContainer(ref IntegratedPlatformOptions, out OptionsContainer);
+        if (result != Result.Success)
+        {
+            Debug.LogError($"CreateIntegratedPlatformOptionsContainer fail: {result}");
+            OptionsContainer.Release();
+            return false;
+        }
+        options.IntegratedPlatformOptionsContainerHandle = OptionsContainer;
+#if UNITY_EDITOR
+        options.Flags = PlatformFlags.None;
+#else
+        options.Flags = PlatformFlags.WindowsEnableOverlayD3D10;
+#endif
         OutIPlatform = PlatformInterface.Create(ref options);
         OptionsContainer.Release();
         return OutIPlatform != null;

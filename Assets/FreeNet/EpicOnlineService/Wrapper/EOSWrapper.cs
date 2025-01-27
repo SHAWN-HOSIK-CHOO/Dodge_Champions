@@ -10,20 +10,78 @@ using System;
 using Epic.OnlineServices.P2P;
 using System.Text.RegularExpressions;
 using System.IO;
+using WebSocketSharp;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class EOSWrapper
 {
-    public static bool SetApplicationStatus(PlatformInterface IPlatform, ApplicationStatus status)
+    public class ETC
     {
-        if (IPlatform != null)
+        public static bool Equal(Epic.OnlineServices.Lobby.Attribute left, Epic.OnlineServices.Lobby.Attribute right)
         {
-            if (IPlatform.SetApplicationStatus(status) != Result.Success)
+            if(left.Visibility != right.Visibility)
             {
-                Debug.LogError("Cant set application status");
                 return false;
             }
+            return Equal(left.Data.Value, right.Data.Value);
         }
-        return true;
+        public static bool Equal(Epic.OnlineServices.Lobby.AttributeData left, Epic.OnlineServices.Lobby.AttributeData right)
+        {
+            if ((left.Value.ValueType != right.Value.ValueType) ||
+                (left.Key != right.Key))
+            {
+                return false;
+            }
+            switch (left.Value.ValueType)
+            {
+                case AttributeType.String:
+                    return left.Value.AsUtf8 == right.Value.AsUtf8;
+                case AttributeType.Boolean:
+                    return left.Value.AsBool == right.Value.AsBool;
+                case AttributeType.Int64:
+                    return left.Value.AsInt64 == right.Value.AsInt64;
+                case AttributeType.Double:
+                    return left.Value.AsDouble == right.Value.AsDouble;
+            }
+            return false;
+        }
+        public static bool ErrControl(Result result, Action<Result> onComplete = null)
+        {
+            if (result != Result.Success)
+            {
+                onComplete?.Invoke(result);
+                return false;
+            }
+            return true;
+        }
+        public static bool ErrControl<T>(Result result, Action<Result, T> onComplete = null)
+        {
+            if (result != Result.Success)
+            {
+                if (typeof(T) == typeof(string) || typeof(T).IsClass)
+                {
+                    onComplete?.Invoke(result, (T)(object)null);
+                }
+                else if (typeof(T).IsValueType)
+                {
+                    onComplete?.Invoke(result, default(T));
+                }
+                return false;
+            }
+            return true;
+        }
+        public static bool SetApplicationStatus(PlatformInterface IPlatform, ApplicationStatus status)
+        {
+            if (IPlatform != null)
+            {
+                if (IPlatform.SetApplicationStatus(status) != Result.Success)
+                {
+                    Debug.LogError("Cant set application status");
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     public class LoginControl
     {
@@ -192,6 +250,26 @@ public class EOSWrapper
             };
            ILobby.JoinLobby(ref joinOptions, null, callback);
         }
+        static public uint GetInviteCount(LobbyInterface ILobby, ProductUserId localPUID)
+        {
+            var options = new Epic.OnlineServices.Lobby.GetInviteCountOptions()
+            {
+                LocalUserId = localPUID
+            };
+            return ILobby.GetInviteCount(ref options);
+        }
+        static public bool GetInviteIDByIndex(LobbyInterface ILobby, uint index, ProductUserId localPUID, out string inviteID)
+        {
+            inviteID = null;
+            var options = new Epic.OnlineServices.Lobby.GetInviteIdByIndexOptions()
+            {
+                LocalUserId = localPUID,
+                Index = index
+            };
+            Result result = ILobby.GetInviteIdByIndex(ref options, out Utf8String outinviteID);
+            inviteID = outinviteID;
+            return result == Result.Success;
+        }
         static public void SendInvite(LobbyInterface ILobby, string lobbyID, ProductUserId targetUserId, ProductUserId localPUID, Epic.OnlineServices.Lobby.OnSendInviteCallback callback = null)
         {
             var options = new Epic.OnlineServices.Lobby.SendInviteOptions()
@@ -239,21 +317,15 @@ public class EOSWrapper
             }
             return result == Result.Success;
         }
-        static public bool CopyLobbyDetailsByLobbyID(LobbyInterface ILobby, string lobbyID, ProductUserId localPUID, out LobbyDetails lobbydetails)
+        static public Result CopyLobbyDetailsByLobbyID(LobbyInterface ILobby, string lobbyID, ProductUserId localPUID, out LobbyDetails details)
         {
-            lobbydetails = null;
-            if (lobbyID == null) return false;
+            details = null;
             var options = new CopyLobbyDetailsHandleOptions()
             {
                 LobbyId = lobbyID,
                 LocalUserId = localPUID
             };
-            Result result = ILobby.CopyLobbyDetailsHandle(ref options, out var details);
-            if (result == Result.Success)
-            {
-                lobbydetails = details;
-            }
-            return result == Result.Success;
+            return ILobby.CopyLobbyDetailsHandle(ref options, out details);
         }
         static public uint GetCurrentMemberCount(LobbyDetails details)
         {
@@ -261,28 +333,30 @@ public class EOSWrapper
             uint membercount = details.GetMemberCount(ref options);
             return membercount;
         }
-        static public bool GetLobbyDetailsInfo(LobbyDetails details, out LobbyDetailsInfo? outLobbyDetailsInfo)
+        static public Result GetLobbyDetailsInfo(LobbyDetails details, out LobbyDetailsInfo? outLobbyDetailsInfo)
         {
             var options = new LobbyDetailsCopyInfoOptions();
-            Result infoResult = details.CopyInfo(ref options, out outLobbyDetailsInfo);
-            return infoResult == Result.Success;
+            return details.CopyInfo(ref options, out outLobbyDetailsInfo);
         }
-        static public List<ProductUserId> GetMembers(LobbyDetails details)
+        static public Result GetMemberDetailsInfo(LobbyDetails details,ProductUserId targetPUID ,out LobbyDetailsMemberInfo? outMemberDetailsInfo)
         {
-            uint membercount = GetCurrentMemberCount(details);
-            List<ProductUserId> members = new List<ProductUserId>();
-            for (int memberIndex = 0; memberIndex < membercount; memberIndex++)
+            var option = new LobbyDetailsCopyMemberInfoOptions()
             {
-                var MemberIndexOptions = new LobbyDetailsGetMemberByIndexOptions() { MemberIndex = (uint)memberIndex };
-                ProductUserId memberId = details.GetMemberByIndex(ref MemberIndexOptions);
-                members.Add(memberId);
-            }
-            return members;
+                TargetUserId = targetPUID
+            };
+            return details.CopyMemberInfo(ref option, out outMemberDetailsInfo);
         }
-        static public ProductUserId GetLobbyOwner(LobbyDetails details)
+        static public bool GetMemberByIndex(LobbyDetails details,uint index,out ProductUserId meberPUID)
+        {
+            var MemberIndexOptions = new LobbyDetailsGetMemberByIndexOptions() { MemberIndex = index };
+            meberPUID = details.GetMemberByIndex(ref MemberIndexOptions);
+            return meberPUID != null;
+        }
+        static public bool GetLobbyOwner(LobbyDetails details,out ProductUserId ownerPUID)
         {
             var options = new LobbyDetailsGetLobbyOwnerOptions();
-            return details.GetLobbyOwner(ref options);
+            ownerPUID = details.GetLobbyOwner(ref options);
+            return ownerPUID!=null;
         }
         static public Epic.OnlineServices.Lobby.Attribute? GetLobbyAttribute(LobbyDetails details, string key)
         {
@@ -298,15 +372,23 @@ public class EOSWrapper
             var options = new LobbyDetailsGetAttributeCountOptions();
             return details.GetAttributeCount(ref options);
         }
-        static public bool GetLobbyAttribute(LobbyDetails details, uint index, out Epic.OnlineServices.Lobby.Attribute? outAttribute)
+        static public Result GetLobbyAttributeByIndex(LobbyDetails details, uint index, out Epic.OnlineServices.Lobby.Attribute? outAttribute)
         {
             var attrOptions = new LobbyDetailsCopyAttributeByIndexOptions()
             {
                 AttrIndex = index
             };
-            Result result = details.CopyAttributeByIndex(ref attrOptions, out outAttribute);
-            return result == Result.Success;
+            return details.CopyAttributeByIndex(ref attrOptions, out outAttribute);
         }
+        static public Result GetLobbyAttributeByKey(LobbyDetails details, string key, out Epic.OnlineServices.Lobby.Attribute? outAttribute)
+        {
+            var options = new LobbyDetailsCopyAttributeByKeyOptions()
+            {
+                AttrKey = key
+            };
+            return details.CopyAttributeByKey(ref options, out outAttribute);
+        }
+
         static public uint GetMemberAttributeCount(LobbyDetails details, ProductUserId puid)
         {
             var options = new LobbyDetailsGetMemberAttributeCountOptions() { TargetUserId = puid };
@@ -352,15 +434,14 @@ public class EOSWrapper
             };
             ILobby.PromoteMember(ref promoteOptions, null, callback);
         }
-        static public bool GetLobbyModification(LobbyInterface ILobby, string lobbyID, ProductUserId localPUID, out LobbyModification modification)
+        static public Result GetLobbyModification(LobbyInterface ILobby, string lobbyID, ProductUserId localPUID, out LobbyModification modification)
         {
             var options = new UpdateLobbyModificationOptions()
             {
                 LobbyId = lobbyID,
                 LocalUserId = localPUID
             };
-            Result result = ILobby.UpdateLobbyModification(ref options, out modification);
-            return result == Result.Success;
+            return ILobby.UpdateLobbyModification(ref options, out modification);
         }
         static public bool SetModificationBucketID(LobbyModification modification, string bucketID)
         {
@@ -399,7 +480,7 @@ public class EOSWrapper
             Result result = modification.RemoveAttribute(ref options);
             return result == Result.Success;
         }
-        static public bool SetModificationAddLobbyAttribute(LobbyModification modification, Epic.OnlineServices.Lobby.Attribute attribute)
+        static public Result SetModificationAddLobbyAttribute(LobbyModification modification, Epic.OnlineServices.Lobby.Attribute attribute)
         {
             var options = new LobbyModificationAddAttributeOptions()
             {
@@ -407,8 +488,7 @@ public class EOSWrapper
                 Visibility = attribute.Visibility
             };
 
-            Result result = modification.AddAttribute(ref options);
-            return result == Result.Success;
+            return modification.AddAttribute(ref options);
         }
         static public bool SetModificationRemoveMemberAttribute(LobbyModification modification, string attributeKey)
         {
@@ -436,11 +516,10 @@ public class EOSWrapper
             var options = new UpdateLobbyOptions() { LobbyModificationHandle = modification };
             ILobby.UpdateLobby(ref options, null, callback);
         }
-        static public bool GetLobbySearch(LobbyInterface ILobby, uint maxResult, out LobbySearch search)
+        static public Result GetLobbySearch(LobbyInterface ILobby, uint maxResult, out LobbySearch search)
         {
             var options = new CreateLobbySearchOptions() { MaxResults = maxResult };
-            Result result = ILobby.CreateLobbySearch(ref options, out search);
-            return result == Result.Success;
+            return ILobby.CreateLobbySearch(ref options, out search);
         }
         static public bool SetSearchParamUserID(LobbySearch search, ProductUserId targetPUID)
         {
@@ -451,7 +530,7 @@ public class EOSWrapper
             Result result = search.SetTargetUserId(ref Options);
             return result == Result.Success;
         }
-        static public bool SetSearchParamAttribute(LobbySearch search, Epic.OnlineServices.Lobby.AttributeData attribute, ComparisonOp op)
+        static public Result SetSearchParamAttribute(LobbySearch search, Epic.OnlineServices.Lobby.AttributeData attribute, ComparisonOp op)
         {
             var paramOptions = new LobbySearchSetParameterOptions()
             {
@@ -462,8 +541,7 @@ public class EOSWrapper
                     Value = attribute.Value
                 }
             };
-            Result result = search.SetParameter(ref paramOptions);
-            return result == Result.Success;
+            return search.SetParameter(ref paramOptions);
         }
         static public bool SetSearchParamLobbyId(LobbySearch search, string lobbyId)
         {
@@ -480,22 +558,22 @@ public class EOSWrapper
             {
                 LocalUserId = localPUID
             };
-            search.Find(ref options, null, onComplete);
+            search.Find(ref options,null, onComplete);
         }
         static public uint GetSearchResultCount(LobbySearch search)
         {
             var options = new LobbySearchGetSearchResultCountOptions();
             return search.GetSearchResultCount(ref options);
         }
-        static public bool CopySearchResultByIndex(LobbySearch search, uint index, out LobbyDetails outLobbyDetails)
+        static public Result CopySearchResultByIndex(LobbySearch search, uint index, out LobbyDetails outLobbyDetails)
         {
             var options = new LobbySearchCopySearchResultByIndexOptions()
             {
                 LobbyIndex = index
             };
-            Result result = search.CopySearchResultByIndex(ref options, out outLobbyDetails);
-            return result == Result.Success;
+            return search.CopySearchResultByIndex(ref options, out outLobbyDetails);
         }
+        
         static public ulong AddCBNotifyLobbyUpdateReceived(LobbyInterface ILobby, OnLobbyUpdateReceivedCallback callback)
         {
             var options = new AddNotifyLobbyUpdateReceivedOptions();

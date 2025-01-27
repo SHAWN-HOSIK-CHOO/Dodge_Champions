@@ -183,7 +183,6 @@ namespace GameLobby
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
             string     joinCode   = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             joinCodeText.text = "Code: " + joinCode;
-
             RelayServerData relayServerData = AllocationUtils.ToRelayServerData(allocation,"dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 

@@ -8,9 +8,6 @@ using UnityEngine.UI;
 public class LoginSceneManager : MonoBehaviour
 {
     [SerializeField]
-    localUser _localUserPreb;
-
-    [SerializeField]
     Button _guestLogin;
 
     [SerializeField]
@@ -25,33 +22,24 @@ public class LoginSceneManager : MonoBehaviour
     string _credential;
     #endregion
 
-
-
     private IEnumerator Start()
     {
-        var _eosNet = SingletonMonoBehaviour<EOSNet>._instance;
-        while (_eosNet._InitState == EOSNet.InitState.None)
-        {
-            yield return null;
-        }
+        yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
         _guestLogin.onClick.AddListener(OnGuestLogin);
         _epicPortalLogin.onClick.AddListener(OnEpicPortalLogin);
         _developerLogin.onClick.AddListener(OnDeveloperLogin);
     }
 
-
     void OnLoginSuccess(ProductUserId localPUID)
     {
-
-        var _eosNet = SingletonMonoBehaviour<EOSNet>._instance;
-        var localUser = Instantiate(_localUserPreb);
-        localUser.SetlocaPUID(localPUID.ToString());
+        var _eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
+        FreeNet._instance._localUser.SetlocaPUID(localPUID.ToString());
         SceneManager.LoadScene("LobbyScene");
     }
 
     void OnGuestLogin()
     {
-        var _eosNet = SingletonMonoBehaviour<EOSNet>._instance;
+        var _eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
         string username = "I_AM_User";
         EOSWrapper.ConnectControl.DeviceIDConnect(_eosNet._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info)=>
         {
@@ -77,7 +65,7 @@ public class LoginSceneManager : MonoBehaviour
     }
     void OnEpicPortalLogin()
     {
-        var _eosNet = SingletonMonoBehaviour<EOSNet>._instance;
+        var _eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
         EOSWrapper.LoginControl.EpicPortalLogin(_eosNet._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if (info.ResultCode == Epic.OnlineServices.Result.Success)
@@ -105,7 +93,7 @@ public class LoginSceneManager : MonoBehaviour
     }
     void OnDeveloperLogin()
     {
-        var _eosNet = SingletonMonoBehaviour<EOSNet>._instance;
+        var _eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
         EOSWrapper.LoginControl.DeveloperToolLogin(_eosNet._IAuth, _host, _credential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if (info.ResultCode == Epic.OnlineServices.Result.Success)
@@ -138,5 +126,4 @@ public class LoginSceneManager : MonoBehaviour
         _epicPortalLogin.onClick.RemoveAllListeners();
         _developerLogin.onClick.RemoveAllListeners();
     }
-
 }
