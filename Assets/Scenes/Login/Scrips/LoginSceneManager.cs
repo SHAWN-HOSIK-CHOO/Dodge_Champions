@@ -1,12 +1,16 @@
 using Epic.OnlineServices;
 using Epic.OnlineServices.Presence;
 using System.Collections;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoginSceneManager : MonoBehaviour
 {
+    WaitingTransitionUI _waitingTransitionUI;
+    FreeNet _freeNet;
+
     [SerializeField]
     Button _guestLogin;
 
@@ -24,67 +28,79 @@ public class LoginSceneManager : MonoBehaviour
 
     private IEnumerator Start()
     {
+        yield return SingletonMonoBehaviour<WaitingTransitionUI>.WaitInitialize();
+        _waitingTransitionUI = WaitingTransitionUI._instance;
         yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
+        _freeNet = FreeNet._instance;
+
         _guestLogin.onClick.AddListener(OnGuestLogin);
         _epicPortalLogin.onClick.AddListener(OnEpicPortalLogin);
         _developerLogin.onClick.AddListener(OnDeveloperLogin);
     }
 
-    void OnLoginSuccess(ProductUserId localPUID)
+    void OnLoginSuccess(Result result, ProductUserId localPUID)
     {
-        var _eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
-        FreeNet._instance._localUser.SetlocaPUID(localPUID.ToString());
-        SceneManager.LoadScene("LobbyScene");
+        if (result == Result.Success)
+        {
+            _freeNet._localUser.SetlocaPUID(localPUID.ToString());
+            _waitingTransitionUI.UpdateWaitInfoDetail($"LoginSuccess");
+
+            _waitingTransitionUI._transitionUI.MakeTransitionEnd("Login");
+            _waitingTransitionUI._transitionUI.AddNullTransition("Load Lobby", _waitingTransitionUI.UpdateWaitInfo);
+            _waitingTransitionUI.UpdateWaitInfoDetail($"Load Lobby...");
+            SceneManager.LoadScene("LobbyScene");
+        }
+        else
+        {
+            _waitingTransitionUI.UpdateWaitInfoDetail($"Fail... {result}");
+            _waitingTransitionUI._transitionUI.MakeTransitionEnd("Login");
+        }
     }
 
     void OnGuestLogin()
     {
-        var _eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
+        _waitingTransitionUI._transitionUI.AddNullTransition("Login",_waitingTransitionUI.UpdateWaitInfo);
         string username = "I_AM_User";
-        EOSWrapper.ConnectControl.DeviceIDConnect(_eosNet._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info)=>
+        EOSWrapper.ConnectControl.DeviceIDConnect(_freeNet._eosCore._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info)=>
         {
-            if(info.ResultCode == Epic.OnlineServices.Result.AccessDenied)
-            {
-                // 에픽 브랜드 리뷰를 받지 못해 아직 지원 안됨 
-            }
             if(info.ResultCode == Epic.OnlineServices.Result.NotFound)
             {
-                EOSWrapper.ConnectControl.CreateDeviceID(_eosNet._IConnect,(ref Epic.OnlineServices.Connect.CreateDeviceIdCallbackInfo info) =>
+                EOSWrapper.ConnectControl.CreateDeviceID(_freeNet._eosCore._IConnect,(ref Epic.OnlineServices.Connect.CreateDeviceIdCallbackInfo info) =>
                 {
                     if (info.ResultCode == Epic.OnlineServices.Result.Success)
                     {
-                        EOSWrapper.ConnectControl.DeviceIDConnect(_eosNet._IConnect, username);
+                        EOSWrapper.ConnectControl.DeviceIDConnect(_freeNet._eosCore._IConnect, username);
                     }
                 });
             }
-            else if (info.ResultCode == Epic.OnlineServices.Result.Success)
+            else if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnLoginSuccess))
             {
-                OnLoginSuccess(info.LocalUserId);
+                OnLoginSuccess(Result.Success, info.LocalUserId);
             }
         });
     }
     void OnEpicPortalLogin()
     {
-        var _eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
-        EOSWrapper.LoginControl.EpicPortalLogin(_eosNet._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
+        _waitingTransitionUI._transitionUI.AddNullTransition("Login",_waitingTransitionUI.UpdateWaitInfo);
+        EOSWrapper.LoginControl.EpicPortalLogin(_freeNet._eosCore._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
-            if (info.ResultCode == Epic.OnlineServices.Result.Success)
+            if(EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnLoginSuccess))
             {
-                EOSWrapper.ConnectControl.EpicIDConnect(_eosNet._IAuth, _eosNet._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
+                EOSWrapper.ConnectControl.EpicIDConnect(_freeNet._eosCore._IAuth, _freeNet._eosCore._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
                 {
-                    if (info.ResultCode == Epic.OnlineServices.Result.Success)
+                    if (info.ResultCode == Epic.OnlineServices.Result.InvalidUser)
                     {
-                        OnLoginSuccess(info.LocalUserId);
-                    }
-                    else if (info.ResultCode == Epic.OnlineServices.Result.InvalidUser)
-                    {
-                        EOSWrapper.ConnectControl.CreateUser(_eosNet._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
+                        EOSWrapper.ConnectControl.CreateUser(_freeNet._eosCore._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
                         {
-                            if (info.ResultCode == Epic.OnlineServices.Result.Success)
+                            if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnLoginSuccess))
                             {
-                                OnLoginSuccess(info.LocalUserId);
+                                OnLoginSuccess(Result.Success, info.LocalUserId);
                             }
                         });
+                    }
+                    else if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnLoginSuccess))
+                    {
+                        OnLoginSuccess(Result.Success, info.LocalUserId);
                     }
                 });
             }
@@ -93,26 +109,26 @@ public class LoginSceneManager : MonoBehaviour
     }
     void OnDeveloperLogin()
     {
-        var _eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
-        EOSWrapper.LoginControl.DeveloperToolLogin(_eosNet._IAuth, _host, _credential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
+        _waitingTransitionUI._transitionUI.AddNullTransition("Login", _waitingTransitionUI.UpdateWaitInfo);
+        EOSWrapper.LoginControl.DeveloperToolLogin(_freeNet._eosCore._IAuth, _host, _credential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
-            if (info.ResultCode == Epic.OnlineServices.Result.Success)
+            if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnLoginSuccess))
             {
-                EOSWrapper.ConnectControl.EpicIDConnect(_eosNet._IAuth, _eosNet._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
+                EOSWrapper.ConnectControl.EpicIDConnect(_freeNet._eosCore._IAuth, _freeNet._eosCore._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
                 {
-                    if (info.ResultCode == Epic.OnlineServices.Result.Success)
+                    if (info.ResultCode == Epic.OnlineServices.Result.InvalidUser)
                     {
-                        OnLoginSuccess(info.LocalUserId);
-                    }
-                    else if (info.ResultCode == Epic.OnlineServices.Result.InvalidUser)
-                    {
-                        EOSWrapper.ConnectControl.CreateUser(_eosNet._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
+                        EOSWrapper.ConnectControl.CreateUser(_freeNet._eosCore._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
                         {
-                            if (info.ResultCode == Epic.OnlineServices.Result.Success)
+                            if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnLoginSuccess))
                             {
-                                OnLoginSuccess(info.LocalUserId);
+                                OnLoginSuccess(Result.Success,info.LocalUserId);
                             }
                         });
+                    }
+                    else if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnLoginSuccess))
+                    {
+                        OnLoginSuccess(Result.Success, info.LocalUserId);
                     }
 
                 });

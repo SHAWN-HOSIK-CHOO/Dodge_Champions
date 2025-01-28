@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using static UnityEngine.UI.GridLayoutGroup;
 public class CoroutineHandler
@@ -7,16 +9,25 @@ public class CoroutineHandler
     MonoBehaviour _owner;
     Coroutine _coroutine;
     bool _IsStart;
+
+    Queue<int> _coroutineID;
+    int _lastID;
     public CoroutineHandler(MonoBehaviour owner)
     {
         _owner = owner;
         _coroutine = null;
         _IsStart = false;
+        _lastID = 0;
+        _coroutineID = new Queue<int>();
     }
     public void StopCoroutine()
     {
         if (_coroutine != null)
         {
+            if(_coroutineID.TryDequeue(out var id))
+            {
+                Debug.Log($"Coroutine{id} Stopped ");
+            }
             _owner.StopCoroutine(_coroutine);
             _coroutine = null;
             _IsStart = false;
@@ -27,44 +38,29 @@ public class CoroutineHandler
         _coroutine = _owner.StartCoroutine(coroutine);
         _IsStart = true;
     }
-    public IEnumerator Wait()
+    public int StartUniqueCoroutine(Func<int, IEnumerator> coroutineFunc, Action<int> onStart = null)
     {
-        if(_IsStart)
+        _lastID++;
+        _coroutineID.Enqueue(_lastID);
+        _owner.StartCoroutine(UniqueCoroutine(_lastID, coroutineFunc, onStart));
+        return _lastID;
+    }
+
+    private IEnumerator UniqueCoroutine(int id, Func<int, IEnumerator> coroutineFunc, Action<int> onStart = null)
+    {
+        while (_IsStart)
         {
             yield return null;
         }
-    }
-
-}
-public class CoroutineHandler<T> : CoroutineHandler where T : struct
-{
-    public T _flag { get; private set; }
-    public void SetFlag(T flag)
-    {
-        _flag = flag;
-    }
-    public CoroutineHandler(MonoBehaviour owner) : base(owner)
-    {
-        _flag = default(T);
-    }
-}
-
-public class CoroutineHandler<key,value> : CoroutineHandler
-{
-    public Dictionary<key, value> _params;
-    public void SetParams(key key, value val)
-    {
-        if (_params.TryGetValue(key, out var _))
+        if(_coroutineID.TryPeek(out var nextID))
         {
-            _params[key] = val;
+
+            if (id == nextID)
+            {
+                onStart?.Invoke(id);
+                Debug.Log($"Coroutine{id} Start ");
+                StartCoroutine(coroutineFunc(id));
+            }
         }
-        else
-        {
-            _params.Add(key, val);
-        }
-    }
-    public CoroutineHandler(MonoBehaviour owner) : base(owner)
-    {
-        _params = new Dictionary<key, value>();
     }
 }

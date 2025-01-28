@@ -3,8 +3,21 @@ using UnityEngine;
 
 public class SingletonMonoBehaviour<T> : MonoBehaviour
 {
-    // 싱글톤 객체는 SingletonSpawn,SingletonInitialize 를 호출할 것
-    // 객체를 올바르게 참조하기 위해 WaitSpawn , WaitInitialize 를 이용할 것
+    /* 사용 예시
+        void Awake()
+        {
+            if (SingletonSpawn(this))
+            {
+                base.Init();
+                Init();
+                SingletonInitialize();
+            }
+        }
+        protected void Init()
+        {
+
+        }
+    */
 
     /* Note
      * 싱글톤 객체 간의 참조가 생기는 경우

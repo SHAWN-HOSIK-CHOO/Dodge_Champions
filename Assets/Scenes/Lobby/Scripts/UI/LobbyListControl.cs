@@ -15,22 +15,24 @@ public class LobbyListControl : MonoBehaviour
     Button _findButton;
     [SerializeField]
     Button _joinButton;
+    [SerializeField]
+    Button _leaveButton;
 
     LobbyInfoUI _currentSelected;
     List<LobbyInfoUI> _currentLobbyInfoUI;
-    public event Action<LobbyInfoUI> _onJoinClicked;
+    public event Action<LobbyInfoUI> _onJoinButtonClicked;
     public event Action _onfindButtonClicked;
+    public event Action _onleaveButtonClicked;
 
     private void Awake()
     {
         _scrollControl = GetComponent<ScrollControl>();
         _currentLobbyInfoUI = new List<LobbyInfoUI>();
         SetCurrentSelectedLobbyInfoUI(null);
-
         _findButton.onClick.AddListener(OnClickFindButton);
         _joinButton.onClick.AddListener(OnClickJoinButton);
+        _leaveButton.onClick.AddListener(OnClickLeaveButton);
     }
-
 
     void SetCurrentSelectedLobbyInfoUI(LobbyInfoUI obj)
     {
@@ -64,14 +66,19 @@ public class LobbyListControl : MonoBehaviour
     {
         if(_currentSelected !=null)
         {
-            _onJoinClicked?.Invoke( _currentSelected );
+            _onJoinButtonClicked?.Invoke( _currentSelected );
         }
     }
     void OnClickFindButton()
      {
         _onfindButtonClicked?.Invoke();
      }
-    public void OnClickLobbyInfo(LobbyInfoUI lobby)
+
+    void OnClickLeaveButton()
+    {
+        _onleaveButtonClicked?.Invoke();
+    }
+    void OnClickLobbyInfo(LobbyInfoUI lobby)
     {
         SetCurrentSelectedLobbyInfoUI(lobby);
     }
@@ -90,6 +97,7 @@ public class LobbyListControl : MonoBehaviour
     {
         _joinButton.onClick.RemoveListener(OnClickJoinButton);
         _findButton.onClick.RemoveListener(OnClickFindButton);
+        _leaveButton.onClick.AddListener(OnClickLeaveButton);
         ReleasecurrentFoundLobbies();
     }
 }

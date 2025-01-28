@@ -87,7 +87,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
     public event Action<LobbyInviteRejectedCallbackInfo> _onInviteRejected;
     public event Action<LobbyInviteReceivedCallbackInfo> _onInviteReceived;
     public event Action<Result,EOS_Lobby> _onJoinLobby;
-    public event Action<Result,EOS_Lobby> _onLobbyLeave;
+    public event Action<Result,EOS_Lobby> _onLeaveLobby;
     #endregion
     public void CreateLobby(uint maxLobbyMember, LobbyType type, string lobbyInfo)
     {
@@ -207,16 +207,22 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
     }
     public void LeaveLobby()
     {
-        if (_currentLobby == null) return;
-        EOS_Lobby lobby = _currentLobby;
-        _currentLobby = null;
-        EOSWrapper.LobbyControl.LeaveLobby(_eosCore._ILobby, lobby._lobbyID, lobby._localPUID, (ref LeaveLobbyCallbackInfo info) =>
+        if (_currentLobby == null)
         {
-            if(ETC.ErrControl(info.ResultCode, _onLobbyLeave))
+            _onLeaveLobby?.Invoke(Result.Success,null);
+        }
+        else
+        {
+            EOS_Lobby lobby = _currentLobby;
+            _currentLobby = null;
+            EOSWrapper.LobbyControl.LeaveLobby(_eosCore._ILobby, lobby._lobbyID, lobby._localPUID, (ref LeaveLobbyCallbackInfo info) =>
             {
-                _onLobbyLeave?.Invoke(info.ResultCode, lobby);
-            }
-        });
+                if (ETC.ErrControl(info.ResultCode, _onLeaveLobby))
+                {
+                    _onLeaveLobby?.Invoke(info.ResultCode, lobby);
+                }
+            });
+        }
     }
     public void RemoveLobbyCallback()
     {
@@ -266,7 +272,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
             {
                 if (info.TargetUserId.ToString() == _currentLobby._lobbyOwner.ToString())
                 {
-                    _onLobbyLeave?.Invoke(Result.Success, _currentLobby);
+                    _onLeaveLobby?.Invoke(Result.Success, _currentLobby);
                     _currentLobby = null;
                 }
             }
