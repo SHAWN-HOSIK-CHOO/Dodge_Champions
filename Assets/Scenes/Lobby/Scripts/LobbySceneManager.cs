@@ -2,44 +2,46 @@ using Epic.OnlineServices;
 using Epic.OnlineServices.Lobby;
 using GameInput;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 public class LobbySceneManager : MonoBehaviour
 {
     [SerializeField]
-    LobbyControl _LobbyControl;
-
-    WaitingTransitionUI _waitingTransitionUI;
+    LobbyControl _lobbyControl;
 
     FreeNet _freeNet;
+    TransitionUI _transitionUI;
+    BasicUI _basicUI;
     IEnumerator Start()
     {
         yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
         _freeNet = FreeNet._instance;
-        yield return SingletonMonoBehaviour<WaitingTransitionUI>.WaitInitialize();
-        _waitingTransitionUI = WaitingTransitionUI._instance;
+        yield return SingletonMonoBehaviour<TransitionUI>.WaitInitialize();
+        _transitionUI = TransitionUI._instance;
+        _basicUI = _transitionUI.GetRootUI().GetComponentInChildren<BasicUI>();
 
-        _LobbyControl._onJoined += OnJoined;
-        _LobbyControl._onLeaved += OnLeaved;
+        _lobbyControl._onJoined += OnJoined;
+        _lobbyControl._onLeaved += OnLeaved;
 
-        _waitingTransitionUI.UpdateWaitInfoDetail("Load LobbyControl Success");
-        _waitingTransitionUI._transitionUI.MakeTransitionEnd("Load Lobby");
+        _basicUI._waitInfoDetail.text = "Load LobbyControl Success";
+        _transitionUI.MakeTransitionEnd("LoadLobby");
     }
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.L))
         {
-            _LobbyControl.gameObject.SetActive(!_LobbyControl.gameObject.activeSelf);
+            _lobbyControl.gameObject.SetActive(!_lobbyControl.gameObject.activeSelf);
         }
     }
     void OnLeaved(EOS_SingleLobbyManager.EOS_Lobby lobby)
     {
         _freeNet._NGOManager.Shutdown();
-        _LobbyControl.gameObject.SetActive(true);
+        _lobbyControl.gameObject.SetActive(true);
         Debug.Log("·Îºñ ¿¬°á ²÷±è");
     }
     void OnJoined(EOS_SingleLobbyManager.EOS_Lobby lobby)
     {
-        _LobbyControl.gameObject.SetActive(false);
+        _lobbyControl.gameObject.SetActive(false);
         Debug.Log("¿¬°á ½ÃÀÛ");
         if (lobby._attribute.TryGetValue("LobbyCode", out var attr))
         {
@@ -49,9 +51,9 @@ public class LobbySceneManager : MonoBehaviour
             _freeNet._NGOManager.OnClientStarted -= NGOConnected;
             _freeNet._NGOManager.OnClientStopped += NGODisConnected;
             _freeNet._NGOManager.OnClientStarted += NGOConnected;
-
-            _waitingTransitionUI.UpdateWaitInfoDetail("NGO Client Connect...");
-            _waitingTransitionUI._transitionUI.AddNullTransition("NGOClientConnect");
+            _basicUI._waitInfoDetail.text = "NGO Client Connect...";
+            var transition = new BasicTransition("NGOClientConnect", _basicUI._waitInfo);
+            _transitionUI.AddTransition(transition); 
             if (lobby._lobbyOwner.ToString() == lobby._localPUID.ToString())
             {
                 _freeNet.GetComponent<EOSNetcodeTransport>().StartHost(lobby._localPUID.ToString(), code);
@@ -73,12 +75,12 @@ public class LobbySceneManager : MonoBehaviour
     }
     void NGOConnected()
     {
-        _waitingTransitionUI.UpdateWaitInfoDetail("NGO Connect Success");
-        _waitingTransitionUI._transitionUI.MakeTransitionEnd("NGOClientConnect");
+        _basicUI._waitInfoDetail.text =  "NGO Connect Success";
+        _transitionUI.MakeTransitionEnd("NGOClientConnect");
     }
     private void OnDestroy()
     {
-        _LobbyControl._onJoined -= OnJoined;
+        _lobbyControl._onJoined -= OnJoined;
         _freeNet._NGOManager.OnClientStopped -= NGODisConnected;
         _freeNet._NGOManager.OnClientStarted -= NGOConnected;
     }

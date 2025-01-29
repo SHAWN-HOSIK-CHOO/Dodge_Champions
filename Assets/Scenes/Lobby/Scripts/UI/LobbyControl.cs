@@ -3,6 +3,7 @@ using Mono.Cecil.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using static EOS_SingleLobbyManager;
 
@@ -16,7 +17,8 @@ public class LobbyControl : MonoBehaviour
     FindLobbyByCodeUI _findLobbyByCodeUI;
  
     FreeNet _freeNet;
-    WaitingTransitionUI _waitingTransitionUI;
+    TransitionUI _transitionUI;
+    BasicUI _basicUI;
 
     public event Action<EOS_Lobby> _onJoined;
     public event Action<EOS_Lobby> _onLeaved;
@@ -33,8 +35,10 @@ public class LobbyControl : MonoBehaviour
     {
         yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
         _freeNet = FreeNet._instance;
-        yield return SingletonMonoBehaviour<WaitingTransitionUI>.WaitInitialize();
-        _waitingTransitionUI = WaitingTransitionUI._instance;
+        yield return SingletonMonoBehaviour<TransitionUI>.WaitInitialize();
+        _transitionUI = TransitionUI._instance;
+        _basicUI = _transitionUI.GetRootUI().GetComponentInChildren<BasicUI>();
+
 
         _freeNet._singleLobbyManager._onJoinLobby += OnJoinLobby;
         _freeNet._singleLobbyManager._onLeaveLobby += OnLeaveLobby;
@@ -48,38 +52,41 @@ public class LobbyControl : MonoBehaviour
     }
     void CreateLobby()
     {
-        _waitingTransitionUI._transitionUI.AddNullTransition("CreateLobby");
-        _waitingTransitionUI.UpdateWaitInfoDetail("Creating Lobby...");
+        var transition = new BasicTransition("CreateLobby", _basicUI._waitInfo);
+        _transitionUI.AddTransition(transition);
+        _basicUI._waitInfoDetail.text = "Creating Lobby...";
         _freeNet._singleLobbyManager.CreateLobby(_createLobbyUI.GetLobbymemberNum(),
                 _createLobbyUI.GetLobbyType(), _createLobbyUI.GetLobbyInfo());
     }
     void FindPublicLobby()
     {
-        _waitingTransitionUI.UpdateWaitInfoDetail("Finding Lobby...");
-        _waitingTransitionUI._transitionUI.AddNullTransition("FindingLobby");
+        var transition = new BasicTransition("FindLobby", _basicUI._waitInfo);
+        _transitionUI.AddTransition(transition);
+        _basicUI._waitInfoDetail.text = "Finding Lobby...";
         _freeNet._singleLobbyManager.FindPublicLobby(10,onComplete: (Result result, List<FoundLobby> list) =>
         {
             if (result == Result.Success)
             {
                 _lobbyListControl.SetLobbyList(list);
             }
-            _waitingTransitionUI.UpdateWaitInfoDetail($"{result}");
-            _waitingTransitionUI._transitionUI.MakeTransitionEnd("FindingLobby");
+            _basicUI._waitInfoDetail.text =  $"{result}";
+            _transitionUI.MakeTransitionEnd("FindLobby");
         });
     }
     void FindLobbyByCode()
     {
         string code = _findLobbyByCodeUI.GetCode();
-        _waitingTransitionUI.UpdateWaitInfoDetail("Finding Lobby...");
-        _waitingTransitionUI._transitionUI.AddNullTransition("FindingLobbyByCode");
+        _basicUI._waitInfoDetail.text = "Finding Lobby...";
+        var transition = new BasicTransition("FindLobbyByCode", _basicUI._waitInfo);
+        _transitionUI.AddTransition(transition);
         _freeNet._singleLobbyManager.FindLobbyByCode(10,code,(Result result ,List<FoundLobby> list)=>
         {
             if (result == Result.Success)
             {
                 _lobbyListControl.SetLobbyList(list);
             }
-            _waitingTransitionUI.UpdateWaitInfoDetail($"{result}");
-            _waitingTransitionUI._transitionUI.MakeTransitionEnd("FindingLobbyByCode");
+            _basicUI._waitInfoDetail.text = $"{result}";
+            _transitionUI.MakeTransitionEnd("FindLobbyByCode");
         });
     }
     void JoinFoundLobby(LobbyInfoUI lobby)
@@ -91,33 +98,34 @@ public class LobbyControl : MonoBehaviour
         _lobbyListControl.ReleasecurrentFoundLobbies();
         if (result == Result.Success)
         {
-            _waitingTransitionUI.UpdateWaitInfoDetail($"Success...");
+            _basicUI._waitInfoDetail.text = $"Success...";
             _onJoined?.Invoke(lobby);
         }
         else
         {
-            _waitingTransitionUI.UpdateWaitInfoDetail($"Fail... {result}");
+            _basicUI._waitInfoDetail.text = $"Fail... {result}";
         }
-        _waitingTransitionUI._transitionUI.MakeTransitionEnd("CreateLobby");
+        _transitionUI.MakeTransitionEnd("CreateLobby");
     }
     void OnLeaveLobby(Result result,EOS_Lobby lobby)
     {
         _lobbyListControl.ReleasecurrentFoundLobbies();
         if (result == Result.Success)
         {
-            _waitingTransitionUI.UpdateWaitInfoDetail($"Success...");
+            _basicUI._waitInfoDetail.text = $"Success...";
             _onLeaved?.Invoke(lobby);
         }
         else
         {
-            _waitingTransitionUI.UpdateWaitInfoDetail($"Fail... {result}");
+            _basicUI._waitInfoDetail.text = $"Fail... {result}";
         }
-        _waitingTransitionUI._transitionUI.MakeTransitionEnd("LeaveLobby");
+        _transitionUI.MakeTransitionEnd("LeaveLobby");
     }
     void LeaveLobby()
     {
-        _waitingTransitionUI.UpdateWaitInfoDetail($"Leave Lobby...");
-        _waitingTransitionUI._transitionUI.AddNullTransition("LeaveLobby");
+        _basicUI._waitInfoDetail.text = $"Leave Lobby...";
+        var transition = new BasicTransition("LeaveLobby", _basicUI._waitInfo);
+        _transitionUI.AddTransition(transition);
         _freeNet._singleLobbyManager.LeaveLobby();
     }
     

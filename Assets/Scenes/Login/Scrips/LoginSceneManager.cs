@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 public class LoginSceneManager : MonoBehaviour
 {
-    WaitingTransitionUI _waitingTransitionUI;
     FreeNet _freeNet;
 
     [SerializeField]
@@ -16,6 +15,10 @@ public class LoginSceneManager : MonoBehaviour
 
     [SerializeField]
     Button _epicPortalLogin;
+
+    TransitionUI _transitionUI;
+    BasicUI _basicUI;
+
 
     #region For Developer
     [SerializeField]
@@ -25,13 +28,13 @@ public class LoginSceneManager : MonoBehaviour
     [SerializeField]
     string _credential;
     #endregion
-
     private IEnumerator Start()
     {
-        yield return SingletonMonoBehaviour<WaitingTransitionUI>.WaitInitialize();
-        _waitingTransitionUI = WaitingTransitionUI._instance;
         yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
         _freeNet = FreeNet._instance;
+        yield return SingletonMonoBehaviour<TransitionUI>.WaitInitialize();
+        _transitionUI = TransitionUI._instance;
+        _basicUI = _transitionUI.GetRootUI().GetComponentInChildren<BasicUI>();
 
         _guestLogin.onClick.AddListener(OnGuestLogin);
         _epicPortalLogin.onClick.AddListener(OnEpicPortalLogin);
@@ -43,23 +46,26 @@ public class LoginSceneManager : MonoBehaviour
         if (result == Result.Success)
         {
             _freeNet._localUser.SetlocaPUID(localPUID.ToString());
-            _waitingTransitionUI.UpdateWaitInfoDetail($"LoginSuccess");
 
-            _waitingTransitionUI._transitionUI.MakeTransitionEnd("Login");
-            _waitingTransitionUI._transitionUI.AddNullTransition("Load Lobby", _waitingTransitionUI.UpdateWaitInfo);
-            _waitingTransitionUI.UpdateWaitInfoDetail($"Load Lobby...");
+            _basicUI._waitInfoDetail.text = $"LoginSuccess";
+            _transitionUI.MakeTransitionEnd("Login");
+            var transition = new BasicTransition("LoadLobby", _basicUI._waitInfo);
+            _transitionUI.AddTransition(transition);
+            _basicUI._waitInfoDetail.text = $"Load Lobby...";
             SceneManager.LoadScene("LobbyScene");
         }
         else
         {
-            _waitingTransitionUI.UpdateWaitInfoDetail($"Fail... {result}");
-            _waitingTransitionUI._transitionUI.MakeTransitionEnd("Login");
+            _basicUI._waitInfoDetail.text =  $"Fail... {result}";
+            _transitionUI.MakeTransitionEnd("Login");
         }
     }
 
     void OnGuestLogin()
     {
-        _waitingTransitionUI._transitionUI.AddNullTransition("Login",_waitingTransitionUI.UpdateWaitInfo);
+        _basicUI._waitInfoDetail.text = "Login...";
+        var transition = new BasicTransition("Login", _basicUI._waitInfo);
+        _transitionUI.AddTransition(transition);
         string username = "I_AM_User";
         EOSWrapper.ConnectControl.DeviceIDConnect(_freeNet._eosCore._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info)=>
         {
@@ -81,7 +87,9 @@ public class LoginSceneManager : MonoBehaviour
     }
     void OnEpicPortalLogin()
     {
-        _waitingTransitionUI._transitionUI.AddNullTransition("Login",_waitingTransitionUI.UpdateWaitInfo);
+        _basicUI._waitInfoDetail.text = "Login...";
+        var transition = new BasicTransition("Login", _basicUI._waitInfo);
+        _transitionUI.AddTransition(transition);
         EOSWrapper.LoginControl.EpicPortalLogin(_freeNet._eosCore._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if(EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnLoginSuccess))
@@ -109,7 +117,9 @@ public class LoginSceneManager : MonoBehaviour
     }
     void OnDeveloperLogin()
     {
-        _waitingTransitionUI._transitionUI.AddNullTransition("Login", _waitingTransitionUI.UpdateWaitInfo);
+        _basicUI._waitInfoDetail.text = "Login...";
+        var transition = new BasicTransition("Login", _basicUI._waitInfo);
+        _transitionUI.AddTransition(transition);
         EOSWrapper.LoginControl.DeveloperToolLogin(_freeNet._eosCore._IAuth, _host, _credential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnLoginSuccess))

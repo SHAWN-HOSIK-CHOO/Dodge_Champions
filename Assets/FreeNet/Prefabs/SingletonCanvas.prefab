@@ -260,8 +260,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6139210079636592522}
+  - component: {fileID: 3352482208409154806}
   m_Layer: 5
-  m_Name: WaitUI
+  m_Name: BasicUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -289,6 +290,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3352482208409154806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3475466078838255178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65f249a75aaffc4498ebf081975ab883, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _waitInfo: {fileID: 3860705479348233468}
+  _waitInfoDetail: {fileID: 7457353824428794934}
+  _BasicPannel: {fileID: 4762342908241876491}
 --- !u!1 &3592380331342177108
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,9 +314,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5344972428734674800}
-  - component: {fileID: 7176038408151392304}
+  - component: {fileID: 4493735779176182240}
   m_Layer: 5
-  m_Name: WaitingTransitionUI
+  m_Name: RootUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -326,7 +342,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 700.00006, y: 316.8382}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &7176038408151392304
+--- !u!114 &4493735779176182240
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -335,11 +351,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3592380331342177108}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b775e29e48a8464fbb042decb0bfdb8, type: 3}
+  m_Script: {fileID: 11500000, guid: 2757b03fa1bc863428c317616c2186ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _waitInfoText: {fileID: 3860705479348233468}
-  _waitInfoDetailText: {fileID: 7457353824428794934}
 --- !u!1 &4762342908241876491
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,7 +366,7 @@ GameObject:
   - component: {fileID: 7621503955558874506}
   - component: {fileID: 6505162368944955835}
   m_Layer: 5
-  m_Name: WaitingPannel
+  m_Name: BasicPannel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -465,7 +479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0ee7b456ce5b342985863523b16306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _UIRoot: {fileID: 3475466078838255178}
+  _UIRoot: {fileID: 3592380331342177108}
   _Canvas: {fileID: 5198477775766675577}
 --- !u!225 &5198477775766675577
 CanvasGroup:

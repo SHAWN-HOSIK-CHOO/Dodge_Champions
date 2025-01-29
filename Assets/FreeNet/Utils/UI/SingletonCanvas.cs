@@ -8,8 +8,5 @@ public class SingletonCanvas : SingletonMonoBehaviour<SingletonCanvas>
         {
             SingletonInitialize();
         }
-
-
-
     }
 }

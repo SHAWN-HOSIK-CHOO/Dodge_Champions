@@ -5561,7 +5561,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c4de24c5817a8e4ba9765ddbca7a0f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _LobbyControl: {fileID: 570484388}
+  _lobbyControl: {fileID: 570484388}
+  _waitInfoDetail: {fileID: 0}
 --- !u!1 &1898733889
 GameObject:
   m_ObjectHideFlags: 0
@@ -6305,7 +6306,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6416284273796443792}
   m_HandleRect: {fileID: 8835395055657822120}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
