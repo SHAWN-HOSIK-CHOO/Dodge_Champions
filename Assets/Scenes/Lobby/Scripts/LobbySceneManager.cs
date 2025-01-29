@@ -26,13 +26,6 @@ public class LobbySceneManager : MonoBehaviour
         _basicUI._waitInfoDetail.text = "Load LobbyControl Success";
         _transitionUI.MakeTransitionEnd("LoadLobby");
     }
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            _lobbyControl.gameObject.SetActive(!_lobbyControl.gameObject.activeSelf);
-        }
-    }
     void OnLeaved(EOS_SingleLobbyManager.EOS_Lobby lobby)
     {
         _freeNet._NGOManager.Shutdown();
@@ -69,9 +62,6 @@ public class LobbySceneManager : MonoBehaviour
     void NGODisConnected(bool b)
     {
         // b represent hostmode
-
-
-
     }
     void NGOConnected()
     {
