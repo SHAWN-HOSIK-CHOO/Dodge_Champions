@@ -176,6 +176,9 @@ public class NetMoveControl : NetBindInput
             var finalSpeed = yRotation * AccelCorrection(Vector3.Scale(moveflag, _speed), timeoffset);
             vector = finalSpeed * timeoffset;
         }
+
+
+        /* 좀 이상한데
         var expectedPos = transform.position + vector;
         Vector3 posoffset = (expectedPos - _netAllowMoveCenter);
         if (posoffset.magnitude > _netAllowMoveRadius)
@@ -185,7 +188,7 @@ public class NetMoveControl : NetBindInput
                 var allowpos = _netAllowMoveCenter + Vector3.Normalize(posoffset) * _netAllowMoveRadius;
                 vector = allowpos - transform.position;
             }
-        }
+        }*/
         _characterController.Move(vector);
         transform.forward = _direction * Vector3.forward * timeoffset;
         if (IsServer)

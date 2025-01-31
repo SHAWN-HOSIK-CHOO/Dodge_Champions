@@ -75,11 +75,9 @@ namespace GameLobby
             startGameButton.onClick.AddListener(Callback_Btn_StartGame);
             
             InitializeDropdownOptions();
-            
-            //if(NetworkManager.Singleton != null)
-            //    NetworkManager.Singleton.OnClientConnectedCallback += Callback_onClientsConnected;
 
-            FreeNet._instance._NGOManager.OnClientConnectedCallback += Callback_onClientsConnected;
+            if (NetworkManager.Singleton != null)
+                NetworkManager.Singleton.OnClientConnectedCallback += Callback_onClientsConnected;
 
             dancerAnimator.SetBool(Start1,true);
             
