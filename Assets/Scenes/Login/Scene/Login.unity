@@ -1270,7 +1270,7 @@ MonoBehaviour:
   _epicPortalLogin: {fileID: 569341624}
   _developerLogin: {fileID: 903542348}
   _host: localhost:8000
-  _credential: HP
+  _credential: hello
 --- !u!1 &1469580779
 GameObject:
   m_ObjectHideFlags: 0

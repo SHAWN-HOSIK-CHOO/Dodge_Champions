@@ -86,6 +86,7 @@ public class LobbyListControl : MonoBehaviour
         {
             _scrollControl.RemoveContent(item.gameObject);
             item._onClick -= OnClickLobbyInfo;
+            item._foundLobby.Release();
             Destroy(item);
         }
         _currentLobbyInfoUI.Clear();

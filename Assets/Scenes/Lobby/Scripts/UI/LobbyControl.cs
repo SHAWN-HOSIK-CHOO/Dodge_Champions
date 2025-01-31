@@ -51,9 +51,9 @@ public class LobbyControl : MonoBehaviour
     }
     void CreateLobby()
     {
-        var transition = new BasicTransition("CreateLobby", _basicUI._waitInfo);
+        var transition = new BasicTransition("JoinLobby", _basicUI._waitInfo);
         _transitionUI.AddTransition(transition);
-        _basicUI._waitInfoDetail.text = "Creating Lobby...";
+        _basicUI._waitInfoDetail.text = "Joining Lobby...";
         _freeNet._singleLobbyManager.CreateLobby(_createLobbyUI.GetLobbymemberNum(),
                 _createLobbyUI.GetLobbyType(), _createLobbyUI.GetLobbyInfo());
     }
@@ -90,6 +90,9 @@ public class LobbyControl : MonoBehaviour
     }
     void JoinFoundLobby(LobbyInfoUI lobby)
     {
+        var transition = new BasicTransition("JoinLobby", _basicUI._waitInfo);
+        _transitionUI.AddTransition(transition);
+        _basicUI._waitInfoDetail.text = "Joining Lobby...";
         lobby._foundLobby.JoinLobby();
     }
     void OnJoinLobby(Result result,EOS_Lobby lobby)
@@ -104,7 +107,7 @@ public class LobbyControl : MonoBehaviour
         {
             _basicUI._waitInfoDetail.text = $"Fail... {result}";
         }
-        _transitionUI.MakeTransitionEnd("CreateLobby");
+        _transitionUI.MakeTransitionEnd("JoinLobby");
     }
     void OnLeaveLobby(Result result,EOS_Lobby lobby)
     {

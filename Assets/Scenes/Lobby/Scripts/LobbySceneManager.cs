@@ -1,9 +1,6 @@
-using Epic.OnlineServices;
-using Epic.OnlineServices.Lobby;
-using GameInput;
 using System.Collections;
-using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class LobbySceneManager : MonoBehaviour
 {
     [SerializeField]
@@ -36,10 +33,9 @@ public class LobbySceneManager : MonoBehaviour
     {
         _lobbyControl.gameObject.SetActive(false);
         Debug.Log("연결 시작");
-        if (lobby._attribute.TryGetValue("LobbyCode", out var attr))
+        if (lobby.GetLobbyCode(out var attr))
         {
             string code = attr.Data.Value.Value.AsUtf8;
-
             _freeNet._NGOManager.OnClientStopped -= NGODisConnected;
             _freeNet._NGOManager.OnClientStarted -= NGOConnected;
             _freeNet._NGOManager.OnClientStopped += NGODisConnected;
@@ -53,20 +49,23 @@ public class LobbySceneManager : MonoBehaviour
             }
             else
             {
-                _freeNet.GetComponent<EOSNetcodeTransport>().StartClient(lobby._lobbyID.ToString(), lobby._lobbyOwner.ToString(), code);
+                _freeNet.GetComponent<EOSNetcodeTransport>().StartClient(lobby._localPUID.ToString(), lobby._lobbyOwner.ToString(), code);
             }
-
-
         }
     }
     void NGODisConnected(bool b)
     {
-        // b represent hostmode
+
     }
     void NGOConnected()
     {
         _basicUI._waitInfoDetail.text =  "NGO Connect Success";
         _transitionUI.MakeTransitionEnd("NGOClientConnect");
+
+        var transition = new BasicTransition("LoadGame", _basicUI._waitInfo);
+        _transitionUI.AddTransition(transition);
+        _basicUI._waitInfoDetail.text = $"Load Game...";
+        SceneManager.LoadScene("Game");
     }
     private void OnDestroy()
     {

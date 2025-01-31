@@ -30,30 +30,42 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
         public LobbyDetailsInfo _info;
         EOS_SingleLobbyManager _lobbyManager;
         public Dictionary<string, Epic.OnlineServices.Lobby.Attribute> _attribute;
-        public FoundLobby(EOS_SingleLobbyManager lobbyManager,  LobbyDetailsInfo info)
+        LobbyDetails _details;
+
+        public FoundLobby(EOS_SingleLobbyManager lobbyManager, LobbyDetails details)
         {
             _lobbyManager = lobbyManager;
-            _info = info;
-            if(ETC.ErrControl(LobbyControl.CopyLobbyDetailsByLobbyID(lobbyManager._eosCore._ILobby, info.LobbyId, lobbyManager._localUser.GetLocalPUID(),out var details)))
+            _details = details;
+             _attribute = new Dictionary<string, Epic.OnlineServices.Lobby.Attribute>();
+
+            uint attrCount = EOSWrapper.LobbyControl.GetLobbyAttributeCount(details);
+            for (uint k = 0; k < attrCount; k++)
             {
-                _attribute = new Dictionary<string, Epic.OnlineServices.Lobby.Attribute>();
-                uint attrCount = EOSWrapper.LobbyControl.GetLobbyAttributeCount(details);
-                for (uint k = 0; k < attrCount; k++)
+                if (ETC.ErrControl(LobbyControl.GetLobbyAttributeByIndex(details, k, out var attr)))
                 {
-                    if (ETC.ErrControl(LobbyControl.GetLobbyAttributeByIndex(details, k, out var attr)))
-                    {
-                        _attribute.Add(attr.Value.Data.Value.Key, attr.Value);
-                    }
+                    _attribute.Add(attr.Value.Data.Value.Key, attr.Value);
                 }
-                details.Release();
+            }
+            if (ETC.ErrControl(LobbyControl.GetLobbyDetailsInfo(_details, out var info)))
+            {
+                _info = info.Value;
+            }
+        }
+        
+        public void Release()
+        {
+            if(_details == null)
+            {
+                _details.Release();
             }
         }
         public void JoinLobby()
         {
-            if (ETC.ErrControl(LobbyControl.CopyLobbyDetailsByLobbyID(_lobbyManager._eosCore._ILobby, _info.LobbyId, _lobbyManager._localUser.GetLocalPUID(), out var details)))
+            if(_details!= null)
             {
-                _lobbyManager.JoinLobby(details);
+               _lobbyManager.JoinLobby(_details);
             }
+            _details = null;
         }
     }
     public void Release()
@@ -93,9 +105,9 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
     {
         Epic.OnlineServices.Lobby.AttributeData[] searchParams = new Epic.OnlineServices.Lobby.AttributeData[3]
 {
-            new AttributeData{ Key = "LobbyType", Value = type.ToString()},
-            new AttributeData { Key = "LobbyCode", Value = GenerateLobbyCode()},
-            new AttributeData { Key = "LobbyInfo", Value = lobbyInfo}
+            new AttributeData{ Key = "LOBBYTYPE", Value = type.ToString()},
+            new AttributeData { Key = "LOBBYCODE", Value = GenerateLobbyCode()},
+            new AttributeData { Key = "LOBBYINFO", Value = lobbyInfo}
         };
         var options = new CreateLobbyOptions()
         {
@@ -106,7 +118,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
             PresenceEnabled = true,
             AllowInvites = true,
             DisableHostMigration = true,
-            EnableRTCRoom = true,
+            EnableRTCRoom = false, // 음성 채팅 
             EnableJoinById = true,
         };
         LobbyControl.CreateLobby(_eosCore._ILobby, options, (ref CreateLobbyCallbackInfo info) =>
@@ -141,16 +153,16 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
     public void FindLobbyByCode(uint findNum, string lobbyCode, Action<Result, List<FoundLobby>> onComplete = null)
     {
         List<Epic.OnlineServices.Lobby.AttributeData> searchParams = new List<AttributeData>();
-        searchParams.Add(new AttributeData { Key = "LobbyCode", Value = lobbyCode });
+        searchParams.Add(new AttributeData { Key = "LOBBYCODE", Value = lobbyCode });
         FindLobby(findNum, searchParams, onComplete);
     }
     public void FindPublicLobby(uint findNum, string lobbyCode = null, string lobbyInfo = null, Action<Result, List<FoundLobby>> onComplete = null)
     {
         List<Epic.OnlineServices.Lobby.AttributeData> searchParams = new List<AttributeData>();
-        searchParams.Add(new AttributeData { Key = "LobbyType", Value = LobbyType.Public.ToString() });
+        searchParams.Add(new AttributeData { Key = "LOBBYTYPE", Value = LobbyType.Public.ToString() });
         if (lobbyCode != null)
         {
-            searchParams.Add(new AttributeData { Key = "LobbyCode", Value = lobbyCode });
+            searchParams.Add(new AttributeData { Key = "LOBBYCODE", Value = lobbyCode });
         }
 
         FindLobby(findNum, searchParams,onComplete);
@@ -177,11 +189,8 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
                     {
                         if (ETC.ErrControl(LobbyControl.CopySearchResultByIndex(search, i, out var details),onComplete))
                         {
-                            if (ETC.ErrControl(LobbyControl.GetLobbyDetailsInfo(details, out var lobbyInfo), onComplete))
-                            {
-                                var lobby = new FoundLobby(this, lobbyInfo.Value);
-                                findlobbies.Add(lobby);
-                            }
+                            var lobby = new FoundLobby(this, details);
+                            findlobbies.Add(lobby);
                         }
                     }
                     onComplete?.Invoke(Result.Success,findlobbies);
@@ -377,6 +386,20 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
                 details.Release();
             }
         }
+
+        public bool GetLobbyInfo(out Epic.OnlineServices.Lobby.Attribute attr)
+        {
+            return _attribute.TryGetValue("LOBBYINFO", out attr);
+        }
+        public bool GetLobbyType(out Epic.OnlineServices.Lobby.Attribute attr)
+        {
+            return _attribute.TryGetValue("LOBBYTYPE", out attr);
+        }
+        public bool GetLobbyCode(out Epic.OnlineServices.Lobby.Attribute attr)
+        {
+            return _attribute.TryGetValue("LOBBYCODE", out attr);
+        }
+        
         public void UpdateMembers(LobbyDetails details)
         {
             uint memberCount = EOSWrapper.LobbyControl.GetCurrentMemberCount(details);

@@ -202,7 +202,7 @@ public class EOSNetcodeTransport : NetworkTransport
     }
     void OnServerConnectionStateChangedCB((int connectid, EOS_Socket.Connection connection) info)
     {
-        if (networkManager.IsServer && !networkManager.IsClient)
+        if (networkManager.IsServer && info.connection._remoteRole != EOS_Core.Role.localClient)
         {
             _ServerConnectionChangeInfo.Enqueue(new ServerConnectionChangeInfo()
             {
@@ -233,7 +233,7 @@ public class EOSNetcodeTransport : NetworkTransport
     }
     void OnClientConnectionStateChangedCB(EOS_Socket.Connection connection)
     {
-        if (!networkManager.IsHost)
+        if (networkManager.IsClient && connection._remoteRole != EOS_Core.Role.localHost)
         {
             _ClientConnectionChangeInfo.Enqueue(connection);
         }

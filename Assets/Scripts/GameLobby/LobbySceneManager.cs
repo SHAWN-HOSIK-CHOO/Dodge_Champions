@@ -50,6 +50,7 @@ namespace GameLobby
         public Button exitApplicationDb;
         public Button singlePlayButtonDb;
 
+
         async void Start()
         {
             int randomColorIndex = Random.Range(0, clearColors.Length);
@@ -75,9 +76,11 @@ namespace GameLobby
             
             InitializeDropdownOptions();
             
-            if(NetworkManager.Singleton != null)
-                NetworkManager.Singleton.OnClientConnectedCallback += Callback_onClientsConnected;
-            
+            //if(NetworkManager.Singleton != null)
+            //    NetworkManager.Singleton.OnClientConnectedCallback += Callback_onClientsConnected;
+
+            FreeNet._instance._NGOManager.OnClientConnectedCallback += Callback_onClientsConnected;
+
             dancerAnimator.SetBool(Start1,true);
             
             SetPhase0Objects(true);
@@ -185,7 +188,6 @@ namespace GameLobby
             joinCodeText.text = "Code: " + joinCode;
             RelayServerData relayServerData = AllocationUtils.ToRelayServerData(allocation,"dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-
             NetworkManager.Singleton.StartHost();
         }
 

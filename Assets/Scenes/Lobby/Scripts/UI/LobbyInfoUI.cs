@@ -46,17 +46,17 @@ public class LobbyInfoUI : MonoBehaviour
     {
         _foundLobby = lobby;
         _lobbyMemberText.text = $"({_foundLobby._info.AvailableSlots}/{_foundLobby._info.MaxMembers})";
-        if (_foundLobby._attribute.TryGetValue("LobbyType", out var typeVal))
+        if (_foundLobby._attribute.TryGetValue("LOBBYTYPE", out var typeVal))
         {
             string type = typeVal.Data.Value.Value.AsUtf8;
             _lobbyTypeText.text = type;
         }
-        if (_foundLobby._attribute.TryGetValue("LobbyCode", out var codeVal))
+        if (_foundLobby._attribute.TryGetValue("LOBBYCODE", out var codeVal))
         {
             string code = codeVal.Data.Value.Value.AsUtf8;
             _lobbyCodeText.text = code;
         }
-        if (_foundLobby._attribute.TryGetValue("LobbyInfo", out var infoVal))
+        if (_foundLobby._attribute.TryGetValue("LOBBYINFO", out var infoVal))
         {
             string info = infoVal.Data.Value.Value.AsUtf8;
             _lobbyInfoText.text = info;

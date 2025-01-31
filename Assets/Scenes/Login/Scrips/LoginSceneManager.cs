@@ -1,7 +1,5 @@
 using Epic.OnlineServices;
-using Epic.OnlineServices.Presence;
 using System.Collections;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
