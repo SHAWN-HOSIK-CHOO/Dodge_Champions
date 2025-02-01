@@ -153,7 +153,7 @@ namespace CharacterAttributes
                     
                     GameManager.Instance.cinemachineCamera.GetComponent<CinemachineCamera>().Follow =
                         cinemachineCameraTarget.transform;
-                    GameManager.Instance.cinemachineCamera.transform.rotation = Quaternion.Euler(20f,0f,0f);
+                    GameManager.Instance.cinemachineCamera.transform.rotation = Quaternion.Euler(30f,0f,0f);
                 }
                 else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
                 {
