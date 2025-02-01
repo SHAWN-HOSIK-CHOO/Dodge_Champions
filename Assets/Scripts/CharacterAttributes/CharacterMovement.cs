@@ -7,7 +7,6 @@ using Unity.Cinemachine;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace CharacterAttributes
@@ -28,7 +27,9 @@ namespace CharacterAttributes
 
         public AudioClip landingAudioClip;
         public AudioClip[] footstepAudioClips;
-        [Range(0, 1)] public float footstepAudioVolume = 0.5f;
+
+        [Range(0, 1)] 
+        public float footstepAudioVolume = 0.5f;
 
         [Space(10)]
         [Tooltip("The height the player can jump")]
@@ -253,6 +254,9 @@ namespace CharacterAttributes
         {
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundedOffset,
                                                  transform.position.z);
+
+
+
             grounded = Physics.CheckSphere(spherePosition, groundedRadius, groundLayers,
                                            QueryTriggerInteraction.Ignore);
 
@@ -521,7 +525,6 @@ namespace CharacterAttributes
             shouldLockMovement = true;
             yield return new WaitForSeconds(nSec);
             shouldLockMovement = false;
-            
         }
         
         [ServerRpc]
