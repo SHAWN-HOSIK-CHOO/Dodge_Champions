@@ -22,6 +22,7 @@ public class TransitionUI : SingletonMonoBehaviour<TransitionUI>
         {
             _isDone = b;
         }
+        public virtual void Release() { }
         public virtual IEnumerator StartTransition()
         {
             while(!_isDone)
@@ -142,6 +143,7 @@ public class TransitionUI : SingletonMonoBehaviour<TransitionUI>
                 yield return transition.StartTransition();
             }
             _transitionDicts.Remove(transition._transitionName);
+            transition.Release();
         }
         _transitionUICoroutine.StopCoroutine();
     }

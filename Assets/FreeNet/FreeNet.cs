@@ -36,16 +36,9 @@ public class FreeNet : SingletonMonoBehaviour<FreeNet>
 
     private void OnApplicationQuit()
     {
-        try
+        if(_eosCore._InitState == EOS_Core.InitState.Suceess)
         {
             _singleLobbyManager.Release();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning("Release exception: " + ex.Message);
-        }
-        finally
-        {
             _eosCore.Release();
         }
     }

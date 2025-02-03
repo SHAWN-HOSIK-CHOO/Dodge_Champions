@@ -5,13 +5,17 @@ using UnityEngine;
 
 public class BasicTransition : TransitionUI.Transition
 {
-    [SerializeField]
-    TextMeshProUGUI _waitInfoText;
+    BasicUI _basicUI;
     float _elapsedTime;
-    public BasicTransition(string transitionName, TextMeshProUGUI waitInfoText)
+    float _endTime;
+    string _waitInfoDetail;
+    string _doneMsg;
+    public BasicTransition(string transitionName, BasicUI basisUI, string waitInfoDetail, float endTime = 0.5f)
     {
-        _waitInfoText = waitInfoText;
         _transitionName = transitionName;
+        _basicUI = basisUI;
+        _waitInfoDetail = waitInfoDetail;
+        _endTime = endTime;
     }
     public override IEnumerator StartTransition()
     {
@@ -20,8 +24,14 @@ public class BasicTransition : TransitionUI.Transition
             _elapsedTime += Time.deltaTime;
             int quotient = (int)(_elapsedTime / 0.3) + 1;
             if(quotient > 4) quotient = 0;
-            _waitInfoText.text = "Wait For " + new string('.', quotient);
+            _basicUI._waitInfo.text = "Wait For " + new string('.', quotient);
+            _basicUI._waitInfoDetail.text = _waitInfoDetail;
             yield return null;
+        }
+        _elapsedTime = 0;
+        while(_elapsedTime < _endTime)
+        {
+            _elapsedTime += Time.deltaTime;
         }
     }
 }

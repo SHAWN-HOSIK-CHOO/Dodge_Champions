@@ -51,17 +51,15 @@ public class LobbyControl : MonoBehaviour
     }
     void CreateLobby()
     {
-        var transition = new BasicTransition("JoinLobby", _basicUI._waitInfo);
+        var transition = new BasicTransition("JoinLobby", _basicUI, "Joining Lobby...");
         _transitionUI.AddTransition(transition);
-        _basicUI._waitInfoDetail.text = "Joining Lobby...";
         _freeNet._singleLobbyManager.CreateLobby(_createLobbyUI.GetLobbymemberNum(),
                 _createLobbyUI.GetLobbyType(), _createLobbyUI.GetLobbyInfo());
     }
     void FindPublicLobby()
     {
-        var transition = new BasicTransition("FindLobby", _basicUI._waitInfo);
+        var transition = new BasicTransition("FindLobby", _basicUI, "Finding Lobby...");
         _transitionUI.AddTransition(transition);
-        _basicUI._waitInfoDetail.text = "Finding Lobby...";
         _freeNet._singleLobbyManager.FindPublicLobby(10,onComplete: (Result result, List<FoundLobby> list) =>
         {
             if (result == Result.Success)
@@ -75,8 +73,7 @@ public class LobbyControl : MonoBehaviour
     void FindLobbyByCode()
     {
         string code = _findLobbyByCodeUI.GetCode();
-        _basicUI._waitInfoDetail.text = "Finding Lobby...";
-        var transition = new BasicTransition("FindLobbyByCode", _basicUI._waitInfo);
+        var transition = new BasicTransition("FindLobbyByCode", _basicUI, "Finding Lobby...");
         _transitionUI.AddTransition(transition);
         _freeNet._singleLobbyManager.FindLobbyByCode(10,code,(Result result ,List<FoundLobby> list)=>
         {
@@ -90,9 +87,8 @@ public class LobbyControl : MonoBehaviour
     }
     void JoinFoundLobby(LobbyInfoUI lobby)
     {
-        var transition = new BasicTransition("JoinLobby", _basicUI._waitInfo);
+        var transition = new BasicTransition("JoinLobby", _basicUI, "Joining Lobby...");
         _transitionUI.AddTransition(transition);
-        _basicUI._waitInfoDetail.text = "Joining Lobby...";
         lobby._foundLobby.JoinLobby();
     }
     void OnJoinLobby(Result result,EOS_Lobby lobby)
@@ -125,8 +121,7 @@ public class LobbyControl : MonoBehaviour
     }
     void LeaveLobby()
     {
-        _basicUI._waitInfoDetail.text = $"Leave Lobby...";
-        var transition = new BasicTransition("LeaveLobby", _basicUI._waitInfo);
+        var transition = new BasicTransition("LeaveLobby", _basicUI, "Leave Lobby...");
         _transitionUI.AddTransition(transition);
         _freeNet._singleLobbyManager.LeaveLobby();
     }

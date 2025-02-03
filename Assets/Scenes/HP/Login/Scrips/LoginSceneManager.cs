@@ -44,12 +44,10 @@ public class LoginSceneManager : MonoBehaviour
         if (result == Result.Success)
         {
             _freeNet._localUser.SetlocaPUID(localPUID.ToString());
-
             _basicUI._waitInfoDetail.text = $"LoginSuccess";
             _transitionUI.MakeTransitionEnd("Login");
-            var transition = new BasicTransition("LoadLobby", _basicUI._waitInfo);
+            var transition = new BasicTransition("LoadLobby", _basicUI, "Load Lobby...");
             _transitionUI.AddTransition(transition);
-            _basicUI._waitInfoDetail.text = $"Load Lobby...";
             SceneManager.LoadScene("LobbyScene");
         }
         else
@@ -61,8 +59,7 @@ public class LoginSceneManager : MonoBehaviour
 
     void OnGuestLogin()
     {
-        _basicUI._waitInfoDetail.text = "Login...";
-        var transition = new BasicTransition("Login", _basicUI._waitInfo);
+        var transition = new BasicTransition("Login", _basicUI, "Login...");
         _transitionUI.AddTransition(transition);
         string username = "I_AM_User";
         EOSWrapper.ConnectControl.DeviceIDConnect(_freeNet._eosCore._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info)=>
@@ -85,8 +82,7 @@ public class LoginSceneManager : MonoBehaviour
     }
     void OnEpicPortalLogin()
     {
-        _basicUI._waitInfoDetail.text = "Login...";
-        var transition = new BasicTransition("Login", _basicUI._waitInfo);
+        var transition = new BasicTransition("Login", _basicUI, "Login...");
         _transitionUI.AddTransition(transition);
         EOSWrapper.LoginControl.EpicPortalLogin(_freeNet._eosCore._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
@@ -115,8 +111,7 @@ public class LoginSceneManager : MonoBehaviour
     }
     void OnDeveloperLogin()
     {
-        _basicUI._waitInfoDetail.text = "Login...";
-        var transition = new BasicTransition("Login", _basicUI._waitInfo);
+        var transition = new BasicTransition("Login", _basicUI, "Login...");
         _transitionUI.AddTransition(transition);
         EOSWrapper.LoginControl.DeveloperToolLogin(_freeNet._eosCore._IAuth, _host, _credential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {

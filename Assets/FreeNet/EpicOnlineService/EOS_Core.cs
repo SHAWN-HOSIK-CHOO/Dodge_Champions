@@ -95,20 +95,12 @@ public partial class EOS_Core : SingletonMonoBehaviour<EOS_Core>
     }
     public void Release()
     {
-        try
+        if(_InitState== InitState.Suceess)
         {
             ReleaseP2P();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning("Release exception: " + ex.Message);
-        }
-        finally
-        {
-            //PlatformInterface가 올바르게 정리되지 않을 시 에디터 프리징 현상 발생
             _IPlatform?.Release();
             PlatformInterface.Shutdown();
-            _factory?.UnLoadDLL();
+            _factory.UnLoadDLL();
         }
     }
     void OnApplicationFocus(bool hasFocus)

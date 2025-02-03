@@ -40,8 +40,7 @@ public class LobbySceneManager : MonoBehaviour
             _freeNet._NGOManager.OnClientStarted -= NGOConnected;
             _freeNet._NGOManager.OnClientStopped += NGODisConnected;
             _freeNet._NGOManager.OnClientStarted += NGOConnected;
-            _basicUI._waitInfoDetail.text = "NGO Client Connect...";
-            var transition = new BasicTransition("NGOClientConnect", _basicUI._waitInfo);
+            var transition = new BasicTransition("NGOClientConnect", _basicUI, "NGO Client Connect...");
             _transitionUI.AddTransition(transition); 
             if (lobby._lobbyOwner.ToString() == lobby._localPUID.ToString())
             {
@@ -62,9 +61,8 @@ public class LobbySceneManager : MonoBehaviour
         _basicUI._waitInfoDetail.text =  "NGO Connect Success";
         _transitionUI.MakeTransitionEnd("NGOClientConnect");
 
-        var transition = new BasicTransition("LoadGame", _basicUI._waitInfo);
+        var transition = new BasicTransition("LoadGame", _basicUI, "Load Game...");
         _transitionUI.AddTransition(transition);
-        _basicUI._waitInfoDetail.text = $"Load Game...";
         SceneManager.LoadScene("Game");
     }
     private void OnDestroy()
