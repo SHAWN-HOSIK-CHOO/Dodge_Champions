@@ -2,10 +2,11 @@
     "name": "FreeNet",
     "rootNamespace": "",
     "references": [
-        "GUID:bccedd11c5a90844fba7e978fd92f3b1",
+        "GUID:7acc6c9c7be6a124dba141751e9dcf8b",
+        "GUID:7ce37d13020ee2f42a42324c914a2778",
+        "GUID:d95dd7762259c8c489fffa9dda82a13f",
         "GUID:1491147abca9d7d4bb7105af628b223e",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "GUID:bccedd11c5a90844fba7e978fd92f3b1"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

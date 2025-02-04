@@ -1,0 +1,17 @@
+{
+    "name": "EOSFreeNet",
+    "rootNamespace": "",
+    "references": [
+        "GUID:bccedd11c5a90844fba7e978fd92f3b1",
+        "GUID:d95dd7762259c8c489fffa9dda82a13f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,16 +1,18 @@
+using Codice.CM.Common;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-public class MoveControl : BindInput
+public class MoveControl : MonoBehaviour
 {
-    protected bool _Jump;
-    protected bool _onGround;
-
+    CharacterController _characterController;
+    [Header("Set Params")]
     [SerializeField]
     Vector3 _speed;
     [Tooltip("The radius of the grounded check")]
     float _groundedRadius = 0.28f;
+    [SerializeField]
+    bool _useGravity;
     [SerializeField]
     [Tooltip("What layers the character uses as ground")]
     LayerMask _groundLayers;
@@ -24,47 +26,128 @@ public class MoveControl : BindInput
     [Tooltip("Handle speedChangeRate on Stop")]
     float _stopAccel = 10.0f;
     float _gravityAcceleration = -9.8f;
+    [SerializeField]
+    [Tooltip("Mouse Speed multiplyer")]
+    float _mouseMultiplyer;
+    [SerializeField]
+    [Tooltip("Pitch Range")]
+    Vector2 _pitchRange;
+
+    [SerializeField]
+    string _bindingMapName;
+    protected bool _onGround;
+    InputBinding _inputBinding;
+    DefaultBinding _defaultBinding;
+    JumpBinding _jumpBinding;
+
+    #region Debug
+    [Header("For Debugging"), Space(20)]
+    [SerializeField]
+    protected bool _Jump;
+    [SerializeField]
+    Vector3 _moveflag;
+    [SerializeField]
+    Vector2 _mouseflag;
+    [SerializeField]
+    float _pitch;
+    [SerializeField]
+    float _yaw;
+    #endregion
 
     protected void Awake()
     {
-        base.Awake();
+        _characterController = GetComponent<CharacterController>();
+        _inputBinding = GetComponent<InputBinding>();
     }
     protected void Start()
     {
-        base.Start();
-        _direction = Quaternion.identity;
-
+        BindInput();
     }
-    private void FixedUpdate()
+
+    void BindInput()
     {
-        if (_onGround = CheckGround())
+        _defaultBinding = new DefaultBinding(_inputBinding, _bindingMapName);
+        _jumpBinding = new JumpBinding(_inputBinding, _bindingMapName);
+        _inputBinding.EnableMap(_bindingMapName);
+        _defaultBinding._onMoveInputChanged += OnMoveInputChange;
+        _defaultBinding._onMouseInputChanged += OnMouseInputChanged;
+        _jumpBinding._onJumpInputChanged += OnJumpInputChanged;
+    }
+
+
+    private void Update()
+    {
+        MoveUpdate(Time.deltaTime);
+    }
+
+    void OnJumpInputChanged(float val)
+    {
+        if(val == 1)
         {
-            _speed.y = 0;
-            if (_Jump)
+            if(_onGround)
             {
-                _speed.y +=  Mathf.Sqrt(_jumpHeight * -2f * _gravityAcceleration);
-                _Jump = false;
+                _Jump = true;
             }
         }
-        else
-        {
-            // Gravity
-            _speed.y += _gravityAcceleration * Time.fixedDeltaTime;
-        }
-        var moveflag = _moveInput; 
-        if(_speed.y != 0 ) moveflag.y = 1;
-        Quaternion yRotation = Quaternion.Euler(0, _direction.eulerAngles.y, 0);
-        var finalSpeed = yRotation* AccelCorrection(Vector3.Scale(moveflag, _speed),Time.fixedDeltaTime);
-        var vector = finalSpeed * Time.fixedDeltaTime;
-        _characterController.Move(vector);
-        transform.forward = _direction * Vector3.forward * Time.fixedDeltaTime;
     }
-    Vector3 AccelCorrection(Vector3 speed,float deltatime)
+    void OnMoveInputChange(Vector3 val)
     {
-        Quaternion yRotation = Quaternion.Euler(0, -_direction.eulerAngles.y, 0);
-        Vector3 charactercontrollerSpeed = yRotation*_characterController.velocity;
+        _moveflag = val;
+    }
+    void OnMouseInputChanged(Vector2 val)
+    {
+        _mouseflag = val * _mouseMultiplyer;
+        _pitch -= _mouseflag.y;
+        _yaw += _mouseflag.x;
+        _pitch = Mathf.Clamp(_pitch, _pitchRange.x, _pitchRange.y);
+        _pitch = _pitch % 360;
+        _yaw = _yaw % 360;
+    }
+    private void OnDestroy()
+    {
+        _defaultBinding._onMoveInputChanged -= OnMoveInputChange;
+        _defaultBinding._onMouseInputChanged -= OnMouseInputChanged;
+        _jumpBinding._onJumpInputChanged -= OnJumpInputChanged;
+    }
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if(((1 << hit.gameObject.layer) & _groundLayers)!= 0)
+        {
+            _onGround = true;
+            Debug.Log("On Ground");
+        }
+    }
+    void MoveUpdate(float deltaTime)
+    {
+        if (_useGravity)
+        {
+            _speed.y +=  _gravityAcceleration * deltaTime;
+            if (_onGround )
+            {
+                _speed.y = Mathf.Clamp(_speed.y, -3, 0);
+                if (_Jump)
+                {
+                    _speed.y = Mathf.Sqrt(_jumpHeight * -2f * _gravityAcceleration);
+                    _Jump = false;
+                }
+            }
+        }
+        _onGround = false;
+        var moveflag = _moveflag;
+        moveflag.y = 1;
+        Quaternion pitchRotation = Quaternion.AngleAxis(_pitch, Vector3.right);
+        Quaternion yawRotation = Quaternion.AngleAxis(_yaw, Vector3.up);
+        var finalSpeed = yawRotation * AccelCorrection(Vector3.Scale(moveflag, _speed), deltaTime);
+        var vector = finalSpeed * deltaTime;
+        _characterController.Move(vector);
+        transform.rotation = yawRotation * pitchRotation;
+    }
+    Vector3 AccelCorrection(Vector3 speed, float deltatime)
+    {
+        Quaternion yawRotation = Quaternion.AngleAxis(-_yaw, Vector3.up);
+        Vector3 charactercontrollerSpeed = yawRotation * _characterController.velocity;
         Vector3 correctedSpeed = speed;
-        if(charactercontrollerSpeed.x > speed.x)
+        if (charactercontrollerSpeed.x > speed.x)
         {
             float speedDelta = (speed.x == 0) ? _stopAccel : _moveAccel;
             correctedSpeed.x = charactercontrollerSpeed.x - speedDelta * deltatime;
@@ -93,7 +176,7 @@ public class MoveControl : BindInput
     }
     private void OnDrawGizmos()
     {
-        if(_characterController != null)
+        if (_characterController != null)
         {
             DrawGroundSphere(CheckGround());
         }
@@ -106,19 +189,12 @@ public class MoveControl : BindInput
     }
     bool CheckGround()
     {
-        if(_characterController.isGrounded)
+        if (_characterController.isGrounded)
         {
             var spherePosition = _characterController.bounds.center - new Vector3(0, _characterController.bounds.extents.y, 0);
             bool grounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayers, QueryTriggerInteraction.Ignore);
             return grounded;
         }
         return false;
-    }
-    public override void OnJumpPressed(InputAction.CallbackContext ctx)
-    {
-        if (_onGround)
-        {
-            _Jump = true;
-        }
     }
 }

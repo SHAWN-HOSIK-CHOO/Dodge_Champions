@@ -122,7 +122,7 @@ public class NetMoveControl : NetBindInput
     private void FixedUpdate()
     {
         if (!IsSpawned) return;
-
+        _characterController.includeLayers = _groundLayers;
         var vector = Vector3.zero;
         float timeoffset = Time.fixedDeltaTime;
         if (IsOwner)
@@ -197,7 +197,6 @@ public class NetMoveControl : NetBindInput
         }
     }
 
-
     Vector3 AccelCorrection(Vector3 speed ,float deltatime)
     {
         Quaternion yRotation = Quaternion.Euler(0, -_direction.eulerAngles.y, 0);
@@ -241,21 +240,17 @@ public class NetMoveControl : NetBindInput
     void DrawGroundSphere(bool isGrounded)
     {
         var spherePosition = _characterController.bounds.center - new Vector3(0, _characterController.bounds.extents.y, 0);
+        bool grounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayers, QueryTriggerInteraction.Ignore);
+        if(_characterController.isGrounded != grounded)
+        {
+            Debug.Log($"Collision Check Not Matched ,{grounded}");
+        }
         Gizmos.color = _characterController.isGrounded ? Color.red : Color.green;
         Gizmos.DrawSphere(spherePosition, _groundedRadius);
     }
     bool CheckGround()
     {
-        if (_characterController.isGrounded)
-        {
-            var spherePosition = _characterController.bounds.center - new Vector3(0, _characterController.bounds.extents.y, 0);
-            bool grounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayers, QueryTriggerInteraction.Ignore);
-            return grounded;
-        }
-
-        var spheredPosition = _characterController.bounds.center - new Vector3(0, _characterController.bounds.extents.y, 0);
-        bool groundded = Physics.CheckSphere(spheredPosition, _groundedRadius, _groundLayers, QueryTriggerInteraction.Ignore);
-        return false;
+        return _characterController.isGrounded;
     }
     public override void OnJumpPressed(InputAction.CallbackContext ctx)
     {

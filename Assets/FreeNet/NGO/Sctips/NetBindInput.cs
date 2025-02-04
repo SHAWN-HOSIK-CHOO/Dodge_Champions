@@ -25,11 +25,11 @@ public class NetBindInput : NetworkBehaviour
         base.OnNetworkSpawn();
         if(IsOwner)
         {
-            MappingInput();
+            Bind();
         }
     }
 
-    void MappingInput()
+    void Bind()
     {
         _playerInput.actions["Up"].performed += OnUpPressed;
         _playerInput.actions["Up"].canceled += OnUpReleased;
