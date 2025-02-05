@@ -1,8 +1,4 @@
-using Codice.CM.Common;
-using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 public class MoveControl : MonoBehaviour
 {
     CharacterController _characterController;

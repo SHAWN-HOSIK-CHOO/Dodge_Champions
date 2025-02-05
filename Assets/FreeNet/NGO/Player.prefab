@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6030666341877120928}
   - component: {fileID: 1821432571754583972}
   - component: {fileID: 6306402010976341907}
+  - component: {fileID: 5629754450256647608}
   - component: {fileID: 1678819028739430265}
   m_Layer: 0
   m_Name: Player
@@ -195,7 +196,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &1678819028739430265
+--- !u!114 &5629754450256647608
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -204,22 +205,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 5525177631966649491}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab8fe5d6d31dd8e47a6ece1a3749edc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1678819028739430265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5525177631966649491}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7249c2ac8369cb44092563dc1c523cc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  _moveInput: {x: 0, y: 0, z: 0}
-  _direction: {x: 0, y: 0, z: 0, w: 0}
   _speed: {x: 5, y: 0, z: 5}
+  _useGravity: 0
   _groundLayers:
     serializedVersion: 2
     m_Bits: 1
   _jumpHeight: 1.2
   _moveAccel: 10
   _stopAccel: 30
-  _allowMoveRadius: 3
-  _netAllowMoveRadius: 0
-  _netAllowMoveCenter: {x: 0, y: 0, z: 0}
+  _mouseMultiplyer: 0
+  _pitchRange: {x: 0, y: 0}
+  _bindingMapName: 
+  _Jump: 0
+  _moveflag: {x: 0, y: 0, z: 0}
+  _mouseflag: {x: 0, y: 0}
+  _pitch: 0
+  _yaw: 0
 --- !u!1 &5954813422033451444
 GameObject:
   m_ObjectHideFlags: 0

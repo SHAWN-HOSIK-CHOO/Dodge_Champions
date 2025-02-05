@@ -4,7 +4,7 @@ using Unity.Netcode;
 public class NetworkHUD : MonoBehaviour
 {
     private bool showHud = true; // HUD 표시 여부
-
+    public GameObject _spawnerPrefab;
     private void OnGUI()
     {
         if (showHud)
@@ -75,12 +75,14 @@ public class NetworkHUD : MonoBehaviour
     private void StartHost()
     {
         NetworkManager.Singleton.StartHost();
+        SpawnNetworkObject.CreateSpawner(_spawnerPrefab);
     }
 
     // 서버 시작
     private void StartServer()
     {
         NetworkManager.Singleton.StartServer();
+        SpawnNetworkObject.CreateSpawner(_spawnerPrefab);
     }
 
     // 클라이언트 시작
