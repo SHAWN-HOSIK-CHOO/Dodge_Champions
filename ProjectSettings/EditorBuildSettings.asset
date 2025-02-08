@@ -8,22 +8,22 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/HP/Lobby/Scene/AcitveLobbyScene.unity
     guid: 1b3818ba478f440409927d0b8f67cdea
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HP/Login/Scene/Login.unity
     guid: 5ce5c67851c918241bf346210fafe496
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HP/Lobby/Scene/LobbyScene.unity
     guid: 3f27bea648c14804fa1d612b11e110e4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HP/Lobby/Scene/Game.unity
     guid: 80930130cf9b2494194aeca5316200d4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Lobby.unity
     guid: 0e5cb1940f7efc448be00baf653f0fad
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Stage.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SinglePlayStage.unity
     guid: 839c778c80e4ab4429c69368a6fd88b9
   m_configObjects:

@@ -84,8 +84,7 @@ namespace Game
             currentAttackPlayerID   = currentAttackPlayerID == localClientID ? enemyClientID : localClientID;
             isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
 
-            _turnTime                                       = 0f;
-            UIManager.Instance.turnCoolDownImage.fillAmount = 0f;
+            _turnTime = 0f;
             
             if (isLocalPlayerAttackTurn)
             {
@@ -118,7 +117,8 @@ namespace Game
         private IEnumerator CoTurnTimeChecker(float times)
         {
             float elapsedTime = 0f;
-
+            UIManager.Instance.turnCoolDownImage.fillAmount = 0f;
+            
             while (elapsedTime <= times)
             {
                 elapsedTime += Time.deltaTime;
@@ -131,12 +131,8 @@ namespace Game
 
             UIManager.Instance.turnCoolDownImage.fillAmount = 1f;
             
-            if (IsOwner)
-            {
-                SwapTurnServerRPC();
-            }
-            
             _timeCheckerCoroutine = null;
+            SwapTurnServerRPC();
         }
         
         [ServerRpc]

@@ -517,6 +517,11 @@ namespace CharacterAttributes
                 {
                     PlacePositionServerRPC(spawnTransforms[index].position, spawnTransforms[index].rotation);
                 }
+                
+                if (GameManager.Instance.isLocalPlayerAttackTurn)
+                {
+                    GameManager.Instance.SwapTurnServerRPC();
+                }
             }
         }
 
@@ -565,20 +570,20 @@ namespace CharacterAttributes
                 characterController.enabled = true;
             }
 
-            if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-            {
-                if (GameManager.Instance.isLocalPlayerAttackTurn)
-                {
-                    GameManager.Instance.SwapTurnServerRPC();
-                }
-            }
-            else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
-            {
-                if (SinglePlayerGM.Instance.isPlayerTurn)
-                {
-                    SinglePlayerGM.Instance.SwitchTurn();
-                }
-            }
+            // if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+            // {
+            //     if (GameManager.Instance.isLocalPlayerAttackTurn)
+            //     {
+            //         GameManager.Instance.SwapTurnServerRPC();
+            //     }
+            // }
+            // else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
+            // {
+            //     if (SinglePlayerGM.Instance.isPlayerTurn)
+            //     {
+            //         SinglePlayerGM.Instance.SwitchTurn();
+            //     }
+            // }
         }
     }
 }
