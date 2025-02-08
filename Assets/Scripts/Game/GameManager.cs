@@ -132,7 +132,9 @@ namespace Game
             UIManager.Instance.turnCoolDownImage.fillAmount = 1f;
             
             _timeCheckerCoroutine = null;
-            SwapTurnServerRPC();
+            
+            if(IsOwner)
+                SwapTurnServerRPC();
         }
         
         [ServerRpc]
