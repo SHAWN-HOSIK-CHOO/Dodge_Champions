@@ -100,18 +100,20 @@ namespace GameInput
             _characterManager.RequestTurnSwapServerRPC();
         }
         
+        private bool _isAttackAlreadyPressed = false;
+        
         public void OnAttackPressed(InputAction.CallbackContext ctx)
         {
             Debug.Log($"Canthrowball : {canThrowBall} and hitApproved : {_characterManager.hitApproved}");
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
                 if(SinglePlayerGM.Instance.IsGameReadyToStart && _characterManager.hitApproved && 
-                   SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                   SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement&& !_isAttackAlreadyPressed)
                     AttackPressed();
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
                 if (GameManager.Instance.isGameReadyToStart && _characterManager.hitApproved && 
-                    GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement)
+                    GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement&& !_isAttackAlreadyPressed)
                 {
                     AttackPressed();
                 }
@@ -119,6 +121,7 @@ namespace GameInput
 
         private void AttackPressed()
         {
+            _isAttackAlreadyPressed = true;
             _localCharacterMovement.LayerTransition(true);
             _characterBallLauncher.SpawnBallServerRPC();
         }
@@ -128,7 +131,7 @@ namespace GameInput
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
                 if (SinglePlayerGM.Instance.IsGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn  && _characterManager.hitApproved && 
-                    canThrowBall                               && !_localCharacterMovement.shouldLockMovement)
+                    canThrowBall                               && !_localCharacterMovement.shouldLockMovement&& _isAttackAlreadyPressed)
                 {
                     //TODO: Fill image 초기화
                     AttackReleased();
@@ -137,7 +140,7 @@ namespace GameInput
             }
             else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
                 if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && 
-                    canThrowBall && _characterManager.hitApproved && !_localCharacterMovement.shouldLockMovement)
+                    canThrowBall && _characterManager.hitApproved && !_localCharacterMovement.shouldLockMovement&& _isAttackAlreadyPressed)
                 {
                     UIManager.Instance.coolDownImage.fillAmount = 0f; 
                     AttackReleased();
@@ -195,6 +198,8 @@ namespace GameInput
             canThrowBall = true;
             
             _allowThrowAfterNSecCoroutine = null;
+            
+            _isAttackAlreadyPressed = false;
         }
         
         public void OnActionPressed(InputAction.CallbackContext ctx)

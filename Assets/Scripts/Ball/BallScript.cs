@@ -70,6 +70,11 @@ namespace Ball
             {
                 _canStart      = true;
                 _startPosition = startPosition;
+                
+                if (startPosition == _targetPosition)
+                {
+                    Destroy(this.gameObject);
+                }
             }
         }
         

@@ -95,6 +95,11 @@ namespace Game
                 localPlayer.GetComponent<CharacterManager>().hitApproved = true;
                 enemyPlayer.GetComponent<CharacterManager>().hitApproved = false;
                 InputManager.Instance.canThrowBall = true;
+                
+                if (enemyPlayer.GetComponent<CharacterBallLauncher>().instantiatedBall != null)
+                {
+                    enemyPlayer.GetComponent<CharacterBallLauncher>().DestroyInstantiatedBall();
+                }
             }
             else
             {
@@ -105,6 +110,11 @@ namespace Game
                 InputManager.Instance.canThrowBall = false;
                 localPlayer.GetComponent<CharacterManager>().hitApproved = false;
                 enemyPlayer.GetComponent<CharacterManager>().hitApproved = true;
+                
+                if (localPlayer.GetComponent<CharacterBallLauncher>().instantiatedBall != null)
+                {
+                    localPlayer.GetComponent<CharacterBallLauncher>().DestroyInstantiatedBall();
+                }
             }
 
             if (_timeCheckerCoroutine != null)

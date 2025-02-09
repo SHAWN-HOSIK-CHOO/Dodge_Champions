@@ -23,6 +23,12 @@ namespace CharacterAttributes
           }
        }
 
+       public void DestroyInstantiatedBall()
+       {
+          Destroy(instantiatedBall.gameObject);
+          instantiatedBall = null;
+       }
+       
        [ServerRpc]
        public void SpawnBallServerRPC()
        {
@@ -32,6 +38,9 @@ namespace CharacterAttributes
        [ClientRpc]
        private void SpawnBallClientRPC()
        {
+          if(instantiatedBall !=null)
+             return;
+          
           Transform ballSpawnPosition = this.GetComponent<CharacterManager>().ballSpawnPosition.transform;
 
           instantiatedBall = Instantiate(pfCurrentBall, ballSpawnPosition.position, ballSpawnPosition.rotation);
@@ -70,6 +79,7 @@ namespace CharacterAttributes
           {
              instantiatedBall.transform.parent = null;
              instantiatedBall.GetComponent<BallScript>().StartCommand(instantiatedBall.transform.position);
+             instantiatedBall = null;
           }
        }
     }
