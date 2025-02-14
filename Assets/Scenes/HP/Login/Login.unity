@@ -269,6 +269,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 1079e6c9d130b8f4692a87dbc7a5b73f, type: 2}
     - target: {fileID: 5638840595219564629, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
+      propertyPath: maxPacketsPerClient
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5638840595219564629, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
       propertyPath: _incomingQueueMaxSizeBytes
       value: 1048576
       objectReference: {fileID: 0}
@@ -1215,7 +1219,7 @@ MonoBehaviour:
   _epicPortalLogin: {fileID: 569341624}
   _developerLogin: {fileID: 903542348}
   _host: localhost:8000
-  _credential: hello
+  _credential: HP
 --- !u!1 &1469580779
 GameObject:
   m_ObjectHideFlags: 0

@@ -44,7 +44,7 @@ public class LobbySceneManager : NetworkBehaviour
     [Rpc(SendTo.SpecifiedInParams, RequireOwnership = true)]
     public void StartGameRpc(string serverPuid, string code, RpcParams rpcParams = default)
     {
-        string localPUID = EOS_LocalUser._instance._localPUID._localpuid;
+        string localPUID = EOS_LocalUser._instance._localPUID._puid;
         if (localPUID == serverPuid)
         {
             NetworkManager.Singleton.Shutdown();

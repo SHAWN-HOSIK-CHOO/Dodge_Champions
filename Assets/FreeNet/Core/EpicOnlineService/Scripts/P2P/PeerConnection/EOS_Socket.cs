@@ -84,7 +84,7 @@ public class EOS_Socket
         {
             var Requestoptions = new AddNotifyPeerConnectionRequestOptions()
             {
-                LocalUserId = _localPUID._localPUID,
+                LocalUserId = _localPUID._PUID,
                 SocketId = _socketID
             };
             _onRequestHandle = eosNet._IP2P.AddNotifyPeerConnectionRequest(ref Requestoptions, Role.RemotePeer, (ref OnIncomingConnectionRequestInfo info) =>
@@ -101,7 +101,7 @@ public class EOS_Socket
         {
             var ClosedOptions = new AddNotifyPeerConnectionClosedOptions()
             {
-                LocalUserId = _localPUID._localPUID,
+                LocalUserId = _localPUID._PUID,
                 SocketId = _socketID
             };
             _onClosedHandle = eosNet._IP2P.AddNotifyPeerConnectionClosed(ref ClosedOptions, Role.RemotePeer, (ref OnRemoteConnectionClosedInfo info) =>
@@ -118,7 +118,7 @@ public class EOS_Socket
         {
             var options = new AddNotifyPeerConnectionEstablishedOptions()
             {
-                LocalUserId = _localPUID._localPUID,
+                LocalUserId = _localPUID._PUID,
                 SocketId = _socketID
             };
             _onEstablishedHandle = eosNet._IP2P.AddNotifyPeerConnectionEstablished(ref options, Role.RemotePeer, (ref OnPeerConnectionEstablishedInfo info) =>
@@ -135,7 +135,7 @@ public class EOS_Socket
         {
             var options = new AddNotifyPeerConnectionInterruptedOptions()
             {
-                LocalUserId = _localPUID._localPUID,
+                LocalUserId = _localPUID._PUID,
                 SocketId = _socketID
             };
             _onInterruptedHandle = eosNet._IP2P.AddNotifyPeerConnectionInterrupted(ref options, Role.RemotePeer, (ref OnPeerConnectionInterruptedInfo info) =>
@@ -173,7 +173,7 @@ public class EOS_Socket
         Role remoterole = (Role)info.ClientData;
         if (remoterole == Role.RemotePeer)
         {
-            if (!EOSWrapper.P2PControl.AcceptConnection(eosNet._IP2P, _localPUID._localPUID, info.RemoteUserId, _socketID))
+            if (!EOSWrapper.P2PControl.AcceptConnection(eosNet._IP2P, _localPUID._PUID, info.RemoteUserId, _socketID))
             {
                 Debug.LogError($"연결 실패");
             }
@@ -183,7 +183,7 @@ public class EOS_Socket
             _onEstablished?.Invoke(new OnPeerConnectionEstablishedInfo()
             {
                 ClientData = remoterole,
-                LocalUserId = _localPUID._localPUID,
+                LocalUserId = _localPUID._PUID,
                 RemoteUserId = info.RemoteUserId,
                 SocketId = _socketID,
             });
@@ -193,7 +193,7 @@ public class EOS_Socket
                 _onRequest?.Invoke(new OnIncomingConnectionRequestInfo()
                 {
                     ClientData = Role.localHost,
-                    LocalUserId = _localPUID._localPUID,
+                    LocalUserId = _localPUID._PUID,
                     RemoteUserId = info.RemoteUserId,
                     SocketId = _socketID,
                 });
@@ -204,18 +204,20 @@ public class EOS_Socket
     {
         var eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
         EOS_Core.Role remoterole = (EOS_Core.Role)info.ClientData;
-        if (_Connections.TryGetValue(remoterole, info.RemoteUserId.ToString(), out var connection))
+
+        var remotePUID = new EOSWrapper.ETC.PUID(info.RemoteUserId);
+        if (_Connections.TryGetValue(remoterole, remotePUID._puid, out var connection))
         {
             connection.Release();
-            _Connections.Remove(remoterole, info.RemoteUserId.ToString());
+            _Connections.Remove(remoterole, remotePUID._puid);
 
             if (remoterole == EOS_Core.Role.localClient)
             {
-                StopConnect(EOS_Core.Role.localHost, info.RemoteUserId.ToString());
+                StopConnect(EOS_Core.Role.localHost, remotePUID._puid);
             }
             else if (remoterole == EOS_Core.Role.localHost)
             {
-                StopConnect(EOS_Core.Role.localClient, info.RemoteUserId.ToString());
+                StopConnect(EOS_Core.Role.localClient, remotePUID._puid);
             }
         }
     }
@@ -223,7 +225,7 @@ public class EOS_Socket
     {
         EOS_Core.Role remoterole = (EOS_Core.Role)info.ClientData;
         var connection = new Connection(remoterole, info.RemoteUserId.ToString());
-        _Connections.TryAdd(remoterole, connection._remotePUID.ToString(), connection);
+        _Connections.TryAdd(remoterole, connection._remotePUID._puid, connection);
         _onMakeConnection?.Invoke(connection);
         connection.SetState(Connection.State.Connected);
     }
@@ -231,39 +233,41 @@ public class EOS_Socket
     {
 
     }
-    public bool GetConnection(EOS_Core.Role role, string remotePUID,out Connection Outconnection)
+    public bool GetConnection(EOS_Core.Role role, EOSWrapper.ETC.PUID remotePUID,out Connection Outconnection)
     {
-       return _Connections.TryGetValue(role, remotePUID, out Outconnection);
+       return _Connections.TryGetValue(role, remotePUID._puid, out Outconnection);
     }
-    public void StartConnect(ProductUserId remotePUID)
+    public void StartConnect(EOSWrapper.ETC.PUID remotePUID)
     {
         var eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
-        if( _localPUID.ToString()== remotePUID.ToString())
+        if( _localPUID._puid == remotePUID._puid)
         {
             _onRequest?.Invoke(new OnIncomingConnectionRequestInfo()
             {
                 ClientData = Role.localClient,
-                LocalUserId = _localPUID._localPUID,
-                RemoteUserId = remotePUID,
+                LocalUserId = _localPUID._PUID,
+                RemoteUserId = remotePUID._PUID,
                 SocketId = _socketID,
             });
         }
         else
         {
-            if (!EOSWrapper.P2PControl.AcceptConnection(eosNet._IP2P, _localPUID._localPUID, remotePUID, _socketID))
+            if (!EOSWrapper.P2PControl.AcceptConnection(eosNet._IP2P, _localPUID._PUID, remotePUID._PUID, _socketID))
             {
                 Debug.LogError($"연결 실패");
             }
         }
     }
-    public void StopConnect(EOS_Core.Role role, string remotePUID)
+    public void StopConnect(EOS_Core.Role role, string remotePuid)
     {
+
+        var  remotePUID = new EOSWrapper.ETC.PUID(remotePuid);
         var eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
         if(GetConnection(role,remotePUID,out var connection))
         {
             if (connection._remoteRole == Role.RemotePeer)
             {
-                if (!EOSWrapper.P2PControl.CloseConnection(eosNet._IP2P, _localPUID._localPUID, connection._remotePUID._localPUID, _socketID))
+                if (!EOSWrapper.P2PControl.CloseConnection(eosNet._IP2P, _localPUID._PUID, connection._remotePUID._PUID, _socketID))
                 {
                     Debug.LogError($"연결 끊기 실패");
                 }
@@ -273,8 +277,8 @@ public class EOS_Socket
                 _onClosed?.Invoke(new OnRemoteConnectionClosedInfo()
                 {
                     ClientData = connection._remoteRole,
-                    LocalUserId = _localPUID._localPUID,
-                    RemoteUserId = connection._remotePUID._localPUID,
+                    LocalUserId = _localPUID._PUID,
+                    RemoteUserId = connection._remotePUID._PUID,
                     SocketId = _socketID,
                 });
             }

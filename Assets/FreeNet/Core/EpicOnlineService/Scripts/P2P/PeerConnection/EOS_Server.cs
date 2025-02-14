@@ -61,11 +61,11 @@ public class EOS_Server : EOS_Peer
         {
             if (_localPUID == puid)
             {
-                return _socket.GetConnection(EOS_Core.Role.localClient, puid._localpuid, out connection);
+                return _socket.GetConnection(EOS_Core.Role.localClient, puid, out connection);
             }
             else
             {
-                return _socket.GetConnection(EOS_Core.Role.RemotePeer, puid._localpuid, out connection);
+                return _socket.GetConnection(EOS_Core.Role.RemotePeer, puid, out connection);
             }
         }
         return false;
@@ -113,14 +113,14 @@ public class EOS_Server : EOS_Peer
     {
         if (GetPUID(connectionId, out var puid))
         {
-            if(puid._localpuid == _localPUID._localpuid)
+            if(puid._puid == _localPUID._puid)
             {
                 _eosNet.SendLocal(_socket, EOS_Core.Role.localClient, _channel, segment);
 
             }
             else
             {
-                _eosNet.SendPeer(_socket, ProductUserId.FromString(puid._localpuid), _channel, segment, reliability);
+                _eosNet.SendPeer(_socket, ProductUserId.FromString(puid._puid), _channel, segment, reliability);
             }
         }
     }
@@ -130,7 +130,7 @@ public class EOS_Server : EOS_Peer
         if (remoterole != EOS_Core.Role.localHost)
         {
             AddMapping(_GetNewConnectIDDelegate(remoterole), info._remotePUID);
-            if (_socket.GetConnection(remoterole, info._remotePUID.ToString(), out var connection))
+            if (_socket.GetConnection(remoterole, info._remotePUID, out var connection))
             {
                 connection._onEnqueuePacket += OnServerEnqueuePacket;
                 connection._onConnectionStateChanged += OnConnectionStateChangedCB;
@@ -149,10 +149,11 @@ public class EOS_Server : EOS_Peer
         var remoterole = (EOS_Core.Role)info.ClientData;
         if (remoterole != EOS_Core.Role.localHost)
         {
-            if (GetConnectID(new EOSWrapper.ETC.PUID(info.RemoteUserId), out var id))
+            var remotePUID = new EOSWrapper.ETC.PUID(info.RemoteUserId);
+            if (GetConnectID(remotePUID, out var id))
             {
-                RemoveMapping(new EOSWrapper.ETC.PUID(info.RemoteUserId));
-                if (_socket.GetConnection(remoterole, info.RemoteUserId.ToString(), out var connection))
+                RemoveMapping(remotePUID);
+                if (_socket.GetConnection(remoterole, remotePUID, out var connection))
                 {
                     connection._onEnqueuePacket -= OnServerEnqueuePacket;
                     connection._onConnectionStateChanged -= OnConnectionStateChangedCB;
@@ -164,11 +165,11 @@ public class EOS_Server : EOS_Peer
     {
         if (_localPUID == puid)
         {
-            _socket.StopConnect(EOS_Core.Role.localClient, puid._localpuid);
+            _socket.StopConnect(EOS_Core.Role.localClient, puid._puid);
         }
         else
         {
-            _socket.StopConnect(EOS_Core.Role.RemotePeer, puid._localpuid);
+            _socket.StopConnect(EOS_Core.Role.RemotePeer, puid._puid);
         }
         RemoveMapping(puid);
         return true;
@@ -177,13 +178,13 @@ public class EOS_Server : EOS_Peer
     {
         if (GetPUID(connectionId, out var puid))
         {
-            if (_localPUID._localpuid == puid._localpuid)
+            if (_localPUID._puid == puid._puid)
             {
-                _socket.StopConnect(EOS_Core.Role.localClient, puid._localpuid);
+                _socket.StopConnect(EOS_Core.Role.localClient, puid._puid);
             }
             else
             {
-                _socket.StopConnect(EOS_Core.Role.RemotePeer, puid._localpuid);
+                _socket.StopConnect(EOS_Core.Role.RemotePeer, puid._puid);
             }
             RemoveMapping(connectionId);
         }

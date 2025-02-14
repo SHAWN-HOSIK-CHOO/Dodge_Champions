@@ -18,9 +18,7 @@ public class LobbyManager : SingletonMonoBehaviour<LobbyManager>
     BasicUI _basicUI;
     EOS_SingleLobbyManager.EOS_Lobby _lastLobby;
     OpenLobbyUIKeyBinding _openLobbyUIKeyBinding;
-    InputBinding _inputBinding;
-
-
+    //InputBinding _inputBinding;
     private void Awake()
     {
         SingletonSpawn(this);
@@ -44,10 +42,10 @@ public class LobbyManager : SingletonMonoBehaviour<LobbyManager>
         _lobbyControl._onLeaved += OnLeaved;
 
 
-        _inputBinding = GetComponent<InputBinding>();   
-        _openLobbyUIKeyBinding = new OpenLobbyUIKeyBinding(_inputBinding, "OpenLobbyUIKeyBinding","l");
-        _inputBinding.EnableMap("OpenLobbyUIKeyBinding");
-        _openLobbyUIKeyBinding._onKeyInputChanged += OnOpenLobbyUIKey;
+        //_inputBinding = GetComponent<InputBinding>();   
+        //_openLobbyUIKeyBinding = new OpenLobbyUIKeyBinding(_inputBinding, "OpenLobbyUIKeyBinding","l");
+        //_inputBinding.EnableMap("OpenLobbyUIKeyBinding");
+        //_openLobbyUIKeyBinding._onKeyInputChanged += OnOpenLobbyUIKey;
 
         SingletonInitialize();
         gameObject.SetActive(true);
@@ -150,6 +148,7 @@ public class LobbyManager : SingletonMonoBehaviour<LobbyManager>
     }
     void NGOConnected()
     {
+        Debug.Log("NGO Connected");
         _basicUI._waitInfoDetail.text =  "NGO Connect Success";
         _transitionUI.MakeTransitionEnd("NGOClientConnect");
 
@@ -157,8 +156,6 @@ public class LobbyManager : SingletonMonoBehaviour<LobbyManager>
         _transitionUI.AddTransition(transition);
         SceneManager.LoadScene("Lobby");
     }
-
-
     void Rlease()
     {
         _openLobbyUIKeyBinding._onKeyInputChanged -= OnOpenLobbyUIKey;

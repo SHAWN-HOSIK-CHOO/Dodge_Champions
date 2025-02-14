@@ -5,10 +5,3 @@ TextScriptImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 11396
-  packageName: Debug Drawing Extension
-  packageVersion: 1.1
-  assetPath: Assets/DebugDrawingExtension/readme.txt
-  uploadId: 28995

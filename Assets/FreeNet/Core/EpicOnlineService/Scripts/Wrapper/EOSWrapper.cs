@@ -19,24 +19,44 @@ public class EOSWrapper
     {
         public class PUID
         {
-            public string _localpuid { get; private set; }
-            public ProductUserId _localPUID { get; private set; }
+            public string _puid { get; private set; }
+            public ProductUserId _PUID { get; private set; }
+
+            public static bool operator ==(PUID left , PUID right)
+            {
+                return left._puid == right._puid; 
+            }
+            public static bool operator !=(PUID left, PUID right)
+            {
+                return left._puid != right._puid;
+            }
             public PUID(string localpuid)
             {
-                _localpuid = localpuid;
-                _localPUID = ProductUserId.FromString(_localpuid);
+                _puid = localpuid;
+                _PUID = ProductUserId.FromString(_puid);
             }
 
             public PUID(ProductUserId localPUID)
             {
-                _localPUID = localPUID;
-                _localpuid = _localPUID.ToString();
+                _PUID = localPUID;
+                _puid = _PUID.ToString();
             }
 
             public void SetlocaPUID(string localPUID)
             {
-                _localpuid = localPUID;
-                _localPUID = ProductUserId.FromString(_localpuid);
+                _puid = localPUID;
+                _PUID = ProductUserId.FromString(_puid);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is PUID pUID &&
+                       _puid == pUID._puid;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(_puid);
             }
         }
 

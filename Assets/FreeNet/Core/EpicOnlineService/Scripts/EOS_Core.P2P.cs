@@ -94,7 +94,7 @@ public partial class EOS_Core : SingletonMonoBehaviour<EOS_Core>
         };
         EOSWrapper.P2PControl.SendPacket(_IP2P, new SendPacketOptions()
         {
-            LocalUserId = socket._localPUID._localPUID,
+            LocalUserId = socket._localPUID._PUID,
             RemoteUserId = remotePUID,
             SocketId = socket._socketID,
             Channel = channel,
@@ -112,7 +112,7 @@ public partial class EOS_Core : SingletonMonoBehaviour<EOS_Core>
             _channel = channel,
             _data = data.ToArray()
         };
-        if (socket.GetConnection(role, socket._localPUID.ToString(),out var connection))
+        if (socket.GetConnection(role, socket._localPUID,out var connection))
         {
             connection.EnqueuePacket(packet);
         }
@@ -139,7 +139,7 @@ public partial class EOS_Core : SingletonMonoBehaviour<EOS_Core>
                         _channel = channel,
                         _data = dataSegment
                     };
-                    string remotePUID = _cashedProductUserID.ToString();
+                    var remotePUID = new EOSWrapper.ETC.PUID(_cashedProductUserID);
                     if(_sockets.TryGetValue(key, _cashedsocketID.SocketName,out var socket))
                     {
                         if(socket.GetConnection(Role.RemotePeer, remotePUID, out var connection))

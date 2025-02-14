@@ -1,9 +1,7 @@
 using Epic.OnlineServices;
 using Epic.OnlineServices.Lobby;
-using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using static EOSWrapper;
 
 /*
@@ -52,7 +50,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
         }
         public void Release()
         {
-            if(_details == null)
+            if(_details != null)
             {
                 _details.Release();
             }
@@ -112,7 +110,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
         };
         var options = new CreateLobbyOptions()
         {
-            LocalUserId = _localUser._localPUID._localPUID,
+            LocalUserId = _localUser._localPUID._PUID,
             MaxLobbyMembers = maxLobbyMember,
             PermissionLevel = LobbyPermissionLevel.Publicadvertised,
             BucketId = securityType.ToString(),
@@ -126,7 +124,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
         {
             if(EOSWrapper.ETC.ErrControl<EOS_Lobby>(info.ResultCode, onComplete))
             {
-                if (ETC.ErrControl<EOS_Lobby>(EOSWrapper.LobbyControl.GetLobbyModification(_eosCore._ILobby, info.LobbyId, _localUser._localPUID._localPUID, out var modification), onComplete))
+                if (ETC.ErrControl<EOS_Lobby>(EOSWrapper.LobbyControl.GetLobbyModification(_eosCore._ILobby, info.LobbyId, _localUser._localPUID._PUID, out var modification), onComplete))
                 {
                     foreach (var item in searchParams)
                     {
@@ -181,7 +179,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
                     return;
                 }
             }
-            EOSWrapper.LobbyControl.SearchLobby(search, _localUser._localPUID._localPUID, (ref LobbySearchFindCallbackInfo info) =>
+            EOSWrapper.LobbyControl.SearchLobby(search, _localUser._localPUID._PUID, (ref LobbySearchFindCallbackInfo info) =>
             {
                 if (ETC.ErrControl(info.ResultCode, onComplete))
                 {
@@ -210,7 +208,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
             return;
         }
         LeaveLobby();
-        EOSWrapper.LobbyControl.JoinLobbyById(_eosCore._ILobby, true, lobbyID, _localUser._localPUID._localPUID, (ref JoinLobbyByIdCallbackInfo info) =>
+        EOSWrapper.LobbyControl.JoinLobbyById(_eosCore._ILobby, true, lobbyID, _localUser._localPUID._PUID, (ref JoinLobbyByIdCallbackInfo info) =>
         {
             if (EOSWrapper.ETC.ErrControl(info.ResultCode, onComplete))
             {
@@ -227,7 +225,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
             return;
         }
         LeaveLobby();
-        EOSWrapper.LobbyControl.JoinLobbyByDetails(_eosCore._ILobby, true, details, _localUser._localPUID._localPUID, (ref JoinLobbyCallbackInfo info) =>
+        EOSWrapper.LobbyControl.JoinLobbyByDetails(_eosCore._ILobby, true, details, _localUser._localPUID._PUID, (ref JoinLobbyCallbackInfo info) =>
         {
             if (EOSWrapper.ETC.ErrControl(info.ResultCode, onComplete))
             {
@@ -392,7 +390,7 @@ public class EOS_SingleLobbyManager : SingletonMonoBehaviour<EOS_SingleLobbyMana
     }
     private EOS_Lobby CreateJoinedLobby(string lobbyID)
     {
-        _currentLobby = new EOS_Lobby(lobbyID, _localUser._localPUID._localPUID);
+        _currentLobby = new EOS_Lobby(lobbyID, _localUser._localPUID._PUID);
         return _currentLobby;
     }
     public class EOS_Lobby

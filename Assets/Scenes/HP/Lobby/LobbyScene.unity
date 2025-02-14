@@ -276,7 +276,9 @@ PrefabInstance:
       propertyPath: m_NeverAutoSwitchControlSchemes
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5844544854198933739, guid: b87e12bdf818dee4cb077bb2c0df42a7, type: 3}
+    - {fileID: 4983570471821304923, guid: b87e12bdf818dee4cb077bb2c0df42a7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

@@ -5,8 +5,8 @@ using Epic.OnlineServices;
 using static EOS_Socket;
 public class EOS_Client : EOS_Peer
 {
-    public string _localPUID { get; private set; }
-    string _remotePUID;
+    public EOSWrapper.ETC.PUID _localPUID { get; private set; }
+    EOSWrapper.ETC.PUID _remotePUID;
     public Queue<ArraySegment<byte>> _incomingPacket;
 
     public event Action<EOS_Core.EOS_Packet> _onReceivedPacket;
@@ -15,8 +15,8 @@ public class EOS_Client : EOS_Peer
     {
         _eosNet = SingletonMonoBehaviour<EOS_Core>._instance;
         _state = state.stop;
-        _localPUID = localPUID;
-        _remotePUID = remotePUID;
+        _localPUID = new EOSWrapper.ETC.PUID(localPUID);
+        _remotePUID = new EOSWrapper.ETC.PUID(remotePUID);
         _socket = _eosNet.CreateSocket(localPUID, socketid);
         _socket._onMakeConnection -= OnMakeConnectionCB;
         _socket._onClosed -= OnClosedCB;
@@ -46,12 +46,12 @@ public class EOS_Client : EOS_Peer
     }
     public override void OnMakeConnectionCB(Connection info)
     {
-        if (_remotePUID == info._remotePUID.ToString())
+        if (_remotePUID._puid == info._remotePUID._puid)
         {
             var remoterole = info._remoteRole;
             if (remoterole != EOS_Core.Role.localClient)
             {
-                if (_socket.GetConnection(remoterole, info._remotePUID.ToString(), out var connection))
+                if (_socket.GetConnection(remoterole, info._remotePUID, out var connection))
                 {
                     connection._onEnqueuePacket += OnClientEnqueuePacket;
                     connection._onConnectionStateChanged += OnConnectionStateChangedCB;
@@ -68,17 +68,17 @@ public class EOS_Client : EOS_Peer
         }
         else
         {
-            _eosNet.SendPeer(_socket, ProductUserId.FromString(_remotePUID), _channel, segment, reliability);
+            _eosNet.SendPeer(_socket, _remotePUID._PUID, _channel, segment, reliability);
         }
     }
     public override void OnClosedCB(OnRemoteConnectionClosedInfo info)
     {
-        if (_remotePUID == info.RemoteUserId.ToString())
+        if (_remotePUID._puid == info.RemoteUserId.ToString())
         {
             var remoterole = (EOS_Core.Role)info.ClientData;
             if (remoterole != EOS_Core.Role.localClient)
             {
-                if (_socket.GetConnection(remoterole, info.RemoteUserId.ToString(), out var connection))
+                if (_socket.GetConnection(remoterole, new EOSWrapper.ETC.PUID(info.RemoteUserId), out var connection))
                 {
                     connection._onEnqueuePacket -= OnClientEnqueuePacket;
                     connection._onConnectionStateChanged -= OnConnectionStateChangedCB;
@@ -95,7 +95,7 @@ public class EOS_Client : EOS_Peer
     public override bool StartConnection()
     {
         ChangeState(state.starting);
-        _socket.StartConnect(ProductUserId.FromString(_remotePUID));
+        _socket.StartConnect(_remotePUID);
         return true;
     }
     public override bool StopConnection()
@@ -103,11 +103,11 @@ public class EOS_Client : EOS_Peer
         ChangeState(state.stopping);
         if (_localPUID == _remotePUID)
         {
-            _socket.StopConnect(EOS_Core.Role.localHost, _remotePUID);
+            _socket.StopConnect(EOS_Core.Role.localHost, _remotePUID._puid);
         }
         else
         {
-            _socket.StopConnect(EOS_Core.Role.RemotePeer, _remotePUID);
+            _socket.StopConnect(EOS_Core.Role.RemotePeer, _remotePUID._puid);
         }
         return true;
     }
