@@ -5,18 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/HP/Lobby/Scene/AcitveLobbyScene.unity
-    guid: 1b3818ba478f440409927d0b8f67cdea
   - enabled: 1
-    path: Assets/Scenes/HP/Login/Scene/Login.unity
-    guid: 5ce5c67851c918241bf346210fafe496
+    path: Assets/Scenes/HP/Login/Login.unity
+    guid: f0b3d19a2f97e1e42aadee04f06d0720
   - enabled: 1
-    path: Assets/Scenes/HP/Lobby/Scene/LobbyScene.unity
-    guid: 3f27bea648c14804fa1d612b11e110e4
-  - enabled: 1
-    path: Assets/Scenes/HP/Lobby/Scene/Game.unity
-    guid: 80930130cf9b2494194aeca5316200d4
+    path: Assets/Scenes/HP/Lobby/LobbyScene.unity
+    guid: 5b4df091f1c19ae429f6faec638c6ab2
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: 0e5cb1940f7efc448be00baf653f0fad

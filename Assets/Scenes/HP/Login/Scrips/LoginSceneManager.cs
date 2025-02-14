@@ -30,8 +30,8 @@ public class LoginSceneManager : MonoBehaviour
     {
         yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
         _freeNet = FreeNet._instance;
-        yield return SingletonMonoBehaviour<TransitionUI>.WaitInitialize();
-        _transitionUI = TransitionUI._instance;
+        yield return SingletonMonoBehaviour<SingletonCanvas>.WaitInitialize();
+        _transitionUI = SingletonCanvas._instance.GetComponentInChildren<TransitionUI>();
         _basicUI = _transitionUI.GetRootUI().GetComponentInChildren<BasicUI>();
 
         _guestLogin.onClick.AddListener(OnGuestLogin);
@@ -43,13 +43,9 @@ public class LoginSceneManager : MonoBehaviour
     {
         if (result == Result.Success)
         {
-            _freeNet._localUser.SetlocaPUID(localPUID.ToString());
-
+            _freeNet._localUser._localPUID = new EOSWrapper.ETC.PUID(localPUID);
             _basicUI._waitInfoDetail.text = $"LoginSuccess";
             _transitionUI.MakeTransitionEnd("Login");
-            var transition = new BasicTransition("LoadLobby", _basicUI._waitInfo);
-            _transitionUI.AddTransition(transition);
-            _basicUI._waitInfoDetail.text = $"Load Lobby...";
             SceneManager.LoadScene("LobbyScene");
         }
         else
@@ -58,11 +54,9 @@ public class LoginSceneManager : MonoBehaviour
             _transitionUI.MakeTransitionEnd("Login");
         }
     }
-
     void OnGuestLogin()
     {
-        _basicUI._waitInfoDetail.text = "Login...";
-        var transition = new BasicTransition("Login", _basicUI._waitInfo);
+        var transition = new BasicTransition("Login", _basicUI, "Login...");
         _transitionUI.AddTransition(transition);
         string username = "I_AM_User";
         EOSWrapper.ConnectControl.DeviceIDConnect(_freeNet._eosCore._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info)=>
@@ -85,8 +79,7 @@ public class LoginSceneManager : MonoBehaviour
     }
     void OnEpicPortalLogin()
     {
-        _basicUI._waitInfoDetail.text = "Login...";
-        var transition = new BasicTransition("Login", _basicUI._waitInfo);
+        var transition = new BasicTransition("Login", _basicUI, "Login...");
         _transitionUI.AddTransition(transition);
         EOSWrapper.LoginControl.EpicPortalLogin(_freeNet._eosCore._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
@@ -115,8 +108,7 @@ public class LoginSceneManager : MonoBehaviour
     }
     void OnDeveloperLogin()
     {
-        _basicUI._waitInfoDetail.text = "Login...";
-        var transition = new BasicTransition("Login", _basicUI._waitInfo);
+        var transition = new BasicTransition("Login", _basicUI, "Login...");
         _transitionUI.AddTransition(transition);
         EOSWrapper.LoginControl.DeveloperToolLogin(_freeNet._eosCore._IAuth, _host, _credential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {

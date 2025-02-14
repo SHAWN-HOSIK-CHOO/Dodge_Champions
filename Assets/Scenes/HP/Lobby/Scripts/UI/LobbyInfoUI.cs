@@ -16,7 +16,7 @@ public class LobbyInfoUI : MonoBehaviour
     TextMeshProUGUI _lobbyCodeText;
     Button _button;
     Image _image;
-    public EOS_SingleLobbyManager.FoundLobby _foundLobby { get; private set; }
+    public EOS_SingleLobbyManager.LobbySearchResult _foundLobby { get; private set; }
     public event Action<LobbyInfoUI> _onClick;
     private void Awake()
     {
@@ -42,7 +42,7 @@ public class LobbyInfoUI : MonoBehaviour
         _image.color = color;
     }
 
-    public void UpdateDetails(FoundLobby lobby)
+    public void UpdateDetails(LobbySearchResult lobby)
     {
         _foundLobby = lobby;
         _lobbyMemberText.text = $"({_foundLobby._info.AvailableSlots}/{_foundLobby._info.MaxMembers})";

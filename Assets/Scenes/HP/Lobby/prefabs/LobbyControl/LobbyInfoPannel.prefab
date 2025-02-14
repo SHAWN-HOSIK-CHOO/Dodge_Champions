@@ -420,9 +420,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2672054622681932200}
   - component: {fileID: 2583243832472124471}
-  - component: {fileID: 4034189280134094448}
   - component: {fileID: 6383292958408754561}
   - component: {fileID: 8544404094253888956}
+  - component: {fileID: 6014634174429004763}
   m_Layer: 5
   m_Name: LobbyInfoPannel
   m_TagString: Untagged
@@ -454,7 +454,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 428.25006, y: 271.63785}
+  m_AnchoredPosition: {x: 428.24985, y: 307.76938}
   m_SizeDelta: {x: 820.5083, y: 135.52289}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2583243832472124471
@@ -465,22 +465,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2211830439885940366}
   m_CullTransparentMesh: 1
---- !u!114 &4034189280134094448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2211830439885940366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76be2c9baf360c74991444336b8273f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _lobbyTypeText: {fileID: 1121383851431512745}
-  _lobbyInfoText: {fileID: 4295428982066103742}
-  _lobbyMemberText: {fileID: 1912285458595581707}
-  _lobbyCodeText: {fileID: 347140077177856245}
 --- !u!114 &6383292958408754561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -555,6 +539,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6014634174429004763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211830439885940366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1160f5e1b94aee946b2499a06642bc1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lobbyTypeText: {fileID: 1121383851431512745}
+  _lobbyInfoText: {fileID: 4295428982066103742}
+  _lobbyMemberText: {fileID: 1912285458595581707}
+  _lobbyCodeText: {fileID: 347140077177856245}
 --- !u!1 &2901636174130497258
 GameObject:
   m_ObjectHideFlags: 0

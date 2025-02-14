@@ -1,76 +1,63 @@
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-public class LobbySceneManager : MonoBehaviour
+using static NetworkSpawner;
+using System.Collections.Generic;
+using System;
+
+public class LobbySceneManager : NetworkBehaviour
 {
-    [SerializeField]
-    LobbyControl _lobbyControl;
+    LobbyManager _lobbyManager;
+    BasicNetworkSpwaner _basicNetworkSpwaner;
+    public Dictionary<ulong, string> _cahsedClientIDMapping;
+    public event Action _onSendPUIDRpc;
 
-    FreeNet _freeNet;
-    TransitionUI _transitionUI;
-    BasicUI _basicUI;
-    IEnumerator Start()
+    private IEnumerator Start()
     {
-        yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
-        _freeNet = FreeNet._instance;
-        yield return SingletonMonoBehaviour<TransitionUI>.WaitInitialize();
-        _transitionUI = TransitionUI._instance;
-        _basicUI = _transitionUI.GetRootUI().GetComponentInChildren<BasicUI>();
+        yield return SingletonMonoBehaviour<LobbyManager>.WaitInitialize();
+        _lobbyManager = LobbyManager._instance;
 
-        _lobbyControl._onJoined += OnJoined;
-        _lobbyControl._onLeaved += OnLeaved;
-
-        _basicUI._waitInfoDetail.text = "Load LobbyControl Success";
-        _transitionUI.MakeTransitionEnd("LoadLobby");
+        _basicNetworkSpwaner = GetComponent<BasicNetworkSpwaner>();
+        _basicNetworkSpwaner._onSpawned += OnSpawnerCreated;
     }
-    void OnLeaved(EOS_SingleLobbyManager.EOS_Lobby lobby)
+
+    void OnSpawnerCreated()
     {
-        _freeNet._NGOManager.Shutdown();
-        _lobbyControl.gameObject.SetActive(true);
-        Debug.Log("·Îºñ ¿¬°á ²÷±è");
-    }
-    void OnJoined(EOS_SingleLobbyManager.EOS_Lobby lobby)
-    {
-        _lobbyControl.gameObject.SetActive(false);
-        Debug.Log("¿¬°á ½ÃÀÛ");
-        if (lobby.GetLobbyCode(out var attr))
+        _basicNetworkSpwaner.SpawnObject();
+        _basicNetworkSpwaner.Spawn(new SpawnParams()
         {
-            string code = attr.Data.Value.Value.AsUtf8;
-            _freeNet._NGOManager.OnClientStopped -= NGODisConnected;
-            _freeNet._NGOManager.OnClientStarted -= NGOConnected;
-            _freeNet._NGOManager.OnClientStopped += NGODisConnected;
-            _freeNet._NGOManager.OnClientStarted += NGOConnected;
-            _basicUI._waitInfoDetail.text = "NGO Client Connect...";
-            var transition = new BasicTransition("NGOClientConnect", _basicUI._waitInfo);
-            _transitionUI.AddTransition(transition); 
-            if (lobby._lobbyOwner.ToString() == lobby._localPUID.ToString())
-            {
-                _freeNet.GetComponent<EOSNetcodeTransport>().StartHost(lobby._localPUID.ToString(), code);
-            }
-            else
-            {
-                _freeNet.GetComponent<EOSNetcodeTransport>().StartClient(lobby._localPUID.ToString(), lobby._lobbyOwner.ToString(), code);
-            }
+            pos = Vector3.zero,
+            destroyWithScene = true,
+            rot = Quaternion.identity,
+            prefabListName = "Lobbyprefabs",
+            prefabName = "PlayZone"
+        });
+    }
+
+    [Rpc(SendTo.Server, RequireOwnership = true)]
+    public void SendPUIDRpc(string puid, RpcParams rpcParams = default)
+    {
+        _cahsedClientIDMapping.Add(rpcParams.Receive.SenderClientId, puid);
+        _onSendPUIDRpc?.Invoke();
+    }
+
+    [Rpc(SendTo.SpecifiedInParams, RequireOwnership = true)]
+    public void StartGameRpc(string serverPuid, string code, RpcParams rpcParams = default)
+    {
+        string localPUID = EOS_LocalUser._instance._localPUID._localpuid;
+        if (localPUID == serverPuid)
+        {
+            NetworkManager.Singleton.Shutdown();
+            FreeNet._instance.GetComponent<EOSNetcodeTransport>().StartHost(localPUID, code);
+        }
+        else
+        {
+            NetworkManager.Singleton.Shutdown();
+            FreeNet._instance.GetComponent<EOSNetcodeTransport>().StartClient(localPUID, serverPuid, code);
         }
     }
-    void NGODisConnected(bool b)
+    public override void OnDestroy()
     {
-
-    }
-    void NGOConnected()
-    {
-        _basicUI._waitInfoDetail.text =  "NGO Connect Success";
-        _transitionUI.MakeTransitionEnd("NGOClientConnect");
-
-        var transition = new BasicTransition("LoadGame", _basicUI._waitInfo);
-        _transitionUI.AddTransition(transition);
-        _basicUI._waitInfoDetail.text = $"Load Game...";
-        SceneManager.LoadScene("Game");
-    }
-    private void OnDestroy()
-    {
-        _lobbyControl._onJoined -= OnJoined;
-        _freeNet._NGOManager.OnClientStopped -= NGODisConnected;
-        _freeNet._NGOManager.OnClientStarted -= NGOConnected;
+        _basicNetworkSpwaner._onSpawned -= OnSpawnerCreated;
     }
 }

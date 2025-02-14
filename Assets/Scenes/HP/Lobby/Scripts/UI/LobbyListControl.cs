@@ -48,7 +48,7 @@ public class LobbyListControl : MonoBehaviour
             _currentSelected = obj;
         }
     }
-    public void SetLobbyList(List<FoundLobby> list)
+    public void SetLobbyList(List<LobbySearchResult> list)
     {
         ReleasecurrentFoundLobbies();
         foreach (var item in list)

@@ -49,16 +49,16 @@ public class CreateLobbyUI : MonoBehaviour
         }
         return 1;
     }
-    public LobbyType GetLobbyType()
+    public LobbySecurityType GetLobbyType()
     {
         switch(_LobbyType.value)
         {
             case 0:
-                return LobbyType.Public;
+                return LobbySecurityType.Public;
             case 1:
-                return LobbyType.Protected;
+                return LobbySecurityType.Protected;
         }
-        return LobbyType.Public;
+        return LobbySecurityType.Public;
     }
     public string GetLobbyInfo()
     {
