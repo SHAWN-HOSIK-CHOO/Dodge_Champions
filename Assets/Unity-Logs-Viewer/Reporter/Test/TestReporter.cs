@@ -49,8 +49,7 @@ public class TestReporter : MonoBehaviour
 	void Start()
 	{
 		Application.runInBackground = true;
-
-		reporter = Object.FindAnyObjectByType<Reporter>();
+        reporter = FindAnyObjectByType<Reporter>(); 
 		Debug.Log("test long text sdf asdfg asdfg sdfgsdfg sdfg sfg" +
 				  "sdfgsdfg sdfg sdf gsdfg sfdg sf gsdfg sdfg asdfg " +
 				  "sdfgsdfg sdfg sdf gsdfg sfdg sf gsdfg sdfg asdfg " +
