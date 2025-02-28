@@ -13,7 +13,7 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Owner, RequireOwnership = false)]
     public void RequestPUIDRpc()
     {
-        var puid = SingletonMonoBehaviour<EOS_LocalUser>._instance._localPUID;
+        
         //_lobbySceneManager.SendPUIDRpc(puid);
     }
 }

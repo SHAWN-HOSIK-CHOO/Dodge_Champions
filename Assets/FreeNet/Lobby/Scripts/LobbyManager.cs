@@ -109,11 +109,11 @@ public class LobbyManager : SingletonMonoBehaviour<LobbyManager>
             _transitionUI.AddTransition(transition); 
             if (lobby._lobbyOwner.ToString() == lobby._localPUID.ToString())
             {
-                _freeNet._ngoManager.StartHost(_freeNet._eosCore, lobby._localPUID, code);
+                _freeNet._ngoManager.StartHost(lobby._localPUID, code);
             }
             else
             {
-                _freeNet._ngoManager.StartClient(_freeNet._eosCore,lobby._localPUID, lobby._lobbyOwner, code);
+                _freeNet._ngoManager.StartClient(lobby._localPUID, lobby._lobbyOwner, code);
             }
         }
         UpdateLobbyStateUI();

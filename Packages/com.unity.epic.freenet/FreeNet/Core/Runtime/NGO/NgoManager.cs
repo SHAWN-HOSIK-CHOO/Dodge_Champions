@@ -80,12 +80,12 @@ public class NgoManager : NetworkManager
             _EOSNetcodeTransport._pingpong.SetVirtualRrtt(_virtualRtt,_fixedRtt);
         }
     }
-    public bool StartServer(EOS_Core eosCore, EOSWrapper.ETC.PUID localPUID, string socketName)
+    public bool StartServer(EOSWrapper.ETC.PUID localPUID, string socketName)
     {
         var result = false; 
         if (_useEpicOnlineTransport)
         {
-            result = _EOSNetcodeTransport.InitializeEOSServer(eosCore, localPUID, socketName, _channel) && StartServer();
+            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel) && StartServer();
         }
         else
         {
@@ -99,12 +99,12 @@ public class NgoManager : NetworkManager
         }
         return result;
     }
-    public bool StartClient(EOS_Core eosCore, EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketName)
+    public bool StartClient(EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketName)
     {
         var result = false;
         if (_useEpicOnlineTransport)
         {
-            result = _EOSNetcodeTransport.InitializeEOSClient(eosCore, localPUID, remotePUID, socketName, _channel) && StartClient();
+            result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel) && StartClient();
         }
         else
         {
@@ -116,13 +116,13 @@ public class NgoManager : NetworkManager
         }
         return result;
     }
-    public bool StartHost(EOS_Core eosCore, EOSWrapper.ETC.PUID localPUID, string socketName)
+    public bool StartHost(EOSWrapper.ETC.PUID localPUID, string socketName)
     {
         var result = false;
         if (_useEpicOnlineTransport)
         {
-            result = _EOSNetcodeTransport.InitializeEOSServer(eosCore, localPUID, socketName, _channel) &&
-            _EOSNetcodeTransport.InitializeEOSClient(eosCore, localPUID, localPUID, socketName, _channel) &&
+            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel) &&
+            _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, localPUID, socketName, _channel) &&
             StartHost() && _EOSNetcodeTransport.StartClient();
         }
         else
