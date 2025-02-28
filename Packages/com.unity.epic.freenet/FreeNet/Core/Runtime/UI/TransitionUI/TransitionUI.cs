@@ -88,8 +88,11 @@ public class TransitionUI : MonoBehaviour
     }
     private void OnDestroy()
     {
-        _transitionUICoroutine.StopCoroutine();
-        _transitionUICoroutine = null;
+        if(_transitionUICoroutine != null)
+        {
+            _transitionUICoroutine.StopCoroutine();
+            _transitionUICoroutine = null;
+        }
     }
     protected void Awake()
     {

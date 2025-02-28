@@ -2,8 +2,7 @@ using Epic.OnlineServices;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-public class LobbyManager : SingletonMonoBehaviour<LobbyManager>
+public class LobbyManager : MonoBehaviour
 {
     [SerializeField]
     LobbyControl _lobbyControl;
@@ -16,20 +15,16 @@ public class LobbyManager : SingletonMonoBehaviour<LobbyManager>
     BasicTransitionUI _basicTransitionUI;
     EOS_SingleLobbyManager.EOS_Lobby _lastLobby;
 
-
     InputManager _inputManager;
     ToggleInputBinding _toggleInputBinding;
 
-    private void Awake()
-    {
-        SingletonSpawn(this);
-    }
     IEnumerator Start()
     {
         yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
         yield return SingletonMonoBehaviour<DontDestroyParent>.WaitInitialize();
-        _freeNet = FreeNet._instance;
         _DontDestroyParent = DontDestroyParent._instance;
+        this.transform.SetParent(_DontDestroyParent.transform);
+        _freeNet = FreeNet._instance;
         _transitionUI = DontDestroyParent._instance.GetComponentInChildren<TransitionUI>();
         _basicTransitionUI = _transitionUI.GetRootUI().GetComponentInChildren<BasicTransitionUI>(true);
         _progressBarTransitionUI = _transitionUI.GetRootUI().GetComponentInChildren<ProgressBarTransitionUI>(true);
@@ -47,8 +42,6 @@ public class LobbyManager : SingletonMonoBehaviour<LobbyManager>
         _inputManager.Enable(actionMap, true);
         _inputManager.Assign();
         _toggleInputBinding._onToggleInputChanged += OnOpenLobbyUIKey;
-
-        SingletonInitialize();
     }
     void OnOpenLobbyUIKey(bool val)
     {
@@ -132,10 +125,10 @@ public class LobbyManager : SingletonMonoBehaviour<LobbyManager>
         _transitionUI.AddTransition(new ProgressBarSceneTranstion("Lobby", _progressBarTransitionUI));
     }
 
-    public override void OnRelease()
+    public void OnRelease()
     {
         _lobbyControl._onJoined -= OnJoined;
-        //_openLobbyUIKeyBinding._onKeyInputChanged -= OnOpenLobbyUIKey;
+        _toggleInputBinding._onToggleInputChanged -= OnOpenLobbyUIKey;
         _freeNet._ngoManager.OnClientStopped -= NGODisConnected;
         _freeNet._ngoManager.OnClientStarted -= NGOConnected;
         Destroy(_lobbyControl);

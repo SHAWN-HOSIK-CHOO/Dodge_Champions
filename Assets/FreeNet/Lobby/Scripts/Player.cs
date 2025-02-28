@@ -1,19 +1,19 @@
-using Unity.Netcode;
-using UnityEngine;
+//using Unity.Netcode;
+//using UnityEngine;
 
-public class Player : NetworkBehaviour
-{
-    LobbySceneManager _lobbySceneManager;
+//public class Player : NetworkBehaviour
+//{
+//    LobbySceneManager _lobbySceneManager;
 
-    void OnSpawnerCreated()
-    {
-        _lobbySceneManager = Object.FindAnyObjectByType<LobbySceneManager>();
-    }
+//    void OnSpawnerCreated()
+//    {
+//        _lobbySceneManager = Object.FindAnyObjectByType<LobbySceneManager>();
+//    }
 
-    [Rpc(SendTo.Owner, RequireOwnership = false)]
-    public void RequestPUIDRpc()
-    {
+//    [Rpc(SendTo.Owner, RequireOwnership = false)]
+//    public void RequestPUIDRpc()
+//    {
         
-        //_lobbySceneManager.SendPUIDRpc(puid);
-    }
-}
+//        //_lobbySceneManager.SendPUIDRpc(puid);
+//    }
+//}
