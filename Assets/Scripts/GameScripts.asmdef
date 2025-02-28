@@ -1,5 +1,5 @@
 {
-    "name": "GameScrips",
+    "name": "GameScripts",
     "rootNamespace": "",
     "references": [
         "GUID:1491147abca9d7d4bb7105af628b223e",
@@ -11,7 +11,8 @@
         "GUID:5540e30183c82e84b954c033c388e06c",
         "GUID:37e17ffe38d86ae48bc3207e83ffef88",
         "GUID:e0cd26848372d4e5c891c569017e11f1",
-        "GUID:fa02fd9fb92b80a4c8262d151f9ddfe2"
+        "GUID:fa02fd9fb92b80a4c8262d151f9ddfe2",
+        "GUID:0df89392115c0354badda3a22e32b8ca"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
