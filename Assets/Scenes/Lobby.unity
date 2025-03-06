@@ -621,7 +621,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.7133901, g: 0.7169812, b: 0.41598436, a: 0}
+  m_BackGroundColor: {r: 1, g: 0.8666667, b: 0.34901962, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -6958,17 +6958,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pfNetworkManager: {fileID: 4480243785762716758, guid: c04961ba6c4148e43856ba9126ba0b63, type: 3}
   startNetworkManager: {fileID: 1338458402}
-  clearColors:
-  - {r: 0.7137255, g: 0.7137255, b: 0.41176474, a: 0}
-  - {r: 0.99215686, g: 0.92156863, b: 0.44313726, a: 0}
-  - {r: 0, g: 0.5019608, b: 1, a: 0}
-  - {r: 0.3882353, g: 0.7176471, b: 0.7176471, a: 0}
-  - {r: 0.81960785, g: 0.8862745, b: 0.19215687, a: 0}
-  - {r: 1, g: 0.8, b: 0.2, a: 0}
-  - {r: 1, g: 0.60784316, b: 0.28627452, a: 0}
-  - {r: 0.8862745, g: 0.27450982, b: 0.4, a: 0}
-  - {r: 1, g: 0, b: 0.49803922, a: 0}
-  - {r: 0.627451, g: 0.1254902, b: 0.9411765, a: 0}
   hostButton: {fileID: 2047709448}
   joinButton: {fileID: 834596066}
   joinCodeText: {fileID: 977250690}

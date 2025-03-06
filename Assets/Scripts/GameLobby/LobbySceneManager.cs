@@ -21,10 +21,8 @@ namespace GameLobby
     public class LobbySceneManager : MonoBehaviour
     {
         public GameObject pfNetworkManager;
-        
-        public Button         startNetworkManager;
 
-        public Color[] clearColors = new Color[10];
+        public Button startNetworkManager;
         
         [Header("Phase 0")]
         public Button         hostButton;
@@ -53,11 +51,6 @@ namespace GameLobby
 
         async void Start()
         {
-            int randomColorIndex = Random.Range(0, clearColors.Length);
-            
-            if(Camera.main != null)
-                Camera.main.backgroundColor = clearColors[randomColorIndex];
-            
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
             {
                 await UnityServices.InitializeAsync();
