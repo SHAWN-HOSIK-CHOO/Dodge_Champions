@@ -10,11 +10,54 @@ using System;
 using Epic.OnlineServices.P2P;
 using System.Text.RegularExpressions;
 using Epic.OnlineServices.Version;
+using Epic.OnlineServices.UserInfo;
 
 public class EOSWrapper
 {
     public class ETC
     {
+        public class EAID
+        {
+            public string _eaid { get; private set; }
+            public EpicAccountId _EAID { get; private set; }
+
+            public static bool operator ==(EAID left, EAID right)
+            {
+                return left._eaid == right._eaid;
+            }
+            public static bool operator !=(EAID left, EAID right)
+            {
+                return left._eaid != right._eaid;
+            }
+            public EAID(string localeaid)
+            {
+                _eaid = localeaid;
+                _EAID = EpicAccountId.FromString(_eaid);
+            }
+
+            public EAID(EpicAccountId localPUID)
+            {
+                _EAID = localPUID;
+                _eaid = _EAID.ToString();
+            }
+
+            public void SetlocalEAID(string localPUID)
+            {
+                _eaid = localPUID;
+                _EAID = EpicAccountId.FromString(_eaid);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is EAID EAID &&
+                       _eaid == EAID._eaid;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(_eaid);
+            }
+        }
         public class PUID
         {
             public string _puid { get; private set; }
@@ -40,7 +83,7 @@ public class EOSWrapper
                 _puid = _PUID.ToString();
             }
 
-            public void SetlocaPUID(string localPUID)
+            public void SetlocalPUID(string localPUID)
             {
                 _puid = localPUID;
                 _PUID = ProductUserId.FromString(_puid);
@@ -48,8 +91,8 @@ public class EOSWrapper
 
             public override bool Equals(object obj)
             {
-                return obj is PUID pUID &&
-                       _puid == pUID._puid;
+                return obj is PUID PUID &&
+                       _puid == PUID._puid;
             }
 
             public override int GetHashCode()
@@ -1195,6 +1238,30 @@ public class EOSWrapper
         {
             Result result = IP2P.SendPacket(ref options);
             return result == Result.Success;
+        }
+    }
+    public class UserInfo
+    {
+        public static void QueryAndCopyUserInfo(UserInfoInterface IUSER, EpicAccountId localEAID, EpicAccountId targetEAID,Action<Result ,UserInfoData?> onComplete= null)
+        {
+            var options = new QueryUserInfoOptions()
+            {
+                LocalUserId = localEAID,
+                TargetUserId = targetEAID,
+            };
+            IUSER.QueryUserInfo(ref options, null, (ref QueryUserInfoCallbackInfo info) =>
+            {
+                if (ETC.ErrControl(info.ResultCode, onComplete))
+                {
+                    var options = new CopyUserInfoOptions()
+                    {
+                        LocalUserId = localEAID,
+                        TargetUserId = targetEAID,
+                    };
+                    var result = IUSER.CopyUserInfo(ref options, out UserInfoData? outUserInfo);
+                    onComplete?.Invoke(result, outUserInfo);
+                }
+            });
         }
     }
 }

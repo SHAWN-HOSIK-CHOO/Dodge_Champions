@@ -11,7 +11,7 @@ public class EOS_Client : EOS_Peer
 
     Dictionary<int, Queue<EOS_Core.EOS_Packet>> _incomingPackets;
 
-    public void Init(EOS_Core eosCore , EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketid, byte channel)
+    public void Init(EOS_Core eosCore , EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketid)
     {
         _eosCore = eosCore;
         _state = state.stop;

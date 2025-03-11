@@ -49,11 +49,18 @@ public partial class EOS_Core : MonoBehaviour
     }
     void ReleaseP2P()
     {
-        foreach(var item in _sockets.GetEnumerator())
+        try
         {
-            ReleaseSocket(item.Value);
+            foreach (var item in _sockets.GetEnumerator())
+            {
+                ReleaseSocket(item.Value);
+            }
+            _IP2P.RemoveNotifyIncomingPacketQueueFull(_onPacketQueueFullHandle);
         }
-        _IP2P.RemoveNotifyIncomingPacketQueueFull(_onPacketQueueFullHandle);
+        catch
+        {
+            Debug.LogError("RelaseP2P Failed");
+        }
     }
     public EOS_Socket CreateSocket(EOSWrapper.ETC.PUID localpuid, string socketid)
     {

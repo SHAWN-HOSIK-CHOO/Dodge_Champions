@@ -31,8 +31,9 @@ public class NgoManager : NetworkManager
      *
      * - optimization
      * 내부적으로 알아서 잘 비트 패킹하고 있음.
-     * 매 프레임 마다 모든 패킷을 Send, Receive를 하고 있음 
-     * TODO : Transport Layer에서 큐잉하여 네트워크 부하 관리를 해야 할 듯
+     * 매 프레임 마다 모든 패킷을 Send, 고정 주기 마다 Receive 를 하고 있음 
+     * TODO : Transport Layer에서 큐잉하여 Send 네트워크 부하 관리를 해야 할 듯,
+     * TODO? : Urgent 패킷을 통해 즉시 Receive를 수행하게 함 (ipnut 레이턴시 최소화)
      */
     FreeNet _freeNet;
     EOSNetcodeTransport _EOSNetcodeTransport;
@@ -54,7 +55,7 @@ public class NgoManager : NetworkManager
     private float _fixedRtt;
 
     public byte _channel => 0;
-    public byte _UrgentPacketChannel => 1;
+    public byte _urgentChannel => 1;
 
     public void Init(FreeNet freeNet)
     {
@@ -85,7 +86,7 @@ public class NgoManager : NetworkManager
         var result = false; 
         if (_useEpicOnlineTransport)
         {
-            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel) && StartServer();
+            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel,_urgentChannel) && StartServer();
         }
         else
         {
@@ -104,7 +105,7 @@ public class NgoManager : NetworkManager
         var result = false;
         if (_useEpicOnlineTransport)
         {
-            result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel) && StartClient();
+            result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel, _urgentChannel) && StartClient();
         }
         else
         {
@@ -121,8 +122,8 @@ public class NgoManager : NetworkManager
         var result = false;
         if (_useEpicOnlineTransport)
         {
-            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel) &&
-            _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, localPUID, socketName, _channel) &&
+            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel, _urgentChannel) &&
+            _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, localPUID, socketName, _channel, _urgentChannel) &&
             StartHost() && _EOSNetcodeTransport.StartClient();
         }
         else
