@@ -1,13 +1,8 @@
-using Mono.Cecil.Cil;
-using System.Xml.Linq;
 using System;
-using UnityEngine;
 using static LobbyManager;
 using System.Collections.Generic;
 using Epic.OnlineServices.Lobby;
 using static EOSWrapper;
-using UnityEngine.Analytics;
-using Epic.OnlineServices.Presence;
 
 public class Lobby : EOS_Lobby
 {
@@ -30,7 +25,7 @@ public class Lobby : EOS_Lobby
     }
 }
 
-public static class SimpleLobbyAttributeExtenstion
+public static class LobbyAttributeExtenstion
 {
     public static bool GetLobbySecurity(this Dictionary<string, Epic.OnlineServices.Lobby.Attribute> attribute, out LobbySecurityType type)
     {

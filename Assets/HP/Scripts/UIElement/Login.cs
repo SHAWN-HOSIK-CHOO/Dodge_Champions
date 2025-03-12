@@ -2,10 +2,12 @@ using DG.Tweening;
 using Epic.OnlineServices;
 using Epic.OnlineServices.Presence;
 using Epic.OnlineServices.UserInfo;
+using HP;
 using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class Login : MonoBehaviour
 {
@@ -19,6 +21,12 @@ public class Login : MonoBehaviour
     Button _developerLogin;
     [SerializeField]
     SystemAnounce _systemAnouncePref;
+    [SerializeField]
+    ConsoleController _consoleController;
+
+
+    string _LoginID;
+    string _LoginCredential;
 
     public event Action onLogin;
     public event Action onConnect;
@@ -29,7 +37,34 @@ public class Login : MonoBehaviour
         _epicPortalLogin.onClick.AddListener(OnEpicPortalLogin);
         _developerLogin.onClick.AddListener(OnDeveloperLogin);
         gameObject.SetActive(true);
+
+
+        _consoleController.onSubmit += onSubmit;
+
     }
+    void onSubmit(CutomTMPInputField.InputMode mode, string text)
+    {
+        if (mode == CutomTMPInputField.InputMode.S)
+        {
+            string[] parts = text.Split(' ', 3);
+            if (parts.Length == 3)
+            {
+                string command = parts[0];      
+                if(command == "Developer_Login")
+                {
+                    _LoginID = parts[1];
+                    _LoginCredential = parts[2];
+                    var simulator = _consoleController.GetComponent<ConsoleSimulator>();
+                    simulator.BeginTracking();
+                    _consoleController.AddText($"<color=#00FFFF>Command : Developer_Login</color>");
+                    simulator.EndTracking();
+                    simulator.Simulate(0.05f);
+                    OnDeveloperLogin();
+                }
+            }
+        }
+    }
+
     void OnLoginComplete(Result result, EpicAccountId localEAID)
     {
         if (result == Result.Success)
@@ -133,7 +168,7 @@ public class Login : MonoBehaviour
     }
     void OnDeveloperLogin()
     {
-        EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet._instance._eosCore._IAuth, "localhost:8000", "helloworld" , (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
+        EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet._instance._eosCore._IAuth, _LoginID, _LoginCredential , (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnConnectComplete))
             {

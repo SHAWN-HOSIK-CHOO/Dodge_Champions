@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4838897175168038101}
   - component: {fileID: 1822112711880357617}
   m_Layer: 0
-  m_Name: 'LobbyManager (Missing Prefab with guid: e234a656eb4eee94595ce397ade1029b)'
+  m_Name: LobbyManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

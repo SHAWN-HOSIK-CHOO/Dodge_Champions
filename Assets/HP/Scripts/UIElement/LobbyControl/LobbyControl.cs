@@ -40,11 +40,15 @@ public class LobbyControl : MonoBehaviour
 
         _findJoinControl._onJoinRequest += RequestJoin;
         _privateCodeControl._onJoinRequest += JoinWithPrivateCode;
+    }
 
+    private void OnEnable()
+    {
         _createControl.gameObject.SetActive(false);
         _findJoinControl.gameObject.SetActive(false);
         _privateCodeControl.gameObject.SetActive(false);
     }
+    
 
 
     public void JoinWithPrivateCode(string code, LobbyInfoElement element)
@@ -86,7 +90,7 @@ public class LobbyControl : MonoBehaviour
     }
     void onClickSubmitButton()
     {
-        var security = _createControl._isPrivate.isOn ? LobbySecurityType.Public : LobbySecurityType.Protected;
+        var security = _createControl._isPrivate.isOn ? LobbySecurityType.Protected : LobbySecurityType.Public ;
         _lobbyManager.CreateLobby(_createControl.curSelectedMode._text.text, _createControl._roomNameInputField.text, 16, security,
             _createControl._roomCodeInputField.text, (Result result, EOS_Lobby lobby) =>
             {

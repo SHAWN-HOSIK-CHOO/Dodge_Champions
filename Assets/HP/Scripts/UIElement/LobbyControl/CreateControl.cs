@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class CreateControl : MonoBehaviour
 {
     [SerializeField]
-    public TMP_InputField _roomNameInputField;
+    public HP.CutomTMPInputField _roomNameInputField;
     [SerializeField]
     public Toggle _isPrivate;
     [SerializeField]

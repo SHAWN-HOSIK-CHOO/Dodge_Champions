@@ -24,14 +24,17 @@ public class MatchMaker : MonoBehaviour
         _login.onLogin += OnLogin;
         _login.onConnect += OnConnect;
         _lobbyControl.OnJoinLobby += OnJoinLobby;
-        _lobbyControl.gameObject.SetActive(true);
-        _consoleController.gameObject.SetActive(true);
+
+    }
+    private void OnEnable()
+    {
+        _lobbyControl.gameObject.SetActive(false);
         _lobbyControl.gameObject.SetActive(false);
         _transition.gameObject.SetActive(false);
         _consoleController.ShowInputField(true);
-        _coroutineHandler.BeginCoroutine(() => { return GoLobbyScene(); });
-
+        _consoleController.gameObject.SetActive(true);
     }
+
 
     void OnConnect()
     {
@@ -60,16 +63,27 @@ public class MatchMaker : MonoBehaviour
         _consoleController.AddText("Join Lobby");
         simulator.EndTracking();
         simulator.Simulate(0.05f);
-        _coroutineHandler.BeginCoroutine(() => { return GoLobbyScene(); });
+        _coroutineHandler.BeginCoroutine(() => { return LoadLobbyScene(lobby); });
     }
 
-    IEnumerator GoLobbyScene()
+    IEnumerator LoadLobbyScene(EOS_Lobby lobby)
     {
-        var asyncOperation = SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Single);
-        asyncOperation.allowSceneActivation = false;
         _transition.gameObject.SetActive(true);
         _transition.color = new Color(0, 0, 0, 0);
         yield return _transition.DOFade(1f, 1f).SetEase(Ease.InOutFlash).WaitForCompletion();
+        if (LobbyAttributeExtenstion.GetLobbySocket(lobby._attribute, out var socket))
+        {
+            if (lobby._lobbyOwner == FreeNet._instance._localUser._localPUID)
+            {
+                FreeNet._instance._ngoManager.StartHost(FreeNet._instance._localUser._localPUID,socket);
+            }
+            else
+            {
+                FreeNet._instance._ngoManager.StartClient(FreeNet._instance._localUser._localPUID, lobby._lobbyOwner, socket);
+            }
+        }
+        var asyncOperation = SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Single);
+        asyncOperation.allowSceneActivation = false;
         while (asyncOperation.progress < 0.9f)
         {
             yield return null;
@@ -79,7 +93,6 @@ public class MatchMaker : MonoBehaviour
         yield return _transition.DOFade(0f, 1f).SetEase(Ease.InOutFlash).WaitForCompletion();
         _transition.gameObject.SetActive(false);
     }
-
 
 
     private void OnDestroy()

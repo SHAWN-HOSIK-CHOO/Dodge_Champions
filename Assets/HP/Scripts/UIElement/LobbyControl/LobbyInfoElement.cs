@@ -21,6 +21,8 @@ public class LobbyInfoElement : MonoBehaviour
     [SerializeField]
     TMP_Text _member;
     [SerializeField]
+    TMP_Text _security;
+    [SerializeField]
     Image _image;
 
     Color _originColor;
@@ -55,17 +57,21 @@ public class LobbyInfoElement : MonoBehaviour
     {
         _findJoinControl = control;
         _lobbySearch = lobby;
-        if(SimpleLobbyAttributeExtenstion.GetLobbyMode(_lobbySearch._attribute, out var mode))
+        if(LobbyAttributeExtenstion.GetLobbyMode(_lobbySearch._attribute, out var mode))
         {
             _mode.text = mode;
         }
-        if (SimpleLobbyAttributeExtenstion.GetLobbyName(_lobbySearch._attribute, out var name))
+        if (LobbyAttributeExtenstion.GetLobbyName(_lobbySearch._attribute, out var name))
         {
             _name.text = name;
         }
-        if (SimpleLobbyAttributeExtenstion.GetOwner(_lobbySearch._attribute, out var owner))
+        if (LobbyAttributeExtenstion.GetOwner(_lobbySearch._attribute, out var owner))
         {
             _owner.text = owner;
+        }
+        if (LobbyAttributeExtenstion.GetLobbySecurity(_lobbySearch._attribute, out var security))
+        {
+            _security.text = security.ToString();
         }
         _member.text = $"{_lobbySearch._info.AvailableSlots} / {_lobbySearch._info.MaxMembers}";
     }
