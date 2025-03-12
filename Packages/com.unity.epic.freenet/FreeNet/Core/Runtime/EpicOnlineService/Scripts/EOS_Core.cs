@@ -64,7 +64,11 @@ public partial class EOS_Core : MonoBehaviour
     }
     void Stop()
     {
-        if(_tick != null)StopCoroutine(_tick);
+        if (_tick != null)
+        {
+            StopCoroutine(_tick);
+            _tick = null;
+        }
         if (_sdkState == SDKState.Initialized)
         {
             ReleaseP2P();
@@ -72,8 +76,19 @@ public partial class EOS_Core : MonoBehaviour
             _sdkState = SDKState.Released;
         }
     }
+#if UNITY_EDITOR
+    public void OnBeforeAssemblyReload()
+    {
+        AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
+        Stop();
+    }
+#endif
+
     SDKState Init()
     {
+#if UNITY_EDITOR
+        AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+#endif
         _factory = EOS_Factory.GetFactory();
         if(!_factory.LoadDLL()) return SDKState.Released;
         EOS_Credential credential = null;

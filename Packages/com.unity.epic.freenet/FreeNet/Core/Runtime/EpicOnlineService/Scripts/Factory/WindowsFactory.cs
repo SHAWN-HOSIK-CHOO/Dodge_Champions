@@ -38,7 +38,7 @@ public class WindowsFactory : IEOS_PlatformFactory
         if (handle != IntPtr.Zero)
         {
             Debug.Log($"[Load EOS] Reloading..");
-            UnLoadDLL();
+            Dispose();
         }
         handle = LoadLibrary(path);
         if (handle == IntPtr.Zero)

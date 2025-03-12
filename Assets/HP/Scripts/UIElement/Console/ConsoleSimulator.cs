@@ -53,6 +53,15 @@ public class ConsoleSimulator : MonoBehaviour
             _coroutine = _coroutineHandler.BeginCoroutine(() => SimulateCoroutine(stepTime, reset));
         }
     }
+
+    public IEnumerator WaitUntilComplete()
+    {
+        if(_coroutine!=null)
+        {
+            yield return _coroutine;
+        }
+    }
+
     public void Reset()
     {
         _textField.textComponent.maxVisibleCharacters = int.MaxValue;

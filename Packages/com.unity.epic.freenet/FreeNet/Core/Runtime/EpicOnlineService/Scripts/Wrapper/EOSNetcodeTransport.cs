@@ -4,11 +4,11 @@ using UnityEngine;
 using Epic.OnlineServices.P2P;
 using Unity.Netcode;
 using System.Text;
+using static NetworkSpawner;
 public class EOSNetcodeTransport : NetworkTransport
 {
-    [SerializeField]
+    [HideInInspector]
     public PingPong _pingpong;
-
     [SerializeField]
     EOS_Server _serverPrefab;
     [SerializeField]
@@ -61,9 +61,23 @@ public class EOSNetcodeTransport : NetworkTransport
         this._ngoManager = networkManager as NgoManager;
         this._ngoManager.NetworkConfig.ClientConnectionBufferTimeout = 30;
         this._ngoManager.OnClientConnectedCallback += SetMTU;
-        _ServerConnectionChangeInfo = new Queue<ServerConnectionChangeInfo>();
+        this._ngoManager._onSpawnerActivate += CreatePingPong;
+
+
+       _ServerConnectionChangeInfo = new Queue<ServerConnectionChangeInfo>();
         _ClientConnectionChangeInfo = new Queue<EOS_Socket.Connection>();
     }
+    void CreatePingPong()
+    {
+        this._ngoManager._onSpawnerActivate -= CreatePingPong;
+        _ngoManager._networkSpawner.Spawn(new SpawnParams()
+        {
+            prefabListName = "NetPrefabs",
+            prefabName = "PingPong",
+            destroyWithScene = false
+        });
+    }
+
     void SetMTU(ulong clientID)
     {
         this._ngoManager.SetPeerMTU(clientID,P2PInterface.MaxPacketSize);
@@ -188,7 +202,10 @@ public class EOSNetcodeTransport : NetworkTransport
     public override ulong GetCurrentRtt(ulong clientId)
     {
         double rtt = 0;
-        _pingpong.GetRtt(clientId, out rtt);
+        if (_pingpong != null)
+        {
+            _pingpong.GetRtt(clientId, out rtt);
+        }
         return (ulong)rtt;
     }
     public override void Send(ulong transportID, ArraySegment<byte> payload, NetworkDelivery networkDelivery)

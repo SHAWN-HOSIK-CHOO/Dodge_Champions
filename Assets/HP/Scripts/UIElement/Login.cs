@@ -1,13 +1,12 @@
 using DG.Tweening;
 using Epic.OnlineServices;
-using Epic.OnlineServices.Presence;
 using Epic.OnlineServices.UserInfo;
 using HP;
 using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Windows;
+using Button = UnityEngine.UI.Button;
 
 public class Login : MonoBehaviour
 {
@@ -24,9 +23,8 @@ public class Login : MonoBehaviour
     [SerializeField]
     ConsoleController _consoleController;
 
-
-    string _LoginID;
-    string _LoginCredential;
+    string _LoginID = "localhost:8000";
+    string _LoginCredential = "1";
 
     public event Action onLogin;
     public event Action onConnect;
@@ -37,12 +35,10 @@ public class Login : MonoBehaviour
         _epicPortalLogin.onClick.AddListener(OnEpicPortalLogin);
         _developerLogin.onClick.AddListener(OnDeveloperLogin);
         gameObject.SetActive(true);
-
-
-        _consoleController.onSubmit += onSubmit;
+        _consoleController.onSubmit += OnSubmit;
 
     }
-    void onSubmit(CutomTMPInputField.InputMode mode, string text)
+    void OnSubmit(CutomTMPInputField.InputMode mode, string text)
     {
         if (mode == CutomTMPInputField.InputMode.S)
         {
@@ -64,12 +60,18 @@ public class Login : MonoBehaviour
             }
         }
     }
-
     void OnLoginComplete(Result result, EpicAccountId localEAID)
     {
         if (result == Result.Success)
         {
             FreeNet._instance._localUser._localEAID = new EOSWrapper.ETC.EAID(localEAID);
+
+            var simulator = _consoleController.GetComponent<ConsoleSimulator>();
+            simulator.BeginTracking();
+            _consoleController.AddText($"QueryAndCopyUserInfo...");
+            simulator.EndTracking();
+            simulator.Simulate(0.05f);
+
             EOSWrapper.UserInfo.QueryAndCopyUserInfo(FreeNet._instance._eosCore._IUSER, localEAID, localEAID, (Result result, UserInfoData? data) =>
             {
                 if (result == Result.Success)
@@ -77,19 +79,26 @@ public class Login : MonoBehaviour
                     FreeNet._instance._localUser._localUserInfo = data;
                     onLogin?.Invoke();
                 }
+                else
+                {
+                    ShowErr(result.ToString());
+                }
             });
         }
         else
         {
-            var seq = DOTween.Sequence();
-            seq.Append(_background.DOColor(Color.red, 0.2f).From(Color.white));
-            seq.AppendInterval(0.2f);
-            seq.Append(_background.DOColor(Color.white, 0.2f)).OnComplete(() =>
-            {
-                Instantiate(_systemAnouncePref).GetComponent<SystemAnounce>().Show(result.ToString());
-            });
+            ShowErr(result.ToString());
         }
-        Debug.Log($"Login RESULT : {result}");
+    }
+    void ShowErr(string msg)
+    {
+        var seq = DOTween.Sequence();
+        seq.Append(_background.DOColor(Color.red, 0.2f).From(Color.white));
+        seq.AppendInterval(0.2f);
+        seq.Append(_background.DOColor(Color.white, 0.2f)).OnComplete(() =>
+        {
+            Instantiate(_systemAnouncePref).GetComponent<SystemAnounce>().Show(msg);
+        });
     }
     void OnConnectComplete(Result result, ProductUserId localPUID)
     {
@@ -108,18 +117,18 @@ public class Login : MonoBehaviour
         }
         else
         {
-            var seq = DOTween.Sequence();
-            seq.Append(_background.DOColor(Color.red, 0.2f).From(Color.white));
-            seq.AppendInterval(0.2f);
-            seq.Append(_background.DOColor(Color.white, 0.2f)).OnComplete(() =>
-            {
-                Instantiate(_systemAnouncePref).GetComponent<SystemAnounce>().Show(result.ToString());
-            });
+            ShowErr(result.ToString());
         }
         Debug.Log($"Coonect RESULT : {result}");
     }
     void OnGuestLogin()
     {
+        var simulator = _consoleController.GetComponent<ConsoleSimulator>();
+        simulator.BeginTracking();
+        _consoleController.AddText($"OnGuestLogin Start...");
+        simulator.EndTracking();
+        simulator.Simulate(0.05f);
+
         string username = "Anonymouse";
         EOSWrapper.ConnectControl.DeviceIDConnect(FreeNet._instance._eosCore._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
         {
@@ -141,7 +150,12 @@ public class Login : MonoBehaviour
     }
     void OnEpicPortalLogin()
     {
-         EOSWrapper.LoginControl.EpicPortalLogin(FreeNet._instance._eosCore._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
+        var simulator = _consoleController.GetComponent<ConsoleSimulator>();
+        simulator.BeginTracking();
+        _consoleController.AddText($"OnEpicPortalLogin Start...");
+        simulator.EndTracking();
+        simulator.Simulate(0.05f);
+        EOSWrapper.LoginControl.EpicPortalLogin(FreeNet._instance._eosCore._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if (EOSWrapper.ETC.ErrControl<EpicAccountId>(info.ResultCode, OnLoginComplete))
             {
@@ -168,9 +182,14 @@ public class Login : MonoBehaviour
     }
     void OnDeveloperLogin()
     {
+        var simulator = _consoleController.GetComponent<ConsoleSimulator>();
+        simulator.BeginTracking();
+        _consoleController.AddText($"OnDeveloperLogin Start...");
+        simulator.EndTracking();
+        simulator.Simulate(0.05f);
         EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet._instance._eosCore._IAuth, _LoginID, _LoginCredential , (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
-            if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnConnectComplete))
+            if (EOSWrapper.ETC.ErrControl<EpicAccountId>(info.ResultCode, OnLoginComplete))
             {
                 OnLoginComplete(Result.Success, info.LocalUserId);
                 EOSWrapper.ConnectControl.EpicIDConnect(FreeNet._instance._eosCore._IAuth, FreeNet._instance._eosCore._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
@@ -194,7 +213,6 @@ public class Login : MonoBehaviour
             }
         });
     }
-
     private void OnDestroy()
     {
         _guestLogin.onClick.RemoveAllListeners();

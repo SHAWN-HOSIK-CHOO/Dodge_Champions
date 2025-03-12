@@ -8,7 +8,7 @@ public class CreateControl : MonoBehaviour
     [SerializeField]
     public Toggle _isPrivate;
     [SerializeField]
-    public TMP_InputField _roomCodeInputField;
+    public HP.CutomTMPInputField _roomCodeInputField;
 
     [SerializeField]
     public Button _submitButton;

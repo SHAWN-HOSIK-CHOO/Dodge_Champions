@@ -26,7 +26,8 @@ public class NetworkSpawner : NetworkBehaviour
 
     private void Awake()
     {
-        if(IsServer)
+        _prefabs = new Dictionary<string, Dictionary<string, NetworkPrefab>>();
+        if (IsServer)
         {
             GetComponent<NetworkObject>().Spawn();
         }
@@ -50,25 +51,37 @@ public class NetworkSpawner : NetworkBehaviour
         UpdatePrefabList();
         _onSpawned?.Invoke();
     }
-    public void Spawn(SpawnParams param, bool transferOwnership = false, ulong clientID = 0)
+    
+    public bool GetNetworkPref(string prefabListName , string prefabName , out NetworkPrefab netPrefab)
     {
-        if (!IsServer) return;
-        if (_prefabs.TryGetValue(param.prefabListName, out var prefabList))
+        netPrefab = null;
+        if (_prefabs.TryGetValue(prefabListName, out var prefabList))
         {
-            if (prefabList.TryGetValue(param.prefabName, out var networkPrefab))
+            if (prefabList.TryGetValue(prefabName, out netPrefab))
             {
-                GameObject playerInstance = Instantiate(networkPrefab.Prefab, param.pos, param.rot);
-                NetworkObject networkObject = playerInstance.GetComponent<NetworkObject>();
-                if (transferOwnership)
-                {
-                    networkObject.SpawnWithOwnership(clientID);
-                }
-                else
-                {
-                    networkObject.Spawn();
-                }
+                return true;
             }
         }
+        return false;
+    }
+
+    public NetworkObject Spawn(SpawnParams param, bool transferOwnership = false, ulong clientID = 0)
+    {
+        if(IsServer && GetNetworkPref(param.prefabListName, param.prefabName,out var netpref))
+        {
+            GameObject playerInstance = Instantiate(netpref.Prefab, param.pos, param.rot);
+            NetworkObject networkObject = playerInstance.GetComponent<NetworkObject>();
+            if (transferOwnership)
+            {
+                networkObject.SpawnWithOwnership(clientID, param.destroyWithScene);
+            }
+            else
+            {
+                networkObject.Spawn(param.destroyWithScene);
+            }
+            return networkObject;
+        }
+        return null;
     }
     [Rpc(SendTo.Server,RequireOwnership = false)]
     public void SpawnObjectRpc(bool transferOwnership, SpawnParams param, RpcParams rpcParams = default)

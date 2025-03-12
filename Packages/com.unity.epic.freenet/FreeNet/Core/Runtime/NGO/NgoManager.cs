@@ -2,6 +2,9 @@
 using Epic.OnlineServices.P2P;
 using Unity.Netcode;
 using UnityEngine;
+using static NetworkSpawner;
+using UnityEngine.SceneManagement;
+using System;
 
 public class NgoManager : NetworkManager
 {
@@ -57,6 +60,10 @@ public class NgoManager : NetworkManager
     public byte _channel => 0;
     public byte _urgentChannel => 1;
 
+    [SerializeField]
+    public NetworkSpawner _networkSpawner;
+    public event Action _onSpawnerActivate;
+
     public void Init(FreeNet freeNet)
     {
         _freeNet = freeNet;
@@ -75,15 +82,19 @@ public class NgoManager : NetworkManager
             MessageManager.NonFragmentedMessageMaxSize = P2PInterface.MaxPacketSize;
         }
 
-        if(_EOSNetcodeTransport != null)
+        if (_EOSNetcodeTransport != null)
         {
-            _EOSNetcodeTransport._pingpong.SetJitterRanage(_jitterRange);
-            _EOSNetcodeTransport._pingpong.SetVirtualRrtt(_virtualRtt,_fixedRtt);
+            if (_EOSNetcodeTransport._pingpong != null)
+            {
+                _EOSNetcodeTransport._pingpong.SetJitterRanage(_jitterRange);
+                _EOSNetcodeTransport._pingpong.SetVirtualRrtt(_virtualRtt, _fixedRtt);
+            }
         }
     }
     public bool StartServer(EOSWrapper.ETC.PUID localPUID, string socketName)
     {
-        var result = false; 
+        var result = false;
+        _networkSpawner._onSpawned += OnSpawnedSpawner;
         if (_useEpicOnlineTransport)
         {
             result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel,_urgentChannel) && StartServer();
@@ -103,6 +114,7 @@ public class NgoManager : NetworkManager
     public bool StartClient(EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketName)
     {
         var result = false;
+        _networkSpawner._onSpawned += OnSpawnedSpawner;
         if (_useEpicOnlineTransport)
         {
             result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel, _urgentChannel) && StartClient();
@@ -120,6 +132,7 @@ public class NgoManager : NetworkManager
     public bool StartHost(EOSWrapper.ETC.PUID localPUID, string socketName)
     {
         var result = false;
+        _networkSpawner._onSpawned += OnSpawnedSpawner;
         if (_useEpicOnlineTransport)
         {
             result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel, _urgentChannel) &&
@@ -135,5 +148,10 @@ public class NgoManager : NetworkManager
             SetNetworkValue();
         }
         return result;
+    }
+    void OnSpawnedSpawner()
+    {
+        _networkSpawner._onSpawned -= OnSpawnedSpawner;
+        _onSpawnerActivate?.Invoke();
     }
 }

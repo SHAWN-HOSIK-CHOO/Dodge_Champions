@@ -32,7 +32,7 @@ namespace HP
         {
             if (!Application.isPlaying) return;
             _inputModeLayout.SetActive(_useInputMode);
-
+            _inputModeText.text = _InputMode.ToString();
             if (initialized == false)
             {
                 onFocusSelectAll = true;
@@ -40,13 +40,11 @@ namespace HP
                 initialized = true;
             }
         }
-
         public void ShowInputMode(bool b)
         {
             _useInputMode = b;
             _inputModeLayout.SetActive(_useInputMode);
         }
-
         void BindKey()
         {
             var inputManager = GetComponent<InputManager>();

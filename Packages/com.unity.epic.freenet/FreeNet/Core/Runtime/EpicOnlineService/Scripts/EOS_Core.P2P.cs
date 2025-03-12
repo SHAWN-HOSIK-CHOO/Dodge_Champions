@@ -56,6 +56,8 @@ public partial class EOS_Core : MonoBehaviour
                 ReleaseSocket(item.Value);
             }
             _IP2P.RemoveNotifyIncomingPacketQueueFull(_onPacketQueueFullHandle);
+            _sockets = null;
+            _onPacketQueueFullHandle = 0;
         }
         catch
         {
