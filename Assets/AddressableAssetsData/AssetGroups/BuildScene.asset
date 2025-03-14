@@ -14,17 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: BuildScene
   m_GUID: a14be32f9285ffe4bbef9f1b47e3eb6c
-  m_SerializeEntries:
-  - m_GUID: 44c538dd09f54b74d9642ad80281746e
-    m_Address: LobbyScene
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6ced2c95513a0ad4897918354a77728e
-    m_Address: LoginScene
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3d097324f5a1c4a42be759f2365a3fde, type: 2}
   m_SchemaSet:

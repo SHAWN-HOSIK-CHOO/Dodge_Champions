@@ -2,7 +2,6 @@
 using Epic.OnlineServices.P2P;
 using System;
 using Unity.Netcode;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using static NetworkSpawner;
 
@@ -47,7 +46,7 @@ public class NgoManager : NetworkManager
     [SerializeField]
     private double _serverBufferSec;
     [SerializeField]
-    private bool _useEpicOnlineTransport;
+    public bool _useEpicOnlineTransport;
     [SerializeField]
     private float _jitterRange;
     [SerializeField]

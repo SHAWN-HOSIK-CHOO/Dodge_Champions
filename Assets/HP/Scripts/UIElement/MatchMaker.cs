@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using System.Collections;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -25,12 +26,12 @@ public class MatchMaker : MonoBehaviour
     bool _connectSuccess;
     void Start()
     {
+
         _login.onLogin += OnLogin;
         _login.onConnect += OnConnect;
         _lobbyControl.OnJoinLobby += OnJoinLobby;
 
         _coroutineHandler.BeginCoroutine(() => { return WaitAuthComplete(); });
-
     }
     private void OnEnable()
     {
@@ -112,7 +113,7 @@ public class MatchMaker : MonoBehaviour
         FreeNet._instance._ngoManager.SceneManager.OnLoad += OnLoad;
         if (FreeNet._instance._ngoManager.IsServer)
         {
-            FreeNet._instance._ngoManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+            FreeNet._instance._ngoManager.SceneManager.LoadScene("LobbyScene", LoadSceneMode.Single);
         }
     }
 
