@@ -14,6 +14,12 @@ public class FindJoinControl : MonoBehaviour
 
     [HideInInspector]
     public LobbyInfoElement curSelectedLobby;
+
+    private void OnEnable()
+    {
+        transform.SetAsLastSibling();
+    }
+
     public void SelecteMode(LobbyInfoElement element)
     {
         if (curSelectedLobby != null)
@@ -32,7 +38,6 @@ public class FindJoinControl : MonoBehaviour
     {
         foreach (var element in _infoElementParent.GetComponentsInChildren<LobbyInfoElement>())
         {
-            element._lobbySearch.Release();
             element.transform.SetParent(null);
             Destroy(element.gameObject);
         }

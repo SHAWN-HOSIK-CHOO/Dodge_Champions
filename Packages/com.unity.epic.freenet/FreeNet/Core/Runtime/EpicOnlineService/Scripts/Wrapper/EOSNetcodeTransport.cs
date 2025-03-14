@@ -32,7 +32,7 @@ public class EOSNetcodeTransport : NetworkTransport
     public override ulong ServerClientId => 0;
     int m_NextTransportID = 0;
 
-    void SendUrgentPacket(ulong transportID)
+    public void SendUrgentPacket(ulong transportID)
     {
         byte[] buffer = new byte[1];
         ArraySegment<byte> payload = new ArraySegment<byte>(buffer);
@@ -61,21 +61,9 @@ public class EOSNetcodeTransport : NetworkTransport
         this._ngoManager = networkManager as NgoManager;
         this._ngoManager.NetworkConfig.ClientConnectionBufferTimeout = 30;
         this._ngoManager.OnClientConnectedCallback += SetMTU;
-        this._ngoManager._onSpawnerActivate += CreatePingPong;
-
 
        _ServerConnectionChangeInfo = new Queue<ServerConnectionChangeInfo>();
         _ClientConnectionChangeInfo = new Queue<EOS_Socket.Connection>();
-    }
-    void CreatePingPong()
-    {
-        this._ngoManager._onSpawnerActivate -= CreatePingPong;
-        _ngoManager._networkSpawner.Spawn(new SpawnParams()
-        {
-            prefabListName = "NetPrefabs",
-            prefabName = "PingPong",
-            destroyWithScene = false
-        });
     }
 
     void SetMTU(ulong clientID)
@@ -186,9 +174,12 @@ public class EOSNetcodeTransport : NetworkTransport
 
     protected override void OnEarlyUpdate()
     {
-        PollConnectEvent();
-        PollServerDataEvent();
-        PollClientDataEvent();
+        if(_ngoManager.IsListening)
+        {
+            PollConnectEvent();
+            PollServerDataEvent();
+            PollClientDataEvent();
+        }
         base.OnEarlyUpdate();
     }
     public override void DisconnectLocalClient()

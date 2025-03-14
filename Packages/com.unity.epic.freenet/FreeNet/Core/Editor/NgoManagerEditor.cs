@@ -11,10 +11,9 @@ public class NgoManagerEditor : NetworkManagerEditor
     private SerializedProperty _useEpicOnlineTransport;
 
     private SerializedProperty _jitterRange;
-
     private SerializedProperty _virtualRtt;
-
-    private SerializedProperty _fixedRtt;
+    private SerializedProperty _useVirtualRtt;
+    private SerializedProperty _networkSpawnerPref;
 
 
     private new void OnEnable()
@@ -24,7 +23,8 @@ public class NgoManagerEditor : NetworkManagerEditor
         _useEpicOnlineTransport = serializedObject.FindProperty("_useEpicOnlineTransport");
         _jitterRange = serializedObject.FindProperty("_jitterRange");
         _virtualRtt = serializedObject.FindProperty("_virtualRtt");
-        _fixedRtt = serializedObject.FindProperty("_fixedRtt");
+        _useVirtualRtt = serializedObject.FindProperty("_useVirtualRtt");
+        _networkSpawnerPref = serializedObject.FindProperty("_networkSpawnerPref");
     }
 
     public override void OnInspectorGUI()
@@ -38,6 +38,10 @@ public class NgoManagerEditor : NetworkManagerEditor
         EditorGUILayout.PropertyField(_localBufferSec);
         EditorGUILayout.PropertyField(_serverBufferSec);
         EditorGUILayout.PropertyField(_useEpicOnlineTransport);
+        EditorGUILayout.PropertyField(_jitterRange);
+        EditorGUILayout.PropertyField(_useVirtualRtt);    
+        EditorGUILayout.PropertyField(_virtualRtt);
+        EditorGUILayout.PropertyField(_networkSpawnerPref);
 
         if (EditorGUI.EndChangeCheck()) 
         {

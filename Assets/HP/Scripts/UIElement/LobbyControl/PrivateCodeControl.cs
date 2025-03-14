@@ -18,6 +18,10 @@ public class PrivateCodeControl : MonoBehaviour
         _inputField._resetOnSubmit = false;
     }
 
+    private void OnEnable()
+    {
+        transform.SetAsLastSibling();
+    }
     public void ActivateInpuField(LobbyInfoElement element)
     {
         _lobbyInfoElement = element;

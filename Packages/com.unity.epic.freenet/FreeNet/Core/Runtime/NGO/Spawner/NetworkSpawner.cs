@@ -27,10 +27,6 @@ public class NetworkSpawner : NetworkBehaviour
     private void Awake()
     {
         _prefabs = new Dictionary<string, Dictionary<string, NetworkPrefab>>();
-        if (IsServer)
-        {
-            GetComponent<NetworkObject>().Spawn();
-        }
     }
     void UpdatePrefabList()
     {
@@ -51,7 +47,12 @@ public class NetworkSpawner : NetworkBehaviour
         UpdatePrefabList();
         _onSpawned?.Invoke();
     }
-    
+
+    public override void OnNetworkDespawn() 
+    {
+        Debug.Log("Spawner Despawned");
+    }
+
     public bool GetNetworkPref(string prefabListName , string prefabName , out NetworkPrefab netPrefab)
     {
         netPrefab = null;
@@ -64,7 +65,6 @@ public class NetworkSpawner : NetworkBehaviour
         }
         return false;
     }
-
     public NetworkObject Spawn(SpawnParams param, bool transferOwnership = false, ulong clientID = 0)
     {
         if(IsServer && GetNetworkPref(param.prefabListName, param.prefabName,out var netpref))

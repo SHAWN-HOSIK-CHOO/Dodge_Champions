@@ -30,6 +30,10 @@ public class CreateControl : MonoBehaviour
         AddMode("World3");
     }
 
+    private void OnEnable()
+    {
+        transform.SetAsLastSibling();
+    }
     public void SelecteMode(ModeElement element)
     {
         if(curSelectedMode != null)

@@ -86,6 +86,41 @@ public class MatchMaker : MonoBehaviour
         simulator.Simulate(0.05f);
         _coroutineHandler.BeginCoroutine(() => { return BeginLoadLobby(lobby); });
     }
+    IEnumerator BeginLoadLobby(EOS_Lobby lobby)
+    {
+        _transition.gameObject.SetActive(true);
+        _transition.color = new Color(0, 0, 0, 0);
+        yield return _transition.DOFade(0.5f, 1f).SetEase(Ease.InOutFlash).WaitForCompletion();
+
+        if (LobbyAttributeExtenstion.GetLobbySocket(lobby._attribute, out var socket))
+        {
+            FreeNet._instance._ngoManager._onNgoManagerReady += OnNgoManagerReady;
+            if (lobby._lobbyOwner == FreeNet._instance._localUser._localPUID)
+            {
+                FreeNet._instance._ngoManager.StartHost(FreeNet._instance._localUser._localPUID, socket);
+            }
+            else
+            {
+                FreeNet._instance._ngoManager.StartClient(FreeNet._instance._localUser._localPUID, lobby._lobbyOwner, socket);
+            }
+        }
+    }
+
+    void OnNgoManagerReady()
+    {
+        FreeNet._instance._ngoManager._onNgoManagerReady -= OnNgoManagerReady;
+        FreeNet._instance._ngoManager.SceneManager.OnLoad += OnLoad;
+        if (FreeNet._instance._ngoManager.IsServer)
+        {
+            FreeNet._instance._ngoManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+        }
+    }
+
+    void OnLoad(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
+    {
+        FreeNet._instance._ngoManager.SceneManager.OnLoad -= OnLoad;
+        _coroutineHandler.BeginCoroutine(() => { return EndLoadLobby(clientId, sceneName, asyncOperation); });
+    }
 
     IEnumerator EndLoadLobby(ulong clientId, string sceneName, AsyncOperation asyncOperation)
     {
@@ -104,38 +139,8 @@ public class MatchMaker : MonoBehaviour
         asyncOperation.allowSceneActivation = true;
     }
 
-    void OnSpawnerActivate()
-    {
-        FreeNet._instance._ngoManager._onSpawnerActivate -= OnSpawnerActivate;
-        FreeNet._instance._ngoManager.SceneManager.OnLoad += OnLoad;
-        FreeNet._instance._ngoManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
-    }
 
-    void OnLoad(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
-    {
-        FreeNet._instance._ngoManager.SceneManager.OnLoad -= OnLoad;
-        _coroutineHandler.BeginCoroutine(() => { return EndLoadLobby(clientId, sceneName, asyncOperation);});
-    }
-    
-    IEnumerator BeginLoadLobby(EOS_Lobby lobby)
-    {
-        _transition.gameObject.SetActive(true);
-        _transition.color = new Color(0, 0, 0, 0);
-        yield return _transition.DOFade(0.5f, 1f).SetEase(Ease.InOutFlash).WaitForCompletion();
 
-        if (LobbyAttributeExtenstion.GetLobbySocket(lobby._attribute, out var socket))
-        {
-            FreeNet._instance._ngoManager._onSpawnerActivate += OnSpawnerActivate;
-            if (lobby._lobbyOwner == FreeNet._instance._localUser._localPUID)
-            {
-                FreeNet._instance._ngoManager.StartHost(FreeNet._instance._localUser._localPUID, socket);
-            }
-            else
-            {
-                FreeNet._instance._ngoManager.StartClient(FreeNet._instance._localUser._localPUID, lobby._lobbyOwner, socket);
-            }
-        }
-    }
     private void OnDestroy()
     {
         _login.onLogin -= OnLogin;

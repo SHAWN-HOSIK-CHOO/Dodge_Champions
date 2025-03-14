@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
+using static Unity.Netcode.DefaultSceneManagerHandler;
 
 
 namespace Unity.Netcode
@@ -686,11 +689,35 @@ namespace Unity.Netcode
             // to include information about the addressable or asset bundle (i.e. address to load assets)
             HashToBuildIndex.Clear();
             BuildIndexToHash.Clear();
-            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+
+            var sceneCount = 0;
+#if UNITY_EDITOR
+            sceneCount = EditorBuildSettings.scenes.Length;
+#else
+            sceneCount = SceneManager.sceneCountInBuildSettings;
+#endif
+            for (int i = 0; i < sceneCount; i++)
             {
-                var scenePath = SceneUtility.GetScenePathByBuildIndex(i);
-                var hash = XXHash.Hash32(scenePath);
-                var buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
+                var scenePath = "";
+                uint hash = 0;
+                var buildIndex = -1;
+#if UNITY_EDITOR
+                if (!EditorBuildSettings.scenes[i].enabled)
+                {
+                    scenePath = EditorBuildSettings.scenes[i].path;
+                    buildIndex = i;
+                }
+                else
+                {
+                    Debug.LogWarning($"Scene {EditorBuildSettings.scenes[i].path} is disabled in Build Settings.");
+                    continue;
+                }
+#else
+
+                scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
+#endif
+                hash = XXHash.Hash32(scenePath);
 
                 // In the rare-case scenario where a programmatically generated build has duplicate
                 // scene entries, we will log an error and skip the entry
@@ -729,7 +756,14 @@ namespace Unity.Netcode
         {
             if (HashToBuildIndex.ContainsKey(sceneHash))
             {
+#if UNITY_EDITOR
+
+                return EditorBuildSettings.scenes[HashToBuildIndex[sceneHash]].path;
+#else
                 return SceneUtility.GetScenePathByBuildIndex(HashToBuildIndex[sceneHash]);
+#endif
+
+
             }
             else
             {
@@ -1176,11 +1210,36 @@ namespace Unity.Netcode
             }
 
             // Return invalid scene name status if the scene name is invalid
+#if UNITY_EDITOR
+
+
+          
+            var scenes = EditorBuildSettings.scenes;
+            for (int i = 0; i < scenes.Length; i++)
+            {
+                if (scenes[i].path == sceneName)
+                {
+                    return i;  // EditorBuildSettings.scenes의 인덱스 반환
+                }
+            }
+
+
+
             if (SceneUtility.GetBuildIndexByScenePath(sceneName) == InvalidSceneNameOrPath)
             {
+                var scenes = EditorBuildSettings.scenes;
                 Debug.LogError($"Scene '{sceneName}' couldn't be loaded because it has not been added to the build settings scenes in build list.");
                 return new SceneEventProgress(null, SceneEventProgressStatus.InvalidSceneName);
             }
+#else
+            if (SceneUtility.GetBuildIndexByScenePath(sceneName) == InvalidSceneNameOrPath)
+            {
+                var scenes = EditorBuildSettings.scenes;
+                Debug.LogError($"Scene '{sceneName}' couldn't be loaded because it has not been added to the build settings scenes in build list.");
+                return new SceneEventProgress(null, SceneEventProgressStatus.InvalidSceneName);
+            }
+#endif
+
 
             var sceneEventProgress = new SceneEventProgress(NetworkManager)
             {

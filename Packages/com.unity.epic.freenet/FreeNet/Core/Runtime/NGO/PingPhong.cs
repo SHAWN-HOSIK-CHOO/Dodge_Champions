@@ -27,7 +27,7 @@ public class PingPong : NetworkBehaviour
         NetworkManager.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.OnClientDisconnectCallback += OnClientDisConnected;
     }
-    public void SetVirtualRrtt(bool virtualRtt , float fixedRtt = 0)
+    public void SetVirtualRtt(bool virtualRtt , float fixedRtt = 0)
     {
         _virtualRtt = virtualRtt;
         _fixedRtt = fixedRtt;
@@ -64,7 +64,6 @@ public class PingPong : NetworkBehaviour
         double sendTime;
         double rtt;
         messagePayload.ReadValueSafe(out sendTime);
-        messagePayload.ReadValueSafe(out rtt);
         if (IsServer)
         {
             if(_smoothedRTT.TryGetValue(senderId, out var smoothedRTT))
@@ -76,6 +75,7 @@ public class PingPong : NetworkBehaviour
         }
         else
         {
+            messagePayload.ReadValueSafe(out rtt);
             _smoothedRTT[NetworkManager.ServerClientId] = rtt;
             _pingText.text = $"Ping : {rtt}";
             SendPong(senderId, sendTime);

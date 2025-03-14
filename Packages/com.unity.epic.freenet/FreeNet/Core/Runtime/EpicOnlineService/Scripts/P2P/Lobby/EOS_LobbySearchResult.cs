@@ -42,8 +42,12 @@ public class EOS_LobbySearchResult
     {
         _lobbyManager.JoinLobbyByDetails(_details, (Result result, EOS_Lobby lobby) =>
         {
-            _details.Release();
-            _details = null;
+            if(result == Result.Success)
+            {
+                _details.Release();
+                _details = null;
+            }
+            onComplete?.Invoke(result, lobby);
         });
     }
 }
