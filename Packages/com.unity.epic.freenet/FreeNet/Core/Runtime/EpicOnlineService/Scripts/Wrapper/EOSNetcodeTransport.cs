@@ -4,11 +4,11 @@ using UnityEngine;
 using Epic.OnlineServices.P2P;
 using Unity.Netcode;
 using System.Text;
+using static NetworkSpawner;
 public class EOSNetcodeTransport : NetworkTransport
 {
-    [SerializeField]
+    [HideInInspector]
     public PingPong _pingpong;
-
     [SerializeField]
     EOS_Server _serverPrefab;
     [SerializeField]
@@ -18,28 +18,54 @@ public class EOSNetcodeTransport : NetworkTransport
     EOS_Client _client;
 
     byte _channel;
-
+    byte _urgentchannel;
+    bool _isUrgent;
     private NgoManager _ngoManager;
     struct ServerConnectionChangeInfo
     {
         public int connectID;
         public EOS_Socket.Connection connection;
     }
-
     Queue<ServerConnectionChangeInfo> _ServerConnectionChangeInfo;
     Queue<EOS_Socket.Connection> _ClientConnectionChangeInfo;
 
     public override ulong ServerClientId => 0;
     int m_NextTransportID = 0;
+
+    public void SendUrgentPacket(ulong transportID)
+    {
+        byte[] buffer = new byte[1];
+        ArraySegment<byte> payload = new ArraySegment<byte>(buffer);
+        if (transportID == ServerClientId)
+        {
+            _client.SendToServer(_urgentchannel, payload, Epic.OnlineServices.P2P.PacketReliability.ReliableOrdered);
+        }
+        else
+        {
+            _server.SendToClient(_urgentchannel, payload, (int)transportID, Epic.OnlineServices.P2P.PacketReliability.ReliableOrdered);
+        }
+    }
+
+    private void Update()
+    {
+        if(_isUrgent)
+        {
+            _ngoManager.NetworkUpdate(NetworkUpdateStage.EarlyUpdate);
+        }
+        _isUrgent = false;
+    }
+
     #region Netcode Transport Override
     public override void Initialize(NetworkManager networkManager = null)
     {
         this._ngoManager = networkManager as NgoManager;
         this._ngoManager.NetworkConfig.ClientConnectionBufferTimeout = 30;
         this._ngoManager.OnClientConnectedCallback += SetMTU;
-        _ServerConnectionChangeInfo = new Queue<ServerConnectionChangeInfo>();
+
+       _ServerConnectionChangeInfo = new Queue<ServerConnectionChangeInfo>();
         _ClientConnectionChangeInfo = new Queue<EOS_Socket.Connection>();
     }
+
     void SetMTU(ulong clientID)
     {
         this._ngoManager.SetPeerMTU(clientID,P2PInterface.MaxPacketSize);
@@ -126,8 +152,7 @@ public class EOSNetcodeTransport : NetworkTransport
             {
                 if (_server != null)
                 {
-                    bool dequed = false;
-                    dequed = (id == null) ? _server.DequeuePacket(_channel, out var packetInfo) : _server.DequeuePacket(id.Value, _channel, out packetInfo);
+                    bool dequed = (id == null) ? _server.DequeuePacket(_channel, out var packetInfo) : _server.DequeuePacket(id.Value, _channel, out packetInfo);
                     if(dequed)
                     {
                         if (_server.GetConnectID(packetInfo._senderPUID, out var transportId))
@@ -146,11 +171,15 @@ public class EOSNetcodeTransport : NetworkTransport
             }
         }
     }
+
     protected override void OnEarlyUpdate()
     {
-        PollConnectEvent();
-        PollServerDataEvent();
-        PollClientDataEvent();
+        if(_ngoManager.IsListening)
+        {
+            PollConnectEvent();
+            PollServerDataEvent();
+            PollClientDataEvent();
+        }
         base.OnEarlyUpdate();
     }
     public override void DisconnectLocalClient()
@@ -164,7 +193,10 @@ public class EOSNetcodeTransport : NetworkTransport
     public override ulong GetCurrentRtt(ulong clientId)
     {
         double rtt = 0;
-        _pingpong.GetRtt(clientId, out rtt);
+        if (_pingpong != null)
+        {
+            _pingpong.GetRtt(clientId, out rtt);
+        }
         return (ulong)rtt;
     }
     public override void Send(ulong transportID, ArraySegment<byte> payload, NetworkDelivery networkDelivery)
@@ -236,13 +268,14 @@ public class EOSNetcodeTransport : NetworkTransport
         m_NextTransportID++;
         return m_NextTransportID;
     }
-    public bool InitializeEOSServer(EOS_Core eosCore, EOSWrapper.ETC.PUID localPUID, string socketid, byte channel)
+    public bool InitializeEOSServer(EOS_Core eosCore, EOSWrapper.ETC.PUID localPUID, string socketid, byte channel, byte urgnetChannel)
     {
         if (_server != null) return false;
         _server = Instantiate(_serverPrefab);
         _server.transform.parent = this.transform;
         _server.Init(eosCore,localPUID, socketid, GetNewConnectID);
         _channel = channel;
+        _urgentchannel = urgnetChannel;
         _server._onConnectionStateChanged -= OnServerConnectionStateChangedCB;
         _server._onConnectionStateChanged += OnServerConnectionStateChangedCB;
         _server._onStateChanged -= OnServerStateChangedCB;
@@ -262,25 +295,26 @@ public class EOSNetcodeTransport : NetworkTransport
             });
         }
     }
-    void OnServerReceivedPacketCB(int id,int channel)
+    void OnServerReceivedPacketCB(int id, int channel)
     {
-        if (channel == _ngoManager._UrgentPacketChannel)
+        if (channel == _ngoManager._urgentChannel)
         {
             _server.DequeuePacket(id,channel,out var _);
-            PollConnectEvent();
-            PollServerDataEvent(id);
+            _isUrgent = true;
         }
     }
     void OnServerStateChangedCB(EOS_Peer.state state)
     {
 
     }
-    public bool InitializeEOSClient(EOS_Core eosCore,EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketid, byte channel)
+    public bool InitializeEOSClient(EOS_Core eosCore,EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketid, byte channel,byte urgentChannel)
     {
         if (_client != null) return false;
         _client = Instantiate(_clientPrefab);
         _client.transform.parent = this.transform;
-        _client.Init(eosCore,localPUID, remotePUID, socketid, channel);
+        _client.Init(eosCore,localPUID, remotePUID, socketid);
+        _channel = channel;
+        _urgentchannel = urgentChannel;
         _client._onConnectionStateChanged -= OnClientConnectionStateChangedCB;
         _client._onConnectionStateChanged += OnClientConnectionStateChangedCB;
         _client._onStateChanged -= OnClientStateChangedCB;
@@ -298,11 +332,10 @@ public class EOSNetcodeTransport : NetworkTransport
     }
     void OnClientReceivedPacketCB(int channel)
     {        
-        if(channel == _ngoManager._UrgentPacketChannel)
+        if(channel == _ngoManager._urgentChannel)
         {
             _client.DequeuePacket(channel, out var _);
-            PollConnectEvent();
-            PollClientDataEvent();
+            _isUrgent = true;
         }
     }
     void OnClientStateChangedCB(EOS_Peer.state state)

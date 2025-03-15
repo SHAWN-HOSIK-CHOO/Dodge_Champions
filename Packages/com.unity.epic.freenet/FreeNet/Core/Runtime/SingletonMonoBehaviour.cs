@@ -26,11 +26,11 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour
         {
             _instance = instance;
             _Spwaned = true;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
             return true;
         }
         gameObject.SetActive(false);
-        Destroy(this);
+        Destroy(gameObject);
 
         return false;
     }

@@ -1,7 +1,9 @@
 #define CUSTUMNETCODEFIX
 using Epic.OnlineServices.P2P;
+using System;
 using Unity.Netcode;
 using UnityEngine;
+using static NetworkSpawner;
 
 public class NgoManager : NetworkManager
 {
@@ -31,8 +33,9 @@ public class NgoManager : NetworkManager
      *
      * - optimization
      * 내부적으로 알아서 잘 비트 패킹하고 있음.
-     * 매 프레임 마다 모든 패킷을 Send, Receive를 하고 있음 
-     * TODO : Transport Layer에서 큐잉하여 네트워크 부하 관리를 해야 할 듯
+     * 매 프레임 마다 모든 패킷을 Send, 고정 주기 마다 Receive 를 하고 있음 
+     * TODO : Transport Layer에서 큐잉하여 Send 네트워크 부하 관리를 해야 할 듯,
+     * TODO? : Urgent 패킷을 통해 즉시 Receive를 수행하게 함 (ipnut 레이턴시 최소화)
      */
     FreeNet _freeNet;
     EOSNetcodeTransport _EOSNetcodeTransport;
@@ -42,19 +45,23 @@ public class NgoManager : NetworkManager
 
     [SerializeField]
     private double _serverBufferSec;
-
-
     [SerializeField]
-    private bool _useEpicOnlineTransport;
+    public bool _useEpicOnlineTransport;
     [SerializeField]
     private float _jitterRange;
     [SerializeField]
-    private bool _virtualRtt;
+    private bool _useVirtualRtt;
     [SerializeField]
-    private float _fixedRtt;
+    private float _virtualRtt;
 
     public byte _channel => 0;
-    public byte _UrgentPacketChannel => 1;
+    public byte _urgentChannel => 1;
+
+    [SerializeField]
+    NetworkSpawner _networkSpawnerPref;
+
+    public NetworkSpawner _networkSpawner;
+    public event Action _onNgoManagerReady;
 
     public void Init(FreeNet freeNet)
     {
@@ -74,18 +81,21 @@ public class NgoManager : NetworkManager
             MessageManager.NonFragmentedMessageMaxSize = P2PInterface.MaxPacketSize;
         }
 
-        if(_EOSNetcodeTransport != null)
+        if (_EOSNetcodeTransport != null)
         {
-            _EOSNetcodeTransport._pingpong.SetJitterRanage(_jitterRange);
-            _EOSNetcodeTransport._pingpong.SetVirtualRrtt(_virtualRtt,_fixedRtt);
+            if (_EOSNetcodeTransport._pingpong != null)
+            {
+                _EOSNetcodeTransport._pingpong.SetJitterRanage(_jitterRange);
+                _EOSNetcodeTransport._pingpong.SetVirtualRtt(_useVirtualRtt, _virtualRtt);
+            }
         }
     }
     public bool StartServer(EOSWrapper.ETC.PUID localPUID, string socketName)
     {
-        var result = false; 
+        var result = false;
         if (_useEpicOnlineTransport)
         {
-            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel) && StartServer();
+            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel,_urgentChannel) && StartServer();
         }
         else
         {
@@ -95,6 +105,9 @@ public class NgoManager : NetworkManager
         if (result)
         {
             SetNetworkValue();
+            _networkSpawner = Instantiate(_networkSpawnerPref);
+            _networkSpawner._onSpawned += OnSpawnedSpawner;
+            _networkSpawner.GetComponent<NetworkObject>().Spawn(false);
             MessageManager.NonFragmentedMessageMaxSize = P2PInterface.MaxPacketSize;
         }
         return result;
@@ -102,9 +115,10 @@ public class NgoManager : NetworkManager
     public bool StartClient(EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketName)
     {
         var result = false;
+        _networkSpawner._onSpawned += OnSpawnedSpawner;
         if (_useEpicOnlineTransport)
         {
-            result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel) && StartClient();
+            result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel, _urgentChannel) && StartClient();
         }
         else
         {
@@ -121,8 +135,8 @@ public class NgoManager : NetworkManager
         var result = false;
         if (_useEpicOnlineTransport)
         {
-            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel) &&
-            _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, localPUID, socketName, _channel) &&
+            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel, _urgentChannel) &&
+            _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, localPUID, socketName, _channel, _urgentChannel) &&
             StartHost() && _EOSNetcodeTransport.StartClient();
         }
         else
@@ -132,7 +146,29 @@ public class NgoManager : NetworkManager
         if(result)
         {
             SetNetworkValue();
+            _networkSpawner = Instantiate(_networkSpawnerPref);
+            _networkSpawner._onSpawned += OnSpawnedSpawner;
+            _networkSpawner.GetComponent<NetworkObject>().Spawn(false);
         }
         return result;
+    }
+    public void SendUrgentPacket(ulong clientID)
+    {
+        var transportID = ConnectionManager.ClientIdToTransportId(clientID);
+        _EOSNetcodeTransport.SendUrgentPacket(transportID);
+    }
+    void OnSpawnedSpawner()
+    {
+        _networkSpawner._onSpawned -= OnSpawnedSpawner;
+        if (IsServer)
+        {
+            _networkSpawner.Spawn(new SpawnParams()
+            {
+                prefabListName = "NetPrefabs",
+                prefabName = "PingPong",
+                destroyWithScene = false
+            });
+        }
+        _onNgoManagerReady?.Invoke();
     }
 }

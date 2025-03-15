@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
+using static Unity.Netcode.DefaultSceneManagerHandler;
 
 
 namespace Unity.Netcode
@@ -668,8 +671,12 @@ namespace Unity.Netcode
         /// </summary>
         internal string GetSceneNameFromPath(string scenePath)
         {
-            var begin = scenePath.LastIndexOf("/", StringComparison.Ordinal) + 1;
-            var end = scenePath.LastIndexOf(".", StringComparison.Ordinal);
+            int begin = scenePath.LastIndexOf("/", StringComparison.Ordinal) +1;
+            if (begin == -1) begin = 0; 
+
+            int end = scenePath.LastIndexOf(".", StringComparison.Ordinal);
+            if (end == -1 || end < begin) end = scenePath.Length;
+
             return scenePath.Substring(begin, end - begin);
         }
 
@@ -686,11 +693,35 @@ namespace Unity.Netcode
             // to include information about the addressable or asset bundle (i.e. address to load assets)
             HashToBuildIndex.Clear();
             BuildIndexToHash.Clear();
-            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+
+            var sceneCount = 0;
+#if UNITY_EDITOR
+            sceneCount = EditorBuildSettings.scenes.Length;
+#else
+            sceneCount = SceneManager.sceneCountInBuildSettings;
+#endif
+            for (int i = 0; i < sceneCount; i++)
             {
-                var scenePath = SceneUtility.GetScenePathByBuildIndex(i);
-                var hash = XXHash.Hash32(scenePath);
-                var buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
+                var scenePath = "";
+                uint hash = 0;
+                var buildIndex = -1;
+#if UNITY_EDITOR
+                if (EditorBuildSettings.scenes[i].enabled)
+                {
+                    scenePath = EditorBuildSettings.scenes[i].path;
+                    buildIndex = i;
+                }
+                else
+                {
+                    Debug.LogWarning($"Scene {EditorBuildSettings.scenes[i].path} is disabled in Build Settings.");
+                    continue;
+                }
+#else
+
+                scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
+#endif
+                hash = XXHash.Hash32(scenePath);
 
                 // In the rare-case scenario where a programmatically generated build has duplicate
                 // scene entries, we will log an error and skip the entry
@@ -729,7 +760,14 @@ namespace Unity.Netcode
         {
             if (HashToBuildIndex.ContainsKey(sceneHash))
             {
+#if UNITY_EDITOR
+
+                return EditorBuildSettings.scenes[HashToBuildIndex[sceneHash]].path;
+#else
                 return SceneUtility.GetScenePathByBuildIndex(HashToBuildIndex[sceneHash]);
+#endif
+
+
             }
             else
             {
@@ -738,12 +776,30 @@ namespace Unity.Netcode
             }
         }
 
+
+        internal int GetBuildIndexByNameOrPath(string sceneNameOrPath)
+        {
+#if UNITY_EDITOR
+            var scenes = EditorBuildSettings.scenes;
+            for (int i = 0; i < scenes.Length; i++)
+            {
+                if ( GetSceneNameFromPath(scenes[i].path) == GetSceneNameFromPath(sceneNameOrPath))
+                {
+                    return i; 
+                }
+            }
+            return InvalidSceneNameOrPath;
+#else
+            return SceneUtility.GetBuildIndexByScenePath(sceneNameOrPath);  
+#endif
+        }
+
         /// <summary>
         /// Gets the associated hash value for the scene name or path
         /// </summary>
         internal uint SceneHashFromNameOrPath(string sceneNameOrPath)
         {
-            var buildIndex = SceneUtility.GetBuildIndexByScenePath(sceneNameOrPath);
+            var buildIndex = GetBuildIndexByNameOrPath(sceneNameOrPath);
             if (buildIndex >= 0)
             {
                 if (BuildIndexToHash.ContainsKey(buildIndex))
@@ -896,7 +952,7 @@ namespace Unity.Netcode
         internal bool ValidateSceneBeforeLoading(uint sceneHash, LoadSceneMode loadSceneMode)
         {
             var sceneName = SceneNameFromHash(sceneHash);
-            var sceneIndex = SceneUtility.GetBuildIndexByScenePath(sceneName);
+            var sceneIndex = GetBuildIndexByNameOrPath(sceneName);
             return ValidateSceneBeforeLoading(sceneIndex, sceneName, loadSceneMode);
         }
 
@@ -1176,11 +1232,12 @@ namespace Unity.Netcode
             }
 
             // Return invalid scene name status if the scene name is invalid
-            if (SceneUtility.GetBuildIndexByScenePath(sceneName) == InvalidSceneNameOrPath)
+            if (GetBuildIndexByNameOrPath(sceneName) == InvalidSceneNameOrPath)
             {
                 Debug.LogError($"Scene '{sceneName}' couldn't be loaded because it has not been added to the build settings scenes in build list.");
                 return new SceneEventProgress(null, SceneEventProgressStatus.InvalidSceneName);
             }
+
 
             var sceneEventProgress = new SceneEventProgress(NetworkManager)
             {
@@ -2108,7 +2165,7 @@ namespace Unity.Netcode
             var sceneHandle = sceneEventData.GetNextSceneSynchronizationHandle();
             var sceneName = SceneNameFromHash(sceneHash);
             var activeScene = SceneManager.GetActiveScene();
-
+            
             var loadSceneMode = sceneHash == sceneEventData.SceneHash ? sceneEventData.LoadSceneMode : LoadSceneMode.Additive;
 
             // Store the sceneHandle and hash

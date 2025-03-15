@@ -1,3 +1,4 @@
+using Epic.OnlineServices;
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Connect;
 using Epic.OnlineServices.Lobby;
@@ -9,16 +10,17 @@ using Epic.OnlineServices.RTCAudio;
 using Epic.OnlineServices.Sessions;
 using Epic.OnlineServices.UI;
 using Epic.OnlineServices.UserInfo;
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
 public partial class EOS_Core : MonoBehaviour
 {
-    public enum InitState
+    public enum SDKState
     {
-        Fail,
-        Suceess,
+        Released,
+        Initialized,
     }
-    public InitState _InitState { get; private set; }
+    public SDKState _sdkState { get; private set; }
     #region EOS Interface
     public PlatformInterface _IPlatform { get; private set; }
     public AuthInterface _IAuth { get; private set; }
@@ -46,20 +48,49 @@ public partial class EOS_Core : MonoBehaviour
     LogCategory category;
     [SerializeField]
     LogLevel level;
-
-
+    Coroutine _tick;
     private IEOS_PlatformFactory _factory;
-    private void Awake()
+
+    public void Run()
     {
-        _InitState = Init();
+        if (_sdkState == SDKState.Released)
+        {
+            _sdkState = Init();
+            if (_sdkState == SDKState.Initialized)
+            {
+                _tick = StartCoroutine(Tick());
+            }
+        }
     }
-    InitState Init()
+    void Stop()
+    {
+        if (_tick != null)
+        {
+            StopCoroutine(_tick);
+            _tick = null;
+        }
+        if (_sdkState == SDKState.Initialized)
+        {
+            ReleaseP2P();
+            _factory.Dispose();
+            _sdkState = SDKState.Released;
+        }
+    }
+#if UNITY_EDITOR
+    public void OnBeforeAssemblyReload()
+    {
+        AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
+        Stop();
+    }
+#endif
+
+    SDKState Init()
     {
 #if UNITY_EDITOR
-        EditorApplication.playModeStateChanged += OnPlayModeChanged;
+        AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
 #endif
         _factory = EOS_Factory.GetFactory();
-        if(!_factory.LoadDLL()) return InitState.Fail;
+        if(!_factory.LoadDLL()) return SDKState.Released;
         EOS_Credential credential = null;
         if (type == EOS_Credential.CredentialType.Dev)
         {
@@ -75,7 +106,7 @@ public partial class EOS_Core : MonoBehaviour
         }
         if(!_factory.MakePlatform(_dev,  category,level, out var IPlatform))
         {
-            return InitState.Fail;
+            return SDKState.Released;
         }
         _IPlatform = IPlatform;
         _IAuth = _IPlatform.GetAuthInterface();
@@ -89,48 +120,32 @@ public partial class EOS_Core : MonoBehaviour
         _IUSER = _IPlatform.GetUserInfoInterface();
         InitP2P();
         EOSWrapper.ETC.SetApplicationStatus(_IPlatform, ApplicationStatus.Foreground);
-        return InitState.Suceess;
+        return SDKState.Initialized;
+
     }
-    void Update()
+    IEnumerator Tick()
     {
-        _IPlatform?.Tick();
-        ReceivePacket();
+        while (true)
+        {
+            _IPlatform?.Tick();
+            ReceivePacket();
+            yield return null;
+        }
     }
 
-#if UNITY_EDITOR
-    private static void OnPlayModeChanged(PlayModeStateChange state)
+    private void OnApplicationQuit()
     {
-        if (state == PlayModeStateChange.ExitingPlayMode)
-        {
-            if(FreeNet._instance != null && FreeNet._instance._eosCore != null)
-            {
-                FreeNet._instance._eosCore.OnRelease();
-            }
-        }
-    }
-#endif
-
-    public void OnRelease()
-    {
-#if UNITY_EDITOR
-        EditorApplication.playModeStateChanged -= OnPlayModeChanged;
-#endif
-        if (_InitState == InitState.Suceess)
-        {
-            ReleaseP2P();
-            _factory.Dispose();
-            _InitState = InitState.Fail;
-        }
-    }
-    void OnApplicationFocus(bool hasFocus)
-    {
-        if (hasFocus)
-        {
-            EOSWrapper.ETC.SetApplicationStatus(_IPlatform, ApplicationStatus.Foreground);
-        }
+        Stop();
     }
     void OnApplicationPause(bool pauseStatus)
     {
-        EOSWrapper.ETC.SetApplicationStatus(_IPlatform, ApplicationStatus.BackgroundSuspended);
+        if(pauseStatus)
+        {
+            EOSWrapper.ETC.SetApplicationStatus(_IPlatform, ApplicationStatus.BackgroundSuspended);
+        }
+        else
+        {
+            EOSWrapper.ETC.SetApplicationStatus(_IPlatform, ApplicationStatus.Foreground);
+        }
     }
 }

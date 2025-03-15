@@ -2,9 +2,13 @@ using Unity.Collections;
 using UnityEngine;
 using Unity.Netcode;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 
 public class PingPong : NetworkBehaviour
 {
+    [SerializeField]
+    TMP_Text _pingText;
     string MessageName = "PingPongMessage";
     float _jitterRange;
     bool _virtualRtt;
@@ -14,16 +18,16 @@ public class PingPong : NetworkBehaviour
     private const float Alpha = 0.125f;
     public override void OnNetworkSpawn()
     {
+        FreeNet._instance.GetComponent<EOSNetcodeTransport>()._pingpong = this;
         _jitterRange = 0;
         _fixedRtt = 0;
         _virtualRtt = false;
-
         _smoothedRTT  = new Dictionary<ulong, double>();
         NetworkManager.CustomMessagingManager.RegisterNamedMessageHandler(MessageName, ReceiveMessage);
         NetworkManager.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.OnClientDisconnectCallback += OnClientDisConnected;
     }
-    public void SetVirtualRrtt(bool virtualRtt , float fixedRtt = 0)
+    public void SetVirtualRtt(bool virtualRtt , float fixedRtt = 0)
     {
         _virtualRtt = virtualRtt;
         _fixedRtt = fixedRtt;
@@ -44,7 +48,7 @@ public class PingPong : NetworkBehaviour
     }
     private void FixedUpdate()
     {
-        if (IsServer)
+        if (IsServer && IsSpawned)
         {
             SendPing();
         }
@@ -60,7 +64,6 @@ public class PingPong : NetworkBehaviour
         double sendTime;
         double rtt;
         messagePayload.ReadValueSafe(out sendTime);
-        messagePayload.ReadValueSafe(out rtt);
         if (IsServer)
         {
             if(_smoothedRTT.TryGetValue(senderId, out var smoothedRTT))
@@ -72,7 +75,9 @@ public class PingPong : NetworkBehaviour
         }
         else
         {
+            messagePayload.ReadValueSafe(out rtt);
             _smoothedRTT[NetworkManager.ServerClientId] = rtt;
+            _pingText.text = $"Ping : {rtt}";
             SendPong(senderId, sendTime);
         }
     }
@@ -88,7 +93,7 @@ public class PingPong : NetworkBehaviour
     }
     private void SendPing()
     {
-        foreach (var clientID in _smoothedRTT.Keys)
+        foreach (var clientID in _smoothedRTT.Keys.ToArray())
         {
             if (_smoothedRTT.TryGetValue(clientID, out double rtt))
             {

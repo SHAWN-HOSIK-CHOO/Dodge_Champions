@@ -25,6 +25,7 @@ namespace Unity.Netcode
         public AsyncOperation LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode, SceneEventProgress sceneEventProgress)
         {
             var operation = SceneManager.LoadSceneAsync(sceneName, loadSceneMode);
+
             sceneEventProgress.SetAsyncOperation(operation);
             return operation;
         }
