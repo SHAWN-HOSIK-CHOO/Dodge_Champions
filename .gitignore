@@ -77,10 +77,19 @@ crashlytics-build.properties
 #ignore version for collab
 ProjectSettings/ProjectVersion.txt
 
-# 어드레서블 빌드된 데이터 (협업 시 충돌 방지)
+# Addressables 빌드된 데이터 (협업 시 충돌 방지)
 Library/com.unity.addressables/
 Library/com.unity.addressables/aa/
 Library/com.unity.addressables/StreamingAssets/
 
-# 어드레서블 빌드 관련 캐시
+# Addressables 빌드 관련 캐시
 Assets/StreamingAssets/aa/
+
+# Addressables 빌드 인포 관련 파일
+Library/com.unity.addressables/BuildLayout.txt
+Library/com.unity.addressables/settings.json
+Library/com.unity.addressables/Build/Windows/  # Windows 빌드 데이터
+Library/com.unity.addressables/Build/Linux/    # Linux 빌드 데이터
+Library/com.unity.addressables/Build/MacOS/    # MacOS 빌드 데이터
+Library/com.unity.addressables/Build/iOS/      # iOS 빌드 데이터
+Library/com.unity.addressables/Build/Android/  # Android 빌드 데이터
