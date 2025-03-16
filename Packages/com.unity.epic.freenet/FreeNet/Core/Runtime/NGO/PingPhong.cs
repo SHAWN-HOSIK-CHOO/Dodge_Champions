@@ -3,41 +3,45 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
+using System;
 
 public class PingPong : NetworkBehaviour
 {
-    [SerializeField]
-    TMP_Text _pingText;
     string MessageName = "PingPongMessage";
-    float _jitterRange;
-    bool _virtualRtt;
-    float _fixedRtt;
+
+    [SerializeField]
+    private float _jitterRange;
+    [SerializeField]
+    private bool _useVirtualRtt;
+    [SerializeField]
+    private float _virtualRtt;
+
+
+    public event Action OnRttChanged;
 
     private Dictionary<ulong, double> _smoothedRTT;
     private const float Alpha = 0.125f;
     public override void OnNetworkSpawn()
     {
-        FreeNet._instance.GetComponent<EOSNetcodeTransport>()._pingpong = this;
-        _jitterRange = 0;
-        _fixedRtt = 0;
-        _virtualRtt = false;
         _smoothedRTT  = new Dictionary<ulong, double>();
+
+        if (FreeNet._instance._ngoManager._useEpicOnlineTransport)
+        {
+            FreeNet._instance._ngoManager.GetComponent<EOSNetcodeTransport>()._pingpong = this;
+        }
         NetworkManager.CustomMessagingManager.RegisterNamedMessageHandler(MessageName, ReceiveMessage);
         NetworkManager.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.OnClientDisconnectCallback += OnClientDisConnected;
     }
-    public void SetVirtualRtt(bool virtualRtt , float fixedRtt = 0)
+    public void SetVirtualRtt(bool useVirtualRtt, float virtualRtt = 0)
     {
+        _useVirtualRtt = useVirtualRtt;
         _virtualRtt = virtualRtt;
-        _fixedRtt = fixedRtt;
     }
-
     public void SetJitterRanage(float jitterRange)
     {
         _jitterRange = jitterRange;
     }
-
     private void OnClientConnected(ulong clientId)
     {
         _smoothedRTT.Add(clientId, 0);
@@ -48,7 +52,7 @@ public class PingPong : NetworkBehaviour
     }
     private void FixedUpdate()
     {
-        if (IsServer && IsSpawned)
+        if (IsSpawned && IsServer)
         {
             SendPing();
         }
@@ -77,7 +81,7 @@ public class PingPong : NetworkBehaviour
         {
             messagePayload.ReadValueSafe(out rtt);
             _smoothedRTT[NetworkManager.ServerClientId] = rtt;
-            _pingText.text = $"Ping : {rtt}";
+            OnRttChanged?.Invoke();
             SendPong(senderId, sendTime);
         }
     }
@@ -111,15 +115,15 @@ public class PingPong : NetworkBehaviour
     public bool GetRtt(ulong clientId, out double rtt)
     {
         rtt = 0;
-        var jitter = Random.Range(-_jitterRange, _jitterRange);
-        if (_virtualRtt)
+        var jitter = UnityEngine.Random.Range(-_jitterRange, _jitterRange);
+        if (_useVirtualRtt)
         {
-            rtt = _fixedRtt + jitter;
+            rtt = _virtualRtt + jitter;
             return true;
         }
         else if(_smoothedRTT.TryGetValue(clientId, out rtt))
         {
-            rtt = _fixedRtt + jitter;
+            rtt +=  jitter;
             return true;
         }
         return false;
