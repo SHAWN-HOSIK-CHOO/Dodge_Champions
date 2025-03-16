@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.ResourceManagement.ResourceProviders;
+
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEditor.SceneManagement;
+#endif
 using UnityEngine.SceneManagement;
-using static Unity.Netcode.DefaultSceneManagerHandler;
 
 
 namespace Unity.Netcode
@@ -694,22 +697,24 @@ namespace Unity.Netcode
             HashToBuildIndex.Clear();
             BuildIndexToHash.Clear();
 
-            var sceneCount = 0;
 #if UNITY_EDITOR
-            sceneCount = EditorBuildSettings.scenes.Length;
+            var sceneCount = EditorBuildSettings.scenes.Length;
 #else
-            sceneCount = SceneManager.sceneCountInBuildSettings;
+            var sceneCount = SceneManager.sceneCountInBuildSettings;
 #endif
+            int index = 0;
             for (int i = 0; i < sceneCount; i++)
             {
                 var scenePath = "";
                 uint hash = 0;
                 var buildIndex = -1;
 #if UNITY_EDITOR
+
                 if (EditorBuildSettings.scenes[i].enabled)
                 {
                     scenePath = EditorBuildSettings.scenes[i].path;
-                    buildIndex = i;
+                    buildIndex = index;
+                    index++;
                 }
                 else
                 {
@@ -762,7 +767,16 @@ namespace Unity.Netcode
             {
 #if UNITY_EDITOR
 
-                return EditorBuildSettings.scenes[HashToBuildIndex[sceneHash]].path;
+                int index = 0;
+                foreach (var scene in EditorBuildSettings.scenes)
+                {
+                    if (scene.enabled)
+                    {
+                        if(index == HashToBuildIndex[sceneHash]) return scene.path;
+                        index++;
+                    }
+                }
+                return null;
 #else
                 return SceneUtility.GetScenePathByBuildIndex(HashToBuildIndex[sceneHash]);
 #endif
@@ -781,11 +795,16 @@ namespace Unity.Netcode
         {
 #if UNITY_EDITOR
             var scenes = EditorBuildSettings.scenes;
+            int index = 0;
             for (int i = 0; i < scenes.Length; i++)
             {
                 if ( GetSceneNameFromPath(scenes[i].path) == GetSceneNameFromPath(sceneNameOrPath))
                 {
-                    return i; 
+                    return index; 
+                }
+                if (scenes[i].enabled)
+                {
+                    index++;
                 }
             }
             return InvalidSceneNameOrPath;
@@ -2404,11 +2423,57 @@ namespace Unity.Netcode
                             // If needed, set the currently active scene
                             if (HashToBuildIndex.ContainsKey(sceneEventData.ActiveSceneHash))
                             {
+#if UNITY_EDITOR                
+                                try
+                                {
+                                    Debug.Log("try SceneManager.GetSceneByBuildIndex");
+                                    var targetActiveScene = SceneManager.GetSceneByBuildIndex(HashToBuildIndex[sceneEventData.ActiveSceneHash]);
+                                    Debug.Log("SceneManager.GetSceneByBuildIndex success");
+
+                                    if (targetActiveScene.isLoaded && targetActiveScene.handle != SceneManager.GetActiveScene().handle)
+                                    {
+                                        SceneManager.SetActiveScene(targetActiveScene);
+                                    }
+                                }
+
+                                catch
+                                {
+                                    Debug.Log("try SceneManager.GetSceneByBuildIndex failed.. try SceneManager.GetSceneByPath");
+                                    var path = ScenePathFromHash(sceneEventData.ActiveSceneHash);
+                                    try
+                                    {
+                                        var targetActiveScene = SceneManager.GetSceneByPath(path);
+                                        Debug.Log($"try SceneManager.GetSceneByPath success {targetActiveScene.name}");
+                                        if (targetActiveScene.isLoaded && targetActiveScene.handle != SceneManager.GetActiveScene().handle)
+                                        {
+                                            SceneManager.SetActiveScene(targetActiveScene);
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        Debug.Log("try SceneManager.GetSceneByPath failed... try EditorSceneManager.GetSceneByPath");
+                                        try
+                                        {
+                                            var targetActiveScene = EditorSceneManager.GetSceneByPath(path);
+                                            Debug.Log($"try EditorSceneManager.GetSceneByPath success {targetActiveScene.name}");
+                                            if (targetActiveScene.isLoaded && targetActiveScene.handle != SceneManager.GetActiveScene().handle)
+                                            {
+                                                SceneManager.SetActiveScene(targetActiveScene);
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            Debug.LogError($"try EditorSceneManager.GetSceneByPath failed... all fail wtf");
+                                        }
+                                    }
+                                }
+#else
                                 var targetActiveScene = SceneManager.GetSceneByBuildIndex(HashToBuildIndex[sceneEventData.ActiveSceneHash]);
                                 if (targetActiveScene.isLoaded && targetActiveScene.handle != SceneManager.GetActiveScene().handle)
                                 {
                                     SceneManager.SetActiveScene(targetActiveScene);
                                 }
+#endif
                             }
 
                             // Spawn and Synchronize all NetworkObjects
