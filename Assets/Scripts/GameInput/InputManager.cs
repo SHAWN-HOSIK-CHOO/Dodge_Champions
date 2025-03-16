@@ -230,7 +230,7 @@ namespace GameInput
             {
                 case ESkillInputType.Vector3Target:
                 {
-                    Vector3 currentDirection = _characterController.velocity.normalized;
+                    Vector3 currentDirection = _localCharacterMovement.transform.TransformDirection(new Vector3(move.normalized.x, 0f, move.normalized.y));
 
                     if (currentDirection == Vector3.zero)
                     {

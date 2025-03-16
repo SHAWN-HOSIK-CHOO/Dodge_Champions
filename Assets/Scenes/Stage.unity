@@ -1165,7 +1165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  pfPlayer: {fileID: 8201337310027565902, guid: abc578c9b69f5c441997a0df2e990d01, type: 3}
+  pfPlayer: {fileID: 8446195911489952786, guid: 5e8177ef30930dd4ba3266092ce84f70, type: 3}
   spawnPoint1: {fileID: 2141548829}
   spawnPoint2: {fileID: 2141548828}
 --- !u!1001 &1193213673
