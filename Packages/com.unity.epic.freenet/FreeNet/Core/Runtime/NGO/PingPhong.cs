@@ -59,7 +59,10 @@ public class PingPong : NetworkBehaviour
     }
     public override void OnNetworkDespawn()
     {
-        NetworkManager.CustomMessagingManager.UnregisterNamedMessageHandler(MessageName);
+        if(NetworkManager.CustomMessagingManager != null)
+        {
+            NetworkManager.CustomMessagingManager.UnregisterNamedMessageHandler(MessageName);
+        }
         NetworkManager.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.OnClientDisconnectCallback -= OnClientDisConnected;
     }

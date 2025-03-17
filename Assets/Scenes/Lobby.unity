@@ -1534,7 +1534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &235110386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3393,14 +3393,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 352092154}
     m_Modifications:
-    - target: {fileID: 4961154540512146229, guid: 5e8177ef30930dd4ba3266092ce84f70, type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 2999824034
-      objectReference: {fileID: 0}
-    - target: {fileID: 4961154540512146229, guid: 5e8177ef30930dd4ba3266092ce84f70, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 2922834808
-      objectReference: {fileID: 0}
     - target: {fileID: 1959432009861334445, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
       propertyPath: m_Controller
       value: 
@@ -3448,6 +3440,14 @@ PrefabInstance:
     - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4961154540512146229, guid: 5e8177ef30930dd4ba3266092ce84f70, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2999824034
+      objectReference: {fileID: 0}
+    - target: {fileID: 4961154540512146229, guid: 5e8177ef30930dd4ba3266092ce84f70, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2922834808
       objectReference: {fileID: 0}
     - target: {fileID: 1959432009861334445, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
       propertyPath: m_Controller
