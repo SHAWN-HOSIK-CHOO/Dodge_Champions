@@ -8,51 +8,48 @@ using static NetworkSpawner;
 public class NgoManager : NetworkManager
 {
     /* 
-     * 아래는 NGO를 쓸 때 유의할 점들임
-     * 이에 몇몇 코드 로직을 수정할 예정. 자세한건 cirl + q 로 CUSTUMNETCODEFIX 탐색후 주석 확인
+     * - NGO를 로컬 패키지로 뺀뒤 CUSTUMNETCODEFIX 를 Define 하여 몇몇 코드를 수정함
      * 
-     * -NGO Time System Issue
-     * NGO 는 의도적인 클라이언트 지연을 유발하여 안정적으로 클라이언트가 서버 상태를 따라가도록 한다.
-     * 이를 위해 클라이언트는 실제 서버시간 보다 빠른 LocalTime, 느린 ServerTime을 가짐 
-     * 클라이언트는 동기화 패킷에서 서버의 Tick을 맹목적으로 받아들이도록 설계되어있음.
-     * 이 과정에서 클라이언트의 Tick이 롤백될 수 있으며, Network Tick Loop 는 스킵되거나 중복 실행되거나 과거의 값을 반복하는 상황이 발생할 수 있음.
+     * NetworkTickSystem Tick
+     * 클라이언트가 Tick 싱크 속도를 조정하기 위해 이전 시간으로 롤백할때
+     * 차이가 심한 경우 + 서버 시간이 과거로 돌아간 경우에 롤백 되도록 변경.     
+     * 위와 같은 상황에서 Tick Reset이 발생할때 Tick이 과거의 값을 반복하거나 중복 혹은 Skip 호출 됨을 주의할 것. 
      * 
-     * - NGO Transform System Issue
-     * 현재 NGO는 이전 Tick을 캐싱하여 그보다 앞선 Tick인 경우에만 Transform을 Update 하는 방식을 취하고 있음
-     * 
-     * 보간하지 않는다면 Transform을 받는 즉시 업데이트 한다.
-     * Transform 패킷은 손실 가능성이 존재     
-     * 
-     * - Interporation
-     * Last Sync Tranfrom 그리고 서버로 부터 받은 Last Transform 사이에서 보간을 진행.
-     * 따라서 네트워크가 Burst(지연된 정보가 한꺼번에 오는 경우) 될때 올바른 중간 경로를 시뮬레이션 하지 않는다.
-     * Burst를 방지하고자 ServerTime 에서 2틱 더 지연한 시간으로 보간 값을 계산하는데
-     * 이때 부드러움을 강조하고자 한번 더 2차 보간한다. (default 0.1f) 
-     * Trnasform 정보만 가지고는 이후의 변화를 예측할 수 없음으로 외삽법을 쓸 수 없음 
-     * -> 클라이언트 예측을 위해서는 RPC를 사용한 별도의 Move 로직이 필요
+     * Ngo Transform $ Interporation
+     * 이전 Tick을 캐싱하여 앞선 Tick인 경우에만 Transform을 Update하고 있음 -> 롤백에 대해 올바르게 대처하지 못할 것..
+     * 보간시 이전의 보간정보를 버리고 가장 최신의 정보만 가지고 보간하고 있음 -> 올바른 중간 경로를 시뮬레이션 하지 않음..
+     * 클라이언트 예측에는 이동 정보가 필요함 -> transform 밖에 정보가 없어서 지원하고 있지 않음..
      *
-     * - optimization
-     * 내부적으로 알아서 잘 비트 패킹하고 있음.
-     * 매 프레임 마다 모든 패킷을 Send, 고정 주기 마다 Receive 를 하고 있음 
-     * TODO : Transport Layer에서 큐잉하여 Send 네트워크 부하 관리를 해야 할 듯,
-     * TODO? : Urgent 패킷을 통해 즉시 Receive를 수행하게 함 (ipnut 레이턴시 최소화)
+     * BuildProfile with PlayMode
+     * 런타임 기준으로 설계되어 PlayMode시 씬로드 및 빌드 목록 동기화가 잘 되지 않음
+     * 에디터와 빌드 기준으로 분리하여 코드를 추가 작성함.
+     *
+     * Optimization
+     * 매 프레임 Send를 제한 없이 모두 처리함 -> 필요하다면 큐잉 등의 부하 관리가 필요함
+     * 고정 주기 마다 패킷을 Receive 함 -> 최대 TickInterval 만큼의 패킷 처리 지연 발생
+     * Urgent 패킷을 보내어 바로 처리할수 있게 하였음 -> To DO : 잘못된 사용인가? 버그는 없나?  
+     * 
+     * To Do With NetCode...
+     * 
+     * 클라이언트는 상태 및 입력 히스토리를 만들 것.
+     * 서버는 클라이언트의 요청 히스토리를 만들 것.
+     * 
+     * 클라이언트는 요청 후 예측 수행을 진행하고
+     * 서버 틱이 진행됨에 따라 클라이언트 요청을 처리하고 결과를 클라이언트에게 반환하면 
+     * 클라이언트는 예측 수행 결과와 비교하여 보정을 한다.
+     * 
      */
+
     FreeNet _freeNet;
     EOSNetcodeTransport _EOSNetcodeTransport;
 
     [SerializeField]
-    private double _localBufferSec;
+    public double _localBufferSec;
 
     [SerializeField]
-    private double _serverBufferSec;
+    public double _serverBufferSec;
     [SerializeField]
     public bool _useEpicOnlineTransport;
-    [SerializeField]
-    private float _jitterRange;
-    [SerializeField]
-    private bool _useVirtualRtt;
-    [SerializeField]
-    private float _virtualRtt;
 
     public byte _channel => 0;
     public byte _urgentChannel => 1;
@@ -61,7 +58,9 @@ public class NgoManager : NetworkManager
     NetworkSpawner _networkSpawnerPref;
 
     public NetworkSpawner _networkSpawner;
+    public Action _onSpawnerSpawned;
     public event Action _onNgoManagerReady;
+    public event Action _onTick;
 
     public void Init(FreeNet freeNet)
     {
@@ -80,15 +79,6 @@ public class NgoManager : NetworkManager
         {
             MessageManager.NonFragmentedMessageMaxSize = P2PInterface.MaxPacketSize;
         }
-
-        if (_EOSNetcodeTransport != null)
-        {
-            if (_EOSNetcodeTransport._pingpong != null)
-            {
-                _EOSNetcodeTransport._pingpong.SetJitterRanage(_jitterRange);
-                _EOSNetcodeTransport._pingpong.SetVirtualRtt(_useVirtualRtt, _virtualRtt);
-            }
-        }
     }
     public bool StartServer(EOSWrapper.ETC.PUID localPUID, string socketName)
     {
@@ -105,8 +95,8 @@ public class NgoManager : NetworkManager
         if (result)
         {
             SetNetworkValue();
+            _onSpawnerSpawned += OnSpawnedSpawner;
             _networkSpawner = Instantiate(_networkSpawnerPref);
-            _networkSpawner._onSpawned += OnSpawnedSpawner;
             _networkSpawner.GetComponent<NetworkObject>().Spawn(false);
             MessageManager.NonFragmentedMessageMaxSize = P2PInterface.MaxPacketSize;
         }
@@ -115,7 +105,6 @@ public class NgoManager : NetworkManager
     public bool StartClient(EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketName)
     {
         var result = false;
-        _networkSpawner._onSpawned += OnSpawnedSpawner;
         if (_useEpicOnlineTransport)
         {
             result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel, _urgentChannel) && StartClient();
@@ -127,6 +116,7 @@ public class NgoManager : NetworkManager
         if (result)
         {
             SetNetworkValue();
+            _onSpawnerSpawned += OnSpawnedSpawner;
         }
         return result;
     }
@@ -146,8 +136,8 @@ public class NgoManager : NetworkManager
         if(result)
         {
             SetNetworkValue();
+            _onSpawnerSpawned += OnSpawnedSpawner;
             _networkSpawner = Instantiate(_networkSpawnerPref);
-            _networkSpawner._onSpawned += OnSpawnedSpawner;
             _networkSpawner.GetComponent<NetworkObject>().Spawn(false);
         }
         return result;
@@ -159,16 +149,17 @@ public class NgoManager : NetworkManager
     }
     void OnSpawnedSpawner()
     {
-        _networkSpawner._onSpawned -= OnSpawnedSpawner;
+        _onSpawnerSpawned -= OnSpawnedSpawner;
         if (IsServer)
         {
-            _networkSpawner.Spawn(new SpawnParams()
+            var obj = _networkSpawner.Spawn(new SpawnParams()
             {
                 prefabListName = "NetPrefabs",
                 prefabName = "PingPong",
                 destroyWithScene = false
             });
         }
+        base.NetworkTickSystem.Tick += _onTick;
         _onNgoManagerReady?.Invoke();
     }
 }

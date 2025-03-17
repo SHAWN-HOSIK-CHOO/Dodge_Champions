@@ -10,9 +10,6 @@ public class NgoManagerEditor : NetworkManagerEditor
     private SerializedProperty _serverBufferSec;
     private SerializedProperty _useEpicOnlineTransport;
 
-    private SerializedProperty _jitterRange;
-    private SerializedProperty _virtualRtt;
-    private SerializedProperty _useVirtualRtt;
     private SerializedProperty _networkSpawnerPref;
 
 
@@ -21,9 +18,6 @@ public class NgoManagerEditor : NetworkManagerEditor
         _localBufferSec = serializedObject.FindProperty("_localBufferSec");
         _serverBufferSec = serializedObject.FindProperty("_serverBufferSec");
         _useEpicOnlineTransport = serializedObject.FindProperty("_useEpicOnlineTransport");
-        _jitterRange = serializedObject.FindProperty("_jitterRange");
-        _virtualRtt = serializedObject.FindProperty("_virtualRtt");
-        _useVirtualRtt = serializedObject.FindProperty("_useVirtualRtt");
         _networkSpawnerPref = serializedObject.FindProperty("_networkSpawnerPref");
     }
 
@@ -38,9 +32,6 @@ public class NgoManagerEditor : NetworkManagerEditor
         EditorGUILayout.PropertyField(_localBufferSec);
         EditorGUILayout.PropertyField(_serverBufferSec);
         EditorGUILayout.PropertyField(_useEpicOnlineTransport);
-        EditorGUILayout.PropertyField(_jitterRange);
-        EditorGUILayout.PropertyField(_useVirtualRtt);    
-        EditorGUILayout.PropertyField(_virtualRtt);
         EditorGUILayout.PropertyField(_networkSpawnerPref);
 
         if (EditorGUI.EndChangeCheck()) 
@@ -61,7 +52,7 @@ public class NgoManagerEditor : NetworkManagerEditor
 
         if (manager != null)
         {
-            manager.SetNetworkValue(); // NgoManager의 실제 함수 호출
+            manager.SetNetworkValue();
         }
     }
 }

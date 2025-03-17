@@ -22,7 +22,6 @@ public class NetworkSpawner : NetworkBehaviour
        }
     }
     Dictionary<string, Dictionary<string,NetworkPrefab>> _prefabs;
-    public event Action _onSpawned;
 
     private void Awake()
     {
@@ -45,7 +44,7 @@ public class NetworkSpawner : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         UpdatePrefabList();
-        _onSpawned?.Invoke();
+        (NetworkManager.Singleton as NgoManager)._onSpawnerSpawned?.Invoke();
     }
 
     public override void OnNetworkDespawn() 

@@ -204,8 +204,8 @@ namespace Unity.Netcode
         /// <returns></returns>
         public bool Advance(double deltaTimeSec)
         {
-            // Offset 보정 속도가 논리상 맞지 않아 보여 수정함
-            // Reset 기준을 과거 롤백 유무로 전환
+            // Offset 보간에 AdjustmentRatio를 사용하지 않도록  변경
+            // Reset 기준은 서버시간이 과거로 롤백 되었는가
 
 #if !CUSTUMNETCODEFIX 
             m_TimeSec += deltaTimeSec;
@@ -258,7 +258,7 @@ namespace Unity.Netcode
                 }
             }
             
-            if(cashedLocalTime > LocalTime || cashedServerTime > ServerTime)
+            if(cashedServerTime > ServerTime)
             {
                 return true;
             }

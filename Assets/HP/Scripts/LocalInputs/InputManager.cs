@@ -44,7 +44,13 @@ namespace HP
 
         public void RemoveAction(InputAction action)
         {
+            InputActionMap actionMap = action.actionMap;
+            bool b = actionMap.enabled;
+            action.actionMap.Disable();
+            action.Disable();
             action.RemoveAction();
+            if(b) actionMap.Enable();
+
         }
         public InputAction AddAction(InputActionMap actionMap, string action, InputActionType type)
         {
@@ -110,8 +116,7 @@ namespace HP
             };
         }
         public void Dispose()
-        {
-            ScriptableObject.Destroy(_inputActionAsset);
+        {            ScriptableObject.Destroy(_inputActionAsset);
         }
         public void OnDestroy()
         {

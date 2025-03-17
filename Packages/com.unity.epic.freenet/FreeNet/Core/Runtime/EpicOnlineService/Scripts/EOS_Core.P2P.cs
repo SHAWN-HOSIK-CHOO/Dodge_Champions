@@ -9,9 +9,11 @@ public partial class EOS_Core : MonoBehaviour
     [SerializeField]
     ulong _outgoingQueueMaxSizeBytes;
     [SerializeField]
-    int maxPacketsPerFrame = 100;
+    int _maxPacketsPerFrame = 100;
     [SerializeField]
-    int maxPacketsPerClient = 10;
+    int _maxPacketsPerClient = 10;
+    [SerializeField]
+    RelayControl _relayType;
 
     // LocalPUID socketID
     DoubleKeyDict<EOSWrapper.ETC.PUID, string, EOS_Socket> _sockets;
@@ -36,7 +38,10 @@ public partial class EOS_Core : MonoBehaviour
         _sockets = new DoubleKeyDict<EOSWrapper.ETC.PUID, string, EOS_Socket> ();
         var options = new AddNotifyIncomingPacketQueueFullOptions();
         EOSWrapper.P2PControl.SetPacketQueueSize(_IP2P, _incomingQueueMaxSizeBytes,_outgoingQueueMaxSizeBytes);
-        EOSWrapper.P2PControl.SetRelayControl(_IP2P,RelayControl.AllowRelays);
+        if(EOSWrapper.P2PControl.SetRelayControl(_IP2P, _relayType)!=Result.Success)
+        {
+            Debug.LogError($"SetRelayControl {_relayType} Failed");
+        }
         _onPacketQueueFullHandle = _IP2P.AddNotifyIncomingPacketQueueFull(ref options, null,(ref OnIncomingPacketQueueFullInfo info) =>
         {
             string errLog = @$"PacketQueueIsFull 
@@ -131,9 +136,9 @@ public partial class EOS_Core : MonoBehaviour
         int curframePacketNum = 0;
         foreach (var localPUID in _sockets.GetKeys1())
         {
-            int validClientPacketNum = maxPacketsPerClient;
+            int validClientPacketNum = _maxPacketsPerClient;
             ReceivePacket(localPUID ,ref curframePacketNum);
-            if(curframePacketNum > maxPacketsPerFrame)
+            if(curframePacketNum > _maxPacketsPerFrame)
             {
                 break;
             }
@@ -163,7 +168,7 @@ public partial class EOS_Core : MonoBehaviour
                 }
             }
 
-            if(++curframePacketNum > maxPacketsPerFrame || ++curClientPacketNum > maxPacketsPerClient)
+            if(++curframePacketNum > _maxPacketsPerFrame || ++curClientPacketNum > _maxPacketsPerClient)
             {
                 break;
             }

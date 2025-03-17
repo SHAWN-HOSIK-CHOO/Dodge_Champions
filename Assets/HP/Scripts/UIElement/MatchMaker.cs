@@ -91,7 +91,7 @@ public class MatchMaker : MonoBehaviour
     {
         _transition.gameObject.SetActive(true);
         _transition.color = new Color(0, 0, 0, 0);
-        yield return _transition.DOFade(0.5f, 1f).SetEase(Ease.InOutFlash).WaitForCompletion();
+        yield return _transition.DOFade(1f, 1f).SetEase(Ease.InOutFlash).WaitForCompletion();
 
         if (LobbyAttributeExtenstion.GetLobbySocket(lobby._attribute, out var socket))
         {
@@ -103,6 +103,7 @@ public class MatchMaker : MonoBehaviour
             else
             {
                 FreeNet._instance._ngoManager.StartClient(FreeNet._instance._localUser._localPUID, lobby._lobbyOwner, socket);
+                FreeNet._instance._ngoManager.SceneManager.OnLoad += OnLoad;
             }
         }
     }
@@ -110,10 +111,10 @@ public class MatchMaker : MonoBehaviour
     void OnNgoManagerReady()
     {
         FreeNet._instance._ngoManager._onNgoManagerReady -= OnNgoManagerReady;
-        FreeNet._instance._ngoManager.SceneManager.OnLoad += OnLoad;
         if (FreeNet._instance._ngoManager.IsServer)
         {
-            FreeNet._instance._ngoManager.SceneManager.LoadScene("LobbyScene", LoadSceneMode.Single);
+            FreeNet._instance._ngoManager.SceneManager.OnLoad += OnLoad;
+            FreeNet._instance._ngoManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
         }
     }
 
