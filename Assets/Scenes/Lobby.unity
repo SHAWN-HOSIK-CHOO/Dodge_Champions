@@ -3393,67 +3393,74 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 352092154}
     m_Modifications:
+    - target: {fileID: 4961154540512146229, guid: 5e8177ef30930dd4ba3266092ce84f70, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2999824034
+      objectReference: {fileID: 0}
+    - target: {fileID: 4961154540512146229, guid: 5e8177ef30930dd4ba3266092ce84f70, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2922834808
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959432009861334445, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: cb9346a1102be4e4d969a4ff51097ff1, type: 2}
+    - target: {fileID: 7763766301168784623, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_Name
+      value: Character_1N_Dancer
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.1300001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1959432009861334445, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 0a55b0c1870eef54484650a0dc78ca88, type: 2}
-    - target: {fileID: 7763766301168784623, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_Name
-      value: Character_1N_Dancer
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1.1300001
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2.04
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
 --- !u!4 &955180513 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 8856289636760525251, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-  m_PrefabInstance: {fileID: 955180512}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &955180514 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 1959432009861334445, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8856289636760525251, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
   m_PrefabInstance: {fileID: 955180512}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &955548925
@@ -6698,7 +6705,6 @@ MonoBehaviour:
   skillDropdown: {fileID: 217938702}
   confirmButton: {fileID: 2128772998}
   startGameButton: {fileID: 1898723682}
-  dancerAnimator: {fileID: 955180514}
   startHostDb: {fileID: 1078309308}
   startClientDb: {fileID: 2070967188}
   exitApplicationDb: {fileID: 1570405011}
