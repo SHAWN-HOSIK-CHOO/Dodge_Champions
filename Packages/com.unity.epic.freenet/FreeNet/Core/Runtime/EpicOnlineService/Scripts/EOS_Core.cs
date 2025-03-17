@@ -64,11 +64,12 @@ public partial class EOS_Core : MonoBehaviour
     }
     void Stop()
     {
-        if (_tick != null)
-        {
-            StopCoroutine(_tick);
-            _tick = null;
-        }
+        StopCoroutine(_tick);
+        Dispose();
+    }
+
+    void Dispose()
+    {
         if (_sdkState == SDKState.Initialized)
         {
             ReleaseP2P();
@@ -80,7 +81,7 @@ public partial class EOS_Core : MonoBehaviour
     public void OnBeforeAssemblyReload()
     {
         AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
-        Stop();
+        Dispose();
     }
 #endif
 
