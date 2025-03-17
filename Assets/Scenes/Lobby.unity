@@ -1534,7 +1534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &235110386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2022,11 +2022,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 312848982}
   m_CullTransparentMesh: 1
---- !u!1 &341684799 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7763766301168784623, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-  m_PrefabInstance: {fileID: 955180512}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &352092153
 GameObject:
   m_ObjectHideFlags: 0
@@ -3398,6 +3393,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 352092154}
     m_Modifications:
+    - target: {fileID: 1959432009861334445, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 0a55b0c1870eef54484650a0dc78ca88, type: 2}
     - target: {fileID: 7763766301168784623, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
       propertyPath: m_Name
       value: Character_1N_Dancer
@@ -3445,10 +3444,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7763766301168784623, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 955180515}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
 --- !u!4 &955180513 stripped
 Transform:
@@ -3460,18 +3456,6 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 1959432009861334445, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
   m_PrefabInstance: {fileID: 955180512}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &955180515
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341684799}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53abcd5885a333044991872d9c8950b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &955548925
 GameObject:
   m_ObjectHideFlags: 0

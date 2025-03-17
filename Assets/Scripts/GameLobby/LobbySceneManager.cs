@@ -37,10 +37,6 @@ namespace GameLobby
 
         [Header("Phase 2")] 
         public Button startGameButton;
-
-        [Header("Dancer")] 
-        public Animator dancerAnimator;
-        private static readonly int    Start1 = Animator.StringToHash("Start");
         
         [Header("Debug")]
         public Button startHostDb;
@@ -73,8 +69,6 @@ namespace GameLobby
 
             if (NetworkManager.Singleton != null)
                 NetworkManager.Singleton.OnClientConnectedCallback += Callback_onClientsConnected;
-
-            dancerAnimator.SetBool(Start1,true);
             
             SetPhase0Objects(true);
             SetPhase1Objects(false);
