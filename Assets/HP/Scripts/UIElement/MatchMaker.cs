@@ -114,7 +114,7 @@ public class MatchMaker : MonoBehaviour
         if (FreeNet._instance._ngoManager.IsServer)
         {
             FreeNet._instance._ngoManager.SceneManager.OnLoad += OnLoad;
-            FreeNet._instance._ngoManager.SceneManager.LoadScene("LobbyScene", LoadSceneMode.Single);
+            FreeNet._instance._ngoManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
         }
     }
 

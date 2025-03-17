@@ -1171,14 +1171,13 @@ public class EOSWrapper
             Result result = IP2P.GetPacketQueueInfo(ref options, out outPacketQueueInfo);
             return result == Result.Success;
         }
-        static public bool SetRelayControl(P2PInterface IP2P, RelayControl control)
+        static public Result SetRelayControl(P2PInterface IP2P, RelayControl control)
         {
             var options = new SetRelayControlOptions()
             {
                 RelayControl = control
             };
-            Result result = IP2P.SetRelayControl(ref options);
-            return Result.Success == result;
+            return IP2P.SetRelayControl(ref options);
         }
         static public bool SetPortRange(P2PInterface IP2P, ushort port, ushort additionalTry)
         {

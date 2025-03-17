@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Unity.Profiling;
 
 namespace Unity.Netcode
@@ -66,8 +67,21 @@ namespace Unity.Netcode
         /// <param name="serverTimeSec">The server time in seconds.</param>
         public void Reset(double localTimeSec, double serverTimeSec)
         {
+
+            var oldLocaltime = LocalTime;
+            var oldServertime = ServerTime;
+
             LocalTime = new NetworkTime(TickRate, localTimeSec);
             ServerTime = new NetworkTime(TickRate, serverTimeSec);
+
+            if(oldLocaltime.Tick < LocalTime.Tick)
+            {
+                UnityEngine.Debug.LogWarning("LocalTime RollBacked!");
+            }
+            if (oldServertime.Tick < ServerTime.Tick)
+            {
+                UnityEngine.Debug.LogWarning("ServerTime RollBacked!");
+            }
         }
 
         /// <summary>

@@ -10,8 +10,8 @@ namespace HP
         InputActionMap _inputActionMap;
         InputAction _keboardAction;
         InputAction _mouseAction;
-        Vector3 _moveInput;
-        Vector2 _mouseInput;
+        public Vector3 _moveInput { get; private set; }
+        public Vector2 _mouseInput { get; private set; }
 
         public event Action<Vector3> _onMoveInputChanged;
         public event Action<Vector2> _onMouseInputChanged;

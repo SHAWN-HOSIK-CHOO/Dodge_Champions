@@ -10,9 +10,9 @@ namespace HP
         string _actionMap;
 
         HP.InputManager _inputManager;
-        WASD_MouseBinding _WASD_MouseBinding;
+        public WASD_MouseBinding _WASD_MouseBinding;
 
-        void Start()
+        public void Bind()
         {
             _inputManager = GetComponent<InputManager>();
             var keyboardMouseScheme = _inputManager.AddControlScheme("Default");
@@ -24,10 +24,10 @@ namespace HP
             _inputManager.Assign();
         }
 
-
         private void OnDestroy()
         {
-            _WASD_MouseBinding.Dispose();
+            if(_WASD_MouseBinding!= null)
+               _WASD_MouseBinding.Dispose();
         }
     }
 }
