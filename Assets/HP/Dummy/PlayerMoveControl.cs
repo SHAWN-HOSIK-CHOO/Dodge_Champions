@@ -18,11 +18,18 @@ public class PlayerMoveControl : NetworkBehaviour
     InputBinding _inputBinding;
     const int MAX_TICKS = 100;
 
-    public struct TickMoveState
+    public struct TickMoveState : INetworkSerializable
     {
         public int tick;
         public Vector3 worldPos;
         public Quaternion worldRot;
+
+        void INetworkSerializable.NetworkSerialize<T>(BufferSerializer<T> serializer)
+        {
+            serializer.SerializeValue(ref tick);
+            serializer.SerializeValue(ref worldPos);
+            serializer.SerializeValue(ref worldRot);
+        }
     }
     public struct TickMoveEvent : INetworkSerializable
     {
@@ -124,12 +131,6 @@ public class PlayerMoveControl : NetworkBehaviour
     void Reconciliation(int historyIndex)
     {
         // 위치를 재 시뮬레이션 후 보정해야함...
-
-
-
-
-
-
 
 
     }
