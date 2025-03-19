@@ -1175,6 +1175,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 560418774620536201, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.59999084
+      objectReference: {fileID: 0}
     - target: {fileID: 3006198989702094342, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1215,6 +1219,14 @@ PrefabInstance:
       propertyPath: NetworkConfig.NetworkTransport
       value: 
       objectReference: {fileID: 124146092}
+    - target: {fileID: 5414378766924594789, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
+      propertyPath: NetworkConfig.Prefabs.NetworkPrefabsLists.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5414378766924594789, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
+      propertyPath: 'NetworkConfig.Prefabs.NetworkPrefabsLists.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 5cd35b9d37ba14d49b0625f1545c4347, type: 2}
     - target: {fileID: 5570115206081201350, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -4152,7 +4164,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.95
+  m_fontSize: 18
   m_fontSizeBase: 29.09
   m_fontWeight: 400
   m_enableAutoSizing: 1

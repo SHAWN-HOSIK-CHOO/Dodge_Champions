@@ -13,8 +13,6 @@ using Unity.Services.Authentication;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEditor;
-using Random = UnityEngine.Random;
-
 
 namespace GameLobby
 {
@@ -47,8 +45,9 @@ namespace GameLobby
 
         async void Start()
         {
-            await SceneManager.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
-            
+            if (NetworkManager.Singleton.IsServer)
+                SceneManagerWrapper.LoadScene("LobbyUI", LoadSceneMode.Additive);
+
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
             {
                 await UnityServices.InitializeAsync();

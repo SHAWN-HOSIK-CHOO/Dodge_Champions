@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.SceneManagement;
-#endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,28 +24,7 @@ namespace Unity.Netcode
 
         public AsyncOperation LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode, SceneEventProgress sceneEventProgress)
         {
-#if UNITY_EDITOR
-            string GetSceneNameFromPath(string scenePath)
-            {
-                int begin = scenePath.LastIndexOf("/", StringComparison.Ordinal) +1;
-                if (begin == -1) begin = 0; 
-
-                int end = scenePath.LastIndexOf(".", StringComparison.Ordinal);
-                if (end == -1 || end < begin) end = scenePath.Length;
-
-                return scenePath.Substring(begin, end - begin);
-            }
-            AsyncOperation operation = null;
-            foreach (var scene in EditorBuildSettings.scenes)
-            {
-                if(GetSceneNameFromPath(scene.path) == sceneName)
-                {
-                    operation = EditorSceneManager.LoadSceneAsyncInPlayMode(scene.path, new LoadSceneParameters() { loadSceneMode = loadSceneMode});
-                }
-            }
-#else
-            var operation = SceneManager.LoadSceneAsync(sceneName, loadSceneMode);
-#endif
+            var operation = SceneManagerWrapper.LoadSceneAsync(sceneName, loadSceneMode);
             sceneEventProgress.SetAsyncOperation(operation);
             return operation;
         }
