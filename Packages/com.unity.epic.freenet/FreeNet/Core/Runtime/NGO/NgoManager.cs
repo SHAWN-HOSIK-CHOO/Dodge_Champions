@@ -1,8 +1,10 @@
 #define CUSTUMNETCODEFIX
 using Epic.OnlineServices.P2P;
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static NetworkSpawner;
 
 public class NgoManager : NetworkManager
@@ -27,17 +29,6 @@ public class NgoManager : NetworkManager
      * Optimization
      * 매 프레임 Send를 제한 없이 모두 처리함 -> 필요하다면 큐잉 등의 부하 관리가 필요함
      * 고정 주기 마다 패킷을 Receive 함 -> 최대 TickInterval 만큼의 패킷 처리 지연 발생
-     * Urgent 패킷을 보내어 바로 처리할수 있게 하였음 -> To DO : 잘못된 사용인가? 버그는 없나?  
-     * 
-     * To Do With NetCode...
-     * 
-     * 클라이언트는 상태 및 입력 히스토리를 만들 것.
-     * 서버는 클라이언트의 요청 히스토리를 만들 것.
-     * 
-     * 클라이언트는 요청 후 예측 수행을 진행하고
-     * 서버 틱이 진행됨에 따라 클라이언트 요청을 처리하고 결과를 클라이언트에게 반환하면 
-     * 클라이언트는 예측 수행 결과와 비교하여 보정을 한다.
-     * 
      */
 
     FreeNet _freeNet;
@@ -62,6 +53,8 @@ public class NgoManager : NetworkManager
     public event Action _onNgoManagerReady;
     public event Action _onTick;
 
+    [SerializeField]
+    private List<string> _networkScene;
     public void Init(FreeNet freeNet)
     {
         _freeNet = freeNet;
@@ -116,9 +109,19 @@ public class NgoManager : NetworkManager
         if (result)
         {
             SetNetworkValue();
+            SceneManager.VerifySceneBeforeLoading = NetworkSceneValidation;
             _onSpawnerSpawned += OnSpawnedSpawner;
         }
         return result;
+    }
+    private bool NetworkSceneValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        int index = _networkScene.FindIndex(x => x == sceneName);
+        if (index != -1)
+        {
+            return true;
+        }
+        return false;
     }
     public bool StartHost(EOSWrapper.ETC.PUID localPUID, string socketName)
     {

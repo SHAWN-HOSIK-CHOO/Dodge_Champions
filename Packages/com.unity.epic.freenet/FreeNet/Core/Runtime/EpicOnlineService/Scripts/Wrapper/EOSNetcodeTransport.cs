@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Epic.OnlineServices.P2P;
 using Unity.Netcode;
-using System.Text;
-using static NetworkSpawner;
 public class EOSNetcodeTransport : NetworkTransport
 {
     [HideInInspector]
@@ -50,7 +48,8 @@ public class EOSNetcodeTransport : NetworkTransport
     {
         if(_isUrgent)
         {
-            _ngoManager.NetworkUpdate(NetworkUpdateStage.EarlyUpdate);
+            // 1.버그 유발하는지 테스트 해봐야 한다. 2.정말 필요할까?
+            //_ngoManager.NetworkUpdate(NetworkUpdateStage.EarlyUpdate);
         }
         _isUrgent = false;
     }

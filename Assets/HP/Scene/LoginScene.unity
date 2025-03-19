@@ -1216,9 +1216,29 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5844752406703323982, guid: 01fce0d3821c66f4db49b1efd7c73206, type: 3}
     - target: {fileID: 5414378766924594789, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
+      propertyPath: _networkScene.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5414378766924594789, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
+      propertyPath: '_networkScene.Array.data[0]'
+      value: Lobby
+      objectReference: {fileID: 0}
+    - target: {fileID: 5414378766924594789, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
+      propertyPath: '_networkScene.Array.data[1]'
+      value: Stage
+      objectReference: {fileID: 0}
+    - target: {fileID: 5414378766924594789, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
       propertyPath: NetworkConfig.NetworkTransport
       value: 
       objectReference: {fileID: 124146092}
+    - target: {fileID: 5414378766924594789, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
+      propertyPath: _networkScene.Array.data[0].Key
+      value: Lobby
+      objectReference: {fileID: 0}
+    - target: {fileID: 5414378766924594789, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
+      propertyPath: _networkScene.Array.data[0].Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5414378766924594789, guid: d12eacb9e35dc884590a9b1e36603e2f, type: 3}
       propertyPath: NetworkConfig.Prefabs.NetworkPrefabsLists.Array.size
       value: 2
@@ -1657,7 +1677,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 193662761655415083, guid: 8dd4098a50d8bfa43b3d4feea15bb276, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.18157196
+      value: -0.18157148
       objectReference: {fileID: 0}
     - target: {fileID: 378077000172929637, guid: 8dd4098a50d8bfa43b3d4feea15bb276, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2137,6 +2157,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2861552099777449619}
   - component: {fileID: 2210663071395247376}
+  - component: {fileID: 2861552099777449620}
   m_Layer: 0
   m_Name: DontDestroyParent
   m_TagString: Untagged
@@ -3476,6 +3497,31 @@ Transform:
   - {fileID: 5749923387665158768}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2861552099777449620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615272010662212395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1164524893
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!224 &2958537898243890442
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4164,7 +4210,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 20.4
   m_fontSizeBase: 29.09
   m_fontWeight: 400
   m_enableAutoSizing: 1

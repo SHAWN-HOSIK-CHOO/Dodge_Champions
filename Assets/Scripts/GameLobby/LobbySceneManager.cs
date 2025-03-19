@@ -45,8 +45,7 @@ namespace GameLobby
 
         async void Start()
         {
-            if (NetworkManager.Singleton.IsServer)
-                SceneManagerWrapper.LoadScene("LobbyUI", LoadSceneMode.Additive);
+            SceneManagerWrapper.LoadScene("LobbyUI", LoadSceneMode.Additive);
 
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
             {

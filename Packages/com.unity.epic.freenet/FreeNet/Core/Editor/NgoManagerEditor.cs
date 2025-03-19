@@ -11,7 +11,7 @@ public class NgoManagerEditor : NetworkManagerEditor
     private SerializedProperty _useEpicOnlineTransport;
 
     private SerializedProperty _networkSpawnerPref;
-
+    private SerializedProperty _networkScene;
 
     private new void OnEnable()
     {
@@ -19,6 +19,7 @@ public class NgoManagerEditor : NetworkManagerEditor
         _serverBufferSec = serializedObject.FindProperty("_serverBufferSec");
         _useEpicOnlineTransport = serializedObject.FindProperty("_useEpicOnlineTransport");
         _networkSpawnerPref = serializedObject.FindProperty("_networkSpawnerPref");
+        _networkScene = serializedObject.FindProperty("_networkScene");
     }
 
     public override void OnInspectorGUI()
@@ -33,7 +34,8 @@ public class NgoManagerEditor : NetworkManagerEditor
         EditorGUILayout.PropertyField(_serverBufferSec);
         EditorGUILayout.PropertyField(_useEpicOnlineTransport);
         EditorGUILayout.PropertyField(_networkSpawnerPref);
-
+        EditorGUILayout.PropertyField(_networkScene);
+        
         if (EditorGUI.EndChangeCheck()) 
         {
             serializedObject.ApplyModifiedProperties();
