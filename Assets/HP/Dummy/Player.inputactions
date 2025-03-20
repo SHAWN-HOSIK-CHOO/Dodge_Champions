@@ -1,0 +1,34 @@
+{
+    "name": "Player",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "af20f1e3-8a28-466f-a452-4b40a031acc2",
+            "actions": [
+                {
+                    "name": "test",
+                    "type": "Button",
+                    "id": "f0710bb2-6eee-4e99-b1a8-8eb352865590",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3de2d1a6-976c-4e15-b53c-71d0cd969cd0",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "test",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

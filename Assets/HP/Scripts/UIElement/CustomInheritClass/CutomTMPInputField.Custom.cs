@@ -17,9 +17,6 @@ namespace HP
         [SerializeField]
         GameObject _inputModeLayout;
 
-
-        InputActionMap _consoleActionMap;
-        InputManager _inputManager;
         ToggleInputBinding _enterInputBinding;
         [SerializeField]
         public bool _useInputMode = false;
@@ -35,8 +32,10 @@ namespace HP
             _inputModeText.text = _InputMode.ToString();
             if (initialized == false)
             {
+                _enterInputBinding = new ToggleInputBinding(UnityEngine.InputSystem.Key.Enter);
+                _enterInputBinding.Enable(true);
+                _enterInputBinding._onToggleInputChanged += EnterPressed;
                 onFocusSelectAll = true;
-                BindKey();
                 initialized = true;
             }
         }
@@ -45,18 +44,7 @@ namespace HP
             _useInputMode = b;
             _inputModeLayout.SetActive(_useInputMode);
         }
-        void BindKey()
-        {
-            var inputManager = GetComponent<InputManager>();
-            _inputManager = GetComponent<InputManager>();
-            var keyboardScheme = _inputManager.AddControlScheme("Keybouard");
-            _inputManager.AddControlScheme(keyboardScheme, InputSystemNaming.Device.Keyboard);
-            _consoleActionMap = _inputManager.AddActionMap("Console");
-            _enterInputBinding = new ToggleInputBinding(_inputManager, _consoleActionMap, UnityEngine.InputSystem.Key.Enter);
-            _consoleActionMap.Enable();
-            _inputManager.Assign();
-            _enterInputBinding._onToggleInputChanged += EnterPressed;
-        }
+
         void EnterPressed(bool b)
         {
             if (EventSystem.current != null)
@@ -66,7 +54,7 @@ namespace HP
                 if (b && !isFocused && _useAutoFocus)
                 {
                     ActivateInputField();
-                    _consoleActionMap.Disable();
+                    _enterInputBinding.Enable(false);
                 }
             }
         }
@@ -276,7 +264,7 @@ namespace HP
         {
             if (!Application.isPlaying) return;
             if (initialized)
-                _consoleActionMap.Dispose();
+                _enterInputBinding.Dispose();
             initialized = false;
         }
         protected virtual void LateUpdate()
@@ -294,10 +282,10 @@ namespace HP
                 // Reset as we are already activated.
                 m_ShouldActivateNextUpdate = false;
             }
-            else if (!isFocused && _consoleActionMap != null)
+            else if (!isFocused && _enterInputBinding != null)
             {
 
-                _consoleActionMap.Enable();
+                _enterInputBinding.Enable(true);
             }
 
             // If the device's state changed in a way that affects whether we should use a touchscreen keyboard or not,

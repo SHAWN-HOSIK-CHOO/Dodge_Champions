@@ -28,7 +28,7 @@ public static class SceneManagerWrapper
             }
         }
 #else
-        return SceneManager.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
+        return SceneManager.LoadScene(sceneName, new LoadSceneParameters() { loadSceneMode = mode });
 #endif
         return default;
     }

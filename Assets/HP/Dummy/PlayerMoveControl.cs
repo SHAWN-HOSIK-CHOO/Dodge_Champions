@@ -15,7 +15,7 @@ public class PlayerMoveControl : NetworkBehaviour
 
 
     CharacterController _characterController;
-    InputBinding _inputBinding;
+    WASD_MouseBinding _WASD_MouseBinding;
     const int MAX_TICKS = 100;
 
     public struct TickMoveState : INetworkSerializable
@@ -73,10 +73,10 @@ public class PlayerMoveControl : NetworkBehaviour
         _characterController = GetComponent<CharacterController>();
         if (IsOwner)
         {
-            _inputBinding = GetComponent<InputBinding>();
-            _inputBinding.Bind();
-            _inputBinding._WASD_MouseBinding._onMouseInputChanged += OnMouseInputChanged;
-           _inputBinding._WASD_MouseBinding._onMoveInputChanged += OnMoveInputChanged;
+            _WASD_MouseBinding = new WASD_MouseBinding();
+            _WASD_MouseBinding.Enable(true);
+            _WASD_MouseBinding._onMouseInputChanged += OnMouseInputChanged;
+            _WASD_MouseBinding._onMoveInputChanged += OnMoveInputChanged;
         }
         _stateHistory = new TickMoveState[MAX_TICKS];
         _eventHistory = new TickMoveEvent[MAX_TICKS];

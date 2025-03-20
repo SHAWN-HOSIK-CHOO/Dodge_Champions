@@ -55,9 +55,6 @@ public static class InputSystemNaming
         Modifier2,
         Button
     }
-
-
-
     public static string ToInputSystemName(this Device device)
     {
         return device switch
