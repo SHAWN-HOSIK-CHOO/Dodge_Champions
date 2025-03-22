@@ -155,11 +155,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballDamage: 10
+  hitEffectIndex: 0
+  ballLaunchSpeed: 42
+  ballHeight: 0.3
+  isInfinite: 0
   isHorizontalThrow: 0
   pfBall: {fileID: 3869145152564536287, guid: 6cf37366fb21ccc4e8889336dca5114a, type: 3}
   trackingPlayer: {fileID: 0}
   ballSpawnTransform: {fileID: 6953634220383014095}
   ballShootFrequency: 3
+  damage: 2
 --- !u!54 &348814788447580872
 Rigidbody:
   m_ObjectHideFlags: 0

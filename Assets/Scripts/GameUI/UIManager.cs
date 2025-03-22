@@ -67,12 +67,8 @@ namespace GameUI
             ResetFill(enemyFill);
             
             //Debug
-            playerBallSkillIndex.text = "Player : " +PlayerSelectionManager.Instance.GetLocalPlayerSelection().BallIndex +
-                                        " and skill" + PlayerSelectionManager.Instance.GetLocalPlayerSelection()
-                                                                             .SkillIndex;
-            enemyBallSkillIndex.text = "Enemy : "   +PlayerSelectionManager.Instance.GetEnemySelection().BallIndex +
-                                       " and skill" + PlayerSelectionManager.Instance.GetEnemySelection()
-                                                                            .SkillIndex;
+            playerBallSkillIndex.text = "Player Character No.  " + PlayerSelectionManager.Instance.GetLocalPlayerSelection();
+            enemyBallSkillIndex.text  = "Enemy Character No.  "  + PlayerSelectionManager.Instance.GetEnemySelection();
         }
         
         private void ResetFill(Image fillImage)

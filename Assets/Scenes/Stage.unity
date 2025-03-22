@@ -129,7 +129,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4130730679967453033, guid: 824832f032933ee42a65de998ec54048, type: 3}
   m_PrefabInstance: {fileID: 337287632}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 337287633}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77ace071ec8f2c644a66254077b66315, type: 3}
@@ -242,44 +242,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6248610971398058863, guid: 824832f032933ee42a65de998ec54048, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 337287634}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 824832f032933ee42a65de998ec54048, type: 3}
---- !u!1 &337287633 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6248610971398058863, guid: 824832f032933ee42a65de998ec54048, type: 3}
-  m_PrefabInstance: {fileID: 337287632}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &337287634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 337287633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74e54d4c420fd004699dd979a6e394ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pfPlayerBalls:
-  - {fileID: 3869145152564536287, guid: 6cf37366fb21ccc4e8889336dca5114a, type: 3}
-  - {fileID: 7080387402365349509, guid: 417f7aa4bc61b7c45b2e662dca82cedf, type: 3}
-  - {fileID: 3869145152564536287, guid: 07956c3e488dab0438ebeeba45ae54f0, type: 3}
-  - {fileID: 3869145152564536287, guid: f96ce6f7f15e0414f96a3fb54598b1d2, type: 3}
-  - {fileID: 3869145152564536287, guid: 20bf9f567acff7049930e5f54ebdf69c, type: 3}
-  - {fileID: 3869145152564536287, guid: 4c34033ed3c602b4d8cbd470d1cf0a5c, type: 3}
-  pfEnemyBalls:
-  - {fileID: 3869145152564536287, guid: 80d707e4d02a1f343ab773fba2ecaa39, type: 3}
-  - {fileID: 7080387402365349509, guid: 93567dcf09d80e2409043c093b9d3ac7, type: 3}
-  - {fileID: 3869145152564536287, guid: 2396f3f1b9b7f3544a68665c1ef61543, type: 3}
-  - {fileID: 3869145152564536287, guid: 6163401c4ac279649a1e515abc77fc82, type: 3}
-  - {fileID: 3869145152564536287, guid: 82ecd5040a95af941b530373ee2eb3e4, type: 3}
-  - {fileID: 3869145152564536287, guid: b585456443110ce40b71c57089de31fc, type: 3}
-  soSkills:
-  - {fileID: 11400000, guid: 148ff11d9190aee4a9c10193f24f4318, type: 2}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1165,7 +1129,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  pfPlayer: {fileID: 8446195911489952786, guid: 5e8177ef30930dd4ba3266092ce84f70, type: 3}
   spawnPoint1: {fileID: 2141548829}
   spawnPoint2: {fileID: 2141548828}
 --- !u!1001 &1193213673

@@ -3,6 +3,7 @@ using GameInput;
 using GameUI;
 using UnityEngine;
 using Unity.Netcode;
+using PlayableCharacter;
 using Unity.Services.Relay;
 using Unity.Services.Core;  // Unity Services 초기화 관련 API
 
@@ -10,32 +11,19 @@ using UnityEngine.SceneManagement;
 
 namespace GameLobby
 {
-    public struct PlayerSelectionData : INetworkSerializable
-    {
-        public int BallIndex;
-        public int SkillIndex;
-
-        // 기본 생성자
-        public PlayerSelectionData(int ballIndex, int skillIndex)
-        {
-            BallIndex  = ballIndex;
-            SkillIndex = skillIndex;
-        }
-
-        // INetworkSerializable 구현
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref BallIndex);
-            serializer.SerializeValue(ref SkillIndex);
-        }
-    }
    public class PlayerSelectionManager : NetworkBehaviour
     {
-        private NetworkVariable<PlayerSelectionData> player0Selection = new NetworkVariable<PlayerSelectionData>();
-        private NetworkVariable<PlayerSelectionData> player1Selection = new NetworkVariable<PlayerSelectionData>();
+        private NetworkVariable<int> _player0SelectedCharacter = new NetworkVariable<int>(0);
+        private NetworkVariable<int> _player1SelectedCharacter = new NetworkVariable<int>(0);
 
         public static PlayerSelectionManager Instance { get; private set; }
 
+        public CharacterSO[] characterReferences = new CharacterSO[6];
+
+        public CharacterSO[] confirmedCharacterSOs = new CharacterSO[2];
+
+        public bool[] hasPlayersConfirmed = new bool[2] { false, false };
+        
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -51,8 +39,13 @@ namespace GameLobby
         {
             if (IsClient)
             {
-                player0Selection.OnValueChanged += OnPlayer0SelectionChanged;
-                player1Selection.OnValueChanged += OnPlayer1SelectionChanged;
+                _player0SelectedCharacter.OnValueChanged += OnPlayer0SelectionChanged;
+                _player1SelectedCharacter.OnValueChanged += OnPlayer1SelectionChanged;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    confirmedCharacterSOs[i] = characterReferences[0];
+                }
             }
         }
         
@@ -70,90 +63,106 @@ namespace GameLobby
         
         public override void OnDestroy()
         {
-            if (player0Selection != null)
-                player0Selection.OnValueChanged -= OnPlayer0SelectionChanged;
+            if (_player0SelectedCharacter != null)
+                _player0SelectedCharacter.OnValueChanged -= OnPlayer0SelectionChanged;
 
-            if (player1Selection != null)
-                player1Selection.OnValueChanged -= OnPlayer1SelectionChanged;
+            if (_player1SelectedCharacter != null)
+                _player1SelectedCharacter.OnValueChanged -= OnPlayer1SelectionChanged;
             
             base.OnDestroy();
         }
-
-        // 플레이어가 선택한 데이터를 서버로 전송
-        public void SetPlayerSelection(int ballIndex, int skillIndex)
+        
+        public void SetPlayerSelection(int index)
         {
             if (IsClient)
             {
-                SubmitPlayerSelectionServerRpc(ballIndex, skillIndex);
+                SubmitPlayerSelectionServerRpc(index);
             }
         }
-
-        // 서버에서 플레이어 데이터를 업데이트
+        
         [ServerRpc(RequireOwnership = false)]
-        private void SubmitPlayerSelectionServerRpc(int ballIndex, int skillIndex, ServerRpcParams rpcParams = default)
+        private void SubmitPlayerSelectionServerRpc(int characterIndex, ServerRpcParams rpcParams = default)
         {
             ulong clientId = rpcParams.Receive.SenderClientId;
             
             Debug.Log("Received request from client : " + clientId);
-
-            PlayerSelectionData data = new PlayerSelectionData
-                                       {
-                                           BallIndex  = ballIndex,
-                                           SkillIndex = skillIndex
-                                       };
-
-            // ClientId에 따라 올바른 NetworkVariable에 데이터 저장
+            
             if (clientId == NetworkManager.Singleton.ConnectedClientsList[0].ClientId)
             {
-                player0Selection.Value = data;
+                _player0SelectedCharacter.Value = characterIndex;
+                hasPlayersConfirmed[0]          = true;
             }
             else if (clientId == NetworkManager.Singleton.ConnectedClientsList[1].ClientId)
             {
-                player1Selection.Value = data;
+                _player1SelectedCharacter.Value = characterIndex;
+                hasPlayersConfirmed[1]          = true;
             }
             else
             {
                 Debug.LogError($"Unexpected ClientId: {clientId}. Unable to assign selection data.");
             }
+            
+            if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
+            {
+                if(hasPlayersConfirmed[0] && hasPlayersConfirmed[1])
+                    NetworkManager.Singleton.SceneManager.LoadScene("Stage", LoadSceneMode.Single);
+            }
         }
-
-        // 선택 데이터 변경 콜백
-        private void OnPlayer0SelectionChanged(PlayerSelectionData oldValue, PlayerSelectionData newValue)
+        
+        private void OnPlayer0SelectionChanged(int oldValue, int newValue)
         {
-            Debug.Log($"Player 0 Selection Updated: Ball={newValue.BallIndex}, Skill={newValue.SkillIndex}");
+            Debug.Log($"Player 0 Selection Updated: {newValue}");
+            confirmedCharacterSOs[0] = characterReferences[newValue];
         }
 
-        private void OnPlayer1SelectionChanged(PlayerSelectionData oldValue, PlayerSelectionData newValue)
+        private void OnPlayer1SelectionChanged(int oldValue, int newValue)
         {
-            Debug.Log($"Player 1 Selection Updated: Ball={newValue.BallIndex}, Skill={newValue.SkillIndex}");
+            Debug.Log($"Player 1 Selection Updated: {newValue}");
+            confirmedCharacterSOs[1] = characterReferences[newValue];
         }
-
-        // 클라이언트 입장에서 데이터를 가져오기
-        public PlayerSelectionData GetLocalPlayerSelection()
+        
+        public int GetLocalPlayerSelection()
         {
             ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
             if (localClientId == NetworkManager.Singleton.ConnectedClientsList[0].ClientId)
             {
-                return player0Selection.Value;
+                return _player0SelectedCharacter.Value;
             }
             else
             {
-                return player1Selection.Value;
+                return _player1SelectedCharacter.Value;
             }
         }
 
-        public PlayerSelectionData GetEnemySelection()
+        public int GetEnemySelection()
         {
             ulong localClientId = NetworkManager.Singleton.LocalClientId;
 
             if (localClientId == NetworkManager.Singleton.ConnectedClientsList[0].ClientId)
             {
-                return player1Selection.Value;
+                return _player1SelectedCharacter.Value;
             }
             else
             {
-                return player0Selection.Value;
+                return _player0SelectedCharacter.Value;
+            }
+        }
+
+        public int GetSelectionByIndex(int index)
+        {
+            if (index == 0)
+            {
+                return _player0SelectedCharacter.Value;
+            }
+            else if (index == 1)
+            {
+                return _player1SelectedCharacter.Value;
+            }
+            else
+            {
+                Debug.LogError("Invalid player index");
+                return 0;
             }
         }
     }

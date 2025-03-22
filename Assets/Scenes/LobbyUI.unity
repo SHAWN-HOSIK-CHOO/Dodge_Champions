@@ -1293,6 +1293,7 @@ GameObject:
   - component: {fileID: 1841466715}
   - component: {fileID: 1841466717}
   - component: {fileID: 1841466716}
+  - component: {fileID: 1841466718}
   m_Layer: 5
   m_Name: PanelBG
   m_TagString: Untagged
@@ -1359,6 +1360,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1841466714}
   m_CullTransparentMesh: 1
+--- !u!114 &1841466718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841466714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a324b04540578d64db668fe3024ada2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  confirmButton: {fileID: 1140831329}
+  characterSelectButtons:
+  - {fileID: 1441254345}
+  - {fileID: 1271837935}
+  - {fileID: 1832288789}
+  - {fileID: 1576425351}
+  - {fileID: 783060441}
+  - {fileID: 976461231}
 --- !u!1 &1880739965
 GameObject:
   m_ObjectHideFlags: 0
@@ -1634,7 +1655,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelRect: {fileID: 1841466715}
   buttonRect: {fileID: 2043235284}
-  closeButtonRect: {fileID: 1140831326}
   duration: 0.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
