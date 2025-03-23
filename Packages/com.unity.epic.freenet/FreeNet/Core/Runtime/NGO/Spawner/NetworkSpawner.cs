@@ -44,7 +44,7 @@ public class NetworkSpawner : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         UpdatePrefabList();
-        (NetworkManager.Singleton as NgoManager)._onSpawnerSpawned?.Invoke();
+        (NetworkManager as NgoManager)._onSpawnerSpawned?.Invoke();
     }
 
     public override void OnNetworkDespawn() 

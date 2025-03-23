@@ -10,12 +10,9 @@ using static NetworkSpawner;
 public class NgoManager : NetworkManager
 {
     /* 
-     * - NGO를 로컬 패키지로 뺀뒤 CUSTUMNETCODEFIX 를 Define 하여 몇몇 코드를 수정함
-     * 
      * NetworkTickSystem Tick
-     * 클라이언트가 Tick 싱크 속도를 조정하기 위해 이전 시간으로 롤백할때
-     * 차이가 심한 경우 + 서버 시간이 과거로 돌아간 경우에 롤백 되도록 변경.     
-     * 위와 같은 상황에서 Tick Reset이 발생할때 Tick이 과거의 값을 반복하거나 중복 혹은 Skip 호출 됨을 주의할 것. 
+     * 클라이언트가 Tick 싱크 속도를 조정하기 위해 이전 시간으로 롤백하고 있음 ->서버시간이 되돌아가지 않는다면 롤백하지 않음
+     * 클라와 서버의 Tick이 동일하도록 설계됨 -> 호스트 클라이언트 모델에서 벗어난다면 틱이 같을 필요가 없고 동적으로 Tick을 바꿔도 되지 않을까
      * 
      * Ngo Transform $ Interporation
      * 이전 Tick을 캐싱하여 앞선 Tick인 경우에만 Transform을 Update하고 있음 -> 롤백에 대해 올바르게 대처하지 못할 것..
@@ -41,7 +38,6 @@ public class NgoManager : NetworkManager
     public double _serverBufferSec;
     [SerializeField]
     public bool _useEpicOnlineTransport;
-
     public byte _channel => 0;
     public byte _urgentChannel => 1;
 
@@ -165,4 +161,5 @@ public class NgoManager : NetworkManager
         base.NetworkTickSystem.Tick += _onTick;
         _onNgoManagerReady?.Invoke();
     }
+    
 }

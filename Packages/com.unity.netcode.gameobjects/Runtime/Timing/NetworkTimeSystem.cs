@@ -131,14 +131,8 @@ namespace Unity.Netcode
             {
                 return;
             }
-
             // Only update RTT here, server time is updated by time sync messages
-            var reset = Advance(m_NetworkManager.RealTimeProvider.UnscaledDeltaTime);
-            if (reset)
-            {
-                m_NetworkTickSystem.Reset(LocalTime, ServerTime);
-            }
-
+            Advance(m_NetworkManager.RealTimeProvider.UnscaledDeltaTime);
             m_NetworkTickSystem.UpdateTick(LocalTime, ServerTime);
 
             if (!m_ConnectionManager.LocalClient.IsServer)
@@ -204,33 +198,6 @@ namespace Unity.Netcode
         /// <returns></returns>
         public bool Advance(double deltaTimeSec)
         {
-            // Offset 보간에 AdjustmentRatio를 사용하지 않도록  변경
-            // Reset 기준은 서버시간이 과거로 롤백 되었는가
-
-#if !CUSTUMNETCODEFIX 
-            m_TimeSec += deltaTimeSec;
-
-            if (Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) > HardResetThresholdSec || Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) > HardResetThresholdSec)
-            {
-                m_TimeSec += m_DesiredServerTimeOffset;
-
-                m_DesiredLocalTimeOffset -= m_DesiredServerTimeOffset;
-                m_CurrentLocalTimeOffset = m_DesiredLocalTimeOffset;
-
-                m_DesiredServerTimeOffset = 0;
-                m_CurrentServerTimeOffset = 0;
-
-                return true;
-            }
-
-            m_CurrentLocalTimeOffset += deltaTimeSec * (m_DesiredLocalTimeOffset > m_CurrentLocalTimeOffset ? AdjustmentRatio : -AdjustmentRatio);
-            m_CurrentServerTimeOffset += deltaTimeSec * (m_DesiredServerTimeOffset > m_CurrentServerTimeOffset ? AdjustmentRatio : -AdjustmentRatio);
-
-            return false;
-#else
-
-            var cashedLocalTime = LocalTime;
-            var cashedServerTime = ServerTime;
             m_TimeSec += deltaTimeSec;
             if (Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) > HardResetThresholdSec || Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) > HardResetThresholdSec)
             {
@@ -241,8 +208,6 @@ namespace Unity.Netcode
 
                 m_DesiredServerTimeOffset = 0;
                 m_CurrentServerTimeOffset = 0;
-
-                return true;
             }
             else
             {
@@ -257,13 +222,7 @@ namespace Unity.Netcode
                     m_CurrentServerTimeOffset = m_CurrentServerTimeOffset + (m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
                 }
             }
-            
-            if(cashedServerTime > ServerTime)
-            {
-                return true;
-            }
-            return false;
-#endif
+            return true;
         }
 
         /// <summary>

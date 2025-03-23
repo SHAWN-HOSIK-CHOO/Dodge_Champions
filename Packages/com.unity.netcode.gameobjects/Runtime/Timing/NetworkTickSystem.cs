@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using Unity.Profiling;
+using static Unity.Netcode.NetworkTickSystem;
 
 namespace Unity.Netcode
 {
@@ -39,7 +40,40 @@ namespace Unity.Netcode
         /// <summary>
         /// Gets invoked before every network tick.
         /// </summary>
+        /// 
+        public TickUpdateInfo _tickUpdateInfo;
+
         public event Action Tick;
+        public struct TickUpdateInfo
+        {
+            // 업데이트 중 변경되는 값
+            public int _prevUpdateLocalTick;
+            public int _curUpdateLocalTick;
+            public int _prevUpdateServerTick;
+            public int _curUpdateServerTick;
+
+            // 읽기 전용 값 (초기값 설정 후 변경 불가)
+            public int _previousLocalTick;
+            public int _previousServerTick;
+            public int _startLocalTick;
+            public int _startServerTick;
+            public int _endLocalTick;
+            public int _endServerTick;
+
+            public TickUpdateInfo(int previousLocalTick, int previousServerTick, int startLocalTick, int startServerTick, int endLocalTick, int endServerTick)
+            {
+                _previousLocalTick = previousLocalTick;
+                _previousServerTick = previousServerTick;
+                _startLocalTick = startLocalTick;
+                _startServerTick = startServerTick;
+                _endLocalTick = endLocalTick;
+                _endServerTick = endServerTick;
+                _prevUpdateLocalTick = previousLocalTick;
+                _curUpdateLocalTick = startLocalTick;
+                _prevUpdateServerTick = previousServerTick;
+                _curUpdateServerTick = startServerTick;
+            }
+        }
 
         /// <summary>
         /// Creates a new instance of the <see cref="NetworkTickSystem"/> class.
@@ -67,21 +101,8 @@ namespace Unity.Netcode
         /// <param name="serverTimeSec">The server time in seconds.</param>
         public void Reset(double localTimeSec, double serverTimeSec)
         {
-
-            var oldLocaltime = LocalTime;
-            var oldServertime = ServerTime;
-
             LocalTime = new NetworkTime(TickRate, localTimeSec);
             ServerTime = new NetworkTime(TickRate, serverTimeSec);
-
-            if(oldLocaltime.Tick < LocalTime.Tick)
-            {
-                UnityEngine.Debug.LogWarning("LocalTime RollBacked!");
-            }
-            if (oldServertime.Tick < ServerTime.Tick)
-            {
-                UnityEngine.Debug.LogWarning("ServerTime RollBacked!");
-            }
         }
 
         /// <summary>
@@ -90,11 +111,12 @@ namespace Unity.Netcode
         /// <param name="localTimeSec">The local time in seconds</param>
         /// <param name="serverTimeSec">The server time in seconds</param>
 
-        public static int lasttick;
         public void UpdateTick(double localTimeSec, double serverTimeSec)
         {
             // store old local tick to know how many fixed ticks passed
             var previousLocalTick = LocalTime.Tick;
+            var previousServerTick = ServerTime.Tick;
+
             LocalTime = new NetworkTime(TickRate, localTimeSec);
             ServerTime = new NetworkTime(TickRate, serverTimeSec);
             // cache times here so that we can adjust them to temporary values while simulating ticks.
@@ -102,6 +124,10 @@ namespace Unity.Netcode
             var cacheServerTime = ServerTime;
             var currentLocalTick = LocalTime.Tick;
             var localToServerDifference = currentLocalTick - ServerTime.Tick;
+
+            _tickUpdateInfo = new TickUpdateInfo(previousLocalTick, previousServerTick,
+                previousLocalTick + 1, previousLocalTick+1 - localToServerDifference, 
+                currentLocalTick, currentLocalTick- localToServerDifference);
             for (int i = previousLocalTick + 1; i <= currentLocalTick; i++)
             {
                 // set exposed time values to correct fixed values
@@ -111,7 +137,13 @@ namespace Unity.Netcode
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
                 s_Tick.Begin();
 #endif
+                _tickUpdateInfo._curUpdateLocalTick = i;
+                _tickUpdateInfo._curUpdateServerTick = i - localToServerDifference;
                 Tick?.Invoke();
+                _tickUpdateInfo._prevUpdateLocalTick = i;
+                _tickUpdateInfo._prevUpdateServerTick = i - localToServerDifference;
+
+
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
                 s_Tick.End();
 #endif
