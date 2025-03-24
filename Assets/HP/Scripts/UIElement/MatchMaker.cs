@@ -5,8 +5,6 @@ using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static NetworkSpawner;
-using static UnityEngine.InputSystem.HID.HID;
 
 public class MatchMaker : MonoBehaviour
 {
@@ -140,9 +138,6 @@ public class MatchMaker : MonoBehaviour
         _transition.gameObject.SetActive(false);
         asyncOperation.allowSceneActivation = true;
     }
-
-
-
     private void OnDestroy()
     {
         _login.onLogin -= OnLogin;

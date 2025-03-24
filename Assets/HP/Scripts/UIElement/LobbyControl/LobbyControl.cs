@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using static LobbyManager;
 using Epic.OnlineServices;
+using DG.Tweening;
 
 public class LobbyControl : MonoBehaviour
 {
@@ -115,6 +116,8 @@ public class LobbyControl : MonoBehaviour
     }
     void onClickfindRoomButton()
     {
+        _findRoomButton.image.DOColor(Color.red, 0.1f).From(Color.white);
+        _findRoomButton.onClick.RemoveListener(onClickfindRoomButton);
         _createControl.gameObject.SetActive(false);
         _findJoinControl.gameObject.SetActive(true);
         _findJoinControl.RemoveAllElement();
@@ -131,6 +134,8 @@ public class LobbyControl : MonoBehaviour
                     _findJoinControl.AddElement(item);
                 }
             }
+            _findRoomButton.onClick.AddListener(onClickfindRoomButton);
+            _findRoomButton.image.DOColor(Color.white, 0.1f);
         });
 
     }
