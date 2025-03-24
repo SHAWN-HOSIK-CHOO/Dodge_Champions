@@ -125,11 +125,15 @@ namespace Unity.Netcode
             var currentLocalTick = LocalTime.Tick;
             var localToServerDifference = currentLocalTick - ServerTime.Tick;
 
-            _tickUpdateInfo = new TickUpdateInfo(previousLocalTick, previousServerTick,
-                previousLocalTick + 1, previousLocalTick+1 - localToServerDifference, 
-                currentLocalTick, currentLocalTick- localToServerDifference);
             for (int i = previousLocalTick + 1; i <= currentLocalTick; i++)
             {
+                if(i == previousLocalTick +1)
+                {
+                    _tickUpdateInfo = new TickUpdateInfo(previousLocalTick, previousServerTick,
+                    previousLocalTick + 1, previousLocalTick + 1 - localToServerDifference,
+                    currentLocalTick, currentLocalTick - localToServerDifference);
+                }
+
                 // set exposed time values to correct fixed values
                 LocalTime = new NetworkTime(TickRate, i);
                 ServerTime = new NetworkTime(TickRate, i - localToServerDifference);

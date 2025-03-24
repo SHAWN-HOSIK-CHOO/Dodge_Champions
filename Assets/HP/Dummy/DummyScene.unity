@@ -289,7 +289,7 @@ MonoBehaviour:
   m_ProtocolType: 0
   m_UseWebSockets: 0
   m_UseEncryption: 0
-  m_MaxPacketQueueSize: 128
+  m_MaxPacketQueueSize: 1280
   m_MaxPayloadSize: 6144
   m_HeartbeatTimeoutMS: 500
   m_ConnectTimeoutMS: 1000
@@ -319,11 +319,11 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 809932110}
-    PlayerPrefab: {fileID: 8235277111883847331, guid: 7970f57b61d88e848a1d41f8fae54ff7, type: 3}
+    PlayerPrefab: {fileID: 2872828456396335698, guid: 7970f57b61d88e848a1d41f8fae54ff7, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: ba5dd686706d99246a367a3a14a3dd82, type: 2}
-    TickRate: 10
+    TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
     ConnectionData: 
@@ -355,7 +355,7 @@ Transform:
   m_GameObject: {fileID: 809932109}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 224, y: 196, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -4,81 +4,132 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static PlayerMoveControl.MouseInputEvent;
+using static PlayerMoveControl.IMoveEvent;
 using static PlayerMoveControl.MoveInputEvent;
+using System.Collections;
+using static PlayerMoveControl;
+using UnityEngine.UIElements;
 
 public class PlayerMoveControl : NetworkBehaviour
 {
+    [SerializeField]
     CharacterController _characterController;
     WASD_MouseBinding _WASD_MouseBinding;
     public struct TickMoveState : INetworkSerializable
     {
-        public int tick;
-        public Vector3 worldPos;
-        public Quaternion worldRot;
+        public int _tick;
+        public Vector3 _worldPos;
+        public Quaternion _worldRot;
+        public bool _isClientPredicted;
 
         void INetworkSerializable.NetworkSerialize<T>(BufferSerializer<T> serializer)
         {
-            serializer.SerializeValue(ref tick);
-            serializer.SerializeValue(ref worldPos);
-            serializer.SerializeValue(ref worldRot);
+            serializer.SerializeValue(ref _tick);
+            serializer.SerializeValue(ref _worldPos);
+            serializer.SerializeValue(ref _worldRot);
         }
     }
-    public interface MoveEvent
+    public struct MoveEventMessage : INetworkSerializable
+    {
+        public IMoveEvent[] eventList;
+        public int tick;
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref tick);
+            if (serializer.IsWriter)
+            {
+                int count = eventList.Length;
+                serializer.SerializeValue(ref count);
+                for (int i = 0; i < eventList.Length; i++)
+                {
+                    MoveEventType eventType = eventList[i]._eventType;
+                    serializer.SerializeValue(ref eventType);
+                    switch (eventType)
+                    {
+                        case MoveEventType.MoveInputEvent:
+                            var moveEvent = (MoveInputEvent)eventList[i];
+                            serializer.SerializeValue(ref moveEvent._tick);
+                            serializer.SerializeValue(ref moveEvent._moveInput);
+                            break;
+
+                        case MoveEventType.MouseInputEvent:
+                            var mouseEvent = (MouseInputEvent)eventList[i];
+                            serializer.SerializeValue(ref mouseEvent._tick);
+                            serializer.SerializeValue(ref mouseEvent.mouseInput);
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                int count = 0;
+                serializer.SerializeValue(ref count);
+                eventList = new IMoveEvent[count];
+                for (int i = 0; i < count; i++)
+                {
+                    MoveEventType eventType = MoveEventType.MoveInputEvent;
+                    serializer.SerializeValue(ref eventType);
+
+                    switch (eventType)
+                    {
+                        case MoveEventType.MoveInputEvent:
+                            var moveEvent = new MoveInputEvent();
+                            serializer.SerializeValue(ref moveEvent._tick);
+                            serializer.SerializeValue(ref moveEvent._moveInput);
+                            eventList[i] = moveEvent;
+                            break;
+
+                        case MoveEventType.MouseInputEvent:
+                            var mouseEvent = new MouseInputEvent();
+                            serializer.SerializeValue(ref mouseEvent._tick);
+                            serializer.SerializeValue(ref mouseEvent.mouseInput);
+                            eventList[i] = mouseEvent;
+                            break;
+                    }
+                }
+            }
+        }
+    }
+    public interface IMoveEvent
     {
         public enum MoveEventType
         {
             MoveInputEvent,
             MouseInputEvent
         }
-        public float GetTime();
+        public int _tick { get; set; }
         public MoveEventType _eventType { get; }
+        public bool _isUsed { get; set;}
     }
-    public struct MoveInputEvent : MoveEvent
+    public struct MoveInputEvent : IMoveEvent
     {
-        public MoveInputEventMessage _message;
-        public float GetTime() => _message.time;
-        public MoveEvent.MoveEventType _eventType => MoveEvent.MoveEventType.MoveInputEvent;
+        public int _tick;
+        public Vector3 _moveInput;
+        public bool _isUsed;
+        int IMoveEvent._tick { get => _tick; set => _tick = value; }
+        bool IMoveEvent._isUsed { get => _isUsed; set => _isUsed = value; }
+        public IMoveEvent.MoveEventType _eventType => IMoveEvent.MoveEventType.MoveInputEvent;
 
-        public struct MoveInputEventMessage : INetworkSerializable
-        {
-            public float time;
-            public Vector3 moveInput;
-
-            void INetworkSerializable.NetworkSerialize<T>(BufferSerializer<T> serializer)
-            {
-                serializer.SerializeValue(ref time);
-                serializer.SerializeValue(ref moveInput);
-            }
-        }
     }
-    public struct MouseInputEvent : MoveEvent
+    public struct MouseInputEvent : IMoveEvent
     {
-        public MouseInputEventMessage _message;
-        public float GetTime() => _message.time;
-        public MoveEvent.MoveEventType _eventType => MoveEvent.MoveEventType.MouseInputEvent;
-        
-        public struct MouseInputEventMessage : INetworkSerializable
-        {
-            public float time;
-            public Vector2 mouseInput;
-            void INetworkSerializable.NetworkSerialize<T>(BufferSerializer<T> serializer)
-            {
-                serializer.SerializeValue(ref time);
-                serializer.SerializeValue(ref mouseInput);
-            }
-        }
+        public Vector2 mouseInput;
+        public bool _isUsed; 
+        public int _tick;
+        bool IMoveEvent._isUsed { get => _isUsed; set => _isUsed = value; }
+        int IMoveEvent._tick { get => _tick; set => _tick = value; }
+        public IMoveEvent.MoveEventType _eventType => IMoveEvent.MoveEventType.MouseInputEvent;
     }
-    ArrayBuffer<TickMoveState> _stateHistory;
-    ArrayBuffer<Dictionary<MoveEvent.MoveEventType, List<MoveEvent>>> _eventHistory;
-    const int MaxBufferedTick = 20;
-
+    ArrayBuffer<TickMoveState> _moveStateHistory;
+    ArrayBuffer<List<IMoveEvent>> _moveEventHistory;
+    int MaxBufferedTick;
     public override void OnNetworkDespawn()
     {
         NetworkManager.NetworkTickSystem.Tick -= OnTick;
     }
     public override void OnNetworkSpawn()
     {
-        _characterController = GetComponent<CharacterController>();
+        MaxBufferedTick = (int)NetworkManager.NetworkConfig.TickRate * 10;
         if (IsOwner)
         {
             _WASD_MouseBinding = new WASD_MouseBinding();
@@ -86,19 +137,18 @@ public class PlayerMoveControl : NetworkBehaviour
             _WASD_MouseBinding._onMouseInputChanged += OnMouseInputChanged;
             _WASD_MouseBinding._onMoveInputChanged += OnMoveInputChanged;
         }
-        _stateHistory = new ArrayBuffer<TickMoveState>(MaxBufferedTick);
-        _eventHistory = new ArrayBuffer<Dictionary<MoveEvent.MoveEventType, List<MoveEvent>>>(MaxBufferedTick);
+        _moveStateHistory = new ArrayBuffer<TickMoveState>(MaxBufferedTick);
+        _moveEventHistory = new ArrayBuffer<List<IMoveEvent>>(MaxBufferedTick);
 
         for (int i = 0; i < MaxBufferedTick; i ++)
         {
-            _eventHistory._buffer[i] = new Dictionary<MoveEvent.MoveEventType, List<MoveEvent>>();
-            _eventHistory._buffer[i][MoveEvent.MoveEventType.MoveInputEvent] = new List<MoveEvent>();
-            _eventHistory._buffer[i][MoveEvent.MoveEventType.MouseInputEvent] = new List<MoveEvent>();
+            _moveStateHistory._buffer[i]._isClientPredicted = true;
+            _moveEventHistory._buffer[i] = new List<IMoveEvent>();
         }
 
         NetworkManager.NetworkTickSystem.Tick += OnTick;
     }
-    bool CheckTickValid(bool checkLocal)
+    bool CheckTickUpdateValid(bool checkLocal)
     {
         if (checkLocal)
         {
@@ -122,224 +172,220 @@ public class PlayerMoveControl : NetworkBehaviour
         }
         return true;
     }
-    public void SendMoveEvent(int tick)
+    void ClearOldMoveEvent(int tick)
     {
         int historyIndex = tick % MaxBufferedTick;
-        List<MouseInputEventMessage> MouseInputEventMessageList = new List<MouseInputEventMessage>();
-        foreach (var item in _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MouseInputEvent].ToArray())
+        foreach(var moveEvent in _moveEventHistory._buffer[historyIndex].ToArray())
         {
-            MouseInputEvent mouseEvent = (MouseInputEvent)item;
-            var eventTick = new NetworkTime(NetworkManager.NetworkConfig.TickRate, mouseEvent.GetTime()).Tick;
-            if (eventTick != tick)
+            if (moveEvent._tick != tick)
             {
-                _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MouseInputEvent].Remove(item);
-                continue;
+                if (moveEvent._isUsed == false)
+                {
+                    Debug.LogWarning("tick droppted.. must increase buffer");
+                }
+                _moveEventHistory._buffer[historyIndex].Remove(moveEvent);
             }
-            MouseInputEventMessageList.Add(mouseEvent._message);
-        }
-        if (MouseInputEventMessageList.Count != 0)
-        {
-            SendMouseInputEventRpc(MouseInputEventMessageList.ToArray());
-        }
-        List<MoveInputEventMessage> MoveInputEventMessageList = new List<MoveInputEventMessage>();
-        foreach (var item in _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MoveInputEvent].ToArray())
-        {
-            MoveInputEvent moveEvent = (MoveInputEvent)item;
-            var eventTick = new NetworkTime(NetworkManager.NetworkConfig.TickRate, moveEvent.GetTime()).Tick;
-            if (eventTick != tick)
-            {
-                _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MoveInputEvent].Remove(item);
-                continue;
-            }
-            MoveInputEventMessageList.Add(moveEvent._message);
-
-            Debug.Log(moveEvent._message.moveInput);
-
-        }
-        if (MoveInputEventMessageList.Count != 0)
-        {
-            SendMoveInputEventRpc(MoveInputEventMessageList.ToArray());
         }
     }
-    void ApplyMoveEvent(int tick)
+    void AddPrevMoveInputEvent(int tick)
     {
         int historyIndex = tick % MaxBufferedTick;
-
-        if (_eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MouseInputEvent].Count != 0)
+        // 만약 이번 틱의 MoveInputEvent가 없다면 이전의 MoveInputEvent에서 가져온다
+        var moveInputEvent = _moveEventHistory._buffer[historyIndex].FindLast(e => e._eventType == MoveEventType.MoveInputEvent);
+        if (moveInputEvent == null)
         {
-            var lastMoveEvent = _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MouseInputEvent].Last();
-            var lastEventTick = (new NetworkTime(NetworkManager.NetworkConfig.TickRate, lastMoveEvent.GetTime())).Tick;
-            if (lastEventTick != tick)
-            {
-                _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MouseInputEvent].Clear();
-            }
-        }
-
-        if (_eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MoveInputEvent].Count != 0)
-        {
-            var lastMoveEvent = _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MoveInputEvent].Last();
-            var lastEventTick = (new NetworkTime(NetworkManager.NetworkConfig.TickRate, lastMoveEvent.GetTime())).Tick;
-            if (lastEventTick != tick)
-            {
-                _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MoveInputEvent].Clear();
-            }
-        }
-
-        if (_eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MoveInputEvent].Count == 0)
-        {
-            int prevhistoryIndex = (tick - 1) % MaxBufferedTick;
-            if(_eventHistory._buffer[prevhistoryIndex][MoveEvent.MoveEventType.MoveInputEvent].Count == 0)
+            int prevhistoryIndex = (tick + MaxBufferedTick - 1) % MaxBufferedTick;
+            var prevEvent = _moveEventHistory._buffer[prevhistoryIndex].FindLast(e => e._eventType == MoveEventType.MoveInputEvent);
+            if (prevEvent == null)
             {
                 var prevMoveEvent = new MoveInputEvent();
-                prevMoveEvent._message.time = new NetworkTime(NetworkManager.NetworkConfig.TickRate, tick, 0.005f).TimeAsFloat;
-                prevMoveEvent._message.moveInput = Vector3.zero;
-                CashEvent(prevMoveEvent);
+                prevMoveEvent._tick = tick;
+                prevMoveEvent._moveInput = Vector3.zero;
+                prevMoveEvent._isUsed = false;
+                _moveEventHistory._buffer[historyIndex].Insert(0, prevMoveEvent);
             }
             else
             {
-                var prevMoveEvent = (MoveInputEvent)_eventHistory._buffer[prevhistoryIndex][MoveEvent.MoveEventType.MoveInputEvent].Last();
-                prevMoveEvent._message.time = new NetworkTime(NetworkManager.NetworkConfig.TickRate, tick, 0.005f).TimeAsFloat;
-                CashEvent(prevMoveEvent);
+                var prevMoveEvent = (MoveInputEvent)prevEvent;
+                prevMoveEvent._tick = tick;
+                prevMoveEvent._isUsed = false;
+                _moveEventHistory._buffer[historyIndex].Insert(0, prevMoveEvent);
             }
         }
-        ApplyMoveEvent(tick, _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MoveInputEvent], _eventHistory._buffer[historyIndex][MoveEvent.MoveEventType.MouseInputEvent]);
+    }
+    bool CheckCashMoveState (int tick)
+    {
+        int historyIndex = tick % MaxBufferedTick;
+        if (_moveStateHistory._buffer[historyIndex]._tick != tick) return true;
+        return _moveStateHistory._buffer[historyIndex]._isClientPredicted;
+    }
+    public void SendMoveEvent(int tick)
+    {
+        int historyIndex = tick % MaxBufferedTick;
+        if(_moveEventHistory._buffer[historyIndex].Count != 0)
+        {
+            var moveEventMessage = new MoveEventMessage();
+            moveEventMessage.tick = tick;
+            moveEventMessage.eventList = _moveEventHistory._buffer[historyIndex].ToArray();
+            SendMoveEventRpc(moveEventMessage);
+        }
+    }
+    public void ApplyMove(int tick)
+    {
+        if (CheckCashMoveState (tick))
+        {
+            CashState(new TickMoveState()
+            {
+                _tick = tick,
+                _worldPos = transform.position,
+                _worldRot = transform.rotation,
+                _isClientPredicted = true
+            });
+        }
+        else
+        {
+            SetMoveStateFromHistory(tick);
+        }
+
+        ClearOldMoveEvent(tick);
+        AddPrevMoveInputEvent(tick);
+        ApplyMoveEvent(tick);
     }
     public void OnTick()
     {
-        if(!IsServer && !CheckTickValid(true)) return;
-        if(IsServer && !CheckTickValid(false)) return;
+        if(!IsServer && !CheckTickUpdateValid(true)) return;
+        if(IsServer && !CheckTickUpdateValid(false)) return;
+
         int localTick = NetworkManager.NetworkTickSystem.LocalTime.Tick;
         int serverTick = NetworkManager.NetworkTickSystem.ServerTime.Tick;
         if (IsOwner)
         {
-            if (!CheckTickValid(true)) return;
-            CashState(localTick);
+            ApplyMove(localTick);
             SendMoveEvent(localTick);
-            ApplyMoveEvent(localTick);
         }
         else 
         {
-            CashState(serverTick);
-            ApplyMoveEvent(serverTick);
+            ApplyMove(serverTick);
         }
+
         if(IsServer)
         {
             int historyIndex = serverTick % MaxBufferedTick;
-            SendMoveStateRpc(_stateHistory._buffer[historyIndex]);
+            SendMoveStateRpc(_moveStateHistory._buffer[historyIndex]);
         }
     }
+    void SetMoveStateFromHistory(int tick)
+    {
+        int historyIndex = tick % MaxBufferedTick;
+        _characterController.detectCollisions = false;
+        _characterController.enabled = false;
+        transform.position = _moveStateHistory._buffer[historyIndex]._worldPos;
+        transform.rotation = _moveStateHistory._buffer[historyIndex]._worldRot;
+        _characterController.enabled = true;
+        _characterController.detectCollisions = true;
+    }
+    bool CheckDirty(TickMoveState stateL , TickMoveState stateR)
+    {
+        float positionThreshold = 0.0001f;
+        float rotationThreshold = 0.0001f;
 
+        bool worldPosDirty = Vector3.Distance(stateL._worldPos, stateR._worldPos) > positionThreshold;
+        bool worldRotDirty = Quaternion.Dot(stateL._worldRot, stateR._worldRot) < (1.0f - rotationThreshold);
+        return (worldPosDirty || worldRotDirty || (stateL._tick != stateR._tick));
+    }
+    void Reconciliation(int tick, bool local)
+    {
+        var endTick = local ? NetworkManager.NetworkTickSystem._tickUpdateInfo._endLocalTick : NetworkManager.NetworkTickSystem._tickUpdateInfo._endServerTick;
+        _characterController.detectCollisions = false;
+        for (int i = tick; i <= endTick; i++)
+        {
+            ApplyMove(i);
+        }
+        _characterController.detectCollisions = true;
+    }
     [Rpc(SendTo.NotServer)]
     void SendMoveStateRpc(TickMoveState moveState)
     {
-        int historyIndex = moveState.tick % MaxBufferedTick;
-        float positionThreshold = 0.001f;
-        float rotationThreshold = 0.001f;
-
-        bool worldPosDirty = Vector3.Distance(_stateHistory._buffer[historyIndex].worldPos, moveState.worldPos) > positionThreshold;
-        bool worldRotDirty = Quaternion.Dot(_stateHistory._buffer[historyIndex].worldRot, moveState.worldRot) < (1.0f - rotationThreshold);
-
-        if (worldPosDirty || worldRotDirty || (moveState.tick != _stateHistory._buffer[historyIndex].tick))
+        int historyIndex = moveState._tick % MaxBufferedTick;
+        bool dirty = CheckDirty(_moveStateHistory._buffer[historyIndex], moveState);
+        if (dirty)
         {
-            _characterController.detectCollisions = false;
-            _stateHistory._buffer[historyIndex] = moveState;
-            for (int i = moveState.tick; i <= NetworkManager.NetworkTickSystem._tickUpdateInfo._endLocalTick; i++)
+            moveState._isClientPredicted = false;
+            CashState(moveState);
+            var endTick = NetworkManager.NetworkTickSystem._tickUpdateInfo._endLocalTick;
+            for (int i = moveState._tick +1; i <= NetworkManager.NetworkTickSystem._tickUpdateInfo._endLocalTick; i++)
             {
-                if (i == moveState.tick)
-                {
-                    _characterController.enabled = false;
-                    transform.position = moveState.worldPos;
-                    transform.rotation = moveState.worldRot;
-                    _characterController.enabled = true;
-                }
-                CashState(i);
-                ApplyMoveEvent(i);
+                historyIndex = i % MaxBufferedTick;
+                _moveStateHistory._buffer[historyIndex]._isClientPredicted = true;
             }
-            _characterController.detectCollisions = true;
+            Reconciliation(moveState._tick, true);
         }
     }
     [Rpc(SendTo.NotMe)]
-    void SendMoveInputEventRpc(MoveInputEvent.MoveInputEventMessage[] moveEventList)
+    void SendMoveEventRpc(MoveEventMessage messsage)
     {
-        foreach (var moveEvent in moveEventList)
+        if(messsage.eventList.Length >0)
         {
-            var moveInputEvent = new MoveInputEvent();
-            moveInputEvent._message = moveEvent;
-            CashEvent(moveInputEvent);
-        }
-    }
-    [Rpc(SendTo.NotMe)]
-    void SendMouseInputEventRpc(MouseInputEvent.MouseInputEventMessage[] mouseEventList)
-    {
-        foreach (var mouseEvent in mouseEventList)
-        {
-            var mouseInputEvent = new MouseInputEvent();
-            mouseInputEvent._message = mouseEvent;
-            CashEvent(mouseInputEvent);
-        }
-    }
-    void ApplyMoveEvent(int tick ,List<MoveEvent> moveEventList, List<MoveEvent> mouseEventList)
-    {
-        var mergedList = new List<MoveEvent>();
-        mergedList.AddRange(moveEventList);
-        mergedList.AddRange(mouseEventList);
-        var sortedList = mergedList.OrderBy(e => e.GetTime()).ToList();
-        foreach (var inputEvent in sortedList)
-        {
-            if (inputEvent._eventType == MoveEvent.MoveEventType.MouseInputEvent)
+            int historyIndex = messsage.tick % MaxBufferedTick;
+            _moveEventHistory._buffer[historyIndex] = messsage.eventList.ToList();
+            for (int i = messsage.tick; i <= NetworkManager.NetworkTickSystem._tickUpdateInfo._endLocalTick; i++)
             {
-                var message = (MouseInputEvent)inputEvent;
-                var eventTick = new NetworkTime(NetworkManager.NetworkConfig.TickRate, message.GetTime()).Tick;
-                Vector2 mouseInput = message._message.mouseInput;
+                historyIndex = i % MaxBufferedTick;
+                _moveEventHistory._buffer[historyIndex].Clear();
+            }
+            Reconciliation(messsage.tick, true);
+        }
+    }
+    void ApplyMoveEvent(int tick)
+    {
+        int historyIndex = tick % MaxBufferedTick;  
+
+        for (int i = 0; i < _moveEventHistory._buffer[historyIndex].Count; i++)
+        {
+            if (_moveEventHistory._buffer[historyIndex][i]._eventType == IMoveEvent.MoveEventType.MouseInputEvent)
+            {
+                _moveEventHistory._buffer[historyIndex][i]._isUsed = true;
+                var message = (MouseInputEvent)_moveEventHistory._buffer[historyIndex][i];
+                Vector2 mouseInput = message.mouseInput;
                 Quaternion yaw = Quaternion.AngleAxis(mouseInput.x * NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime, Vector3.up);
                 Quaternion pitch = Quaternion.AngleAxis(-mouseInput.y * NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime, Vector3.right);
                 _characterController.transform.rotation = yaw * _characterController.transform.rotation * pitch;
             }
-            else if (inputEvent._eventType == MoveEvent.MoveEventType.MoveInputEvent)
+            else if (_moveEventHistory._buffer[historyIndex][i]._eventType == IMoveEvent.MoveEventType.MoveInputEvent)
             {
-                var message = (MoveInputEvent)inputEvent;
-                var eventTick = new NetworkTime(NetworkManager.NetworkConfig.TickRate, message.GetTime()).Tick;
-                Vector3 moveInput = message._message.moveInput;
+                _moveEventHistory._buffer[historyIndex][i]._isUsed = true;
+                var message = (MoveInputEvent)_moveEventHistory._buffer[historyIndex][i];
+                Vector3 moveInput = message._moveInput;
                 Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
                 moveDirection = _characterController.transform.TransformDirection(moveDirection);
                 _characterController.Move(moveDirection * 10 * NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime);
             }
         }
     }
-    public void CashState(int tick)
+    public void CashState(TickMoveState state)
     {
-        int historyIndex = tick % MaxBufferedTick;
-        _stateHistory._buffer[historyIndex].tick = tick;
-        _stateHistory._buffer[historyIndex].worldPos = transform.position;
-        _stateHistory._buffer[historyIndex].worldRot = transform.rotation;
+        int historyIndex = state._tick % MaxBufferedTick;
+        _moveStateHistory._buffer[historyIndex] = state;
     }
-    public void CashEvent(MoveEvent inputEvent)
+    public void CashEvent(IMoveEvent inputEvent)
     {
-        int tick = new NetworkTime(NetworkManager.NetworkConfig.TickRate, inputEvent.GetTime()).Tick;
+        int tick = inputEvent._tick;
         int historyIndex = tick % MaxBufferedTick;
-        if(_eventHistory._buffer[historyIndex][inputEvent._eventType].Count != 0)
-        {
-            var lastMoveEvent = _eventHistory._buffer[historyIndex][inputEvent._eventType].Last();
-            var lastEventTick = (new NetworkTime (NetworkManager.NetworkConfig.TickRate, lastMoveEvent.GetTime())).Tick;
-            if(lastEventTick != tick)
-            {
-                _eventHistory._buffer[historyIndex][inputEvent._eventType].Clear();
-            }
-        }
-        _eventHistory._buffer[historyIndex][inputEvent._eventType].Add(inputEvent);
+        _moveEventHistory._buffer[historyIndex].Add(inputEvent);
     }
     private void OnMoveInputChanged(Vector3 val)
     {
         var moveEvent = new MoveInputEvent();
-        moveEvent._message.time = (NetworkManager.NetworkTickSystem.LocalTime + NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime+0.005f).TimeAsFloat;
-        moveEvent._message.moveInput = val;
+        var time = new NetworkTime(NetworkManager.NetworkConfig.TickRate, NetworkManager.NetworkTickSystem._tickUpdateInfo._endLocalTick +1);
+        moveEvent._tick = NetworkManager.NetworkTickSystem._tickUpdateInfo._endLocalTick + 1;
+        moveEvent._moveInput = val;
         CashEvent(moveEvent);
     }
     private void OnMouseInputChanged(Vector2 val)
     {
         var moveEvent = new MouseInputEvent();
-        moveEvent._message.time = (NetworkManager.NetworkTickSystem.LocalTime + NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime + 0.005f).TimeAsFloat;
-        moveEvent._message.mouseInput = val;
+        moveEvent._tick = NetworkManager.NetworkTickSystem._tickUpdateInfo._endLocalTick + 1;
+        moveEvent.mouseInput = val;
         CashEvent(moveEvent);
     }
 }
