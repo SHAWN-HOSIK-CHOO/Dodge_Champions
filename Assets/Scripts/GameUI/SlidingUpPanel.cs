@@ -7,7 +7,6 @@ namespace GameUI
     {
         public RectTransform panelRect;       // Panel의 RectTransform
         public RectTransform buttonRect;      // Button의 RectTransform
-        public RectTransform closeButtonRect; // 패널 내부 닫기 버튼 RectTransform
         public float         duration = 0.5f; // 애니메이션 지속 시간
 
         private Vector2 _panelStartPos;
@@ -32,6 +31,11 @@ namespace GameUI
 
         public void OnButtonClickTogglePanel()
         {
+            if (panelRect == null || buttonRect == null)
+            {
+                return;
+            }
+            
             if (_isOpen)
             {
                 // 패널 & 버튼을 아래로 슬라이드 (닫기)

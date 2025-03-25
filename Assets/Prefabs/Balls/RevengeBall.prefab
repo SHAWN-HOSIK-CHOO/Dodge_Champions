@@ -175,4 +175,5 @@ MonoBehaviour:
   hitEffectIndex: 0
   ballLaunchSpeed: 42
   ballHeight: 0.3
+  isInfinite: 0
   isHorizontalThrow: 0

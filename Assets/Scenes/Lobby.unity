@@ -155,7 +155,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -631, y: -187}
+  m_AnchoredPosition: {x: -1696, y: -187}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &42026664
@@ -2144,7 +2144,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &497352527
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2755,7 +2755,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -629, y: -75}
+  m_AnchoredPosition: {x: -1702, y: -75}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &770445436
@@ -3750,7 +3750,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &963588910
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5654,6 +5654,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  characterReferences:
+  - {fileID: 11400000, guid: 7c38724c8a40c8c45a17c47d1ee916dd, type: 2}
+  - {fileID: 11400000, guid: 88ba42d42d789ae42a1e065e12cc9ae4, type: 2}
+  - {fileID: 11400000, guid: 8802db09197b2844cb6efe7d92b6fea9, type: 2}
+  - {fileID: 11400000, guid: 7c38724c8a40c8c45a17c47d1ee916dd, type: 2}
+  - {fileID: 11400000, guid: 7c38724c8a40c8c45a17c47d1ee916dd, type: 2}
+  - {fileID: 11400000, guid: 7c38724c8a40c8c45a17c47d1ee916dd, type: 2}
+  confirmedCharacterSOs:
+  - {fileID: 0}
+  - {fileID: 0}
+  hasPlayersConfirmed: 0000
 --- !u!1 &1743587857
 GameObject:
   m_ObjectHideFlags: 0
@@ -5672,7 +5683,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1743587858
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6069,7 +6080,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1898723681
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6697,18 +6708,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pfNetworkManager: {fileID: 4480243785762716758, guid: c04961ba6c4148e43856ba9126ba0b63, type: 3}
   startNetworkManager: {fileID: 1338458402}
-  hostButton: {fileID: 2047709448}
-  joinButton: {fileID: 834596066}
-  joinCodeText: {fileID: 977250690}
-  joinCodeInputField: {fileID: 1129664239}
-  ballDropdown: {fileID: 1771932249}
-  skillDropdown: {fileID: 217938702}
-  confirmButton: {fileID: 2128772998}
-  startGameButton: {fileID: 1898723682}
   startHostDb: {fileID: 1078309308}
   startClientDb: {fileID: 2070967188}
-  exitApplicationDb: {fileID: 1570405011}
-  singlePlayButtonDb: {fileID: 1974300579}
+  confirmButton: {fileID: 2128772998}
+  startGameButton: {fileID: 1898723682}
 --- !u!1 &2070967186
 GameObject:
   m_ObjectHideFlags: 0

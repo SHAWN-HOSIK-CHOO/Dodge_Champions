@@ -39,8 +39,6 @@ namespace Game
         public int  currentAttackPlayerID   = -1;
         public bool isLocalPlayerAttackTurn = false;
 
-        private BallSkillDataBase _ballSkillDataBase;
-
         public override void OnNetworkSpawn()
         {
             if (_instance == null)
@@ -52,14 +50,18 @@ namespace Game
             {
                 Destroy(this.gameObject);
             }
-
-            _ballSkillDataBase = this.GetComponent<BallSkillDataBase>();
+            
             localPlayerBall =
-                _ballSkillDataBase.pfPlayerBalls[PlayerSelectionManager.Instance.GetLocalPlayerSelection().BallIndex];
-            
-            enemyPlayerBall = _ballSkillDataBase.pfEnemyBalls[PlayerSelectionManager.Instance.GetEnemySelection().BallIndex];
-            
-            
+                PlayerSelectionManager.Instance.characterReferences[PlayerSelectionManager.Instance.GetLocalPlayerSelection()]
+                                  .pfBall;
+            localPlayerBall.gameObject.layer = LayerMask.NameToLayer("RealPf");
+            localPlayerBall.gameObject.tag   = "Real";
+
+            enemyPlayerBall =  PlayerSelectionManager.Instance
+                                                     .characterReferences[PlayerSelectionManager.Instance.GetEnemySelection()].pfBallForEnemy;
+            enemyPlayerBall.gameObject.layer = LayerMask.NameToLayer("FakePf");
+            enemyPlayerBall.gameObject.tag   = "Fake";
+
             //TODO: 스킬도 설정
         }
 

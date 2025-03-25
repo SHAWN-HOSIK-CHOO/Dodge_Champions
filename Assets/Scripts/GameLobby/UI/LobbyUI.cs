@@ -7,15 +7,22 @@ namespace GameLobby.UI
     public class LobbyUI : MonoBehaviour
     {
         [Header("UI References")]
-        public TMP_Dropdown ballDropdown;  // TextMeshPro Dropdown for ball selection
-        public TMP_Dropdown skillDropdown; // TextMeshPro Dropdown for skill selection
-        public Button       confirmButton; // Button to confirm selection
+        public Button       confirmButton;
+        
+        [Space(5)] [Header("Select Buttons")] 
+        public Button[] characterSelectButtons = new Button[6];
+
+        private int _selectedIndex = 0;
 
         private void Start()
         {
             confirmButton.onClick.AddListener(OnConfirmSelection);
             
-            InitializeDropdownOptions();
+            for (int i = 0; i < characterSelectButtons.Length; i++)
+            {
+                int index = i;
+                characterSelectButtons[i].onClick.AddListener(() =>Callback_Btn_OnCharacterSelected(index));
+            }
         }
 
         private void OnDestroy()
@@ -24,33 +31,15 @@ namespace GameLobby.UI
             confirmButton.onClick.RemoveListener(OnConfirmSelection);
         }
 
-        private void InitializeDropdownOptions()
-        {
-            // Example options for BallDropdown
-            ballDropdown.ClearOptions();
-            ballDropdown.AddOptions(new System.Collections.Generic.List<string>
-                                    {
-                                        "BasicBall","AutoBall","DodgeBall","RevengeBall","InfiniteBall"
-                                    });
-
-            // Example options for SkillDropdown
-            skillDropdown.ClearOptions();
-            skillDropdown.AddOptions(new System.Collections.Generic.List<string>
-                                     {
-                                         "Dash"
-                                     });
-        }
-
         private void OnConfirmSelection()
         {
-            // Get selected values from TMP_Dropdowns
-            int selectedBallIndex  = ballDropdown.value;
-            int selectedSkillIndex = skillDropdown.value;
-
             // Send selected values to PlayerSelectionManager
-            PlayerSelectionManager.Instance.SetPlayerSelection(selectedBallIndex, selectedSkillIndex);
-
-            Debug.Log($"Player selected: BallIndex={selectedBallIndex}, SkillIndex={selectedSkillIndex}");
+            PlayerSelectionManager.Instance.SetPlayerSelection(_selectedIndex);
+        }
+        
+        private void Callback_Btn_OnCharacterSelected(int index)
+        {
+            _selectedIndex = index;
         }
     }
 }

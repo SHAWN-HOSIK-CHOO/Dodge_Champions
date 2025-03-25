@@ -1,4 +1,5 @@
 using System;
+using GameLobby;
 using GameUI;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,7 +8,6 @@ namespace Game
 {
    public class PlayerSpawner : NetworkBehaviour
    {
-      public GameObject pfPlayer;    
       public Transform  spawnPoint1; 
       public Transform  spawnPoint2; 
 
@@ -28,6 +28,8 @@ namespace Game
       
       private void SpawnPlayer(Vector3 position, Quaternion rotation, int playerIndex)
       {
+         GameObject pfPlayer = PlayerSelectionManager.Instance.confirmedCharacterSOs[playerIndex].pfCharacter;
+         
          // 플레이어 프리팹 인스턴스화
          GameObject playerInstance = Instantiate(pfPlayer, position, rotation);
 
@@ -39,6 +41,8 @@ namespace Game
             ulong clientId = NetworkManager.Singleton.ConnectedClientsList[playerIndex].ClientId;
             networkObject.SpawnWithOwnership(clientId);
          }
+
+         
       }
 
       private void Update()
@@ -46,7 +50,6 @@ namespace Game
          if (!_isSpawned &&Input.GetKeyDown(KeyCode.Z))
          {
             SpawnPlayers();
-            //UIManager.Instance.Initialize();
          }
       }
    }
