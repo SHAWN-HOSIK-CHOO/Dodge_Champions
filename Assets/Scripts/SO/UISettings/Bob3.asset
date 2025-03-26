@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0d87796707a2f74e9c95eb18fd99588, type: 3}
-  m_Name: Bob1
+  m_Name: Bob3
   m_EditorClassIdentifier: 
-  themeColor: {r: 0.34117648, g: 0.37254903, b: 0.8117647, a: 1}
-  ballColor: {r: 0.34117648, g: 0.37254903, b: 0.8117647, a: 1}
+  themeColor: {r: 0.043137256, g: 0.9098039, b: 0.5058824, a: 1}
+  ballColor: {r: 0.043137256, g: 0.9098039, b: 0.5058824, a: 1}
   skillColor: {r: 1, g: 0.827451, b: 0.16470589, a: 1}
-  characterName: DODGE
-  ballDesc: "\uD53C\uD560\uC218\uB85D \uAC15\uD574\uC9C0\uB294 \uACF5"
+  characterName: AUTO
+  ballDesc: "\uB538\uAE4D \uB538\uAE4D"
   skillDesc: "\uD53C\uD558\uACE0 \uD53C\uD558\uACE0 \uD53C\uD558\uACE0"
   pfDancer: {fileID: 7763766301168784623, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}

@@ -5548,9 +5548,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7c38724c8a40c8c45a17c47d1ee916dd, type: 2}
   - {fileID: 11400000, guid: 88ba42d42d789ae42a1e065e12cc9ae4, type: 2}
   - {fileID: 11400000, guid: 8802db09197b2844cb6efe7d92b6fea9, type: 2}
-  - {fileID: 11400000, guid: 7c38724c8a40c8c45a17c47d1ee916dd, type: 2}
-  - {fileID: 11400000, guid: 7c38724c8a40c8c45a17c47d1ee916dd, type: 2}
-  - {fileID: 11400000, guid: 7c38724c8a40c8c45a17c47d1ee916dd, type: 2}
+  - {fileID: 11400000, guid: 29c156ae9b1739c4ba47a2bb0d247730, type: 2}
+  - {fileID: 11400000, guid: 5329fb19477bba84d94038e2cbb60179, type: 2}
+  - {fileID: 11400000, guid: eb51ec8a1102d2046920ddf42f60ae84, type: 2}
   confirmedCharacterSOs:
   - {fileID: 0}
   - {fileID: 0}

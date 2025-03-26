@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/HP/Dummy/DummyScene.unity
     guid: 8537e002cc582d349a03f674c56fff2b
-  - enabled: 1
+  - enabled: 0
     path: Assets/HP/Scene/LoginScene.unity
     guid: 6ced2c95513a0ad4897918354a77728e
-  - enabled: 1
+  - enabled: 0
     path: Assets/HP/Scene/LobbyScene.unity
     guid: 44c538dd09f54b74d9642ad80281746e
   - enabled: 1

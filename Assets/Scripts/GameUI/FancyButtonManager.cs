@@ -55,7 +55,7 @@ namespace GameUI
 
         private void Start()
         {
-            ButtonClickHandler(0);
+            OnButtonClick(0);
         }
 
         public void OnButtonHover(int index)

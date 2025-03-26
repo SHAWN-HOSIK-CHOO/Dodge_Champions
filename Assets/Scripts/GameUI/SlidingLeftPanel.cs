@@ -13,6 +13,9 @@ namespace GameUI
 
       private bool _isOpen = false; // 현재 패널이 열려 있는지 여부
 
+      public GameObject   waitingIndicator;
+      public GameObject[] offObjects = new GameObject[3];
+
       void Start()
       {
          // 패널의 시작 위치 설정 (오른쪽으로 숨기기)
@@ -21,6 +24,7 @@ namespace GameUI
 
          // 패널이 왼쪽으로 나왔을 때의 위치
          _panelEndPos = new Vector2(0, 0);
+         waitingIndicator.SetActive(false);
       }
 
       public void OnButtonClickTogglePanel()
@@ -34,6 +38,12 @@ namespace GameUI
          {
             // 패널을 오른쪽으로 슬라이드 (닫기)
             panelRect.DOAnchorPos(_panelStartPos, duration).SetEase(Ease.InCubic);
+            waitingIndicator.SetActive(true);
+
+            foreach (var ob in offObjects)
+            {
+               ob.SetActive(false);
+            }
          }
          else
          {
