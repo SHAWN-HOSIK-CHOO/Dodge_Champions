@@ -50,7 +50,7 @@ namespace GameLobby
             startGameButton.onClick.AddListener(Callback_Btn_StartGame);
 
 
-            if (NetworkManager.Singleton.ConnectedClientsList.Count == 2)
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.ConnectedClientsList.Count == 2)
             {
                 startClientDb.gameObject.SetActive(false);
                 startHostDb.gameObject.SetActive(false);
