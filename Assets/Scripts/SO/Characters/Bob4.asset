@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9249ca7f8e813a8498ffdb03871ec59f, type: 3}
+  m_Name: Bob4
+  m_EditorClassIdentifier: 
+  characterName: Bob3
+  pfCharacter: {fileID: 8446195911489952786, guid: 5e8177ef30930dd4ba3266092ce84f70, type: 3}
+  pfBall: {fileID: 3869145152564536287, guid: 20bf9f567acff7049930e5f54ebdf69c, type: 3}
+  pfBallForEnemy: {fileID: 3869145152564536287, guid: 82ecd5040a95af941b530373ee2eb3e4, type: 3}
+  skillSO: {fileID: 11400000, guid: 148ff11d9190aee4a9c10193f24f4318, type: 2}

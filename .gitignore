@@ -92,3 +92,6 @@ Library/com.unity.addressables/Build/Linux/    # Linux 빌드 데이터
 Library/com.unity.addressables/Build/MacOS/    # MacOS 빌드 데이터
 Library/com.unity.addressables/Build/iOS/      # iOS 빌드 데이터
 Library/com.unity.addressables/Build/Android/  # Android 빌드 데이터
+
+# Editor Seeting
+EditorSettings.asset # 빌드 씬 목록 

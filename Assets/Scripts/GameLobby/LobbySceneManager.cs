@@ -32,7 +32,7 @@ namespace GameLobby
 
         async void Start()
         {
-            SceneManagerWrapper.LoadScene("LobbyUI", LoadSceneMode.Additive);
+            await SceneManagerWrapper.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
 
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
             {

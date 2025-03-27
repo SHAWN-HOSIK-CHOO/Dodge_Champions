@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0d87796707a2f74e9c95eb18fd99588, type: 3}
+  m_Name: Bob6
+  m_EditorClassIdentifier: 
+  themeColor: {r: 0.9372549, g: 0.34117648, b: 0.46666667, a: 1}
+  ballColor: {r: 0.9372549, g: 0.34117648, b: 0.46666667, a: 1}
+  skillColor: {r: 1, g: 0.827451, b: 0.16470589, a: 1}
+  characterName: CLASSIC
+  ballDesc: "\uD3C9\uBC94\uD55C"
+  skillDesc: "\uD53C\uD558\uACE0 \uD53C\uD558\uACE0 \uD53C\uD558\uACE0"
+  pfDancer: {fileID: 7763766301168784623, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
