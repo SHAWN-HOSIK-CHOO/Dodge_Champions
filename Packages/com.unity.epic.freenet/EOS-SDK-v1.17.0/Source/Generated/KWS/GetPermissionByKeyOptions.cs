@@ -3,66 +3,66 @@
 
 namespace Epic.OnlineServices.KWS
 {
-	/// <summary>
-	/// Input parameters for the <see cref="KWSInterface.GetPermissionByKey" /> function.
-	/// </summary>
-	public struct GetPermissionByKeyOptions
-	{
-		/// <summary>
-		/// The Product User ID of the local user getting permissions
-		/// </summary>
-		public ProductUserId LocalUserId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="KWSInterface.GetPermissionByKey" /> function.
+    /// </summary>
+    public struct GetPermissionByKeyOptions
+    {
+        /// <summary>
+        /// The Product User ID of the local user getting permissions
+        /// </summary>
+        public ProductUserId LocalUserId { get; set; }
 
-		/// <summary>
-		/// Permission name to query
-		/// </summary>
-		public Utf8String Key { get; set; }
-	}
+        /// <summary>
+        /// Permission name to query
+        /// </summary>
+        public Utf8String Key { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetPermissionByKeyOptionsInternal : ISettable<GetPermissionByKeyOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
-		private System.IntPtr m_Key;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetPermissionByKeyOptionsInternal : ISettable<GetPermissionByKeyOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
+        private System.IntPtr m_Key;
 
-		public ProductUserId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public ProductUserId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public Utf8String Key
-		{
-			set
-			{
-				Helper.Set(value, ref m_Key);
-			}
-		}
+        public Utf8String Key
+        {
+            set
+            {
+                Helper.Set(value, ref m_Key);
+            }
+        }
 
-		public void Set(ref GetPermissionByKeyOptions other)
-		{
-			m_ApiVersion = KWSInterface.GetpermissionbykeyApiLatest;
-			LocalUserId = other.LocalUserId;
-			Key = other.Key;
-		}
+        public void Set(ref GetPermissionByKeyOptions other)
+        {
+            m_ApiVersion = KWSInterface.GetpermissionbykeyApiLatest;
+            LocalUserId = other.LocalUserId;
+            Key = other.Key;
+        }
 
-		public void Set(ref GetPermissionByKeyOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = KWSInterface.GetpermissionbykeyApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-				Key = other.Value.Key;
-			}
-		}
+        public void Set(ref GetPermissionByKeyOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = KWSInterface.GetpermissionbykeyApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+                Key = other.Value.Key;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-			Helper.Dispose(ref m_Key);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+            Helper.Dispose(ref m_Key);
+        }
+    }
 }

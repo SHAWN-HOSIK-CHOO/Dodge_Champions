@@ -6,7 +6,7 @@ using UnityEngine;
 /// handle collision with rotating bodies. This simulates a "collision".
 /// </summary>
 public class TriggerPush : MonoBehaviour
-{    
+{
     public enum RightOrLeft
     {
         Right,

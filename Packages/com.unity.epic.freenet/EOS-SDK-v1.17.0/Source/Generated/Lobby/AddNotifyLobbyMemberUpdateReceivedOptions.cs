@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	public struct AddNotifyLobbyMemberUpdateReceivedOptions
-	{
-	}
+    public struct AddNotifyLobbyMemberUpdateReceivedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyLobbyMemberUpdateReceivedOptionsInternal : ISettable<AddNotifyLobbyMemberUpdateReceivedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyLobbyMemberUpdateReceivedOptionsInternal : ISettable<AddNotifyLobbyMemberUpdateReceivedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyLobbyMemberUpdateReceivedOptions other)
-		{
-			m_ApiVersion = LobbyInterface.AddnotifylobbymemberupdatereceivedApiLatest;
-		}
+        public void Set(ref AddNotifyLobbyMemberUpdateReceivedOptions other)
+        {
+            m_ApiVersion = LobbyInterface.AddnotifylobbymemberupdatereceivedApiLatest;
+        }
 
-		public void Set(ref AddNotifyLobbyMemberUpdateReceivedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LobbyInterface.AddnotifylobbymemberupdatereceivedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyLobbyMemberUpdateReceivedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LobbyInterface.AddnotifylobbymemberupdatereceivedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

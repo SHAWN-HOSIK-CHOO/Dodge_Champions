@@ -3,18 +3,18 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Type of established connection
-	/// </summary>
-	public enum ConnectionEstablishedType : int
-	{
-		/// <summary>
-		/// The connection is brand new
-		/// </summary>
-		NewConnection = 0,
-		/// <summary>
-		/// The connection is reestablished (reconnection)
-		/// </summary>
-		Reconnection = 1
-	}
+    /// <summary>
+    /// Type of established connection
+    /// </summary>
+    public enum ConnectionEstablishedType : int
+    {
+        /// <summary>
+        /// The connection is brand new
+        /// </summary>
+        NewConnection = 0,
+        /// <summary>
+        /// The connection is reestablished (reconnection)
+        /// </summary>
+        Reconnection = 1
+    }
 }

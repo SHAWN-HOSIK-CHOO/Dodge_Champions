@@ -37,7 +37,7 @@ public class ModeElement : MonoBehaviour
         _createControl.SelecteMode(this);
         _colorTween.ChangeEndValue(Color.cyan, 0.5f).Restart();
     }
-    public void Init(CreateControl control,string mode)
+    public void Init(CreateControl control, string mode)
     {
         _createControl = control;
         _text.text = mode;

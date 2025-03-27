@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Input parameters for the <see cref="SessionSearch.GetSearchResultCount" /> function.
-	/// </summary>
-	public struct SessionSearchGetSearchResultCountOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="SessionSearch.GetSearchResultCount" /> function.
+    /// </summary>
+    public struct SessionSearchGetSearchResultCountOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct SessionSearchGetSearchResultCountOptionsInternal : ISettable<SessionSearchGetSearchResultCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct SessionSearchGetSearchResultCountOptionsInternal : ISettable<SessionSearchGetSearchResultCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref SessionSearchGetSearchResultCountOptions other)
-		{
-			m_ApiVersion = SessionSearch.SessionsearchGetsearchresultcountApiLatest;
-		}
+        public void Set(ref SessionSearchGetSearchResultCountOptions other)
+        {
+            m_ApiVersion = SessionSearch.SessionsearchGetsearchresultcountApiLatest;
+        }
 
-		public void Set(ref SessionSearchGetSearchResultCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionSearch.SessionsearchGetsearchresultcountApiLatest;
-			}
-		}
+        public void Set(ref SessionSearchGetSearchResultCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionSearch.SessionsearchGetsearchresultcountApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

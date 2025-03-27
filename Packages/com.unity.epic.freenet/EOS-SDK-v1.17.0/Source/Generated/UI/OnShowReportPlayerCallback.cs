@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.UI
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="UIInterface.ShowReportPlayer" />
-	/// </summary>
-	/// <param name="data">A <see cref="OnShowReportPlayerCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnShowReportPlayerCallback(ref OnShowReportPlayerCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="UIInterface.ShowReportPlayer" />
+    /// </summary>
+    /// <param name="data">A <see cref="OnShowReportPlayerCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnShowReportPlayerCallback(ref OnShowReportPlayerCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnShowReportPlayerCallbackInternal(ref OnShowReportPlayerCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnShowReportPlayerCallbackInternal(ref OnShowReportPlayerCallbackInfoInternal data);
 }

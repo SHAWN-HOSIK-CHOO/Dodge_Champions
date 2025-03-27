@@ -3,45 +3,45 @@
 
 namespace Epic.OnlineServices.AntiCheatClient
 {
-	public struct PollStatusOptions
-	{
-		/// <summary>
-		/// The size of OutMessage in bytes. Recommended size is 256 bytes.
-		/// </summary>
-		public uint OutMessageLength { get; set; }
-	}
+    public struct PollStatusOptions
+    {
+        /// <summary>
+        /// The size of OutMessage in bytes. Recommended size is 256 bytes.
+        /// </summary>
+        public uint OutMessageLength { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct PollStatusOptionsInternal : ISettable<PollStatusOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private uint m_OutMessageLength;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct PollStatusOptionsInternal : ISettable<PollStatusOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private uint m_OutMessageLength;
 
-		public uint OutMessageLength
-		{
-			set
-			{
-				m_OutMessageLength = value;
-			}
-		}
+        public uint OutMessageLength
+        {
+            set
+            {
+                m_OutMessageLength = value;
+            }
+        }
 
-		public void Set(ref PollStatusOptions other)
-		{
-			m_ApiVersion = AntiCheatClientInterface.PollstatusApiLatest;
-			OutMessageLength = other.OutMessageLength;
-		}
+        public void Set(ref PollStatusOptions other)
+        {
+            m_ApiVersion = AntiCheatClientInterface.PollstatusApiLatest;
+            OutMessageLength = other.OutMessageLength;
+        }
 
-		public void Set(ref PollStatusOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatClientInterface.PollstatusApiLatest;
-				OutMessageLength = other.Value.OutMessageLength;
-			}
-		}
+        public void Set(ref PollStatusOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatClientInterface.PollstatusApiLatest;
+                OutMessageLength = other.Value.OutMessageLength;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

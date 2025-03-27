@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Platform
 {
-	/// <summary>
-	/// Input parameters for the <see cref="PlatformInterface.GetDesktopCrossplayStatus" /> function.
-	/// </summary>
-	public struct GetDesktopCrossplayStatusOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="PlatformInterface.GetDesktopCrossplayStatus" /> function.
+    /// </summary>
+    public struct GetDesktopCrossplayStatusOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetDesktopCrossplayStatusOptionsInternal : ISettable<GetDesktopCrossplayStatusOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetDesktopCrossplayStatusOptionsInternal : ISettable<GetDesktopCrossplayStatusOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref GetDesktopCrossplayStatusOptions other)
-		{
-			m_ApiVersion = PlatformInterface.GetdesktopcrossplaystatusApiLatest;
-		}
+        public void Set(ref GetDesktopCrossplayStatusOptions other)
+        {
+            m_ApiVersion = PlatformInterface.GetdesktopcrossplaystatusApiLatest;
+        }
 
-		public void Set(ref GetDesktopCrossplayStatusOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = PlatformInterface.GetdesktopcrossplaystatusApiLatest;
-			}
-		}
+        public void Set(ref GetDesktopCrossplayStatusOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = PlatformInterface.GetdesktopcrossplaystatusApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

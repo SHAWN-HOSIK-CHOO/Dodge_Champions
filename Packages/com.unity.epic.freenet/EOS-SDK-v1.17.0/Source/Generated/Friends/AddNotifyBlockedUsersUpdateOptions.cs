@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Friends
 {
-	/// <summary>
-	/// Input parameters for the <see cref="FriendsInterface.AddNotifyBlockedUsersUpdate" /> function.
-	/// </summary>
-	public struct AddNotifyBlockedUsersUpdateOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="FriendsInterface.AddNotifyBlockedUsersUpdate" /> function.
+    /// </summary>
+    public struct AddNotifyBlockedUsersUpdateOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyBlockedUsersUpdateOptionsInternal : ISettable<AddNotifyBlockedUsersUpdateOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyBlockedUsersUpdateOptionsInternal : ISettable<AddNotifyBlockedUsersUpdateOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyBlockedUsersUpdateOptions other)
-		{
-			m_ApiVersion = FriendsInterface.AddnotifyblockedusersupdateApiLatest;
-		}
+        public void Set(ref AddNotifyBlockedUsersUpdateOptions other)
+        {
+            m_ApiVersion = FriendsInterface.AddnotifyblockedusersupdateApiLatest;
+        }
 
-		public void Set(ref AddNotifyBlockedUsersUpdateOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = FriendsInterface.AddnotifyblockedusersupdateApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyBlockedUsersUpdateOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = FriendsInterface.AddnotifyblockedusersupdateApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

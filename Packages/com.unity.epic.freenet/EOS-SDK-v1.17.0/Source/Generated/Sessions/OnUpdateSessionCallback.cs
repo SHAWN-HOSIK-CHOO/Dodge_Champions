@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="SessionsInterface.UpdateSession" />
-	/// </summary>
-	/// <param name="data">A <see cref="UpdateSessionCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnUpdateSessionCallback(ref UpdateSessionCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="SessionsInterface.UpdateSession" />
+    /// </summary>
+    /// <param name="data">A <see cref="UpdateSessionCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnUpdateSessionCallback(ref UpdateSessionCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnUpdateSessionCallbackInternal(ref UpdateSessionCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnUpdateSessionCallbackInternal(ref UpdateSessionCallbackInfoInternal data);
 }

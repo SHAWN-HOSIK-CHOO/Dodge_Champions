@@ -3,40 +3,40 @@
 
 namespace Epic.OnlineServices.Auth
 {
-	public sealed partial class AuthInterface : Handle
-	{
-		/// <summary>
-		/// The most recent version of the <see cref="IOSCredentialsSystemAuthCredentialsOptions" /> structure.
-		/// </summary>
-		public const int IosCredentialssystemauthcredentialsoptionsApiLatest = 2;
+    public sealed partial class AuthInterface : Handle
+    {
+        /// <summary>
+        /// The most recent version of the <see cref="IOSCredentialsSystemAuthCredentialsOptions" /> structure.
+        /// </summary>
+        public const int IosCredentialssystemauthcredentialsoptionsApiLatest = 2;
 
-		public void Login(ref IOSLoginOptions options, object clientData, OnLoginCallback completionDelegate)
-		{
-			IOSLoginOptionsInternal optionsInternal = new IOSLoginOptionsInternal();
-			optionsInternal.Set(ref options);
+        public void Login(ref IOSLoginOptions options, object clientData, OnLoginCallback completionDelegate)
+        {
+            IOSLoginOptionsInternal optionsInternal = new IOSLoginOptionsInternal();
+            optionsInternal.Set(ref options);
 
-			var clientDataAddress = System.IntPtr.Zero;
+            var clientDataAddress = System.IntPtr.Zero;
 
-			var completionDelegateInternal = new OnLoginCallbackInternal(OnLoginCallbackInternalImplementation);
-			Helper.AddCallback(out clientDataAddress, clientData, completionDelegate, completionDelegateInternal);
+            var completionDelegateInternal = new OnLoginCallbackInternal(OnLoginCallbackInternalImplementation);
+            Helper.AddCallback(out clientDataAddress, clientData, completionDelegate, completionDelegateInternal);
 
-			IOSBindings.EOS_Auth_Login(InnerHandle, ref optionsInternal, clientDataAddress, completionDelegateInternal);
+            IOSBindings.EOS_Auth_Login(InnerHandle, ref optionsInternal, clientDataAddress, completionDelegateInternal);
 
-			Helper.Dispose(ref optionsInternal);
-		}
+            Helper.Dispose(ref optionsInternal);
+        }
 
-		[MonoPInvokeCallback(typeof(IOSCreateBackgroundSnapshotViewInternal))]
-		internal static System.IntPtr IOSCreateBackgroundSnapshotViewInternalImplementation(System.IntPtr context)
-		{
-			IOSCreateBackgroundSnapshotView callback;
-			if (Helper.TryGetStaticCallback("IOSCreateBackgroundSnapshotViewInternalImplementation", out callback))
-			{
-				var funcResult = callback(context);
+        [MonoPInvokeCallback(typeof(IOSCreateBackgroundSnapshotViewInternal))]
+        internal static System.IntPtr IOSCreateBackgroundSnapshotViewInternalImplementation(System.IntPtr context)
+        {
+            IOSCreateBackgroundSnapshotView callback;
+            if (Helper.TryGetStaticCallback("IOSCreateBackgroundSnapshotViewInternalImplementation", out callback))
+            {
+                var funcResult = callback(context);
 
-				return funcResult;
-			}
+                return funcResult;
+            }
 
-			return Helper.GetDefault<System.IntPtr>();
-		}
-	}
+            return Helper.GetDefault<System.IntPtr>();
+        }
+    }
 }

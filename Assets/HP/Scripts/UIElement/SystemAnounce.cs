@@ -7,12 +7,14 @@ public class SystemAnounce : MonoBehaviour
     [SerializeField]
     TMP_Text _message;
     [SerializeField]
-    Button _closeButton;
+    public Button _closeButton;
 
     private void Start()
     {
         _closeButton.onClick.AddListener(OnClickCloseButton);
     }
+
+
     public void OnClickCloseButton()
     {
         gameObject.SetActive(false);

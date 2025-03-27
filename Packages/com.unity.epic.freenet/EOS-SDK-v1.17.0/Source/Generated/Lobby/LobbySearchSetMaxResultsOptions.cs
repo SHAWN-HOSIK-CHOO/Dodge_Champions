@@ -3,48 +3,48 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Input parameters for the <see cref="LobbySearch.SetMaxResults" /> function.
-	/// </summary>
-	public struct LobbySearchSetMaxResultsOptions
-	{
-		/// <summary>
-		/// Maximum number of search results to return from the query
-		/// </summary>
-		public uint MaxResults { get; set; }
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="LobbySearch.SetMaxResults" /> function.
+    /// </summary>
+    public struct LobbySearchSetMaxResultsOptions
+    {
+        /// <summary>
+        /// Maximum number of search results to return from the query
+        /// </summary>
+        public uint MaxResults { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct LobbySearchSetMaxResultsOptionsInternal : ISettable<LobbySearchSetMaxResultsOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private uint m_MaxResults;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct LobbySearchSetMaxResultsOptionsInternal : ISettable<LobbySearchSetMaxResultsOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private uint m_MaxResults;
 
-		public uint MaxResults
-		{
-			set
-			{
-				m_MaxResults = value;
-			}
-		}
+        public uint MaxResults
+        {
+            set
+            {
+                m_MaxResults = value;
+            }
+        }
 
-		public void Set(ref LobbySearchSetMaxResultsOptions other)
-		{
-			m_ApiVersion = LobbySearch.LobbysearchSetmaxresultsApiLatest;
-			MaxResults = other.MaxResults;
-		}
+        public void Set(ref LobbySearchSetMaxResultsOptions other)
+        {
+            m_ApiVersion = LobbySearch.LobbysearchSetmaxresultsApiLatest;
+            MaxResults = other.MaxResults;
+        }
 
-		public void Set(ref LobbySearchSetMaxResultsOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LobbySearch.LobbysearchSetmaxresultsApiLatest;
-				MaxResults = other.Value.MaxResults;
-			}
-		}
+        public void Set(ref LobbySearchSetMaxResultsOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LobbySearch.LobbysearchSetmaxresultsApiLatest;
+                MaxResults = other.Value.MaxResults;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

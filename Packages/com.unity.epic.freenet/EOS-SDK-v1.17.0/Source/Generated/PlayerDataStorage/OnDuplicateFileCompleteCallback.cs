@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.PlayerDataStorage
 {
-	/// <summary>
-	/// Callback for when <see cref="PlayerDataStorageInterface.DuplicateFile" /> completes
-	/// </summary>
-	public delegate void OnDuplicateFileCompleteCallback(ref DuplicateFileCallbackInfo data);
+    /// <summary>
+    /// Callback for when <see cref="PlayerDataStorageInterface.DuplicateFile" /> completes
+    /// </summary>
+    public delegate void OnDuplicateFileCompleteCallback(ref DuplicateFileCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnDuplicateFileCompleteCallbackInternal(ref DuplicateFileCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnDuplicateFileCompleteCallbackInternal(ref DuplicateFileCallbackInfoInternal data);
 }

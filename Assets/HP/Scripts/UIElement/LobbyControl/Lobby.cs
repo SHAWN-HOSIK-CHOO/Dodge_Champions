@@ -1,16 +1,16 @@
-using System;
-using static LobbyManager;
-using System.Collections.Generic;
 using Epic.OnlineServices.Lobby;
+using System;
+using System.Collections.Generic;
 using static EOSWrapper;
+using static LobbyManager;
 
 public class Lobby : EOS_Lobby
 {
     public Lobby(EOS_Core eosCore, EOS_LobbyManager lobbyManager, string lobbyID, EOSWrapper.ETC.PUID localPUID)
-        :base(eosCore, lobbyManager, lobbyID, localPUID)
+        : base(eosCore, lobbyManager, lobbyID, localPUID)
     {
-        var result = EOSWrapper.LobbyControl.GetLobbyModification(FreeNet._instance._eosCore._ILobby, lobbyID, _localPUID._PUID ,out var modification);
-        if(result == Epic.OnlineServices.Result.Success)
+        var result = EOSWrapper.LobbyControl.GetLobbyModification(FreeNet._instance._eosCore._ILobby, lobbyID, _localPUID._PUID, out var modification);
+        if (result == Epic.OnlineServices.Result.Success)
         {
             EOSWrapper.LobbyControl.SetModificationAddMemberAttribute(modification, new Epic.OnlineServices.Lobby.Attribute()
             {

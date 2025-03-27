@@ -3,26 +3,26 @@
 
 namespace Epic.OnlineServices.AntiCheatCommon
 {
-	/// <summary>
-	/// Flags describing the type of competition taking place
-	/// </summary>
-	public enum AntiCheatCommonGameRoundCompetitionType : int
-	{
-		/// <summary>
-		/// No particular competition type applies
-		/// </summary>
-		None = 0,
-		/// <summary>
-		/// Casual unranked play
-		/// </summary>
-		Casual = 1,
-		/// <summary>
-		/// Ranked play, usually with skill based matchmaking
-		/// </summary>
-		Ranked = 2,
-		/// <summary>
-		/// Organized competitive play like a tournament
-		/// </summary>
-		Competitive = 3
-	}
+    /// <summary>
+    /// Flags describing the type of competition taking place
+    /// </summary>
+    public enum AntiCheatCommonGameRoundCompetitionType : int
+    {
+        /// <summary>
+        /// No particular competition type applies
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// Casual unranked play
+        /// </summary>
+        Casual = 1,
+        /// <summary>
+        /// Ranked play, usually with skill based matchmaking
+        /// </summary>
+        Ranked = 2,
+        /// <summary>
+        /// Organized competitive play like a tournament
+        /// </summary>
+        Competitive = 3
+    }
 }

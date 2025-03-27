@@ -3,45 +3,45 @@
 
 namespace Epic.OnlineServices.AntiCheatCommon
 {
-	public struct LogGameRoundEndOptions
-	{
-		/// <summary>
-		/// Optional identifier for the winning team
-		/// </summary>
-		public uint WinningTeamId { get; set; }
-	}
+    public struct LogGameRoundEndOptions
+    {
+        /// <summary>
+        /// Optional identifier for the winning team
+        /// </summary>
+        public uint WinningTeamId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct LogGameRoundEndOptionsInternal : ISettable<LogGameRoundEndOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private uint m_WinningTeamId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct LogGameRoundEndOptionsInternal : ISettable<LogGameRoundEndOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private uint m_WinningTeamId;
 
-		public uint WinningTeamId
-		{
-			set
-			{
-				m_WinningTeamId = value;
-			}
-		}
+        public uint WinningTeamId
+        {
+            set
+            {
+                m_WinningTeamId = value;
+            }
+        }
 
-		public void Set(ref LogGameRoundEndOptions other)
-		{
-			m_ApiVersion = AntiCheatCommonInterface.LoggameroundendApiLatest;
-			WinningTeamId = other.WinningTeamId;
-		}
+        public void Set(ref LogGameRoundEndOptions other)
+        {
+            m_ApiVersion = AntiCheatCommonInterface.LoggameroundendApiLatest;
+            WinningTeamId = other.WinningTeamId;
+        }
 
-		public void Set(ref LogGameRoundEndOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatCommonInterface.LoggameroundendApiLatest;
-				WinningTeamId = other.Value.WinningTeamId;
-			}
-		}
+        public void Set(ref LogGameRoundEndOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatCommonInterface.LoggameroundendApiLatest;
+                WinningTeamId = other.Value.WinningTeamId;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="LobbyInterface.JoinRTCRoom" />
-	/// </summary>
-	/// <param name="data">A <see cref="LobbyInterface.JoinRTCRoom" /> CallbackInfo containing the output information and result</param>
-	public delegate void OnJoinRTCRoomCallback(ref JoinRTCRoomCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="LobbyInterface.JoinRTCRoom" />
+    /// </summary>
+    /// <param name="data">A <see cref="LobbyInterface.JoinRTCRoom" /> CallbackInfo containing the output information and result</param>
+    public delegate void OnJoinRTCRoomCallback(ref JoinRTCRoomCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnJoinRTCRoomCallbackInternal(ref JoinRTCRoomCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnJoinRTCRoomCallbackInternal(ref JoinRTCRoomCallbackInfoInternal data);
 }

@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="EcomInterface.RedeemEntitlements" />
-	/// </summary>
-	/// <param name="data">A <see cref="RedeemEntitlementsCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnRedeemEntitlementsCallback(ref RedeemEntitlementsCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="EcomInterface.RedeemEntitlements" />
+    /// </summary>
+    /// <param name="data">A <see cref="RedeemEntitlementsCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnRedeemEntitlementsCallback(ref RedeemEntitlementsCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnRedeemEntitlementsCallbackInternal(ref RedeemEntitlementsCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnRedeemEntitlementsCallbackInternal(ref RedeemEntitlementsCallbackInfoInternal data);
 }

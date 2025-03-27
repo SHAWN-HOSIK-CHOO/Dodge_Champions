@@ -1,6 +1,6 @@
 using System;
-using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.InputSystem;
 public static class InputSystemNaming
 {
     public enum Device
@@ -37,7 +37,7 @@ public static class InputSystemNaming
         ButtonWithOneModifier,
         ButtonWithTwoModifiers,
     }
-    public enum Vector2DSyntax 
+    public enum Vector2DSyntax
     {
         Up,
         Down,
@@ -55,9 +55,6 @@ public static class InputSystemNaming
         Modifier2,
         Button
     }
-
-
-
     public static string ToInputSystemName(this Device device)
     {
         return device switch
@@ -141,7 +138,7 @@ public static class InputSystemNaming
         };
     }
 
-    public static string ToInputSystemName(this Processor processor,float val)
+    public static string ToInputSystemName(this Processor processor, float val)
     {
         return processor switch
         {

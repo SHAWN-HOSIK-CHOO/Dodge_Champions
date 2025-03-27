@@ -1,12 +1,8 @@
 ﻿using DG.Tweening;
 using System.Collections;
-using Unity.Netcode;
-using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static NetworkSpawner;
-using static UnityEngine.InputSystem.HID.HID;
 
 public class MatchMaker : MonoBehaviour
 {
@@ -44,7 +40,7 @@ public class MatchMaker : MonoBehaviour
 
     IEnumerator WaitAuthComplete()
     {
-        while(!(_loginSuccess && _connectSuccess))
+        while (!(_loginSuccess && _connectSuccess))
         {
             yield return null;
         }
@@ -140,9 +136,6 @@ public class MatchMaker : MonoBehaviour
         _transition.gameObject.SetActive(false);
         asyncOperation.allowSceneActivation = true;
     }
-
-
-
     private void OnDestroy()
     {
         _login.onLogin -= OnLogin;

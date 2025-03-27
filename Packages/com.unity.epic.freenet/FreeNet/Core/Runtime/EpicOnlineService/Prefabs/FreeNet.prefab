@@ -1595,8 +1595,9 @@ MonoBehaviour:
   level: 600
   _incomingQueueMaxSizeBytes: 1048576
   _outgoingQueueMaxSizeBytes: 1048576
-  maxPacketsPerFrame: 1000
-  maxPacketsPerClient: 30
+  _maxPacketsPerFrame: 100
+  _maxPacketsPerClient: 10
+  _relayType: 0
 --- !u!114 &5627721505230031937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1670,5 +1671,6 @@ MonoBehaviour:
   _localBufferSec: 0.03
   _serverBufferSec: 0.03
   _useEpicOnlineTransport: 1
-  _networkSpawnerPref: {fileID: 0}
+  _networkSpawnerPref: {fileID: 5844752406703323982, guid: 01fce0d3821c66f4db49b1efd7c73206, type: 3}
   _networkSpawner: {fileID: 0}
+  _networkScene: []

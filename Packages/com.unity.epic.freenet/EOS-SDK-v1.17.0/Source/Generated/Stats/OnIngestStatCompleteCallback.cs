@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Stats
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="StatsInterface.IngestStat" />
-	/// </summary>
-	/// <param name="data">A <see cref="IngestStatCompleteCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnIngestStatCompleteCallback(ref IngestStatCompleteCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="StatsInterface.IngestStat" />
+    /// </summary>
+    /// <param name="data">A <see cref="IngestStatCompleteCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnIngestStatCompleteCallback(ref IngestStatCompleteCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnIngestStatCompleteCallbackInternal(ref IngestStatCompleteCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnIngestStatCompleteCallbackInternal(ref IngestStatCompleteCallbackInfoInternal data);
 }

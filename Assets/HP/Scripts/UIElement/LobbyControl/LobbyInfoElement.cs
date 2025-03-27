@@ -1,10 +1,6 @@
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
-using Epic.OnlineServices;
-using Epic.OnlineServices.Lobby;
-using Epic.OnlineServices.UserInfo;
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -52,12 +48,12 @@ public class LobbyInfoElement : MonoBehaviour
         _colorTween.ChangeEndValue(Color.cyan, 0.5f).Restart();
     }
 
-    
+
     public void Init(FindJoinControl control, EOS_LobbySearchResult lobby)
     {
         _findJoinControl = control;
         _lobbySearch = lobby;
-        if(LobbyAttributeExtenstion.GetLobbyMode(_lobbySearch._attribute, out var mode))
+        if (LobbyAttributeExtenstion.GetLobbyMode(_lobbySearch._attribute, out var mode))
         {
             _mode.text = mode;
         }
@@ -78,7 +74,7 @@ public class LobbyInfoElement : MonoBehaviour
 
     void onPointerClick(BaseEventData data)
     {
-        if (_findJoinControl.curSelectedLobby!= null)
+        if (_findJoinControl.curSelectedLobby != null)
         {
             if (_findJoinControl.curSelectedLobby._lobbySearch == _lobbySearch)
             {

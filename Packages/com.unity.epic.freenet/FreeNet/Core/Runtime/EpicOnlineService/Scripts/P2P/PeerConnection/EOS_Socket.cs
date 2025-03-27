@@ -1,7 +1,6 @@
-using Epic.OnlineServices;
 using Epic.OnlineServices.P2P;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static EOS_Core;
 
@@ -21,9 +20,9 @@ public class EOS_Socket
         public State _State { get; private set; }
         public EOS_Core.Role _remoteRole { get; private set; }
         public EOSWrapper.ETC.PUID _remotePUID { get; private set; }
-        public event Action<Connection , int> _onEnqueuePacket;
+        public event Action<Connection, int> _onEnqueuePacket;
         public event Action<Connection> _onConnectionStateChanged;
-        private Dictionary<int,Queue<EOS_Core.EOS_Packet>> _IncomingPackets;
+        private Dictionary<int, Queue<EOS_Core.EOS_Packet>> _IncomingPackets;
         public void SetState(State state)
         {
             if (_State != state)
@@ -49,7 +48,7 @@ public class EOS_Socket
         }
         public void EnqueuePacket(EOS_Core.EOS_Packet packet)
         {
-            if(!_IncomingPackets.TryGetValue(packet._channel,out var queue))
+            if (!_IncomingPackets.TryGetValue(packet._channel, out var queue))
             {
                 queue = new Queue<EOS_Packet>();
                 _IncomingPackets.Add(packet._channel, queue);
@@ -81,7 +80,7 @@ public class EOS_Socket
     ulong _onClosedHandle;
 
     #endregion
-    public EOS_Socket(EOS_Core eosCore ,EOSWrapper.ETC.PUID localpuid, string socketid)
+    public EOS_Socket(EOS_Core eosCore, EOSWrapper.ETC.PUID localpuid, string socketid)
     {
         _eosCore = eosCore;
         _localPUID = localpuid;
@@ -91,7 +90,7 @@ public class EOS_Socket
     void AddRequestCB()
     {
         _onRequest += OnRequest;
-        if(_onRequestHandle == 0)
+        if (_onRequestHandle == 0)
         {
             var Requestoptions = new AddNotifyPeerConnectionRequestOptions()
             {
@@ -123,7 +122,7 @@ public class EOS_Socket
     void AddEstablishedCB()
     {
         _onEstablished += OnEstablished;
-        if(_onEstablishedHandle == 0)
+        if (_onEstablishedHandle == 0)
         {
             var options = new AddNotifyPeerConnectionEstablishedOptions()
             {
@@ -139,7 +138,7 @@ public class EOS_Socket
     void AddInterruptedCB()
     {
         _onInterrupted += OnInterrupted;
-        if(_onInterruptedHandle==0)
+        if (_onInterruptedHandle == 0)
         {
             var options = new AddNotifyPeerConnectionInterruptedOptions()
             {
@@ -238,13 +237,13 @@ public class EOS_Socket
     {
 
     }
-    public bool GetConnection(EOS_Core.Role role, EOSWrapper.ETC.PUID remotePUID,out Connection Outconnection)
+    public bool GetConnection(EOS_Core.Role role, EOSWrapper.ETC.PUID remotePUID, out Connection Outconnection)
     {
-       return _Connections.TryGetValue(role, remotePUID._puid, out Outconnection);
+        return _Connections.TryGetValue(role, remotePUID._puid, out Outconnection);
     }
     public void StartConnect(EOSWrapper.ETC.PUID remotePUID)
     {
-        if( _localPUID._puid == remotePUID._puid)
+        if (_localPUID._puid == remotePUID._puid)
         {
             _onRequest?.Invoke(new OnIncomingConnectionRequestInfo()
             {
@@ -264,8 +263,8 @@ public class EOS_Socket
     }
     public void StopConnect(EOS_Core.Role role, string remotePuid)
     {
-        var  remotePUID = new EOSWrapper.ETC.PUID(remotePuid);
-        if(GetConnection(role,remotePUID,out var connection))
+        var remotePUID = new EOSWrapper.ETC.PUID(remotePuid);
+        if (GetConnection(role, remotePUID, out var connection))
         {
             if (connection._remoteRole == Role.RemotePeer)
             {
@@ -288,7 +287,7 @@ public class EOS_Socket
     }
     public void StopAllConnect()
     {
-        foreach(var kvp in _Connections.GetEnumerator())
+        foreach (var kvp in _Connections.GetEnumerator())
         {
             StopConnect(kvp.Key1, kvp.Key2);
         }

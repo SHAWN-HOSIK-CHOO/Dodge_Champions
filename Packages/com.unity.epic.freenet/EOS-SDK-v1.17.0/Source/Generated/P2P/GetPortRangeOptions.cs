@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Structure containing information about getting the configured port range settings.
-	/// </summary>
-	public struct GetPortRangeOptions
-	{
-	}
+    /// <summary>
+    /// Structure containing information about getting the configured port range settings.
+    /// </summary>
+    public struct GetPortRangeOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetPortRangeOptionsInternal : ISettable<GetPortRangeOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetPortRangeOptionsInternal : ISettable<GetPortRangeOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref GetPortRangeOptions other)
-		{
-			m_ApiVersion = P2PInterface.GetportrangeApiLatest;
-		}
+        public void Set(ref GetPortRangeOptions other)
+        {
+            m_ApiVersion = P2PInterface.GetportrangeApiLatest;
+        }
 
-		public void Set(ref GetPortRangeOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = P2PInterface.GetportrangeApiLatest;
-			}
-		}
+        public void Set(ref GetPortRangeOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = P2PInterface.GetportrangeApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

@@ -61,7 +61,7 @@ public class WindowsFactory : IEOS_PlatformFactory
     }
     public void Dispose()
     {
-        if(_IPlatform !=null)
+        if (_IPlatform != null)
         {
             _IPlatform.Release();
             _IPlatform = null;
@@ -70,12 +70,12 @@ public class WindowsFactory : IEOS_PlatformFactory
         UnHook();
         UnLoadDLL();
     }
-    public bool MakePlatform(EOS_Credential credential, LogCategory category, LogLevel level,out PlatformInterface OutIPlatform)
+    public bool MakePlatform(EOS_Credential credential, LogCategory category, LogLevel level, out PlatformInterface OutIPlatform)
     {
         OutIPlatform = null;
         Hook();
         bool result = InitPlatform(credential) && SetLogDetail(category, level) && CreatePlatform(credential, out _IPlatform);
-        if(result == false)
+        if (result == false)
         {
             Dispose();
         }
@@ -189,7 +189,7 @@ public class WindowsFactory : IEOS_PlatformFactory
     private string EOS_SDK_PluginPath(string dllName)
     {
         string packagePath = Application.dataPath;
-        string immediatePath ="";
+        string immediatePath = "";
 #if UNITY_EDITOR
         string packageName = "com.unity.epic.freenet";
         string folderName = $"EOS-SDK-v{VersionInterface.MajorVersion}.{VersionInterface.MinorVersion}.{VersionInterface.PatchVersion}";

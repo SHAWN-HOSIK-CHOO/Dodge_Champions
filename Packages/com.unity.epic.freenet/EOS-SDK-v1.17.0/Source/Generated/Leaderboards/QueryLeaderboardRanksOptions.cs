@@ -3,69 +3,69 @@
 
 namespace Epic.OnlineServices.Leaderboards
 {
-	/// <summary>
-	/// Input parameters for the <see cref="LeaderboardsInterface.QueryLeaderboardRanks" /> function.
-	/// <seealso cref="Definition" />
-	/// </summary>
-	public struct QueryLeaderboardRanksOptions
-	{
-		/// <summary>
-		/// The ID of the leaderboard whose information you want to retrieve.
-		/// </summary>
-		public Utf8String LeaderboardId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="LeaderboardsInterface.QueryLeaderboardRanks" /> function.
+    /// <seealso cref="Definition" />
+    /// </summary>
+    public struct QueryLeaderboardRanksOptions
+    {
+        /// <summary>
+        /// The ID of the leaderboard whose information you want to retrieve.
+        /// </summary>
+        public Utf8String LeaderboardId { get; set; }
 
-		/// <summary>
-		/// Product User ID for user who is querying ranks.
-		/// Must be set when using a client policy that requires a valid logged in user.
-		/// Not used for Dedicated Server where no user is available.
-		/// </summary>
-		public ProductUserId LocalUserId { get; set; }
-	}
+        /// <summary>
+        /// Product User ID for user who is querying ranks.
+        /// Must be set when using a client policy that requires a valid logged in user.
+        /// Not used for Dedicated Server where no user is available.
+        /// </summary>
+        public ProductUserId LocalUserId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct QueryLeaderboardRanksOptionsInternal : ISettable<QueryLeaderboardRanksOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LeaderboardId;
-		private System.IntPtr m_LocalUserId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct QueryLeaderboardRanksOptionsInternal : ISettable<QueryLeaderboardRanksOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LeaderboardId;
+        private System.IntPtr m_LocalUserId;
 
-		public Utf8String LeaderboardId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LeaderboardId);
-			}
-		}
+        public Utf8String LeaderboardId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LeaderboardId);
+            }
+        }
 
-		public ProductUserId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public ProductUserId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public void Set(ref QueryLeaderboardRanksOptions other)
-		{
-			m_ApiVersion = LeaderboardsInterface.QueryleaderboardranksApiLatest;
-			LeaderboardId = other.LeaderboardId;
-			LocalUserId = other.LocalUserId;
-		}
+        public void Set(ref QueryLeaderboardRanksOptions other)
+        {
+            m_ApiVersion = LeaderboardsInterface.QueryleaderboardranksApiLatest;
+            LeaderboardId = other.LeaderboardId;
+            LocalUserId = other.LocalUserId;
+        }
 
-		public void Set(ref QueryLeaderboardRanksOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LeaderboardsInterface.QueryleaderboardranksApiLatest;
-				LeaderboardId = other.Value.LeaderboardId;
-				LocalUserId = other.Value.LocalUserId;
-			}
-		}
+        public void Set(ref QueryLeaderboardRanksOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LeaderboardsInterface.QueryleaderboardranksApiLatest;
+                LeaderboardId = other.Value.LeaderboardId;
+                LocalUserId = other.Value.LocalUserId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LeaderboardId);
-			Helper.Dispose(ref m_LocalUserId);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LeaderboardId);
+            Helper.Dispose(ref m_LocalUserId);
+        }
+    }
 }

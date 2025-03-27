@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Input parameters for the <see cref="SessionsInterface.AddNotifySessionInviteReceived" /> function.
-	/// </summary>
-	public struct AddNotifySessionInviteReceivedOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="SessionsInterface.AddNotifySessionInviteReceived" /> function.
+    /// </summary>
+    public struct AddNotifySessionInviteReceivedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifySessionInviteReceivedOptionsInternal : ISettable<AddNotifySessionInviteReceivedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifySessionInviteReceivedOptionsInternal : ISettable<AddNotifySessionInviteReceivedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifySessionInviteReceivedOptions other)
-		{
-			m_ApiVersion = SessionsInterface.AddnotifysessioninvitereceivedApiLatest;
-		}
+        public void Set(ref AddNotifySessionInviteReceivedOptions other)
+        {
+            m_ApiVersion = SessionsInterface.AddnotifysessioninvitereceivedApiLatest;
+        }
 
-		public void Set(ref AddNotifySessionInviteReceivedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionsInterface.AddnotifysessioninvitereceivedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifySessionInviteReceivedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionsInterface.AddnotifysessioninvitereceivedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

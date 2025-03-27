@@ -3,66 +3,66 @@
 
 namespace Epic.OnlineServices.KWS
 {
-	/// <summary>
-	/// Input parameters for the <see cref="KWSInterface.UpdateParentEmail" /> function.
-	/// </summary>
-	public struct UpdateParentEmailOptions
-	{
-		/// <summary>
-		/// Local user updating parental information
-		/// </summary>
-		public ProductUserId LocalUserId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="KWSInterface.UpdateParentEmail" /> function.
+    /// </summary>
+    public struct UpdateParentEmailOptions
+    {
+        /// <summary>
+        /// Local user updating parental information
+        /// </summary>
+        public ProductUserId LocalUserId { get; set; }
 
-		/// <summary>
-		/// New parent email
-		/// </summary>
-		public Utf8String ParentEmail { get; set; }
-	}
+        /// <summary>
+        /// New parent email
+        /// </summary>
+        public Utf8String ParentEmail { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct UpdateParentEmailOptionsInternal : ISettable<UpdateParentEmailOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
-		private System.IntPtr m_ParentEmail;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct UpdateParentEmailOptionsInternal : ISettable<UpdateParentEmailOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
+        private System.IntPtr m_ParentEmail;
 
-		public ProductUserId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public ProductUserId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public Utf8String ParentEmail
-		{
-			set
-			{
-				Helper.Set(value, ref m_ParentEmail);
-			}
-		}
+        public Utf8String ParentEmail
+        {
+            set
+            {
+                Helper.Set(value, ref m_ParentEmail);
+            }
+        }
 
-		public void Set(ref UpdateParentEmailOptions other)
-		{
-			m_ApiVersion = KWSInterface.UpdateparentemailApiLatest;
-			LocalUserId = other.LocalUserId;
-			ParentEmail = other.ParentEmail;
-		}
+        public void Set(ref UpdateParentEmailOptions other)
+        {
+            m_ApiVersion = KWSInterface.UpdateparentemailApiLatest;
+            LocalUserId = other.LocalUserId;
+            ParentEmail = other.ParentEmail;
+        }
 
-		public void Set(ref UpdateParentEmailOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = KWSInterface.UpdateparentemailApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-				ParentEmail = other.Value.ParentEmail;
-			}
-		}
+        public void Set(ref UpdateParentEmailOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = KWSInterface.UpdateparentemailApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+                ParentEmail = other.Value.ParentEmail;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-			Helper.Dispose(ref m_ParentEmail);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+            Helper.Dispose(ref m_ParentEmail);
+        }
+    }
 }

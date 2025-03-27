@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.UI
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="UIInterface.AddNotifyDisplaySettingsUpdated" />
-	/// </summary>
-	/// <param name="data">A <see cref="OnDisplaySettingsUpdatedCallbackInfo" /> containing the current display state.</param>
-	public delegate void OnDisplaySettingsUpdatedCallback(ref OnDisplaySettingsUpdatedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="UIInterface.AddNotifyDisplaySettingsUpdated" />
+    /// </summary>
+    /// <param name="data">A <see cref="OnDisplaySettingsUpdatedCallbackInfo" /> containing the current display state.</param>
+    public delegate void OnDisplaySettingsUpdatedCallback(ref OnDisplaySettingsUpdatedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnDisplaySettingsUpdatedCallbackInternal(ref OnDisplaySettingsUpdatedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnDisplaySettingsUpdatedCallbackInternal(ref OnDisplaySettingsUpdatedCallbackInfoInternal data);
 }

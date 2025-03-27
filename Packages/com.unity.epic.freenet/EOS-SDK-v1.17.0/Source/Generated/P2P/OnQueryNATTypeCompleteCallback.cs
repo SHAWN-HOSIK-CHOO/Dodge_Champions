@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Callback for information related to our NAT type query completing.
-	/// </summary>
-	public delegate void OnQueryNATTypeCompleteCallback(ref OnQueryNATTypeCompleteInfo data);
+    /// <summary>
+    /// Callback for information related to our NAT type query completing.
+    /// </summary>
+    public delegate void OnQueryNATTypeCompleteCallback(ref OnQueryNATTypeCompleteInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryNATTypeCompleteCallbackInternal(ref OnQueryNATTypeCompleteInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryNATTypeCompleteCallbackInternal(ref OnQueryNATTypeCompleteInfoInternal data);
 }

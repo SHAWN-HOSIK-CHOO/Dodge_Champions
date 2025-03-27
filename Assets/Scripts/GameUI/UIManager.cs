@@ -1,11 +1,9 @@
-using System;
-using System.Collections;
-using System.Globalization;
-using CharacterAttributes;
 using Game;
 using GameLobby;
-using UnityEngine;
+using System.Collections;
+using System.Globalization;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace GameUI
@@ -13,7 +11,7 @@ namespace GameUI
     public class UIManager : MonoBehaviour
     {
         private static UIManager _instance = null;
-        public static  UIManager Instance => _instance == null ? null : _instance;
+        public static UIManager Instance => _instance == null ? null : _instance;
 
         private void Awake()
         {
@@ -28,8 +26,8 @@ namespace GameUI
             }
             startPanel.SetActive(false);
         }
-        
-        [Header("Game Start Info Panel")] 
+
+        [Header("Game Start Info Panel")]
         public GameObject startPanel;
         public TMP_Text startText;
 
@@ -38,20 +36,20 @@ namespace GameUI
         [Header("State, 0 for attack 1 for defense")]
         public Image[] statesUIImages = new Image[2];
 
-        [Header("Players' Hp bar")] 
+        [Header("Players' Hp bar")]
         public Image playerFill;
         public Image enemyFill;
 
-        [Header("Throw CoolDown")] 
+        [Header("Throw CoolDown")]
         public Image coolDownImage;
 
-        [Header("Skill CoolDown")] 
+        [Header("Skill CoolDown")]
         public Image skillCoolDownImage;
 
-        [Header("Turn CoolDown")] 
+        [Header("Turn CoolDown")]
         public Image turnCoolDownImage;
 
-        [Header("Debug Area")] 
+        [Header("Debug Area")]
         public TMP_Text playerBallSkillIndex;
         public TMP_Text enemyBallSkillIndex;
 
@@ -65,17 +63,17 @@ namespace GameUI
             dodgeText.SetActive(false);
             ResetFill(playerFill);
             ResetFill(enemyFill);
-            
+
             //Debug
             playerBallSkillIndex.text = "Player Character No.  " + PlayerSelectionManager.Instance.GetLocalPlayerSelection();
-            enemyBallSkillIndex.text  = "Enemy Character No.  "  + PlayerSelectionManager.Instance.GetEnemySelection();
+            enemyBallSkillIndex.text = "Enemy Character No.  " + PlayerSelectionManager.Instance.GetEnemySelection();
         }
-        
+
         private void ResetFill(Image fillImage)
         {
             if (fillImage != null)
             {
-                fillImage.fillAmount = 1.0f; 
+                fillImage.fillAmount = 1.0f;
             }
         }
 
@@ -90,12 +88,12 @@ namespace GameUI
                 enemyFill.fillAmount = fillRatio;
             }
         }
-        
+
         public void StartGameCountDown(float time = 5f)
         {
             StartCoroutine(CoStartCountDown(5f));
         }
-        
+
         private IEnumerator CoStartCountDown(float time)
         {
             startPanel.SetActive(true);

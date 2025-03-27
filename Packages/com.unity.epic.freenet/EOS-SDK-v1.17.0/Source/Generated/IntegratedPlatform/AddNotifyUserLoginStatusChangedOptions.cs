@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.IntegratedPlatform
 {
-	/// <summary>
-	/// Input parameters for the <see cref="IntegratedPlatformInterface.AddNotifyUserLoginStatusChanged" /> function.
-	/// </summary>
-	public struct AddNotifyUserLoginStatusChangedOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="IntegratedPlatformInterface.AddNotifyUserLoginStatusChanged" /> function.
+    /// </summary>
+    public struct AddNotifyUserLoginStatusChangedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyUserLoginStatusChangedOptionsInternal : ISettable<AddNotifyUserLoginStatusChangedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyUserLoginStatusChangedOptionsInternal : ISettable<AddNotifyUserLoginStatusChangedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyUserLoginStatusChangedOptions other)
-		{
-			m_ApiVersion = IntegratedPlatformInterface.AddnotifyuserloginstatuschangedApiLatest;
-		}
+        public void Set(ref AddNotifyUserLoginStatusChangedOptions other)
+        {
+            m_ApiVersion = IntegratedPlatformInterface.AddnotifyuserloginstatuschangedApiLatest;
+        }
 
-		public void Set(ref AddNotifyUserLoginStatusChangedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = IntegratedPlatformInterface.AddnotifyuserloginstatuschangedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyUserLoginStatusChangedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = IntegratedPlatformInterface.AddnotifyuserloginstatuschangedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

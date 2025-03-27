@@ -1,5 +1,3 @@
-using System.Collections;
-using UnityEngine;
 public class FreeNet : SingletonMonoBehaviour<FreeNet>
 {
     public EOS_Core _eosCore { get; private set; }

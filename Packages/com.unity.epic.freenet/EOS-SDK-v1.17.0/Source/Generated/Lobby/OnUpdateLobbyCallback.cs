@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="LobbyInterface.UpdateLobby" />
-	/// </summary>
-	/// <param name="data">A <see cref="LobbyInterface.UpdateLobby" /> CallbackInfo containing the output information and result</param>
-	public delegate void OnUpdateLobbyCallback(ref UpdateLobbyCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="LobbyInterface.UpdateLobby" />
+    /// </summary>
+    /// <param name="data">A <see cref="LobbyInterface.UpdateLobby" /> CallbackInfo containing the output information and result</param>
+    public delegate void OnUpdateLobbyCallback(ref UpdateLobbyCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnUpdateLobbyCallbackInternal(ref UpdateLobbyCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnUpdateLobbyCallbackInternal(ref UpdateLobbyCallbackInfoInternal data);
 }

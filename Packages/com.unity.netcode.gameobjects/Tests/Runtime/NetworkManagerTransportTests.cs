@@ -1,6 +1,6 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
-using NUnit.Framework;
 using Unity.Netcode.TestHelpers.Runtime;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport;

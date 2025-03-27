@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Input parameters for the <see cref="SessionsInterface.AddNotifySessionInviteRejected" /> function.
-	/// </summary>
-	public struct AddNotifySessionInviteRejectedOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="SessionsInterface.AddNotifySessionInviteRejected" /> function.
+    /// </summary>
+    public struct AddNotifySessionInviteRejectedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifySessionInviteRejectedOptionsInternal : ISettable<AddNotifySessionInviteRejectedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifySessionInviteRejectedOptionsInternal : ISettable<AddNotifySessionInviteRejectedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifySessionInviteRejectedOptions other)
-		{
-			m_ApiVersion = SessionsInterface.AddnotifysessioninviterejectedApiLatest;
-		}
+        public void Set(ref AddNotifySessionInviteRejectedOptions other)
+        {
+            m_ApiVersion = SessionsInterface.AddnotifysessioninviterejectedApiLatest;
+        }
 
-		public void Set(ref AddNotifySessionInviteRejectedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionsInterface.AddnotifysessioninviterejectedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifySessionInviteRejectedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionsInterface.AddnotifysessioninviterejectedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

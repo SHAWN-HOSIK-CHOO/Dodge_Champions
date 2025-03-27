@@ -3,66 +3,66 @@
 
 namespace Epic.OnlineServices.Presence
 {
-	/// <summary>
-	/// Data for the <see cref="PresenceInterface.SetPresence" /> function.
-	/// </summary>
-	public struct SetPresenceOptions
-	{
-		/// <summary>
-		/// The Epic Account ID of the local, logged-in user making the request
-		/// </summary>
-		public EpicAccountId LocalUserId { get; set; }
+    /// <summary>
+    /// Data for the <see cref="PresenceInterface.SetPresence" /> function.
+    /// </summary>
+    public struct SetPresenceOptions
+    {
+        /// <summary>
+        /// The Epic Account ID of the local, logged-in user making the request
+        /// </summary>
+        public EpicAccountId LocalUserId { get; set; }
 
-		/// <summary>
-		/// The handle to the presence update
-		/// </summary>
-		public PresenceModification PresenceModificationHandle { get; set; }
-	}
+        /// <summary>
+        /// The handle to the presence update
+        /// </summary>
+        public PresenceModification PresenceModificationHandle { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct SetPresenceOptionsInternal : ISettable<SetPresenceOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
-		private System.IntPtr m_PresenceModificationHandle;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct SetPresenceOptionsInternal : ISettable<SetPresenceOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
+        private System.IntPtr m_PresenceModificationHandle;
 
-		public EpicAccountId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public EpicAccountId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public PresenceModification PresenceModificationHandle
-		{
-			set
-			{
-				Helper.Set(value, ref m_PresenceModificationHandle);
-			}
-		}
+        public PresenceModification PresenceModificationHandle
+        {
+            set
+            {
+                Helper.Set(value, ref m_PresenceModificationHandle);
+            }
+        }
 
-		public void Set(ref SetPresenceOptions other)
-		{
-			m_ApiVersion = PresenceInterface.SetpresenceApiLatest;
-			LocalUserId = other.LocalUserId;
-			PresenceModificationHandle = other.PresenceModificationHandle;
-		}
+        public void Set(ref SetPresenceOptions other)
+        {
+            m_ApiVersion = PresenceInterface.SetpresenceApiLatest;
+            LocalUserId = other.LocalUserId;
+            PresenceModificationHandle = other.PresenceModificationHandle;
+        }
 
-		public void Set(ref SetPresenceOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = PresenceInterface.SetpresenceApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-				PresenceModificationHandle = other.Value.PresenceModificationHandle;
-			}
-		}
+        public void Set(ref SetPresenceOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = PresenceInterface.SetpresenceApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+                PresenceModificationHandle = other.Value.PresenceModificationHandle;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-			Helper.Dispose(ref m_PresenceModificationHandle);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+            Helper.Dispose(ref m_PresenceModificationHandle);
+        }
+    }
 }

@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// Callback for completion of set input device settings request.
-	/// </summary>
-	public delegate void OnSetInputDeviceSettingsCallback(ref OnSetInputDeviceSettingsCallbackInfo data);
+    /// <summary>
+    /// Callback for completion of set input device settings request.
+    /// </summary>
+    public delegate void OnSetInputDeviceSettingsCallback(ref OnSetInputDeviceSettingsCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnSetInputDeviceSettingsCallbackInternal(ref OnSetInputDeviceSettingsCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnSetInputDeviceSettingsCallbackInternal(ref OnSetInputDeviceSettingsCallbackInfoInternal data);
 }

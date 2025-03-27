@@ -3,14 +3,14 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Function prototype definition for notifications that comes from <see cref="LobbyInterface.AddNotifySendLobbyNativeInviteRequested" />
-	/// After processing the callback EOS_UI_AcknowledgeEventId must be called.
-	/// <seealso cref="UI.UIInterface.AcknowledgeEventId" />
-	/// </summary>
-	/// <param name="data">A <see cref="SendLobbyNativeInviteRequestedCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnSendLobbyNativeInviteRequestedCallback(ref SendLobbyNativeInviteRequestedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that comes from <see cref="LobbyInterface.AddNotifySendLobbyNativeInviteRequested" />
+    /// After processing the callback EOS_UI_AcknowledgeEventId must be called.
+    /// <seealso cref="UI.UIInterface.AcknowledgeEventId" />
+    /// </summary>
+    /// <param name="data">A <see cref="SendLobbyNativeInviteRequestedCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnSendLobbyNativeInviteRequestedCallback(ref SendLobbyNativeInviteRequestedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnSendLobbyNativeInviteRequestedCallbackInternal(ref SendLobbyNativeInviteRequestedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnSendLobbyNativeInviteRequestedCallbackInternal(ref SendLobbyNativeInviteRequestedCallbackInfoInternal data);
 }

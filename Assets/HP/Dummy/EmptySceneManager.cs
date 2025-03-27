@@ -1,30 +1,30 @@
 
-using Unity.Netcode;
+using HP;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+using static UnityEngine.InputSystem.InputAction;
 
 public class EmptySceneManager : MonoBehaviour
 {
+    public PlayerInput input;
+    WASD_MouseBinding WASD_MouseBinding;
     void Start()
     {
 
+        WASD_MouseBinding = new WASD_MouseBinding();
+        WASD_MouseBinding.Enable(true);
+        WASD_MouseBinding._onMoveInputChanged += OnMoveInputChanged;
+
+        input.actions["test"].performed += test;
     }
 
-    // Update is called once per frame
-    void Update()
+    void test(CallbackContext ctx)
     {
-
-        if(Input.GetKeyDown(KeyCode.Z))
-        {
-            NetworkManager.Singleton.SceneManager.OnLoad += OnLoad;
-            NetworkManager.Singleton.StartHost();
-
-        }
+        Debug.Log(ctx);
     }
 
-    void OnLoad(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
+    void OnMoveInputChanged(Vector3 val)
     {
-        FreeNet._instance._ngoManager.SceneManager.OnLoad -= OnLoad;
-       // _coroutineHandler.BeginCoroutine(() => { return EndLoadLobby(clientId, sceneName, asyncOperation); });
+        Debug.Log(val);
     }
 }

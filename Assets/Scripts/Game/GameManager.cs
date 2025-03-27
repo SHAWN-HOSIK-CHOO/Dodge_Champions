@@ -1,13 +1,11 @@
-using System;
-using System.Collections;
 using CharacterAttributes;
 using GameInput;
 using GameLobby;
-using UnityEngine;
-using Unity.Netcode;
 using GameUI;
+using System.Collections;
+using Unity.Netcode;
+using UnityEngine;
 using UnityEngine.Playables;
-using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace Game
@@ -15,7 +13,7 @@ namespace Game
     public class GameManager : NetworkBehaviour
     {
         private static GameManager _instance = null;
-        public static  GameManager Instance => _instance == null ? null : _instance;
+        public static GameManager Instance => _instance == null ? null : _instance;
 
         public GameObject cinemachineCamera;
         public GameObject mainCamera;
@@ -26,8 +24,8 @@ namespace Game
         public GameObject localPlayerBall;
         public GameObject enemyPlayerBall;
 
-        public  PlayableDirector cutSceneDirector = null;
-        private Coroutine        _cutSceneCoroutine = null;
+        public PlayableDirector cutSceneDirector = null;
+        private Coroutine _cutSceneCoroutine = null;
 
         public GameObject headsCoin = null;
         public GameObject tailsCoin = null;
@@ -36,7 +34,7 @@ namespace Game
 
         public GameObject uiManager;
 
-        public int  currentAttackPlayerID   = -1;
+        public int currentAttackPlayerID = -1;
         public bool isLocalPlayerAttackTurn = false;
 
         public override void OnNetworkSpawn()
@@ -50,17 +48,17 @@ namespace Game
             {
                 Destroy(this.gameObject);
             }
-            
+
             localPlayerBall =
                 PlayerSelectionManager.Instance.characterReferences[PlayerSelectionManager.Instance.GetLocalPlayerSelection()]
                                   .pfBall;
             localPlayerBall.gameObject.layer = LayerMask.NameToLayer("RealPf");
-            localPlayerBall.gameObject.tag   = "Real";
+            localPlayerBall.gameObject.tag = "Real";
 
-            enemyPlayerBall =  PlayerSelectionManager.Instance
+            enemyPlayerBall = PlayerSelectionManager.Instance
                                                      .characterReferences[PlayerSelectionManager.Instance.GetEnemySelection()].pfBallForEnemy;
             enemyPlayerBall.gameObject.layer = LayerMask.NameToLayer("FakePf");
-            enemyPlayerBall.gameObject.tag   = "Fake";
+            enemyPlayerBall.gameObject.tag = "Fake";
 
             //TODO: 스킬도 설정
         }
@@ -77,17 +75,17 @@ namespace Game
             SwapTurnClientRPC();
         }
 
-        private float     _turnTime             = 0f;
+        private float _turnTime = 0f;
         private Coroutine _timeCheckerCoroutine = null;
-        
+
         [ClientRpc]
         private void SwapTurnClientRPC()
         {
-            currentAttackPlayerID   = currentAttackPlayerID == localClientID ? enemyClientID : localClientID;
+            currentAttackPlayerID = currentAttackPlayerID == localClientID ? enemyClientID : localClientID;
             isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
 
             _turnTime = 0f;
-            
+
             if (isLocalPlayerAttackTurn)
             {
                 UIManager.Instance.statesUIImages[0].gameObject.SetActive(true);
@@ -97,7 +95,7 @@ namespace Game
                 localPlayer.GetComponent<CharacterManager>().hitApproved = true;
                 enemyPlayer.GetComponent<CharacterManager>().hitApproved = false;
                 InputManager.Instance.canThrowBall = true;
-                
+
                 if (enemyPlayer.GetComponent<CharacterBallLauncher>().instantiatedBall != null)
                 {
                     enemyPlayer.GetComponent<CharacterBallLauncher>().DestroyInstantiatedBall();
@@ -112,7 +110,7 @@ namespace Game
                 InputManager.Instance.canThrowBall = false;
                 localPlayer.GetComponent<CharacterManager>().hitApproved = false;
                 enemyPlayer.GetComponent<CharacterManager>().hitApproved = true;
-                
+
                 if (localPlayer.GetComponent<CharacterBallLauncher>().instantiatedBall != null)
                 {
                     localPlayer.GetComponent<CharacterBallLauncher>().DestroyInstantiatedBall();
@@ -130,36 +128,36 @@ namespace Game
         {
             float elapsedTime = 0f;
             UIManager.Instance.turnCoolDownImage.fillAmount = 0f;
-            
+
             while (elapsedTime <= times)
             {
                 elapsedTime += Time.deltaTime;
                 float ratio = elapsedTime / times;
 
                 UIManager.Instance.turnCoolDownImage.fillAmount = ratio;
-                
+
                 yield return null;
             }
 
             UIManager.Instance.turnCoolDownImage.fillAmount = 1f;
-            
+
             _timeCheckerCoroutine = null;
-            
-            if(IsOwner)
+
+            if (IsOwner)
                 SwapTurnServerRPC();
         }
-        
+
         [ServerRpc]
         public void StartRoundServerRPC()
         {
             uiManager.SetActive(false);
             cutSceneCamera.SetActive(true);
-            
+
             int randomNumber = Random.Range(0, 2);
             _isHeads = randomNumber == 0;
 
             currentAttackPlayerID = _isHeads ? localClientID : enemyClientID;
-            
+
             StartRoundClientRPC(currentAttackPlayerID, randomNumber);
         }
 
@@ -167,9 +165,9 @@ namespace Game
         private void StartRoundClientRPC(int attackPlayerID, int randomNumber)
         {
             _isHeads = randomNumber == 0;
-            
-            currentAttackPlayerID   = attackPlayerID;
-            
+
+            currentAttackPlayerID = attackPlayerID;
+
             isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
 
             if (_cutSceneCoroutine != null)
@@ -179,7 +177,7 @@ namespace Game
 
             _cutSceneCoroutine = StartCoroutine(CoSetGameOrder());
         }
-        
+
         private IEnumerator CoSetGameOrder()
         {
             cutSceneDirector.Play();
@@ -188,7 +186,7 @@ namespace Game
             {
                 yield return null;
             }
-            
+
             uiManager.SetActive(true);
             cutSceneCamera.SetActive(false);
             if (isLocalPlayerAttackTurn)
@@ -205,10 +203,10 @@ namespace Game
                 InputManager.Instance.canThrowBall = false;
                 localPlayer.GetComponent<CharacterManager>().hitApproved = false;
             }
-            
+
             UIManager.Instance.StartGameCountDown(5f);
             UIManager.Instance.coolDownImage.gameObject.SetActive(isLocalPlayerAttackTurn);
-            
+
         }
 
         //TODO: 이거 반드시 해결 이런식으로 사용 X
@@ -222,10 +220,10 @@ namespace Game
             {
                 _turnTime = enemyPlayer.GetComponent<CharacterManager>().turnTimeInSeconds;
             }
-            
+
             _timeCheckerCoroutine = StartCoroutine(CoTurnTimeChecker(_turnTime));
         }
-        
+
         public void Callback_Timeline_SetActiveAppropriateCoin()
         {
             if (_isHeads)
@@ -262,17 +260,17 @@ namespace Game
             yield return new WaitForSeconds(seconds);
             PlayerSelectionManager.DestroyAllSingletonsAndEnd();
         }
-        
+
         private void OnApplicationQuit()
         {
             if (NetworkManager.Singleton == null)
             {
                 return;
             }
-            
+
             if (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
             {
-                NetworkManager.Singleton.Shutdown(); 
+                NetworkManager.Singleton.Shutdown();
             }
         }
     }

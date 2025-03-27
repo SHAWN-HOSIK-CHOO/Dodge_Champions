@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.UI
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="UIInterface.ShowBlockPlayer" />
-	/// </summary>
-	/// <param name="data">A <see cref="OnShowBlockPlayerCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnShowBlockPlayerCallback(ref OnShowBlockPlayerCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="UIInterface.ShowBlockPlayer" />
+    /// </summary>
+    /// <param name="data">A <see cref="OnShowBlockPlayerCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnShowBlockPlayerCallback(ref OnShowBlockPlayerCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnShowBlockPlayerCallbackInternal(ref OnShowBlockPlayerCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnShowBlockPlayerCallbackInternal(ref OnShowBlockPlayerCallbackInfoInternal data);
 }

@@ -17,21 +17,21 @@ public class URPWizard : AssetPostprocessor
 
     static void URPCheck()
     {
-        if (GraphicsSettings.currentRenderPipeline != null) 
+        if (GraphicsSettings.currentRenderPipeline != null)
             return;
-        
+
         var request = Client.List();
         while (!request.IsCompleted) { }
 
-        if (request.Status != StatusCode.Success) 
+        if (request.Status != StatusCode.Success)
             return;
-        
+
         if (request.Result.All(info => info.name != "com.unity.render-pipelines.universal"))
         {
             var addRequest = Client.Add("com.unity.render-pipelines.universal");
-            
+
             while (!addRequest.IsCompleted) { }
-                    
+
             Client.Resolve();
         }
     }
@@ -39,9 +39,9 @@ public class URPWizard : AssetPostprocessor
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets,
         string[] movedFromAssetPaths)
     {
-        if (GraphicsSettings.currentRenderPipeline != null) 
+        if (GraphicsSettings.currentRenderPipeline != null)
             return;
-        
+
         FindAndAssignPipeline();
     }
 
@@ -57,7 +57,7 @@ public class URPWizard : AssetPostprocessor
 
             return;
         }
-        
+
         var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(AssetDatabase.GUIDToAssetPath(existingPipelines[0]));
         GraphicsSettings.defaultRenderPipeline = pipeline;
     }

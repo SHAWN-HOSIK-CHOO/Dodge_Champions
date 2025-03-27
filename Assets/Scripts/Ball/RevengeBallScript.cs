@@ -13,7 +13,7 @@ namespace Ball
             if (_ownerSpawnThisBall)
             {
                 int hitCount = 0;
-                
+
                 if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
                 {
                     hitCount = GameManager.Instance.localPlayer.GetComponent<CharacterStatus>().hitCounts;
@@ -22,43 +22,43 @@ namespace Ball
                 {
                     hitCount = SinglePlayerGM.Instance.localPlayer.GetComponent<CharacterStatus>().hitCounts;
                 }
-                
+
                 if (hitCount >= 8)
                 {
-                    hitEffectIndex =  4;
-                    ballDamage     = 40;
+                    hitEffectIndex = 4;
+                    ballDamage = 40;
                 }
                 else if (hitCount >= 4)
                 {
-                    hitEffectIndex =  3;
-                    ballDamage     = 20;
+                    hitEffectIndex = 3;
+                    ballDamage = 20;
                 }
                 else
                 {
                     hitEffectIndex = 3;
                 }
-                
+
                 Debug.Log("Ball Damage : " + ballDamage);
             }
             else
             {
                 int hitCount = GameManager.Instance.enemyPlayer.GetComponent<CharacterStatus>().hitCounts;
-                
+
                 if (hitCount >= 8)
                 {
-                    hitEffectIndex =  4;
-                    ballDamage     = 40;
+                    hitEffectIndex = 4;
+                    ballDamage = 40;
                 }
                 else if (hitCount >= 4)
                 {
-                    hitEffectIndex =  3;
-                    ballDamage     = 20;
+                    hitEffectIndex = 3;
+                    ballDamage = 20;
                 }
                 else
                 {
                     hitEffectIndex = 3;
                 }
-                
+
                 Debug.Log("Ball Damage : " + ballDamage);
             }
         }

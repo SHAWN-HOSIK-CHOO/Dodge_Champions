@@ -1,7 +1,5 @@
 using PlayableCharacter;
-using Skill;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game
 {

@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Function prototype definition for notifications that comes from <see cref="SessionsInterface.AddNotifyLeaveSessionRequested" />.
-	/// </summary>
-	/// <param name="data">A pointer to <see cref="LeaveSessionRequestedCallbackInfo" /> containing the output information.</param>
-	public delegate void OnLeaveSessionRequestedCallback(ref LeaveSessionRequestedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that comes from <see cref="SessionsInterface.AddNotifyLeaveSessionRequested" />.
+    /// </summary>
+    /// <param name="data">A pointer to <see cref="LeaveSessionRequestedCallbackInfo" /> containing the output information.</param>
+    public delegate void OnLeaveSessionRequestedCallback(ref LeaveSessionRequestedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnLeaveSessionRequestedCallbackInternal(ref LeaveSessionRequestedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnLeaveSessionRequestedCallbackInternal(ref LeaveSessionRequestedCallbackInfoInternal data);
 }

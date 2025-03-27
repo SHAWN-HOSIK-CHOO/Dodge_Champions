@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerColor : NetworkBehaviour
 {
-    private static Color[] s_Colors = { Color.yellow, Color.green, Color.blue, Color.cyan, Color.magenta};
+    private static Color[] s_Colors = { Color.yellow, Color.green, Color.blue, Color.cyan, Color.magenta };
     public bool ApplyColorToChildren;
 
     public override void OnNetworkSpawn()

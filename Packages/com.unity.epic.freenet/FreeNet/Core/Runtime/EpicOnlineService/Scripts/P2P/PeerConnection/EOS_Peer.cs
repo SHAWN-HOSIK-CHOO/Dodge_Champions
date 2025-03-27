@@ -17,7 +17,7 @@ public class EOS_Peer : MonoBehaviour
     public event Action<state> _onStateChanged;
     public void ChangeState(state state)
     {
-        if(state != _state)
+        if (state != _state)
         {
             _state = state;
             _onStateChanged?.Invoke(state);

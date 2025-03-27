@@ -2,7 +2,6 @@ using Epic.OnlineServices;
 using Epic.OnlineServices.Lobby;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using static EOSWrapper;
 
 public class EOS_LobbySearchResult
@@ -32,7 +31,7 @@ public class EOS_LobbySearchResult
     }
     public void Release()
     {
-        if(_details!=null)
+        if (_details != null)
         {
             _details.Release();
             _details = null;
@@ -42,7 +41,7 @@ public class EOS_LobbySearchResult
     {
         _lobbyManager.JoinLobbyByDetails(_details, (Result result, EOS_Lobby lobby) =>
         {
-            if(result == Result.Success)
+            if (result == Result.Success)
             {
                 _details.Release();
                 _details = null;

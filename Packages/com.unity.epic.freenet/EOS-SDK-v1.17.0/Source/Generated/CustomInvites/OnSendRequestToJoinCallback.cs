@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.CustomInvites
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="CustomInvitesInterface.SendRequestToJoin" />
-	/// </summary>
-	/// <param name="data">A <see cref="SendCustomInviteCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnSendRequestToJoinCallback(ref SendRequestToJoinCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="CustomInvitesInterface.SendRequestToJoin" />
+    /// </summary>
+    /// <param name="data">A <see cref="SendCustomInviteCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnSendRequestToJoinCallback(ref SendRequestToJoinCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnSendRequestToJoinCallbackInternal(ref SendRequestToJoinCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnSendRequestToJoinCallbackInternal(ref SendRequestToJoinCallbackInfoInternal data);
 }

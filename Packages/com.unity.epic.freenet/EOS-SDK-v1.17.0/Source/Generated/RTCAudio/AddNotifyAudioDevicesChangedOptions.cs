@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// This struct is used to call <see cref="RTCAudioInterface.AddNotifyAudioDevicesChanged" />.
-	/// </summary>
-	public struct AddNotifyAudioDevicesChangedOptions
-	{
-	}
+    /// <summary>
+    /// This struct is used to call <see cref="RTCAudioInterface.AddNotifyAudioDevicesChanged" />.
+    /// </summary>
+    public struct AddNotifyAudioDevicesChangedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyAudioDevicesChangedOptionsInternal : ISettable<AddNotifyAudioDevicesChangedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyAudioDevicesChangedOptionsInternal : ISettable<AddNotifyAudioDevicesChangedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyAudioDevicesChangedOptions other)
-		{
-			m_ApiVersion = RTCAudioInterface.AddnotifyaudiodeviceschangedApiLatest;
-		}
+        public void Set(ref AddNotifyAudioDevicesChangedOptions other)
+        {
+            m_ApiVersion = RTCAudioInterface.AddnotifyaudiodeviceschangedApiLatest;
+        }
 
-		public void Set(ref AddNotifyAudioDevicesChangedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = RTCAudioInterface.AddnotifyaudiodeviceschangedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyAudioDevicesChangedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = RTCAudioInterface.AddnotifyaudiodeviceschangedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.RTCData
 {
-	/// <summary>
-	/// Callback for completion of update sending request.
-	/// </summary>
-	public delegate void OnUpdateSendingCallback(ref UpdateSendingCallbackInfo data);
+    /// <summary>
+    /// Callback for completion of update sending request.
+    /// </summary>
+    public delegate void OnUpdateSendingCallback(ref UpdateSendingCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnUpdateSendingCallbackInternal(ref UpdateSendingCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnUpdateSendingCallbackInternal(ref UpdateSendingCallbackInfoInternal data);
 }

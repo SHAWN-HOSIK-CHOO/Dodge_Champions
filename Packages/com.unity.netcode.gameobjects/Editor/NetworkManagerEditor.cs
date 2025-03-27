@@ -49,7 +49,7 @@ namespace Unity.Netcode.Editor
         private SerializedProperty m_NetworkProfileMetrics;
         private SerializedProperty m_NetworkMessageMetrics;
 
-        private NetworkManager m_NetworkManager;
+        protected NetworkManager m_NetworkManager;
         private bool m_Initialized;
 
         private readonly List<Type> m_TransportTypes = new List<Type>();
@@ -312,7 +312,7 @@ namespace Unity.Netcode.Editor
             }
         }
 
-        private void DisplayCallToActionButtons()
+        protected virtual void DisplayCallToActionButtons()
         {
             if (!m_NetworkManager.IsServer && !m_NetworkManager.IsClient)
             {
@@ -390,7 +390,8 @@ namespace Unity.Netcode.Editor
 #if !MULTIPLAYER_TOOLS
             DrawInstallMultiplayerToolsTip();
 #endif
-            void SetExpanded(bool expanded) { networkManager.NetworkManagerExpanded = expanded; };
+            void SetExpanded(bool expanded) { networkManager.NetworkManagerExpanded = expanded; }
+            ;
             DrawFoldOutGroup<NetworkManager>(networkManager.GetType(), DisplayNetworkManagerProperties, networkManager.NetworkManagerExpanded, SetExpanded);
             DisplayCallToActionButtons();
             base.OnInspectorGUI();

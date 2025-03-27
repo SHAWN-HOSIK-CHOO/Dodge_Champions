@@ -3,82 +3,82 @@
 
 namespace Epic.OnlineServices.Achievements
 {
-	/// <summary>
-	/// Input parameters for the <see cref="AchievementsInterface.CopyPlayerAchievementByIndex" /> function.
-	/// </summary>
-	public struct CopyPlayerAchievementByIndexOptions
-	{
-		/// <summary>
-		/// The Product User ID for the user whose achievement is to be retrieved.
-		/// </summary>
-		public ProductUserId TargetUserId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="AchievementsInterface.CopyPlayerAchievementByIndex" /> function.
+    /// </summary>
+    public struct CopyPlayerAchievementByIndexOptions
+    {
+        /// <summary>
+        /// The Product User ID for the user whose achievement is to be retrieved.
+        /// </summary>
+        public ProductUserId TargetUserId { get; set; }
 
-		/// <summary>
-		/// The index of the player achievement data to retrieve from the cache.
-		/// </summary>
-		public uint AchievementIndex { get; set; }
+        /// <summary>
+        /// The index of the player achievement data to retrieve from the cache.
+        /// </summary>
+        public uint AchievementIndex { get; set; }
 
-		/// <summary>
-		/// The Product User ID for the user who is querying for a player achievement. For a Dedicated Server this should be null.
-		/// </summary>
-		public ProductUserId LocalUserId { get; set; }
-	}
+        /// <summary>
+        /// The Product User ID for the user who is querying for a player achievement. For a Dedicated Server this should be null.
+        /// </summary>
+        public ProductUserId LocalUserId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct CopyPlayerAchievementByIndexOptionsInternal : ISettable<CopyPlayerAchievementByIndexOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_TargetUserId;
-		private uint m_AchievementIndex;
-		private System.IntPtr m_LocalUserId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct CopyPlayerAchievementByIndexOptionsInternal : ISettable<CopyPlayerAchievementByIndexOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_TargetUserId;
+        private uint m_AchievementIndex;
+        private System.IntPtr m_LocalUserId;
 
-		public ProductUserId TargetUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_TargetUserId);
-			}
-		}
+        public ProductUserId TargetUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_TargetUserId);
+            }
+        }
 
-		public uint AchievementIndex
-		{
-			set
-			{
-				m_AchievementIndex = value;
-			}
-		}
+        public uint AchievementIndex
+        {
+            set
+            {
+                m_AchievementIndex = value;
+            }
+        }
 
-		public ProductUserId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public ProductUserId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public void Set(ref CopyPlayerAchievementByIndexOptions other)
-		{
-			m_ApiVersion = AchievementsInterface.CopyplayerachievementbyindexApiLatest;
-			TargetUserId = other.TargetUserId;
-			AchievementIndex = other.AchievementIndex;
-			LocalUserId = other.LocalUserId;
-		}
+        public void Set(ref CopyPlayerAchievementByIndexOptions other)
+        {
+            m_ApiVersion = AchievementsInterface.CopyplayerachievementbyindexApiLatest;
+            TargetUserId = other.TargetUserId;
+            AchievementIndex = other.AchievementIndex;
+            LocalUserId = other.LocalUserId;
+        }
 
-		public void Set(ref CopyPlayerAchievementByIndexOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AchievementsInterface.CopyplayerachievementbyindexApiLatest;
-				TargetUserId = other.Value.TargetUserId;
-				AchievementIndex = other.Value.AchievementIndex;
-				LocalUserId = other.Value.LocalUserId;
-			}
-		}
+        public void Set(ref CopyPlayerAchievementByIndexOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AchievementsInterface.CopyplayerachievementbyindexApiLatest;
+                TargetUserId = other.Value.TargetUserId;
+                AchievementIndex = other.Value.AchievementIndex;
+                LocalUserId = other.Value.LocalUserId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_TargetUserId);
-			Helper.Dispose(ref m_LocalUserId);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_TargetUserId);
+            Helper.Dispose(ref m_LocalUserId);
+        }
+    }
 }

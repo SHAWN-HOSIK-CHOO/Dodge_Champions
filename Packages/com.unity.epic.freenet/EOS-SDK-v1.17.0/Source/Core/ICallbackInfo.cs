@@ -4,15 +4,15 @@ using System;
 
 namespace Epic.OnlineServices
 {
-	internal interface ICallbackInfo
-	{
-		object ClientData { get; }
+    internal interface ICallbackInfo
+    {
+        object ClientData { get; }
 
-		Result? GetResultCode();
-	}
+        Result? GetResultCode();
+    }
 
-	internal interface ICallbackInfoInternal
-	{
-		IntPtr ClientDataAddress { get; }
-	}
+    internal interface ICallbackInfoInternal
+    {
+        IntPtr ClientDataAddress { get; }
+    }
 }

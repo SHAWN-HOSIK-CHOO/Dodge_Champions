@@ -3,66 +3,66 @@
 
 namespace Epic.OnlineServices.RTCAdmin
 {
-	/// <summary>
-	/// Input parameters for the <see cref="RTCAdminInterface.CopyUserTokenByUserId" /> function.
-	/// </summary>
-	public struct CopyUserTokenByUserIdOptions
-	{
-		/// <summary>
-		/// The Product User ID for the user whose user token we're copying.
-		/// </summary>
-		public ProductUserId TargetUserId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="RTCAdminInterface.CopyUserTokenByUserId" /> function.
+    /// </summary>
+    public struct CopyUserTokenByUserIdOptions
+    {
+        /// <summary>
+        /// The Product User ID for the user whose user token we're copying.
+        /// </summary>
+        public ProductUserId TargetUserId { get; set; }
 
-		/// <summary>
-		/// Query identifier received as part of a previous query.
-		/// <seealso cref="QueryJoinRoomTokenCompleteCallbackInfo" />
-		/// </summary>
-		public uint QueryId { get; set; }
-	}
+        /// <summary>
+        /// Query identifier received as part of a previous query.
+        /// <seealso cref="QueryJoinRoomTokenCompleteCallbackInfo" />
+        /// </summary>
+        public uint QueryId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct CopyUserTokenByUserIdOptionsInternal : ISettable<CopyUserTokenByUserIdOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_TargetUserId;
-		private uint m_QueryId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct CopyUserTokenByUserIdOptionsInternal : ISettable<CopyUserTokenByUserIdOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_TargetUserId;
+        private uint m_QueryId;
 
-		public ProductUserId TargetUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_TargetUserId);
-			}
-		}
+        public ProductUserId TargetUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_TargetUserId);
+            }
+        }
 
-		public uint QueryId
-		{
-			set
-			{
-				m_QueryId = value;
-			}
-		}
+        public uint QueryId
+        {
+            set
+            {
+                m_QueryId = value;
+            }
+        }
 
-		public void Set(ref CopyUserTokenByUserIdOptions other)
-		{
-			m_ApiVersion = RTCAdminInterface.CopyusertokenbyuseridApiLatest;
-			TargetUserId = other.TargetUserId;
-			QueryId = other.QueryId;
-		}
+        public void Set(ref CopyUserTokenByUserIdOptions other)
+        {
+            m_ApiVersion = RTCAdminInterface.CopyusertokenbyuseridApiLatest;
+            TargetUserId = other.TargetUserId;
+            QueryId = other.QueryId;
+        }
 
-		public void Set(ref CopyUserTokenByUserIdOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = RTCAdminInterface.CopyusertokenbyuseridApiLatest;
-				TargetUserId = other.Value.TargetUserId;
-				QueryId = other.Value.QueryId;
-			}
-		}
+        public void Set(ref CopyUserTokenByUserIdOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = RTCAdminInterface.CopyusertokenbyuseridApiLatest;
+                TargetUserId = other.Value.TargetUserId;
+                QueryId = other.Value.QueryId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_TargetUserId);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_TargetUserId);
+        }
+    }
 }

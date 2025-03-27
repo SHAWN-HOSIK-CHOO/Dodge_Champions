@@ -39,6 +39,7 @@ public class ExtendedNetworkManagerEditor : NetworkManagerEditor
         EditorGUILayout.PropertyField(m_EnableVSync);
     }
 
+
     public override void OnInspectorGUI()
     {
         var extendedNetworkManager = target as ExtendedNetworkManager;
@@ -52,7 +53,8 @@ public class ExtendedNetworkManagerEditor : NetworkManagerEditor
         {
             connectionType = (ExtendedNetworkManager.ConnectionTypes)connectionTypes.GetValue(m_ConnectionType.enumValueIndex);
         }
-        void SetExpanded(bool expanded) { extendedNetworkManager.ExtendedNetworkManagerExpanded = expanded; };
+        void SetExpanded(bool expanded) { extendedNetworkManager.ExtendedNetworkManagerExpanded = expanded; }
+        ;
         DrawFoldOutGroup<ExtendedNetworkManager>(extendedNetworkManager.GetType(), DisplayExtendedNetworkManagerProperties, extendedNetworkManager.ExtendedNetworkManagerExpanded, SetExpanded);
 
         var updatedConnectedType = (ExtendedNetworkManager.ConnectionTypes)connectionTypes.GetValue(m_ConnectionType.enumValueIndex);

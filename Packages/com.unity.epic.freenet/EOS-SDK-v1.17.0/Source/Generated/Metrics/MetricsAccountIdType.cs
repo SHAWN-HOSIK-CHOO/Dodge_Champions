@@ -3,18 +3,18 @@
 
 namespace Epic.OnlineServices.Metrics
 {
-	/// <summary>
-	/// Account ID type for <see cref="MetricsInterface.BeginPlayerSession" /> and <see cref="MetricsInterface.EndPlayerSession" />.
-	/// </summary>
-	public enum MetricsAccountIdType : int
-	{
-		/// <summary>
-		/// An Epic Account ID.
-		/// </summary>
-		Epic = 0,
-		/// <summary>
-		/// An external service Account ID.
-		/// </summary>
-		External = 1
-	}
+    /// <summary>
+    /// Account ID type for <see cref="MetricsInterface.BeginPlayerSession" /> and <see cref="MetricsInterface.EndPlayerSession" />.
+    /// </summary>
+    public enum MetricsAccountIdType : int
+    {
+        /// <summary>
+        /// An Epic Account ID.
+        /// </summary>
+        Epic = 0,
+        /// <summary>
+        /// An external service Account ID.
+        /// </summary>
+        External = 1
+    }
 }

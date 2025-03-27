@@ -228,10 +228,10 @@ namespace Unity.Netcode
                         t = 0.0f;
                     }
 
-                    if(t>1)
+                    if (t > 1)
                     {
                         t = 1.0f;
-                        if(extraporation)
+                        if (extraporation)
                         {
                             t = MaxInterpolationBound;
                         }

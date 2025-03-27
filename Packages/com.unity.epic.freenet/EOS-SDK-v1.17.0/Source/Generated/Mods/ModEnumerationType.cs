@@ -3,18 +3,18 @@
 
 namespace Epic.OnlineServices.Mods
 {
-	/// <summary>
-	/// The type of mod enumeration.
-	/// </summary>
-	public enum ModEnumerationType : int
-	{
-		/// <summary>
-		/// Installed mods
-		/// </summary>
-		Installed = 0,
-		/// <summary>
-		/// All available mods
-		/// </summary>
-		AllAvailable
-	}
+    /// <summary>
+    /// The type of mod enumeration.
+    /// </summary>
+    public enum ModEnumerationType : int
+    {
+        /// <summary>
+        /// Installed mods
+        /// </summary>
+        Installed = 0,
+        /// <summary>
+        /// All available mods
+        /// </summary>
+        AllAvailable
+    }
 }

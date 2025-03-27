@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.CustomInvites
 {
-	/// <summary>
-	/// Function prototype definition for notifications that comes from <see cref="CustomInvitesInterface.AddNotifyRequestToJoinAccepted" />
-	/// </summary>
-	/// <param name="data">A <see cref="OnRequestToJoinAcceptedCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnRequestToJoinAcceptedCallback(ref OnRequestToJoinAcceptedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that comes from <see cref="CustomInvitesInterface.AddNotifyRequestToJoinAccepted" />
+    /// </summary>
+    /// <param name="data">A <see cref="OnRequestToJoinAcceptedCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnRequestToJoinAcceptedCallback(ref OnRequestToJoinAcceptedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnRequestToJoinAcceptedCallbackInternal(ref OnRequestToJoinAcceptedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnRequestToJoinAcceptedCallbackInternal(ref OnRequestToJoinAcceptedCallbackInfoInternal data);
 }

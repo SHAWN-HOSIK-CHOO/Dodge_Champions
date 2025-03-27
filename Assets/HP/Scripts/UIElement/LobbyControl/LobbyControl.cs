@@ -1,9 +1,10 @@
+using DG.Tweening;
+using Epic.OnlineServices;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using static LobbyManager;
-using Epic.OnlineServices;
 
 public class LobbyControl : MonoBehaviour
 {
@@ -48,7 +49,7 @@ public class LobbyControl : MonoBehaviour
         _findJoinControl.gameObject.SetActive(false);
         _privateCodeControl.gameObject.SetActive(false);
     }
-    
+
 
 
     public void JoinWithPrivateCode(string code, LobbyInfoElement element)
@@ -64,8 +65,8 @@ public class LobbyControl : MonoBehaviour
         }
     }
     void RequestJoin(LobbyInfoElement element)
-    { 
-        if(element._lobbySearch._attribute.GetLobbySecurity(out var security)&& security == LobbySecurityType.Protected)
+    {
+        if (element._lobbySearch._attribute.GetLobbySecurity(out var security) && security == LobbySecurityType.Protected)
         {
             _privateCodeControl.ActivateInpuField(element);
         }
@@ -90,11 +91,11 @@ public class LobbyControl : MonoBehaviour
     }
     void onClickSubmitButton()
     {
-        var security = _createControl._isPrivate.isOn ? LobbySecurityType.Protected : LobbySecurityType.Public ;
+        var security = _createControl._isPrivate.isOn ? LobbySecurityType.Protected : LobbySecurityType.Public;
         _lobbyManager.CreateLobby(_createControl.curSelectedMode._text.text, _createControl._roomNameInputField.text, 16, security,
             _createControl._roomCodeInputField.text, (Result result, EOS_Lobby lobby) =>
             {
-                if(result != Result.Success)
+                if (result != Result.Success)
                 {
                     Instantiate(_systemAnouncePref).GetComponent<SystemAnounce>().Show(result.ToString());
                 }
@@ -115,22 +116,26 @@ public class LobbyControl : MonoBehaviour
     }
     void onClickfindRoomButton()
     {
+        _findRoomButton.image.DOColor(Color.red, 0.1f).From(Color.white);
+        _findRoomButton.onClick.RemoveListener(onClickfindRoomButton);
         _createControl.gameObject.SetActive(false);
         _findJoinControl.gameObject.SetActive(true);
         _findJoinControl.RemoveAllElement();
         _lobbyManager.FindLobby(10, (Result result, List<EOS_LobbySearchResult> list) =>
         {
-            if(result != Result.Success)
+            if (result != Result.Success)
             {
                 Instantiate(_systemAnouncePref).GetComponent<SystemAnounce>().Show(result.ToString());
             }
             else
             {
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     _findJoinControl.AddElement(item);
                 }
             }
+            _findRoomButton.onClick.AddListener(onClickfindRoomButton);
+            _findRoomButton.image.DOColor(Color.white, 0.1f);
         });
 
     }

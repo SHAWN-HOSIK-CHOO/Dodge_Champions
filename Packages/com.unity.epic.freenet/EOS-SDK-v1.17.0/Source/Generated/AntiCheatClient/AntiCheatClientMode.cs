@@ -3,22 +3,22 @@
 
 namespace Epic.OnlineServices.AntiCheatClient
 {
-	/// <summary>
-	/// Operating modes
-	/// </summary>
-	public enum AntiCheatClientMode : int
-	{
-		/// <summary>
-		/// Not used
-		/// </summary>
-		Invalid = 0,
-		/// <summary>
-		/// Dedicated or listen server mode
-		/// </summary>
-		ClientServer = 1,
-		/// <summary>
-		/// Full mesh peer-to-peer mode
-		/// </summary>
-		PeerToPeer = 2
-	}
+    /// <summary>
+    /// Operating modes
+    /// </summary>
+    public enum AntiCheatClientMode : int
+    {
+        /// <summary>
+        /// Not used
+        /// </summary>
+        Invalid = 0,
+        /// <summary>
+        /// Dedicated or listen server mode
+        /// </summary>
+        ClientServer = 1,
+        /// <summary>
+        /// Full mesh peer-to-peer mode
+        /// </summary>
+        PeerToPeer = 2
+    }
 }

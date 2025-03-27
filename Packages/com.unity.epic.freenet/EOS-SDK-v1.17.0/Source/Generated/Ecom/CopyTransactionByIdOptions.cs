@@ -3,66 +3,66 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// Input parameters for the <see cref="EcomInterface.CopyTransactionById" /> function.
-	/// </summary>
-	public struct CopyTransactionByIdOptions
-	{
-		/// <summary>
-		/// The Epic Account ID of the local user who is associated with the transaction
-		/// </summary>
-		public EpicAccountId LocalUserId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="EcomInterface.CopyTransactionById" /> function.
+    /// </summary>
+    public struct CopyTransactionByIdOptions
+    {
+        /// <summary>
+        /// The Epic Account ID of the local user who is associated with the transaction
+        /// </summary>
+        public EpicAccountId LocalUserId { get; set; }
 
-		/// <summary>
-		/// The ID of the transaction to get
-		/// </summary>
-		public Utf8String TransactionId { get; set; }
-	}
+        /// <summary>
+        /// The ID of the transaction to get
+        /// </summary>
+        public Utf8String TransactionId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct CopyTransactionByIdOptionsInternal : ISettable<CopyTransactionByIdOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
-		private System.IntPtr m_TransactionId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct CopyTransactionByIdOptionsInternal : ISettable<CopyTransactionByIdOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
+        private System.IntPtr m_TransactionId;
 
-		public EpicAccountId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public EpicAccountId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public Utf8String TransactionId
-		{
-			set
-			{
-				Helper.Set(value, ref m_TransactionId);
-			}
-		}
+        public Utf8String TransactionId
+        {
+            set
+            {
+                Helper.Set(value, ref m_TransactionId);
+            }
+        }
 
-		public void Set(ref CopyTransactionByIdOptions other)
-		{
-			m_ApiVersion = EcomInterface.CopytransactionbyidApiLatest;
-			LocalUserId = other.LocalUserId;
-			TransactionId = other.TransactionId;
-		}
+        public void Set(ref CopyTransactionByIdOptions other)
+        {
+            m_ApiVersion = EcomInterface.CopytransactionbyidApiLatest;
+            LocalUserId = other.LocalUserId;
+            TransactionId = other.TransactionId;
+        }
 
-		public void Set(ref CopyTransactionByIdOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = EcomInterface.CopytransactionbyidApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-				TransactionId = other.Value.TransactionId;
-			}
-		}
+        public void Set(ref CopyTransactionByIdOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = EcomInterface.CopytransactionbyidApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+                TransactionId = other.Value.TransactionId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-			Helper.Dispose(ref m_TransactionId);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+            Helper.Dispose(ref m_TransactionId);
+        }
+    }
 }

@@ -3,167 +3,167 @@
 
 namespace Epic.OnlineServices.Mods
 {
-	/// <summary>
-	/// <see cref="ModIdentifier" /> is used to identify a mod.
-	/// </summary>
-	public struct ModIdentifier
-	{
-		/// <summary>
-		/// Product namespace id in which this mod item exists
-		/// </summary>
-		public Utf8String NamespaceId { get; set; }
+    /// <summary>
+    /// <see cref="ModIdentifier" /> is used to identify a mod.
+    /// </summary>
+    public struct ModIdentifier
+    {
+        /// <summary>
+        /// Product namespace id in which this mod item exists
+        /// </summary>
+        public Utf8String NamespaceId { get; set; }
 
-		/// <summary>
-		/// Item id of the Mod
-		/// </summary>
-		public Utf8String ItemId { get; set; }
+        /// <summary>
+        /// Item id of the Mod
+        /// </summary>
+        public Utf8String ItemId { get; set; }
 
-		/// <summary>
-		/// Artifact id of the Mod
-		/// </summary>
-		public Utf8String ArtifactId { get; set; }
+        /// <summary>
+        /// Artifact id of the Mod
+        /// </summary>
+        public Utf8String ArtifactId { get; set; }
 
-		/// <summary>
-		/// Represent mod item title.
-		/// </summary>
-		public Utf8String Title { get; set; }
+        /// <summary>
+        /// Represent mod item title.
+        /// </summary>
+        public Utf8String Title { get; set; }
 
-		/// <summary>
-		/// Represent mod item version.
-		/// </summary>
-		public Utf8String Version { get; set; }
+        /// <summary>
+        /// Represent mod item version.
+        /// </summary>
+        public Utf8String Version { get; set; }
 
-		internal void Set(ref ModIdentifierInternal other)
-		{
-			NamespaceId = other.NamespaceId;
-			ItemId = other.ItemId;
-			ArtifactId = other.ArtifactId;
-			Title = other.Title;
-			Version = other.Version;
-		}
-	}
+        internal void Set(ref ModIdentifierInternal other)
+        {
+            NamespaceId = other.NamespaceId;
+            ItemId = other.ItemId;
+            ArtifactId = other.ArtifactId;
+            Title = other.Title;
+            Version = other.Version;
+        }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct ModIdentifierInternal : IGettable<ModIdentifier>, ISettable<ModIdentifier>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_NamespaceId;
-		private System.IntPtr m_ItemId;
-		private System.IntPtr m_ArtifactId;
-		private System.IntPtr m_Title;
-		private System.IntPtr m_Version;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct ModIdentifierInternal : IGettable<ModIdentifier>, ISettable<ModIdentifier>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_NamespaceId;
+        private System.IntPtr m_ItemId;
+        private System.IntPtr m_ArtifactId;
+        private System.IntPtr m_Title;
+        private System.IntPtr m_Version;
 
-		public Utf8String NamespaceId
-		{
-			get
-			{
-				Utf8String value;
-				Helper.Get(m_NamespaceId, out value);
-				return value;
-			}
+        public Utf8String NamespaceId
+        {
+            get
+            {
+                Utf8String value;
+                Helper.Get(m_NamespaceId, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_NamespaceId);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_NamespaceId);
+            }
+        }
 
-		public Utf8String ItemId
-		{
-			get
-			{
-				Utf8String value;
-				Helper.Get(m_ItemId, out value);
-				return value;
-			}
+        public Utf8String ItemId
+        {
+            get
+            {
+                Utf8String value;
+                Helper.Get(m_ItemId, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_ItemId);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_ItemId);
+            }
+        }
 
-		public Utf8String ArtifactId
-		{
-			get
-			{
-				Utf8String value;
-				Helper.Get(m_ArtifactId, out value);
-				return value;
-			}
+        public Utf8String ArtifactId
+        {
+            get
+            {
+                Utf8String value;
+                Helper.Get(m_ArtifactId, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_ArtifactId);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_ArtifactId);
+            }
+        }
 
-		public Utf8String Title
-		{
-			get
-			{
-				Utf8String value;
-				Helper.Get(m_Title, out value);
-				return value;
-			}
+        public Utf8String Title
+        {
+            get
+            {
+                Utf8String value;
+                Helper.Get(m_Title, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_Title);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_Title);
+            }
+        }
 
-		public Utf8String Version
-		{
-			get
-			{
-				Utf8String value;
-				Helper.Get(m_Version, out value);
-				return value;
-			}
+        public Utf8String Version
+        {
+            get
+            {
+                Utf8String value;
+                Helper.Get(m_Version, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_Version);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_Version);
+            }
+        }
 
-		public void Set(ref ModIdentifier other)
-		{
-			m_ApiVersion = ModsInterface.ModIdentifierApiLatest;
-			NamespaceId = other.NamespaceId;
-			ItemId = other.ItemId;
-			ArtifactId = other.ArtifactId;
-			Title = other.Title;
-			Version = other.Version;
-		}
+        public void Set(ref ModIdentifier other)
+        {
+            m_ApiVersion = ModsInterface.ModIdentifierApiLatest;
+            NamespaceId = other.NamespaceId;
+            ItemId = other.ItemId;
+            ArtifactId = other.ArtifactId;
+            Title = other.Title;
+            Version = other.Version;
+        }
 
-		public void Set(ref ModIdentifier? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = ModsInterface.ModIdentifierApiLatest;
-				NamespaceId = other.Value.NamespaceId;
-				ItemId = other.Value.ItemId;
-				ArtifactId = other.Value.ArtifactId;
-				Title = other.Value.Title;
-				Version = other.Value.Version;
-			}
-		}
+        public void Set(ref ModIdentifier? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = ModsInterface.ModIdentifierApiLatest;
+                NamespaceId = other.Value.NamespaceId;
+                ItemId = other.Value.ItemId;
+                ArtifactId = other.Value.ArtifactId;
+                Title = other.Value.Title;
+                Version = other.Value.Version;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_NamespaceId);
-			Helper.Dispose(ref m_ItemId);
-			Helper.Dispose(ref m_ArtifactId);
-			Helper.Dispose(ref m_Title);
-			Helper.Dispose(ref m_Version);
-		}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_NamespaceId);
+            Helper.Dispose(ref m_ItemId);
+            Helper.Dispose(ref m_ArtifactId);
+            Helper.Dispose(ref m_Title);
+            Helper.Dispose(ref m_Version);
+        }
 
-		public void Get(out ModIdentifier output)
-		{
-			output = new ModIdentifier();
-			output.Set(ref this);
-		}
-	}
+        public void Get(out ModIdentifier output)
+        {
+            output = new ModIdentifier();
+            output.Set(ref this);
+        }
+    }
 }

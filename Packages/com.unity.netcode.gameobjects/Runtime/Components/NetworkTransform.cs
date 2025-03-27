@@ -3327,7 +3327,7 @@ namespace Unity.Netcode.Components
         {
             InternalInitialization();
         }
-#endregion
+        #endregion
 
         #region PARENTING AND OWNERSHIP
         // This might seem aweful, but when transitioning between two parents in local space we need to

@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using NUnit.Framework;
 using Unity.Netcode.RuntimeTests;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;

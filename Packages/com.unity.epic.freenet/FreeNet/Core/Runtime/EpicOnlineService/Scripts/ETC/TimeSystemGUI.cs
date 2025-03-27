@@ -18,14 +18,15 @@ public class TimeSystemGUI : MonoBehaviour
     Slider _serverBufferedTickSlider;
     [SerializeField]
     NgoManager _ngoManager;
-    void Start()
+    public void Init()
     {
         _localTickText.text = "LocalTick : 0";
         _serverTickText.text = "ServerTick : 0";
 
         _localBufferedTickSlider.onValueChanged.AddListener(OnLocalBufferedTick);
         _serverBufferedTickSlider.onValueChanged.AddListener(OnServerBufferedTick);
-        _ngoManager._onTick += OnTick;
+        _ngoManager.NetworkTickSystem.Tick += OnLocalTick;
+        _ngoManager.NetworkTickSystem.ServerTick += OnServerTick;
 
         _localBufferedTickSlider.maxValue = 30;
         _localBufferedTickSlider.minValue = -30;
@@ -36,10 +37,12 @@ public class TimeSystemGUI : MonoBehaviour
         _serverBufferedTickSlider.minValue = -30;
         _serverBufferedTickSlider.value = -3;
     }
-
-    void OnTick()
+    void OnLocalTick()
     {
         _localTickText.text = $"LocalTick : {_ngoManager.NetworkTickSystem.LocalTime.Tick}";
+    }
+    void OnServerTick()
+    {
         _serverTickText.text = $"ServerTick : {_ngoManager.NetworkTickSystem.ServerTime.Tick}";
     }
     void OnLocalBufferedTick(float val)

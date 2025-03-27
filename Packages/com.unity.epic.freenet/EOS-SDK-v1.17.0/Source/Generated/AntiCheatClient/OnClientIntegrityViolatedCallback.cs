@@ -3,15 +3,15 @@
 
 namespace Epic.OnlineServices.AntiCheatClient
 {
-	/// <summary>
-	/// Callback issued when the local client triggers an integrity violation.
-	/// 
-	/// The message contains descriptive string of up to 256 characters and must be displayed to the player.
-	/// 
-	/// This callback is always issued from within <see cref="Platform.PlatformInterface.Tick" /> on its calling thread.
-	/// </summary>
-	public delegate void OnClientIntegrityViolatedCallback(ref OnClientIntegrityViolatedCallbackInfo data);
+    /// <summary>
+    /// Callback issued when the local client triggers an integrity violation.
+    /// 
+    /// The message contains descriptive string of up to 256 characters and must be displayed to the player.
+    /// 
+    /// This callback is always issued from within <see cref="Platform.PlatformInterface.Tick" /> on its calling thread.
+    /// </summary>
+    public delegate void OnClientIntegrityViolatedCallback(ref OnClientIntegrityViolatedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnClientIntegrityViolatedCallbackInternal(ref OnClientIntegrityViolatedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnClientIntegrityViolatedCallbackInternal(ref OnClientIntegrityViolatedCallbackInfoInternal data);
 }

@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.UserInfo
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="UserInfoInterface.QueryUserInfoByExternalAccount" />
-	/// </summary>
-	/// <param name="data">A <see cref="QueryUserInfoByExternalAccountCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnQueryUserInfoByExternalAccountCallback(ref QueryUserInfoByExternalAccountCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="UserInfoInterface.QueryUserInfoByExternalAccount" />
+    /// </summary>
+    /// <param name="data">A <see cref="QueryUserInfoByExternalAccountCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnQueryUserInfoByExternalAccountCallback(ref QueryUserInfoByExternalAccountCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryUserInfoByExternalAccountCallbackInternal(ref QueryUserInfoByExternalAccountCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryUserInfoByExternalAccountCallbackInternal(ref QueryUserInfoByExternalAccountCallbackInfoInternal data);
 }

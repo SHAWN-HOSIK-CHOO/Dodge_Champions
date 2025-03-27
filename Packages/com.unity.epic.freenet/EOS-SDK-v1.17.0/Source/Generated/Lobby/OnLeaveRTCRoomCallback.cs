@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="LobbyInterface.LeaveRTCRoom" />
-	/// </summary>
-	/// <param name="data">A <see cref="LobbyInterface.LeaveRTCRoom" /> CallbackInfo containing the output information and result</param>
-	public delegate void OnLeaveRTCRoomCallback(ref LeaveRTCRoomCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="LobbyInterface.LeaveRTCRoom" />
+    /// </summary>
+    /// <param name="data">A <see cref="LobbyInterface.LeaveRTCRoom" /> CallbackInfo containing the output information and result</param>
+    public delegate void OnLeaveRTCRoomCallback(ref LeaveRTCRoomCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnLeaveRTCRoomCallbackInternal(ref LeaveRTCRoomCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnLeaveRTCRoomCallbackInternal(ref LeaveRTCRoomCallbackInfoInternal data);
 }

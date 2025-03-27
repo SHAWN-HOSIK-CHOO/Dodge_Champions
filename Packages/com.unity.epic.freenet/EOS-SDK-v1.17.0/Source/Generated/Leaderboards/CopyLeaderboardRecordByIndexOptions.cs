@@ -3,48 +3,48 @@
 
 namespace Epic.OnlineServices.Leaderboards
 {
-	/// <summary>
-	/// Input parameters for the <see cref="LeaderboardsInterface.CopyLeaderboardRecordByIndex" /> function.
-	/// </summary>
-	public struct CopyLeaderboardRecordByIndexOptions
-	{
-		/// <summary>
-		/// Index of the leaderboard record to retrieve from the cache
-		/// </summary>
-		public uint LeaderboardRecordIndex { get; set; }
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="LeaderboardsInterface.CopyLeaderboardRecordByIndex" /> function.
+    /// </summary>
+    public struct CopyLeaderboardRecordByIndexOptions
+    {
+        /// <summary>
+        /// Index of the leaderboard record to retrieve from the cache
+        /// </summary>
+        public uint LeaderboardRecordIndex { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct CopyLeaderboardRecordByIndexOptionsInternal : ISettable<CopyLeaderboardRecordByIndexOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private uint m_LeaderboardRecordIndex;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct CopyLeaderboardRecordByIndexOptionsInternal : ISettable<CopyLeaderboardRecordByIndexOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private uint m_LeaderboardRecordIndex;
 
-		public uint LeaderboardRecordIndex
-		{
-			set
-			{
-				m_LeaderboardRecordIndex = value;
-			}
-		}
+        public uint LeaderboardRecordIndex
+        {
+            set
+            {
+                m_LeaderboardRecordIndex = value;
+            }
+        }
 
-		public void Set(ref CopyLeaderboardRecordByIndexOptions other)
-		{
-			m_ApiVersion = LeaderboardsInterface.CopyleaderboardrecordbyindexApiLatest;
-			LeaderboardRecordIndex = other.LeaderboardRecordIndex;
-		}
+        public void Set(ref CopyLeaderboardRecordByIndexOptions other)
+        {
+            m_ApiVersion = LeaderboardsInterface.CopyleaderboardrecordbyindexApiLatest;
+            LeaderboardRecordIndex = other.LeaderboardRecordIndex;
+        }
 
-		public void Set(ref CopyLeaderboardRecordByIndexOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LeaderboardsInterface.CopyleaderboardrecordbyindexApiLatest;
-				LeaderboardRecordIndex = other.Value.LeaderboardRecordIndex;
-			}
-		}
+        public void Set(ref CopyLeaderboardRecordByIndexOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LeaderboardsInterface.CopyleaderboardrecordbyindexApiLatest;
+                LeaderboardRecordIndex = other.Value.LeaderboardRecordIndex;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

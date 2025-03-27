@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.KWS
 {
-	/// <summary>
-	/// Input parameters for the <see cref="KWSInterface.QueryAgeGate" /> function.
-	/// </summary>
-	public struct QueryAgeGateOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="KWSInterface.QueryAgeGate" /> function.
+    /// </summary>
+    public struct QueryAgeGateOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct QueryAgeGateOptionsInternal : ISettable<QueryAgeGateOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct QueryAgeGateOptionsInternal : ISettable<QueryAgeGateOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref QueryAgeGateOptions other)
-		{
-			m_ApiVersion = KWSInterface.QueryagegateApiLatest;
-		}
+        public void Set(ref QueryAgeGateOptions other)
+        {
+            m_ApiVersion = KWSInterface.QueryagegateApiLatest;
+        }
 
-		public void Set(ref QueryAgeGateOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = KWSInterface.QueryagegateApiLatest;
-			}
-		}
+        public void Set(ref QueryAgeGateOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = KWSInterface.QueryagegateApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

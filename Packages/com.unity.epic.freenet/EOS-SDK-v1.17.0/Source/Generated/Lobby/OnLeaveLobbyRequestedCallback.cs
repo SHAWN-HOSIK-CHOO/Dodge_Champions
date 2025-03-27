@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Function prototype definition for notifications that comes from <see cref="LobbyInterface.AddNotifyLeaveLobbyRequested" />.
-	/// </summary>
-	/// <param name="data">A pointer to <see cref="LeaveLobbyRequestedCallbackInfo" /> containing the output information.</param>
-	public delegate void OnLeaveLobbyRequestedCallback(ref LeaveLobbyRequestedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that comes from <see cref="LobbyInterface.AddNotifyLeaveLobbyRequested" />.
+    /// </summary>
+    /// <param name="data">A pointer to <see cref="LeaveLobbyRequestedCallbackInfo" /> containing the output information.</param>
+    public delegate void OnLeaveLobbyRequestedCallback(ref LeaveLobbyRequestedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnLeaveLobbyRequestedCallbackInternal(ref LeaveLobbyRequestedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnLeaveLobbyRequestedCallbackInternal(ref LeaveLobbyRequestedCallbackInfoInternal data);
 }

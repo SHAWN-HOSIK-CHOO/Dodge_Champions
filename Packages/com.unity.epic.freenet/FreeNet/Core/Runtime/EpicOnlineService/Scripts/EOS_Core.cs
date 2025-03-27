@@ -1,4 +1,3 @@
-using Epic.OnlineServices;
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Connect;
 using Epic.OnlineServices.Lobby;
@@ -91,7 +90,7 @@ public partial class EOS_Core : MonoBehaviour
         AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
 #endif
         _factory = EOS_Factory.GetFactory();
-        if(!_factory.LoadDLL()) return SDKState.Released;
+        if (!_factory.LoadDLL()) return SDKState.Released;
         EOS_Credential credential = null;
         if (type == EOS_Credential.CredentialType.Dev)
         {
@@ -105,7 +104,7 @@ public partial class EOS_Core : MonoBehaviour
         {
             credential = _live;
         }
-        if(!_factory.MakePlatform(_dev,  category,level, out var IPlatform))
+        if (!_factory.MakePlatform(_dev, category, level, out var IPlatform))
         {
             return SDKState.Released;
         }
@@ -140,7 +139,7 @@ public partial class EOS_Core : MonoBehaviour
     }
     void OnApplicationPause(bool pauseStatus)
     {
-        if(pauseStatus)
+        if (pauseStatus)
         {
             EOSWrapper.ETC.SetApplicationStatus(_IPlatform, ApplicationStatus.BackgroundSuspended);
         }

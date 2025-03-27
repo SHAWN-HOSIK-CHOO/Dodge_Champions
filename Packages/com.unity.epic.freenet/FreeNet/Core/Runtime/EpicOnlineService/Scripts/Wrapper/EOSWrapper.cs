@@ -1,16 +1,15 @@
+using Epic.OnlineServices;
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Connect;
-using Epic.OnlineServices;
-using Epic.OnlineServices.Platform;
-using UnityEngine;
 using Epic.OnlineServices.Lobby;
-using System.Collections.Generic;
-using Epic.OnlineServices.Sessions;
-using System;
 using Epic.OnlineServices.P2P;
-using System.Text.RegularExpressions;
-using Epic.OnlineServices.Version;
+using Epic.OnlineServices.Platform;
+using Epic.OnlineServices.Sessions;
 using Epic.OnlineServices.UserInfo;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using UnityEngine;
 
 public class EOSWrapper
 {
@@ -63,9 +62,9 @@ public class EOSWrapper
             public string _puid { get; private set; }
             public ProductUserId _PUID { get; private set; }
 
-            public static bool operator ==(PUID left , PUID right)
+            public static bool operator ==(PUID left, PUID right)
             {
-                return left._puid == right._puid; 
+                return left._puid == right._puid;
             }
             public static bool operator !=(PUID left, PUID right)
             {
@@ -104,7 +103,7 @@ public class EOSWrapper
 
         public static bool Equal(Epic.OnlineServices.Lobby.Attribute left, Epic.OnlineServices.Lobby.Attribute right)
         {
-            if(left.Visibility != right.Visibility)
+            if (left.Visibility != right.Visibility)
             {
                 return false;
             }
@@ -297,7 +296,7 @@ public class EOSWrapper
         {
             ILobby.CreateLobby(ref Createoptions, null, callback);
         }
-        static public void LeaveLobby(LobbyInterface ILobby,string lobbyID, ProductUserId localPUID, OnLeaveLobbyCallback callback = null)
+        static public void LeaveLobby(LobbyInterface ILobby, string lobbyID, ProductUserId localPUID, OnLeaveLobbyCallback callback = null)
         {
             var options = new LeaveLobbyOptions()
             {
@@ -333,7 +332,7 @@ public class EOSWrapper
                 LocalUserId = localPUID,
                 PresenceEnabled = presence,
             };
-           ILobby.JoinLobby(ref joinOptions, null, callback);
+            ILobby.JoinLobby(ref joinOptions, null, callback);
         }
         static public uint GetInviteCount(LobbyInterface ILobby, ProductUserId localPUID)
         {
@@ -423,7 +422,7 @@ public class EOSWrapper
             var options = new LobbyDetailsCopyInfoOptions();
             return details.CopyInfo(ref options, out outLobbyDetailsInfo);
         }
-        static public Result GetMemberDetailsInfo(LobbyDetails details,ProductUserId targetPUID ,out LobbyDetailsMemberInfo? outMemberDetailsInfo)
+        static public Result GetMemberDetailsInfo(LobbyDetails details, ProductUserId targetPUID, out LobbyDetailsMemberInfo? outMemberDetailsInfo)
         {
             var option = new LobbyDetailsCopyMemberInfoOptions()
             {
@@ -431,17 +430,17 @@ public class EOSWrapper
             };
             return details.CopyMemberInfo(ref option, out outMemberDetailsInfo);
         }
-        static public bool GetMemberByIndex(LobbyDetails details,uint index,out ProductUserId meberPUID)
+        static public bool GetMemberByIndex(LobbyDetails details, uint index, out ProductUserId meberPUID)
         {
             var MemberIndexOptions = new LobbyDetailsGetMemberByIndexOptions() { MemberIndex = index };
             meberPUID = details.GetMemberByIndex(ref MemberIndexOptions);
             return meberPUID != null;
         }
-        static public bool GetLobbyOwner(LobbyDetails details,out ProductUserId ownerPUID)
+        static public bool GetLobbyOwner(LobbyDetails details, out ProductUserId ownerPUID)
         {
             var options = new LobbyDetailsGetLobbyOwnerOptions();
             ownerPUID = details.GetLobbyOwner(ref options);
-            return ownerPUID!=null;
+            return ownerPUID != null;
         }
         static public Epic.OnlineServices.Lobby.Attribute? GetLobbyAttribute(LobbyDetails details, string key)
         {
@@ -643,7 +642,7 @@ public class EOSWrapper
             {
                 LocalUserId = localPUID
             };
-            search.Find(ref options,null, onComplete);
+            search.Find(ref options, null, onComplete);
         }
         static public uint GetSearchResultCount(LobbySearch search)
         {
@@ -658,7 +657,7 @@ public class EOSWrapper
             };
             return search.CopySearchResultByIndex(ref options, out outLobbyDetails);
         }
-        
+
         static public ulong AddCBNotifyLobbyUpdateReceived(LobbyInterface ILobby, OnLobbyUpdateReceivedCallback callback)
         {
             var options = new AddNotifyLobbyUpdateReceivedOptions();
@@ -675,7 +674,7 @@ public class EOSWrapper
             var options = new AddNotifyLobbyMemberStatusReceivedOptions();
             return ILobby.AddNotifyLobbyMemberStatusReceived(ref options, null, callback);
         }
-        static public ulong AddCBNotifyLeaveLobbyRequested(LobbyInterface ILobby,  OnLeaveLobbyRequestedCallback callback)
+        static public ulong AddCBNotifyLeaveLobbyRequested(LobbyInterface ILobby, OnLeaveLobbyRequestedCallback callback)
         {
             var options = new AddNotifyLeaveLobbyRequestedOptions();
             return ILobby.AddNotifyLeaveLobbyRequested(ref options, null, callback);
@@ -714,11 +713,11 @@ public class EOSWrapper
                 onComplete(result);
                 return;
             }
-            UpdateSession(ISession,modification,(ref UpdateSessionCallbackInfo info) =>
+            UpdateSession(ISession, modification, (ref UpdateSessionCallbackInfo info) =>
             {
                 if (info.ResultCode == Result.Success)
                 {
-                    RegisterPlayer(ISession,info.SessionName, localPUID);
+                    RegisterPlayer(ISession, info.SessionName, localPUID);
                 }
                 onComplete(info.ResultCode);
                 modification.Release();
@@ -778,7 +777,8 @@ public class EOSWrapper
             {
                 SessionName = sessionName
             };
-            ISession.EndSession(ref Options, null, (ref EndSessionCallbackInfo info) => {
+            ISession.EndSession(ref Options, null, (ref EndSessionCallbackInfo info) =>
+            {
                 onComplete?.Invoke(info);
             });
         }
@@ -814,7 +814,7 @@ public class EOSWrapper
             Result infoResult = active.CopyInfo(ref options, out ActiveSessionInfo? info);
             if (infoResult != Result.Success)
             {
-                Debug.LogError( $"CopyDetailsInfo fail");
+                Debug.LogError($"CopyDetailsInfo fail");
             }
             return info.Value;
         }
@@ -982,7 +982,7 @@ public class EOSWrapper
             };
             ISession.SendInvite(ref options, null, callback);
         }
-        static public void RejectInvite(SessionsInterface ISession,ProductUserId localPUID, string inviteID, Epic.OnlineServices.Sessions.OnRejectInviteCallback callback = null)
+        static public void RejectInvite(SessionsInterface ISession, ProductUserId localPUID, string inviteID, Epic.OnlineServices.Sessions.OnRejectInviteCallback callback = null)
         {
             var options = new Epic.OnlineServices.Sessions.RejectInviteOptions()
             {
@@ -1073,7 +1073,7 @@ public class EOSWrapper
     }
     public class P2PControl
     {
-        static public ulong AddCBNotifyPeerConnectionRequest(P2PInterface IP2P,ProductUserId localPUID, SocketId? socketID = null, OnIncomingConnectionRequestCallback callback = null)
+        static public ulong AddCBNotifyPeerConnectionRequest(P2PInterface IP2P, ProductUserId localPUID, SocketId? socketID = null, OnIncomingConnectionRequestCallback callback = null)
         {
             var options = new AddNotifyPeerConnectionRequestOptions()
             {
@@ -1210,7 +1210,7 @@ public class EOSWrapper
             Result result = IP2P.GetNextReceivedPacketSize(ref options, out nextPacketSizeBytes);
             return result == Result.Success;
         }
-        static public bool ReceiveNextPacket(P2PInterface IP2P, ProductUserId localPUID, ref ProductUserId puid, ref SocketId socketID, uint nextPacketSizeBytes, out ArraySegment<byte>  dataSegment, out byte channel)
+        static public bool ReceiveNextPacket(P2PInterface IP2P, ProductUserId localPUID, ref ProductUserId puid, ref SocketId socketID, uint nextPacketSizeBytes, out ArraySegment<byte> dataSegment, out byte channel)
         {
             channel = 0;
             dataSegment = null;
@@ -1241,7 +1241,7 @@ public class EOSWrapper
     }
     public class UserInfo
     {
-        public static void QueryAndCopyUserInfo(UserInfoInterface IUSER, EpicAccountId localEAID, EpicAccountId targetEAID,Action<Result ,UserInfoData?> onComplete= null)
+        public static void QueryAndCopyUserInfo(UserInfoInterface IUSER, EpicAccountId localEAID, EpicAccountId targetEAID, Action<Result, UserInfoData?> onComplete = null)
         {
             var options = new QueryUserInfoOptions()
             {

@@ -3,18 +3,18 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Advertisement properties for a single attribute associated with a lobby
-	/// </summary>
-	public enum LobbyAttributeVisibility : int
-	{
-		/// <summary>
-		/// Data is visible to lobby members, searchable and visible in search results.
-		/// </summary>
-		Public = 0,
-		/// <summary>
-		/// Data is only visible to the user setting the data. Data is not visible to lobby members, not searchable, and not visible in search results.
-		/// </summary>
-		Private = 1
-	}
+    /// <summary>
+    /// Advertisement properties for a single attribute associated with a lobby
+    /// </summary>
+    public enum LobbyAttributeVisibility : int
+    {
+        /// <summary>
+        /// Data is visible to lobby members, searchable and visible in search results.
+        /// </summary>
+        Public = 0,
+        /// <summary>
+        /// Data is only visible to the user setting the data. Data is not visible to lobby members, not searchable, and not visible in search results.
+        /// </summary>
+        Private = 1
+    }
 }

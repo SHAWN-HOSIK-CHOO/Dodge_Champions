@@ -3,20 +3,20 @@
 
 namespace Epic.OnlineServices.Logging
 {
-	/// <summary>
-	/// Logging levels. When a log message is output, it has an associated log level.
-	/// Messages will only be sent to the callback function if the message's associated log level is less than or equal to the configured log level for that category.
-	/// <seealso cref="LoggingInterface.SetCallback" />
-	/// <seealso cref="LoggingInterface.SetLogLevel" />
-	/// </summary>
-	public enum LogLevel : int
-	{
-		Off = 0,
-		Fatal = 100,
-		Error = 200,
-		Warning = 300,
-		Info = 400,
-		Verbose = 500,
-		VeryVerbose = 600
-	}
+    /// <summary>
+    /// Logging levels. When a log message is output, it has an associated log level.
+    /// Messages will only be sent to the callback function if the message's associated log level is less than or equal to the configured log level for that category.
+    /// <seealso cref="LoggingInterface.SetCallback" />
+    /// <seealso cref="LoggingInterface.SetLogLevel" />
+    /// </summary>
+    public enum LogLevel : int
+    {
+        Off = 0,
+        Fatal = 100,
+        Error = 200,
+        Warning = 300,
+        Info = 400,
+        Verbose = 500,
+        VeryVerbose = 600
+    }
 }

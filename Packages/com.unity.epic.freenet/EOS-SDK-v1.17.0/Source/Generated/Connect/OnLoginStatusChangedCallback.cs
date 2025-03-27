@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Connect
 {
-	/// <summary>
-	/// Function prototype definition for notifications that come from <see cref="ConnectInterface.AddNotifyLoginStatusChanged" />.
-	/// </summary>
-	/// <param name="data">A <see cref="LoginStatusChangedCallbackInfo" /> containing the output information and result.</param>
-	public delegate void OnLoginStatusChangedCallback(ref LoginStatusChangedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that come from <see cref="ConnectInterface.AddNotifyLoginStatusChanged" />.
+    /// </summary>
+    /// <param name="data">A <see cref="LoginStatusChangedCallbackInfo" /> containing the output information and result.</param>
+    public delegate void OnLoginStatusChangedCallback(ref LoginStatusChangedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnLoginStatusChangedCallbackInternal(ref LoginStatusChangedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnLoginStatusChangedCallbackInternal(ref LoginStatusChangedCallbackInfoInternal data);
 }

@@ -1,17 +1,14 @@
 using Game;
 using GameInput;
 using GameUI;
-using UnityEngine;
-using Unity.Netcode;
 using PlayableCharacter;
-using Unity.Services.Relay;
-using Unity.Services.Core;  // Unity Services 초기화 관련 API
-
+using Unity.Netcode;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace GameLobby
 {
-   public class PlayerSelectionManager : NetworkBehaviour
+    public class PlayerSelectionManager : NetworkBehaviour
     {
         private NetworkVariable<int> _player0SelectedCharacter = new NetworkVariable<int>(0);
         private NetworkVariable<int> _player1SelectedCharacter = new NetworkVariable<int>(0);
@@ -23,7 +20,7 @@ namespace GameLobby
         public CharacterSO[] confirmedCharacterSOs = new CharacterSO[2];
 
         public bool[] hasPlayersConfirmed = new bool[2] { false, false };
-        
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -48,19 +45,19 @@ namespace GameLobby
                 }
             }
         }
-        
+
         public static void DestroyAllSingletonsAndEnd()
         {
             // 마우스 커서 상태 초기화
             Cursor.lockState = CursorLockMode.None;
             NetworkManager.Singleton.Shutdown();
-            
+
             Destroy(InputManager.Instance.gameObject);
             Destroy(UIManager.Instance.gameObject);
             Destroy(GameManager.Instance.gameObject);
             SceneManager.LoadScene("Lobby");
         }
-        
+
         public override void OnDestroy()
         {
             if (_player0SelectedCharacter != null)
@@ -68,10 +65,10 @@ namespace GameLobby
 
             if (_player1SelectedCharacter != null)
                 _player1SelectedCharacter.OnValueChanged -= OnPlayer1SelectionChanged;
-            
+
             base.OnDestroy();
         }
-        
+
         public void SetPlayerSelection(int index)
         {
             if (IsClient)
@@ -79,36 +76,36 @@ namespace GameLobby
                 SubmitPlayerSelectionServerRpc(index);
             }
         }
-        
+
         [ServerRpc(RequireOwnership = false)]
         private void SubmitPlayerSelectionServerRpc(int characterIndex, ServerRpcParams rpcParams = default)
         {
             ulong clientId = rpcParams.Receive.SenderClientId;
-            
+
             Debug.Log("Received request from client : " + clientId);
-            
+
             if (clientId == NetworkManager.Singleton.ConnectedClientsList[0].ClientId)
             {
                 _player0SelectedCharacter.Value = characterIndex;
-                hasPlayersConfirmed[0]          = true;
+                hasPlayersConfirmed[0] = true;
             }
             else if (clientId == NetworkManager.Singleton.ConnectedClientsList[1].ClientId)
             {
                 _player1SelectedCharacter.Value = characterIndex;
-                hasPlayersConfirmed[1]          = true;
+                hasPlayersConfirmed[1] = true;
             }
             else
             {
                 Debug.LogError($"Unexpected ClientId: {clientId}. Unable to assign selection data.");
             }
-            
+
             if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
             {
-                if(hasPlayersConfirmed[0] && hasPlayersConfirmed[1])
+                if (hasPlayersConfirmed[0] && hasPlayersConfirmed[1])
                     NetworkManager.Singleton.SceneManager.LoadScene("Stage", LoadSceneMode.Single);
             }
         }
-        
+
         private void OnPlayer0SelectionChanged(int oldValue, int newValue)
         {
             Debug.Log($"Player 0 Selection Updated: {newValue}");
@@ -120,7 +117,7 @@ namespace GameLobby
             Debug.Log($"Player 1 Selection Updated: {newValue}");
             confirmedCharacterSOs[1] = characterReferences[newValue];
         }
-        
+
         public int GetLocalPlayerSelection()
         {
             ulong localClientId = NetworkManager.Singleton.LocalClientId;

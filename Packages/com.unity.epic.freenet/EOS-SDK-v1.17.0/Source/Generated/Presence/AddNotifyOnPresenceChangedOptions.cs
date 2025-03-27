@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Presence
 {
-	/// <summary>
-	/// Data for the <see cref="PresenceInterface.AddNotifyOnPresenceChanged" /> function.
-	/// </summary>
-	public struct AddNotifyOnPresenceChangedOptions
-	{
-	}
+    /// <summary>
+    /// Data for the <see cref="PresenceInterface.AddNotifyOnPresenceChanged" /> function.
+    /// </summary>
+    public struct AddNotifyOnPresenceChangedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyOnPresenceChangedOptionsInternal : ISettable<AddNotifyOnPresenceChangedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyOnPresenceChangedOptionsInternal : ISettable<AddNotifyOnPresenceChangedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyOnPresenceChangedOptions other)
-		{
-			m_ApiVersion = PresenceInterface.AddnotifyonpresencechangedApiLatest;
-		}
+        public void Set(ref AddNotifyOnPresenceChangedOptions other)
+        {
+            m_ApiVersion = PresenceInterface.AddnotifyonpresencechangedApiLatest;
+        }
 
-		public void Set(ref AddNotifyOnPresenceChangedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = PresenceInterface.AddnotifyonpresencechangedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyOnPresenceChangedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = PresenceInterface.AddnotifyonpresencechangedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

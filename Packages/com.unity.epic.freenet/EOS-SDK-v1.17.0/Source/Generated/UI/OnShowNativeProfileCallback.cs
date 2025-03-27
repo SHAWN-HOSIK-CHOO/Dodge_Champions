@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.UI
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="UIInterface.ShowNativeProfile" />
-	/// </summary>
-	/// <param name="data">A <see cref="ShowNativeProfileCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnShowNativeProfileCallback(ref ShowNativeProfileCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="UIInterface.ShowNativeProfile" />
+    /// </summary>
+    /// <param name="data">A <see cref="ShowNativeProfileCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnShowNativeProfileCallback(ref ShowNativeProfileCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnShowNativeProfileCallbackInternal(ref ShowNativeProfileCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnShowNativeProfileCallbackInternal(ref ShowNativeProfileCallbackInfoInternal data);
 }

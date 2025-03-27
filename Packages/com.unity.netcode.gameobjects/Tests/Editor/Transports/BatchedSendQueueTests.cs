@@ -1,5 +1,5 @@
-using System;
 using NUnit.Framework;
+using System;
 using Unity.Collections;
 using Unity.Netcode.Transports.UTP;
 #if !UTP_TRANSPORT_2_0_ABOVE

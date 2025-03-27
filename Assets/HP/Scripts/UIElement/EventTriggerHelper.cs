@@ -16,7 +16,7 @@ public class EventTriggerHelper : MonoBehaviour
     }
     public void AddTriggerEvent(EventTriggerType eventType, UnityEngine.Events.UnityAction<BaseEventData> callback)
     {
-        if(!GetType(eventType, out var entry))
+        if (!GetType(eventType, out var entry))
         {
             entry = AddType(eventType);
         }
@@ -29,7 +29,7 @@ public class EventTriggerHelper : MonoBehaviour
         {
             if (e.eventID == eventType)
             {
-                entry = e; 
+                entry = e;
                 return true;
             }
         }
@@ -37,7 +37,7 @@ public class EventTriggerHelper : MonoBehaviour
     }
     EventTrigger.Entry AddType(EventTriggerType eventType)
     {
-        if(GetType(eventType,out var entry))
+        if (GetType(eventType, out var entry))
         {
             return entry;
         }

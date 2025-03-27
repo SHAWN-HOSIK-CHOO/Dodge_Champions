@@ -1,6 +1,6 @@
 using Epic.OnlineServices.P2P;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using static EOS_Socket;
 public class EOS_Client : EOS_Peer
 {
@@ -11,7 +11,7 @@ public class EOS_Client : EOS_Peer
 
     Dictionary<int, Queue<EOS_Core.EOS_Packet>> _incomingPackets;
 
-    public void Init(EOS_Core eosCore , EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketid)
+    public void Init(EOS_Core eosCore, EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketid)
     {
         _eosCore = eosCore;
         _state = state.stop;
@@ -35,30 +35,30 @@ public class EOS_Client : EOS_Peer
             return _socket.GetConnection(EOS_Core.Role.RemotePeer, _remotePUID, out connection);
         }
     }
-    public override void OnClientEnqueuePacket(EOS_Socket.Connection connection ,int channel)
+    public override void OnClientEnqueuePacket(EOS_Socket.Connection connection, int channel)
     {
-        if(connection.DeqeuePacket(channel,out var packet))
+        if (connection.DeqeuePacket(channel, out var packet))
         {
-            if(!_incomingPackets.TryGetValue(channel,out var queue))
+            if (!_incomingPackets.TryGetValue(channel, out var queue))
             {
                 queue = new Queue<EOS_Core.EOS_Packet>();
-                _incomingPackets.Add(channel,queue);
+                _incomingPackets.Add(channel, queue);
             }
             queue.Enqueue(packet);
             _onReceivedPacket?.Invoke(channel);
         }
     }
-    public bool DequeuePacket(int channel,out EOS_Core.EOS_Packet packet)
+    public bool DequeuePacket(int channel, out EOS_Core.EOS_Packet packet)
     {
         packet = default;
-        if (_incomingPackets.TryGetValue(channel,out var queue))
+        if (_incomingPackets.TryGetValue(channel, out var queue))
         {
             return queue.TryDequeue(out packet);
         }
         return false;
     }
-    
-    
+
+
     public override void OnMakeConnectionCB(Connection info)
     {
         if (_remotePUID._puid == info._remotePUID._puid)

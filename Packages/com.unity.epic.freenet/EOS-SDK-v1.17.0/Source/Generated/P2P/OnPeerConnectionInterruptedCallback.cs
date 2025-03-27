@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Callback for information related to open connections that are interrupted.
-	/// </summary>
-	public delegate void OnPeerConnectionInterruptedCallback(ref OnPeerConnectionInterruptedInfo data);
+    /// <summary>
+    /// Callback for information related to open connections that are interrupted.
+    /// </summary>
+    public delegate void OnPeerConnectionInterruptedCallback(ref OnPeerConnectionInterruptedInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnPeerConnectionInterruptedCallbackInternal(ref OnPeerConnectionInterruptedInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnPeerConnectionInterruptedCallbackInternal(ref OnPeerConnectionInterruptedInfoInternal data);
 }

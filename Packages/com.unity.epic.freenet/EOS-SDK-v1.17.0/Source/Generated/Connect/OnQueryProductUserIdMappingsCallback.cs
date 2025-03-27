@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Connect
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="ConnectInterface.QueryProductUserIdMappings" />.
-	/// </summary>
-	/// <param name="data">A <see cref="QueryProductUserIdMappingsCallbackInfo" /> containing the output information and result.</param>
-	public delegate void OnQueryProductUserIdMappingsCallback(ref QueryProductUserIdMappingsCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="ConnectInterface.QueryProductUserIdMappings" />.
+    /// </summary>
+    /// <param name="data">A <see cref="QueryProductUserIdMappingsCallbackInfo" /> containing the output information and result.</param>
+    public delegate void OnQueryProductUserIdMappingsCallback(ref QueryProductUserIdMappingsCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryProductUserIdMappingsCallbackInternal(ref QueryProductUserIdMappingsCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryProductUserIdMappingsCallbackInternal(ref QueryProductUserIdMappingsCallbackInfoInternal data);
 }

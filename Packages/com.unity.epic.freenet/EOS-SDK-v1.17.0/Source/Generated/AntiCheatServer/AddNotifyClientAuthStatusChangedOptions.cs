@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.AntiCheatServer
 {
-	public struct AddNotifyClientAuthStatusChangedOptions
-	{
-	}
+    public struct AddNotifyClientAuthStatusChangedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyClientAuthStatusChangedOptionsInternal : ISettable<AddNotifyClientAuthStatusChangedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyClientAuthStatusChangedOptionsInternal : ISettable<AddNotifyClientAuthStatusChangedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyClientAuthStatusChangedOptions other)
-		{
-			m_ApiVersion = AntiCheatServerInterface.AddnotifyclientauthstatuschangedApiLatest;
-		}
+        public void Set(ref AddNotifyClientAuthStatusChangedOptions other)
+        {
+            m_ApiVersion = AntiCheatServerInterface.AddnotifyclientauthstatuschangedApiLatest;
+        }
 
-		public void Set(ref AddNotifyClientAuthStatusChangedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatServerInterface.AddnotifyclientauthstatuschangedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyClientAuthStatusChangedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatServerInterface.AddnotifyclientauthstatuschangedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

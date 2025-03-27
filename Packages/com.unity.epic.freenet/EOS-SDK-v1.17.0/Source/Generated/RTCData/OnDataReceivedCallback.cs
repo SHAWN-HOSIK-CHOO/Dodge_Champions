@@ -3,8 +3,8 @@
 
 namespace Epic.OnlineServices.RTCData
 {
-	public delegate void OnDataReceivedCallback(ref DataReceivedCallbackInfo data);
+    public delegate void OnDataReceivedCallback(ref DataReceivedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnDataReceivedCallbackInternal(ref DataReceivedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnDataReceivedCallbackInternal(ref DataReceivedCallbackInfoInternal data);
 }

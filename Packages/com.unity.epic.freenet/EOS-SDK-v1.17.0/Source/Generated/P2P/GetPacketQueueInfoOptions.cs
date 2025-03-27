@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Structure containing information needed to get the current packet queue information.
-	/// </summary>
-	public struct GetPacketQueueInfoOptions
-	{
-	}
+    /// <summary>
+    /// Structure containing information needed to get the current packet queue information.
+    /// </summary>
+    public struct GetPacketQueueInfoOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetPacketQueueInfoOptionsInternal : ISettable<GetPacketQueueInfoOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetPacketQueueInfoOptionsInternal : ISettable<GetPacketQueueInfoOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref GetPacketQueueInfoOptions other)
-		{
-			m_ApiVersion = P2PInterface.GetpacketqueueinfoApiLatest;
-		}
+        public void Set(ref GetPacketQueueInfoOptions other)
+        {
+            m_ApiVersion = P2PInterface.GetpacketqueueinfoApiLatest;
+        }
 
-		public void Set(ref GetPacketQueueInfoOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = P2PInterface.GetpacketqueueinfoApiLatest;
-			}
-		}
+        public void Set(ref GetPacketQueueInfoOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = P2PInterface.GetpacketqueueinfoApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

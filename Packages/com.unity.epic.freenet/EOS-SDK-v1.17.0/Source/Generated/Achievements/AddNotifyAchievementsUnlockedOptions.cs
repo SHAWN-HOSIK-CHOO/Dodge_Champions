@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Achievements
 {
-	/// <summary>
-	/// Input parameters for the <see cref="AchievementsInterface.AddNotifyAchievementsUnlocked" /> function.
-	/// </summary>
-	public struct AddNotifyAchievementsUnlockedOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="AchievementsInterface.AddNotifyAchievementsUnlocked" /> function.
+    /// </summary>
+    public struct AddNotifyAchievementsUnlockedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyAchievementsUnlockedOptionsInternal : ISettable<AddNotifyAchievementsUnlockedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyAchievementsUnlockedOptionsInternal : ISettable<AddNotifyAchievementsUnlockedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyAchievementsUnlockedOptions other)
-		{
-			m_ApiVersion = AchievementsInterface.AddnotifyachievementsunlockedApiLatest;
-		}
+        public void Set(ref AddNotifyAchievementsUnlockedOptions other)
+        {
+            m_ApiVersion = AchievementsInterface.AddnotifyachievementsunlockedApiLatest;
+        }
 
-		public void Set(ref AddNotifyAchievementsUnlockedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AchievementsInterface.AddnotifyachievementsunlockedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyAchievementsUnlockedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AchievementsInterface.AddnotifyachievementsunlockedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

@@ -3,66 +3,66 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// Input parameters for the <see cref="EcomInterface.CopyEntitlementById" /> function.
-	/// </summary>
-	public struct CopyEntitlementByIdOptions
-	{
-		/// <summary>
-		/// The Epic Account ID of the local user whose entitlement is being copied
-		/// </summary>
-		public EpicAccountId LocalUserId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="EcomInterface.CopyEntitlementById" /> function.
+    /// </summary>
+    public struct CopyEntitlementByIdOptions
+    {
+        /// <summary>
+        /// The Epic Account ID of the local user whose entitlement is being copied
+        /// </summary>
+        public EpicAccountId LocalUserId { get; set; }
 
-		/// <summary>
-		/// ID of the entitlement to retrieve from the cache
-		/// </summary>
-		public Utf8String EntitlementId { get; set; }
-	}
+        /// <summary>
+        /// ID of the entitlement to retrieve from the cache
+        /// </summary>
+        public Utf8String EntitlementId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct CopyEntitlementByIdOptionsInternal : ISettable<CopyEntitlementByIdOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
-		private System.IntPtr m_EntitlementId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct CopyEntitlementByIdOptionsInternal : ISettable<CopyEntitlementByIdOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
+        private System.IntPtr m_EntitlementId;
 
-		public EpicAccountId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public EpicAccountId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public Utf8String EntitlementId
-		{
-			set
-			{
-				Helper.Set(value, ref m_EntitlementId);
-			}
-		}
+        public Utf8String EntitlementId
+        {
+            set
+            {
+                Helper.Set(value, ref m_EntitlementId);
+            }
+        }
 
-		public void Set(ref CopyEntitlementByIdOptions other)
-		{
-			m_ApiVersion = EcomInterface.CopyentitlementbyidApiLatest;
-			LocalUserId = other.LocalUserId;
-			EntitlementId = other.EntitlementId;
-		}
+        public void Set(ref CopyEntitlementByIdOptions other)
+        {
+            m_ApiVersion = EcomInterface.CopyentitlementbyidApiLatest;
+            LocalUserId = other.LocalUserId;
+            EntitlementId = other.EntitlementId;
+        }
 
-		public void Set(ref CopyEntitlementByIdOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = EcomInterface.CopyentitlementbyidApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-				EntitlementId = other.Value.EntitlementId;
-			}
-		}
+        public void Set(ref CopyEntitlementByIdOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = EcomInterface.CopyentitlementbyidApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+                EntitlementId = other.Value.EntitlementId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-			Helper.Dispose(ref m_EntitlementId);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+            Helper.Dispose(ref m_EntitlementId);
+        }
+    }
 }

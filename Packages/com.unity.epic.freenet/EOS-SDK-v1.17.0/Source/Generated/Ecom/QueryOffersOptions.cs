@@ -3,66 +3,66 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// Input parameters for the <see cref="EcomInterface.QueryOffers" /> function.
-	/// </summary>
-	public struct QueryOffersOptions
-	{
-		/// <summary>
-		/// The Epic Account ID of the local user whose offer to query
-		/// </summary>
-		public EpicAccountId LocalUserId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="EcomInterface.QueryOffers" /> function.
+    /// </summary>
+    public struct QueryOffersOptions
+    {
+        /// <summary>
+        /// The Epic Account ID of the local user whose offer to query
+        /// </summary>
+        public EpicAccountId LocalUserId { get; set; }
 
-		/// <summary>
-		/// If not provided then the SandboxId is used as the catalog namespace
-		/// </summary>
-		public Utf8String OverrideCatalogNamespace { get; set; }
-	}
+        /// <summary>
+        /// If not provided then the SandboxId is used as the catalog namespace
+        /// </summary>
+        public Utf8String OverrideCatalogNamespace { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct QueryOffersOptionsInternal : ISettable<QueryOffersOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
-		private System.IntPtr m_OverrideCatalogNamespace;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct QueryOffersOptionsInternal : ISettable<QueryOffersOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
+        private System.IntPtr m_OverrideCatalogNamespace;
 
-		public EpicAccountId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public EpicAccountId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public Utf8String OverrideCatalogNamespace
-		{
-			set
-			{
-				Helper.Set(value, ref m_OverrideCatalogNamespace);
-			}
-		}
+        public Utf8String OverrideCatalogNamespace
+        {
+            set
+            {
+                Helper.Set(value, ref m_OverrideCatalogNamespace);
+            }
+        }
 
-		public void Set(ref QueryOffersOptions other)
-		{
-			m_ApiVersion = EcomInterface.QueryoffersApiLatest;
-			LocalUserId = other.LocalUserId;
-			OverrideCatalogNamespace = other.OverrideCatalogNamespace;
-		}
+        public void Set(ref QueryOffersOptions other)
+        {
+            m_ApiVersion = EcomInterface.QueryoffersApiLatest;
+            LocalUserId = other.LocalUserId;
+            OverrideCatalogNamespace = other.OverrideCatalogNamespace;
+        }
 
-		public void Set(ref QueryOffersOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = EcomInterface.QueryoffersApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-				OverrideCatalogNamespace = other.Value.OverrideCatalogNamespace;
-			}
-		}
+        public void Set(ref QueryOffersOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = EcomInterface.QueryoffersApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+                OverrideCatalogNamespace = other.Value.OverrideCatalogNamespace;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-			Helper.Dispose(ref m_OverrideCatalogNamespace);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+            Helper.Dispose(ref m_OverrideCatalogNamespace);
+        }
+    }
 }

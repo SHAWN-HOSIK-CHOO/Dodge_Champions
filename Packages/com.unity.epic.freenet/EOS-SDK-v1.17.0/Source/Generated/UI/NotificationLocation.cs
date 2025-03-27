@@ -3,16 +3,16 @@
 
 namespace Epic.OnlineServices.UI
 {
-	/// <summary>
-	/// Notification locations to be used to set the preference
-	/// for pop-up.
-	/// <seealso cref="UIInterface.SetDisplayPreference" />
-	/// </summary>
-	public enum NotificationLocation : int
-	{
-		TopLeft,
-		TopRight,
-		BottomLeft,
-		BottomRight
-	}
+    /// <summary>
+    /// Notification locations to be used to set the preference
+    /// for pop-up.
+    /// <seealso cref="UIInterface.SetDisplayPreference" />
+    /// </summary>
+    public enum NotificationLocation : int
+    {
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight
+    }
 }

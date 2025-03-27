@@ -1,8 +1,8 @@
 #if COM_UNITY_MODULES_PHYSICS
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using NUnit.Framework;
 using Unity.Netcode.Components;
 using Unity.Netcode.TestHelpers.Runtime;
 using UnityEngine;

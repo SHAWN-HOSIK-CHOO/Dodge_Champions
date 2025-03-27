@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.Presence
 {
-	/// <summary>
-	/// Callback for information related to <see cref="PresenceInterface.QueryPresence" /> finishing.
-	/// </summary>
-	public delegate void OnQueryPresenceCompleteCallback(ref QueryPresenceCallbackInfo data);
+    /// <summary>
+    /// Callback for information related to <see cref="PresenceInterface.QueryPresence" /> finishing.
+    /// </summary>
+    public delegate void OnQueryPresenceCompleteCallback(ref QueryPresenceCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryPresenceCompleteCallbackInternal(ref QueryPresenceCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryPresenceCompleteCallbackInternal(ref QueryPresenceCallbackInfoInternal data);
 }

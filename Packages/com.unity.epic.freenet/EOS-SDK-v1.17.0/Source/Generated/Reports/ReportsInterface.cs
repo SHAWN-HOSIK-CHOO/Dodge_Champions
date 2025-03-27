@@ -3,61 +3,61 @@
 
 namespace Epic.OnlineServices.Reports
 {
-	public sealed partial class ReportsInterface : Handle
-	{
-		public ReportsInterface()
-		{
-		}
+    public sealed partial class ReportsInterface : Handle
+    {
+        public ReportsInterface()
+        {
+        }
 
-		public ReportsInterface(System.IntPtr innerHandle) : base(innerHandle)
-		{
-		}
+        public ReportsInterface(System.IntPtr innerHandle) : base(innerHandle)
+        {
+        }
 
-		/// <summary>
-		/// Max length of a report context JSON payload, not including the null terminator.
-		/// </summary>
-		public const int ReportcontextMaxLength = 4096;
+        /// <summary>
+        /// Max length of a report context JSON payload, not including the null terminator.
+        /// </summary>
+        public const int ReportcontextMaxLength = 4096;
 
-		/// <summary>
-		/// Max length of a report message text, not including the null terminator.
-		/// </summary>
-		public const int ReportmessageMaxLength = 512;
+        /// <summary>
+        /// Max length of a report message text, not including the null terminator.
+        /// </summary>
+        public const int ReportmessageMaxLength = 512;
 
-		/// <summary>
-		/// The most recent version of the <see cref="SendPlayerBehaviorReport" /> API.
-		/// </summary>
-		public const int SendplayerbehaviorreportApiLatest = 2;
+        /// <summary>
+        /// The most recent version of the <see cref="SendPlayerBehaviorReport" /> API.
+        /// </summary>
+        public const int SendplayerbehaviorreportApiLatest = 2;
 
-		/// <summary>
-		/// Sends the provided report directly to the Epic Online Services back-end.
-		/// </summary>
-		/// <param name="options">Structure containing the player report information.</param>
-		/// <param name="clientData">Optional client data provided by the user of the SDK.</param>
-		/// <param name="completionDelegate">This function is called when the send operation completes.</param>
-		public void SendPlayerBehaviorReport(ref SendPlayerBehaviorReportOptions options, object clientData, OnSendPlayerBehaviorReportCompleteCallback completionDelegate)
-		{
-			SendPlayerBehaviorReportOptionsInternal optionsInternal = new SendPlayerBehaviorReportOptionsInternal();
-			optionsInternal.Set(ref options);
+        /// <summary>
+        /// Sends the provided report directly to the Epic Online Services back-end.
+        /// </summary>
+        /// <param name="options">Structure containing the player report information.</param>
+        /// <param name="clientData">Optional client data provided by the user of the SDK.</param>
+        /// <param name="completionDelegate">This function is called when the send operation completes.</param>
+        public void SendPlayerBehaviorReport(ref SendPlayerBehaviorReportOptions options, object clientData, OnSendPlayerBehaviorReportCompleteCallback completionDelegate)
+        {
+            SendPlayerBehaviorReportOptionsInternal optionsInternal = new SendPlayerBehaviorReportOptionsInternal();
+            optionsInternal.Set(ref options);
 
-			var clientDataAddress = System.IntPtr.Zero;
+            var clientDataAddress = System.IntPtr.Zero;
 
-			var completionDelegateInternal = new OnSendPlayerBehaviorReportCompleteCallbackInternal(OnSendPlayerBehaviorReportCompleteCallbackInternalImplementation);
-			Helper.AddCallback(out clientDataAddress, clientData, completionDelegate, completionDelegateInternal);
+            var completionDelegateInternal = new OnSendPlayerBehaviorReportCompleteCallbackInternal(OnSendPlayerBehaviorReportCompleteCallbackInternalImplementation);
+            Helper.AddCallback(out clientDataAddress, clientData, completionDelegate, completionDelegateInternal);
 
-			Bindings.EOS_Reports_SendPlayerBehaviorReport(InnerHandle, ref optionsInternal, clientDataAddress, completionDelegateInternal);
+            Bindings.EOS_Reports_SendPlayerBehaviorReport(InnerHandle, ref optionsInternal, clientDataAddress, completionDelegateInternal);
 
-			Helper.Dispose(ref optionsInternal);
-		}
+            Helper.Dispose(ref optionsInternal);
+        }
 
-		[MonoPInvokeCallback(typeof(OnSendPlayerBehaviorReportCompleteCallbackInternal))]
-		internal static void OnSendPlayerBehaviorReportCompleteCallbackInternalImplementation(ref SendPlayerBehaviorReportCompleteCallbackInfoInternal data)
-		{
-			OnSendPlayerBehaviorReportCompleteCallback callback;
-			SendPlayerBehaviorReportCompleteCallbackInfo callbackInfo;
-			if (Helper.TryGetAndRemoveCallback(ref data, out callback, out callbackInfo))
-			{
-				callback(ref callbackInfo);
-			}
-		}
-	}
+        [MonoPInvokeCallback(typeof(OnSendPlayerBehaviorReportCompleteCallbackInternal))]
+        internal static void OnSendPlayerBehaviorReportCompleteCallbackInternalImplementation(ref SendPlayerBehaviorReportCompleteCallbackInfoInternal data)
+        {
+            OnSendPlayerBehaviorReportCompleteCallback callback;
+            SendPlayerBehaviorReportCompleteCallbackInfo callbackInfo;
+            if (Helper.TryGetAndRemoveCallback(ref data, out callback, out callbackInfo))
+            {
+                callback(ref callbackInfo);
+            }
+        }
+    }
 }

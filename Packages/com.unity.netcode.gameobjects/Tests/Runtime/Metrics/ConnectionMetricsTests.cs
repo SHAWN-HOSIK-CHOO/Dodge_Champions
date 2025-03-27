@@ -1,8 +1,8 @@
 #if MULTIPLAYER_TOOLS
 #if MULTIPLAYER_TOOLS_1_0_0_PRE_7
 
-using System.Collections;
 using NUnit.Framework;
+using System.Collections;
 using Unity.Multiplayer.Tools.MetricTypes;
 using Unity.Netcode.TestHelpers.Runtime;
 using Unity.Netcode.TestHelpers.Runtime.Metrics;

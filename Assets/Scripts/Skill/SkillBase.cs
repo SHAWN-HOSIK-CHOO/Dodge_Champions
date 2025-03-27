@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,10 +10,10 @@ namespace Skill
         JustBoolean,  // 딸깍
         Count
     }
-    
+
     public abstract class SkillBase : ScriptableObject
     {
         public abstract ESkillInputType ThisSkillType { get; }
-        public abstract IEnumerator     Activate(CharacterController controller, ISkillInput input);
+        public abstract IEnumerator Activate(CharacterController controller, ISkillInput input);
     }
 }

@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Connect
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="ConnectInterface.Logout" />
-	/// </summary>
-	/// <param name="data">A <see cref="LogoutCallbackInfo" /> containing the result.</param>
-	public delegate void OnLogoutCallback(ref LogoutCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="ConnectInterface.Logout" />
+    /// </summary>
+    /// <param name="data">A <see cref="LogoutCallbackInfo" /> containing the result.</param>
+    public delegate void OnLogoutCallback(ref LogoutCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnLogoutCallbackInternal(ref LogoutCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnLogoutCallbackInternal(ref LogoutCallbackInfoInternal data);
 }

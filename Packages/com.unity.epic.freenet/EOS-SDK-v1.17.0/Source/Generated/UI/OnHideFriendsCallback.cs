@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.UI
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="UIInterface.HideFriends" />
-	/// </summary>
-	/// <param name="data">A <see cref="HideFriendsCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnHideFriendsCallback(ref HideFriendsCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="UIInterface.HideFriends" />
+    /// </summary>
+    /// <param name="data">A <see cref="HideFriendsCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnHideFriendsCallback(ref HideFriendsCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnHideFriendsCallbackInternal(ref HideFriendsCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnHideFriendsCallbackInternal(ref HideFriendsCallbackInfoInternal data);
 }

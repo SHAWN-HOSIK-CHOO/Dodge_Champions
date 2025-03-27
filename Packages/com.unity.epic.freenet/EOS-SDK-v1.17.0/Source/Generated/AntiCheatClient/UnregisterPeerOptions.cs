@@ -3,46 +3,46 @@
 
 namespace Epic.OnlineServices.AntiCheatClient
 {
-	public struct UnregisterPeerOptions
-	{
-		/// <summary>
-		/// Locally unique value describing the remote user, as previously passed to <see cref="AntiCheatClientInterface.RegisterPeer" />
-		/// </summary>
-		public System.IntPtr PeerHandle { get; set; }
-	}
+    public struct UnregisterPeerOptions
+    {
+        /// <summary>
+        /// Locally unique value describing the remote user, as previously passed to <see cref="AntiCheatClientInterface.RegisterPeer" />
+        /// </summary>
+        public System.IntPtr PeerHandle { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct UnregisterPeerOptionsInternal : ISettable<UnregisterPeerOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_PeerHandle;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct UnregisterPeerOptionsInternal : ISettable<UnregisterPeerOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_PeerHandle;
 
-		public System.IntPtr PeerHandle
-		{
-			set
-			{
-				m_PeerHandle = value;
-			}
-		}
+        public System.IntPtr PeerHandle
+        {
+            set
+            {
+                m_PeerHandle = value;
+            }
+        }
 
-		public void Set(ref UnregisterPeerOptions other)
-		{
-			m_ApiVersion = AntiCheatClientInterface.UnregisterpeerApiLatest;
-			PeerHandle = other.PeerHandle;
-		}
+        public void Set(ref UnregisterPeerOptions other)
+        {
+            m_ApiVersion = AntiCheatClientInterface.UnregisterpeerApiLatest;
+            PeerHandle = other.PeerHandle;
+        }
 
-		public void Set(ref UnregisterPeerOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatClientInterface.UnregisterpeerApiLatest;
-				PeerHandle = other.Value.PeerHandle;
-			}
-		}
+        public void Set(ref UnregisterPeerOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatClientInterface.UnregisterpeerApiLatest;
+                PeerHandle = other.Value.PeerHandle;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_PeerHandle);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_PeerHandle);
+        }
+    }
 }

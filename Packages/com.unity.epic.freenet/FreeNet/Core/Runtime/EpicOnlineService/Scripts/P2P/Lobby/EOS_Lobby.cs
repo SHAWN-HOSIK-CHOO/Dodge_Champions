@@ -1,7 +1,6 @@
 using Epic.OnlineServices.Lobby;
-using static EOSWrapper;
 using System.Collections.Generic;
-using System;
+using static EOSWrapper;
 
 public class EOS_Lobby
 {
@@ -43,7 +42,7 @@ public class EOS_Lobby
             return true;
         }
         return false;
-    } 
+    }
     public void UpdateMembers(LobbyDetails details)
     {
         uint memberCount = EOSWrapper.LobbyControl.GetCurrentMemberCount(details);
@@ -61,7 +60,7 @@ public class EOS_Lobby
                 }
                 else
                 {
-                    member = CreateLobbyMember(this,memberPUID);
+                    member = CreateLobbyMember(this, memberPUID);
                     newMembers.TryAdd(memberPUID, member);
                     _lobbyManager.InvokeMemberUpdate(member);
                 }
@@ -148,15 +147,15 @@ public class EOS_Lobby
         }
         else if (state == LobbyMemberStatus.Joined)
         {
-            member = CreateLobbyMember(this,memberPUID);
+            member = CreateLobbyMember(this, memberPUID);
             _members.TryAdd(memberPUID, member);
             _lobbyManager.InvokeMemberStateUpdate(member);
         }
     }
 
-    public virtual EOS_LobbyMember CreateLobbyMember(EOS_Lobby lobby ,ETC.PUID puid)
+    public virtual EOS_LobbyMember CreateLobbyMember(EOS_Lobby lobby, ETC.PUID puid)
     {
-        return new EOS_LobbyMember(lobby,puid);
+        return new EOS_LobbyMember(lobby, puid);
     }
 
 

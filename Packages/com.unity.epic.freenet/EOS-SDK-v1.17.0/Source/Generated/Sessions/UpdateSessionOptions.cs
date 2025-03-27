@@ -3,46 +3,46 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	public struct UpdateSessionOptions
-	{
-		/// <summary>
-		/// Builder handle
-		/// </summary>
-		public SessionModification SessionModificationHandle { get; set; }
-	}
+    public struct UpdateSessionOptions
+    {
+        /// <summary>
+        /// Builder handle
+        /// </summary>
+        public SessionModification SessionModificationHandle { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct UpdateSessionOptionsInternal : ISettable<UpdateSessionOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_SessionModificationHandle;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct UpdateSessionOptionsInternal : ISettable<UpdateSessionOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_SessionModificationHandle;
 
-		public SessionModification SessionModificationHandle
-		{
-			set
-			{
-				Helper.Set(value, ref m_SessionModificationHandle);
-			}
-		}
+        public SessionModification SessionModificationHandle
+        {
+            set
+            {
+                Helper.Set(value, ref m_SessionModificationHandle);
+            }
+        }
 
-		public void Set(ref UpdateSessionOptions other)
-		{
-			m_ApiVersion = SessionsInterface.UpdatesessionApiLatest;
-			SessionModificationHandle = other.SessionModificationHandle;
-		}
+        public void Set(ref UpdateSessionOptions other)
+        {
+            m_ApiVersion = SessionsInterface.UpdatesessionApiLatest;
+            SessionModificationHandle = other.SessionModificationHandle;
+        }
 
-		public void Set(ref UpdateSessionOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionsInterface.UpdatesessionApiLatest;
-				SessionModificationHandle = other.Value.SessionModificationHandle;
-			}
-		}
+        public void Set(ref UpdateSessionOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionsInterface.UpdatesessionApiLatest;
+                SessionModificationHandle = other.Value.SessionModificationHandle;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_SessionModificationHandle);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_SessionModificationHandle);
+        }
+    }
 }

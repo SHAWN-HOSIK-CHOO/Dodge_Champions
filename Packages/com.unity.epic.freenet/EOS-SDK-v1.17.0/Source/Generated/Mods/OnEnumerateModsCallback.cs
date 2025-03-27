@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Mods
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="ModsInterface.EnumerateMods" />
-	/// </summary>
-	/// <param name="data">A <see cref="EnumerateModsCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnEnumerateModsCallback(ref EnumerateModsCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="ModsInterface.EnumerateMods" />
+    /// </summary>
+    /// <param name="data">A <see cref="EnumerateModsCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnEnumerateModsCallback(ref EnumerateModsCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnEnumerateModsCallbackInternal(ref EnumerateModsCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnEnumerateModsCallbackInternal(ref EnumerateModsCallbackInfoInternal data);
 }

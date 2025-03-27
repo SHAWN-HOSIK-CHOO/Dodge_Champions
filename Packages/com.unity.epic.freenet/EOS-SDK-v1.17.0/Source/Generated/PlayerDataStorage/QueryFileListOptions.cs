@@ -3,49 +3,49 @@
 
 namespace Epic.OnlineServices.PlayerDataStorage
 {
-	/// <summary>
-	/// Input data for the <see cref="PlayerDataStorageInterface.QueryFileList" /> function
-	/// </summary>
-	public struct QueryFileListOptions
-	{
-		/// <summary>
-		/// The Product User ID of the local user who requested file metadata
-		/// </summary>
-		public ProductUserId LocalUserId { get; set; }
-	}
+    /// <summary>
+    /// Input data for the <see cref="PlayerDataStorageInterface.QueryFileList" /> function
+    /// </summary>
+    public struct QueryFileListOptions
+    {
+        /// <summary>
+        /// The Product User ID of the local user who requested file metadata
+        /// </summary>
+        public ProductUserId LocalUserId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct QueryFileListOptionsInternal : ISettable<QueryFileListOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct QueryFileListOptionsInternal : ISettable<QueryFileListOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
 
-		public ProductUserId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public ProductUserId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public void Set(ref QueryFileListOptions other)
-		{
-			m_ApiVersion = PlayerDataStorageInterface.QueryfilelistApiLatest;
-			LocalUserId = other.LocalUserId;
-		}
+        public void Set(ref QueryFileListOptions other)
+        {
+            m_ApiVersion = PlayerDataStorageInterface.QueryfilelistApiLatest;
+            LocalUserId = other.LocalUserId;
+        }
 
-		public void Set(ref QueryFileListOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = PlayerDataStorageInterface.QueryfilelistApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-			}
-		}
+        public void Set(ref QueryFileListOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = PlayerDataStorageInterface.QueryfilelistApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+        }
+    }
 }

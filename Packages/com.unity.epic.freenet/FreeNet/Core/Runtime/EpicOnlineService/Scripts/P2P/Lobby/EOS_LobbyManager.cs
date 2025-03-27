@@ -1,11 +1,11 @@
-using Epic.OnlineServices.Lobby;
 using Epic.OnlineServices;
-using System.Collections.Generic;
+using Epic.OnlineServices.Lobby;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static EOSWrapper;
 
-public abstract class EOS_LobbyManager : MonoBehaviour 
+public abstract class EOS_LobbyManager : MonoBehaviour
 {
     protected EOS_Core _eosCore;
     protected EOS_LocalUser _localUser;
@@ -172,7 +172,7 @@ public abstract class EOS_LobbyManager : MonoBehaviour
     private EOS_Lobby CreateJoinedLobby(EOS_Core eosCore, EOS_LobbyManager lobbyManager, string lobbyID)
     {
         var lobby = CreateLobby(eosCore, lobbyManager, lobbyID);
-        if(!_lobbies.TryAdd(lobbyID, lobby))
+        if (!_lobbies.TryAdd(lobbyID, lobby))
         {
             Debug.LogError("A lobby already exists. Duplicate creation detected.");
         }
@@ -204,11 +204,11 @@ public abstract class EOS_LobbyManager : MonoBehaviour
     }
     public bool GetLobby(string lobbyID, out EOS_Lobby lobby)
     {
-        return _lobbies.TryGetValue(lobbyID, out lobby);    
+        return _lobbies.TryGetValue(lobbyID, out lobby);
     }
     void OnLobbyUpdateReceived(ref LobbyUpdateReceivedCallbackInfo info)
     {
-        if(GetLobby(info.LobbyId,out var lobby))
+        if (GetLobby(info.LobbyId, out var lobby))
         {
             lobby.OnLobbyUpdateReceived(info);
         }
@@ -245,7 +245,7 @@ public abstract class EOS_LobbyManager : MonoBehaviour
     {
         if (EOSWrapper.LobbyControl.CopyLobbyDetailsByInviteID(_eosCore._ILobby, info.InviteId, out var details))
         {
-            JoinLobbyByDetails(details,(Result result, EOS_Lobby lobby) =>
+            JoinLobbyByDetails(details, (Result result, EOS_Lobby lobby) =>
             {
                 details.Release();
             });

@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Connect
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed into <see cref="ConnectInterface.VerifyIdToken" />.
-	/// </summary>
-	/// <param name="data">A <see cref="VerifyIdTokenCallbackInfo" /> containing the output information and result.</param>
-	public delegate void OnVerifyIdTokenCallback(ref VerifyIdTokenCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed into <see cref="ConnectInterface.VerifyIdToken" />.
+    /// </summary>
+    /// <param name="data">A <see cref="VerifyIdTokenCallbackInfo" /> containing the output information and result.</param>
+    public delegate void OnVerifyIdTokenCallback(ref VerifyIdTokenCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnVerifyIdTokenCallbackInternal(ref VerifyIdTokenCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnVerifyIdTokenCallbackInternal(ref VerifyIdTokenCallbackInfoInternal data);
 }

@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.AntiCheatClient
 {
-	public struct AddNotifyPeerActionRequiredOptions
-	{
-	}
+    public struct AddNotifyPeerActionRequiredOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyPeerActionRequiredOptionsInternal : ISettable<AddNotifyPeerActionRequiredOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyPeerActionRequiredOptionsInternal : ISettable<AddNotifyPeerActionRequiredOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyPeerActionRequiredOptions other)
-		{
-			m_ApiVersion = AntiCheatClientInterface.AddnotifypeeractionrequiredApiLatest;
-		}
+        public void Set(ref AddNotifyPeerActionRequiredOptions other)
+        {
+            m_ApiVersion = AntiCheatClientInterface.AddnotifypeeractionrequiredApiLatest;
+        }
 
-		public void Set(ref AddNotifyPeerActionRequiredOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatClientInterface.AddnotifypeeractionrequiredApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyPeerActionRequiredOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatClientInterface.AddnotifypeeractionrequiredApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

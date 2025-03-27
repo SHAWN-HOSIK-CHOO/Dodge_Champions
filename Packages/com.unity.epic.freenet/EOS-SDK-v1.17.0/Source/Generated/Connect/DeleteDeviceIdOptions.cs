@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Connect
 {
-	/// <summary>
-	/// Input parameters for the <see cref="ConnectInterface.DeleteDeviceId" /> function.
-	/// </summary>
-	public struct DeleteDeviceIdOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="ConnectInterface.DeleteDeviceId" /> function.
+    /// </summary>
+    public struct DeleteDeviceIdOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct DeleteDeviceIdOptionsInternal : ISettable<DeleteDeviceIdOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct DeleteDeviceIdOptionsInternal : ISettable<DeleteDeviceIdOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref DeleteDeviceIdOptions other)
-		{
-			m_ApiVersion = ConnectInterface.DeletedeviceidApiLatest;
-		}
+        public void Set(ref DeleteDeviceIdOptions other)
+        {
+            m_ApiVersion = ConnectInterface.DeletedeviceidApiLatest;
+        }
 
-		public void Set(ref DeleteDeviceIdOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = ConnectInterface.DeletedeviceidApiLatest;
-			}
-		}
+        public void Set(ref DeleteDeviceIdOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = ConnectInterface.DeletedeviceidApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

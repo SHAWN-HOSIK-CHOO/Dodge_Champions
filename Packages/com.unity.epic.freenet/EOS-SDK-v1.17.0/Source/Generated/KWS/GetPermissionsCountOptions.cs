@@ -3,49 +3,49 @@
 
 namespace Epic.OnlineServices.KWS
 {
-	/// <summary>
-	/// Input parameters for the <see cref="KWSInterface.GetPermissionsCount" /> function.
-	/// </summary>
-	public struct GetPermissionsCountOptions
-	{
-		/// <summary>
-		/// The Product User ID of the local user whose permissions are being accessed
-		/// </summary>
-		public ProductUserId LocalUserId { get; set; }
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="KWSInterface.GetPermissionsCount" /> function.
+    /// </summary>
+    public struct GetPermissionsCountOptions
+    {
+        /// <summary>
+        /// The Product User ID of the local user whose permissions are being accessed
+        /// </summary>
+        public ProductUserId LocalUserId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetPermissionsCountOptionsInternal : ISettable<GetPermissionsCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetPermissionsCountOptionsInternal : ISettable<GetPermissionsCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
 
-		public ProductUserId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public ProductUserId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public void Set(ref GetPermissionsCountOptions other)
-		{
-			m_ApiVersion = KWSInterface.GetpermissionscountApiLatest;
-			LocalUserId = other.LocalUserId;
-		}
+        public void Set(ref GetPermissionsCountOptions other)
+        {
+            m_ApiVersion = KWSInterface.GetpermissionscountApiLatest;
+            LocalUserId = other.LocalUserId;
+        }
 
-		public void Set(ref GetPermissionsCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = KWSInterface.GetpermissionscountApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-			}
-		}
+        public void Set(ref GetPermissionsCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = KWSInterface.GetpermissionscountApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+        }
+    }
 }

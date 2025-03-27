@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.IntegratedPlatform
 {
-	/// <summary>
-	/// The callback function for when a local integrated platform user's login status has changed.
-	/// </summary>
-	public delegate void OnUserLoginStatusChangedCallback(ref UserLoginStatusChangedCallbackInfo data);
+    /// <summary>
+    /// The callback function for when a local integrated platform user's login status has changed.
+    /// </summary>
+    public delegate void OnUserLoginStatusChangedCallback(ref UserLoginStatusChangedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnUserLoginStatusChangedCallbackInternal(ref UserLoginStatusChangedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnUserLoginStatusChangedCallbackInternal(ref UserLoginStatusChangedCallbackInfoInternal data);
 }

@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="LobbyInterface.SendInvite" />
-	/// </summary>
-	/// <param name="data">A <see cref="LobbyInterface.SendInvite" /> CallbackInfo containing the output information and result</param>
-	public delegate void OnSendInviteCallback(ref SendInviteCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="LobbyInterface.SendInvite" />
+    /// </summary>
+    /// <param name="data">A <see cref="LobbyInterface.SendInvite" /> CallbackInfo containing the output information and result</param>
+    public delegate void OnSendInviteCallback(ref SendInviteCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnSendInviteCallbackInternal(ref SendInviteCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnSendInviteCallbackInternal(ref SendInviteCallbackInfoInternal data);
 }

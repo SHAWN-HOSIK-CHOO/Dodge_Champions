@@ -3,34 +3,34 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Various types of lobby member updates
-	/// </summary>
-	public enum LobbyMemberStatus : int
-	{
-		/// <summary>
-		/// The user has joined the lobby
-		/// </summary>
-		Joined = 0,
-		/// <summary>
-		/// The user has explicitly left the lobby
-		/// </summary>
-		Left = 1,
-		/// <summary>
-		/// The user has unexpectedly left the lobby
-		/// </summary>
-		Disconnected = 2,
-		/// <summary>
-		/// The user has been kicked from the lobby
-		/// </summary>
-		Kicked = 3,
-		/// <summary>
-		/// The user has been promoted to lobby owner
-		/// </summary>
-		Promoted = 4,
-		/// <summary>
-		/// The lobby has been closed and user has been removed
-		/// </summary>
-		Closed = 5
-	}
+    /// <summary>
+    /// Various types of lobby member updates
+    /// </summary>
+    public enum LobbyMemberStatus : int
+    {
+        /// <summary>
+        /// The user has joined the lobby
+        /// </summary>
+        Joined = 0,
+        /// <summary>
+        /// The user has explicitly left the lobby
+        /// </summary>
+        Left = 1,
+        /// <summary>
+        /// The user has unexpectedly left the lobby
+        /// </summary>
+        Disconnected = 2,
+        /// <summary>
+        /// The user has been kicked from the lobby
+        /// </summary>
+        Kicked = 3,
+        /// <summary>
+        /// The user has been promoted to lobby owner
+        /// </summary>
+        Promoted = 4,
+        /// <summary>
+        /// The lobby has been closed and user has been removed
+        /// </summary>
+        Closed = 5
+    }
 }

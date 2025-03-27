@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.UI
 {
-	/// <summary>
-	/// Input parameters for the <see cref="UIInterface.GetToggleFriendsButton" /> function.
-	/// </summary>
-	public struct GetToggleFriendsButtonOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="UIInterface.GetToggleFriendsButton" /> function.
+    /// </summary>
+    public struct GetToggleFriendsButtonOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetToggleFriendsButtonOptionsInternal : ISettable<GetToggleFriendsButtonOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetToggleFriendsButtonOptionsInternal : ISettable<GetToggleFriendsButtonOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref GetToggleFriendsButtonOptions other)
-		{
-			m_ApiVersion = UIInterface.GettogglefriendsbuttonApiLatest;
-		}
+        public void Set(ref GetToggleFriendsButtonOptions other)
+        {
+            m_ApiVersion = UIInterface.GettogglefriendsbuttonApiLatest;
+        }
 
-		public void Set(ref GetToggleFriendsButtonOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = UIInterface.GettogglefriendsbuttonApiLatest;
-			}
-		}
+        public void Set(ref GetToggleFriendsButtonOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = UIInterface.GettogglefriendsbuttonApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }
