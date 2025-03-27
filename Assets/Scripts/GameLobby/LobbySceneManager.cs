@@ -32,9 +32,12 @@ namespace GameLobby
 
         async void Start()
         {
+<<<<<<< HEAD
             await SceneManagerWrapper.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
 
             Debug.Log("Load LobbyUI Success");
+=======
+>>>>>>> ef36fcc425cf01c71af6d585757e7511dc13149f
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
             {
                 await UnityServices.InitializeAsync();
@@ -182,6 +185,7 @@ namespace GameLobby
             {
                 startClientDb.gameObject.SetActive(false);
                 startHostDb.gameObject.SetActive(false);
+                SceneManagerWrapper.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
             }
         }
     }
