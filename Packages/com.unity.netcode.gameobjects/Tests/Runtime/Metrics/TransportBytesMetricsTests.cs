@@ -1,7 +1,7 @@
 #if MULTIPLAYER_TOOLS
+using NUnit.Framework;
 using System;
 using System.Collections;
-using NUnit.Framework;
 using Unity.Collections;
 using Unity.Multiplayer.Tools.MetricTypes;
 using Unity.Multiplayer.Tools.NetStats;

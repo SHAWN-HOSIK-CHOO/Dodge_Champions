@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// Callback for completion of unregister platform user request.
-	/// </summary>
-	public delegate void OnUnregisterPlatformUserCallback(ref OnUnregisterPlatformUserCallbackInfo data);
+    /// <summary>
+    /// Callback for completion of unregister platform user request.
+    /// </summary>
+    public delegate void OnUnregisterPlatformUserCallback(ref OnUnregisterPlatformUserCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnUnregisterPlatformUserCallbackInternal(ref OnUnregisterPlatformUserCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnUnregisterPlatformUserCallbackInternal(ref OnUnregisterPlatformUserCallbackInfoInternal data);
 }

@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Input parameters for the <see cref="ActiveSession.CopyInfo" /> function.
-	/// </summary>
-	public struct ActiveSessionCopyInfoOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="ActiveSession.CopyInfo" /> function.
+    /// </summary>
+    public struct ActiveSessionCopyInfoOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct ActiveSessionCopyInfoOptionsInternal : ISettable<ActiveSessionCopyInfoOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct ActiveSessionCopyInfoOptionsInternal : ISettable<ActiveSessionCopyInfoOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref ActiveSessionCopyInfoOptions other)
-		{
-			m_ApiVersion = ActiveSession.ActivesessionCopyinfoApiLatest;
-		}
+        public void Set(ref ActiveSessionCopyInfoOptions other)
+        {
+            m_ApiVersion = ActiveSession.ActivesessionCopyinfoApiLatest;
+        }
 
-		public void Set(ref ActiveSessionCopyInfoOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = ActiveSession.ActivesessionCopyinfoApiLatest;
-			}
-		}
+        public void Set(ref ActiveSessionCopyInfoOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = ActiveSession.ActivesessionCopyinfoApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

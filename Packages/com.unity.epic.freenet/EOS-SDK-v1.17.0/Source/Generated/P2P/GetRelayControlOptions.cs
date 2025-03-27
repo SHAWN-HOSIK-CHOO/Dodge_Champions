@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Structure containing information about getting the relay control setting.
-	/// </summary>
-	public struct GetRelayControlOptions
-	{
-	}
+    /// <summary>
+    /// Structure containing information about getting the relay control setting.
+    /// </summary>
+    public struct GetRelayControlOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetRelayControlOptionsInternal : ISettable<GetRelayControlOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetRelayControlOptionsInternal : ISettable<GetRelayControlOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref GetRelayControlOptions other)
-		{
-			m_ApiVersion = P2PInterface.GetrelaycontrolApiLatest;
-		}
+        public void Set(ref GetRelayControlOptions other)
+        {
+            m_ApiVersion = P2PInterface.GetrelaycontrolApiLatest;
+        }
 
-		public void Set(ref GetRelayControlOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = P2PInterface.GetrelaycontrolApiLatest;
-			}
-		}
+        public void Set(ref GetRelayControlOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = P2PInterface.GetrelaycontrolApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

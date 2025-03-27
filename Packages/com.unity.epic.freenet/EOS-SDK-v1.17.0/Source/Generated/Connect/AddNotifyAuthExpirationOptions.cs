@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Connect
 {
-	/// <summary>
-	/// Structure containing information for the auth expiration notification callback.
-	/// </summary>
-	public struct AddNotifyAuthExpirationOptions
-	{
-	}
+    /// <summary>
+    /// Structure containing information for the auth expiration notification callback.
+    /// </summary>
+    public struct AddNotifyAuthExpirationOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyAuthExpirationOptionsInternal : ISettable<AddNotifyAuthExpirationOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyAuthExpirationOptionsInternal : ISettable<AddNotifyAuthExpirationOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyAuthExpirationOptions other)
-		{
-			m_ApiVersion = ConnectInterface.AddnotifyauthexpirationApiLatest;
-		}
+        public void Set(ref AddNotifyAuthExpirationOptions other)
+        {
+            m_ApiVersion = ConnectInterface.AddnotifyauthexpirationApiLatest;
+        }
 
-		public void Set(ref AddNotifyAuthExpirationOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = ConnectInterface.AddnotifyauthexpirationApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyAuthExpirationOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = ConnectInterface.AddnotifyauthexpirationApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

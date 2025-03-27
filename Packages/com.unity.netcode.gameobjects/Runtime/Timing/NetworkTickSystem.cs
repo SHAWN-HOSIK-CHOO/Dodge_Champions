@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using Unity.Profiling;
-using static Unity.Netcode.NetworkTickSystem;
 
 namespace Unity.Netcode
 {
@@ -44,6 +42,9 @@ namespace Unity.Netcode
         public TickUpdateInfo _tickUpdateInfo;
 
         public event Action Tick;
+        public event Action ServerTick;
+
+
         public struct TickUpdateInfo
         {
             // 업데이트 중 변경되는 값
@@ -122,12 +123,15 @@ namespace Unity.Netcode
             // cache times here so that we can adjust them to temporary values while simulating ticks.
             var cacheLocalTime = LocalTime;
             var cacheServerTime = ServerTime;
-            var currentLocalTick = LocalTime.Tick;
-            var localToServerDifference = currentLocalTick - ServerTime.Tick;
 
+
+            var currentLocalTick = LocalTime.Tick;
+            var currentServerTick = ServerTime.Tick;
+            var localToServerDifference = currentLocalTick - currentServerTick;
+            var ServerTolocalDifference = currentServerTick - currentLocalTick;
             for (int i = previousLocalTick + 1; i <= currentLocalTick; i++)
             {
-                if(i == previousLocalTick +1)
+                if (i == previousLocalTick + 1)
                 {
                     _tickUpdateInfo = new TickUpdateInfo(previousLocalTick, previousServerTick,
                     previousLocalTick + 1, previousLocalTick + 1 - localToServerDifference,
@@ -152,6 +156,26 @@ namespace Unity.Netcode
                 s_Tick.End();
 #endif
             }
+
+            for (int i = previousServerTick + 1; i <= currentServerTick; i++)
+            {
+                if (i == previousServerTick + 1)
+                {
+                    _tickUpdateInfo = new TickUpdateInfo(previousLocalTick, previousServerTick,
+                    previousServerTick + 1 - ServerTolocalDifference, previousServerTick + 1,
+                    currentServerTick - ServerTolocalDifference, currentServerTick);
+                }
+                // set exposed time values to correct fixed values
+                ServerTime = new NetworkTime(TickRate, i);
+                LocalTime = new NetworkTime(TickRate, i - ServerTolocalDifference);
+
+                _tickUpdateInfo._curUpdateServerTick = i;
+                _tickUpdateInfo._curUpdateLocalTick = i - ServerTolocalDifference;
+                ServerTick?.Invoke();
+                _tickUpdateInfo._prevUpdateServerTick = i;
+                _tickUpdateInfo._prevUpdateLocalTick = i - ServerTolocalDifference;
+            }
+
             // Set exposed time to values from tick system
             LocalTime = cacheLocalTime;
             ServerTime = cacheServerTime;

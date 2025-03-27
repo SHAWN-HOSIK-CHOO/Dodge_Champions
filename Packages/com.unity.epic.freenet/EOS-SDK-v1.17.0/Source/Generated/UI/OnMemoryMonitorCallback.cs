@@ -3,8 +3,8 @@
 
 namespace Epic.OnlineServices.UI
 {
-	public delegate void OnMemoryMonitorCallback(ref MemoryMonitorCallbackInfo data);
+    public delegate void OnMemoryMonitorCallback(ref MemoryMonitorCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnMemoryMonitorCallbackInternal(ref MemoryMonitorCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnMemoryMonitorCallbackInternal(ref MemoryMonitorCallbackInfoInternal data);
 }

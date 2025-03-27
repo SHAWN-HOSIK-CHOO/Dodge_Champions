@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	public struct AddNotifyLeaveSessionRequestedOptions
-	{
-	}
+    public struct AddNotifyLeaveSessionRequestedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyLeaveSessionRequestedOptionsInternal : ISettable<AddNotifyLeaveSessionRequestedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyLeaveSessionRequestedOptionsInternal : ISettable<AddNotifyLeaveSessionRequestedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyLeaveSessionRequestedOptions other)
-		{
-			m_ApiVersion = SessionsInterface.AddnotifyleavesessionrequestedApiLatest;
-		}
+        public void Set(ref AddNotifyLeaveSessionRequestedOptions other)
+        {
+            m_ApiVersion = SessionsInterface.AddnotifyleavesessionrequestedApiLatest;
+        }
 
-		public void Set(ref AddNotifyLeaveSessionRequestedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionsInterface.AddnotifyleavesessionrequestedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyLeaveSessionRequestedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionsInterface.AddnotifyleavesessionrequestedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

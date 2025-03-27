@@ -1,9 +1,9 @@
 #if !NGO_MINIMALPROJECT
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Unity.Collections;
 using Unity.Netcode.TestHelpers.Runtime;
 using UnityEngine;

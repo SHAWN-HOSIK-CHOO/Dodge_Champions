@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.CustomInvites
 {
-	/// <summary>
-	/// Function prototype definition for notifications that comes from <see cref="CustomInvitesInterface.AddNotifyCustomInviteRejected" />
-	/// </summary>
-	/// <param name="data">A <see cref="CustomInviteRejectedCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnCustomInviteRejectedCallback(ref CustomInviteRejectedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that comes from <see cref="CustomInvitesInterface.AddNotifyCustomInviteRejected" />
+    /// </summary>
+    /// <param name="data">A <see cref="CustomInviteRejectedCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnCustomInviteRejectedCallback(ref CustomInviteRejectedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnCustomInviteRejectedCallbackInternal(ref CustomInviteRejectedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnCustomInviteRejectedCallbackInternal(ref CustomInviteRejectedCallbackInfoInternal data);
 }

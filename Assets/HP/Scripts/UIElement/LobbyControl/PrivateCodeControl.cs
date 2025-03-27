@@ -1,8 +1,6 @@
 using HP;
 using System;
 using UnityEngine;
-using UnityEngine.UI;
-using static EOSWrapper;
 
 public class PrivateCodeControl : MonoBehaviour
 {
@@ -32,7 +30,7 @@ public class PrivateCodeControl : MonoBehaviour
 
     void OnSubmit(string text)
     {
-        _onJoinRequest?.Invoke(text,_lobbyInfoElement);
+        _onJoinRequest?.Invoke(text, _lobbyInfoElement);
     }
     private void OnDestroy()
     {

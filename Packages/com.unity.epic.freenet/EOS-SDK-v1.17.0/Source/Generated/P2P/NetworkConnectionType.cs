@@ -3,22 +3,22 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Types of network connections.
-	/// </summary>
-	public enum NetworkConnectionType : int
-	{
-		/// <summary>
-		/// There is no established connection
-		/// </summary>
-		NoConnection = 0,
-		/// <summary>
-		/// A direct connection to the peer over the Internet or Local Network
-		/// </summary>
-		DirectConnection = 1,
-		/// <summary>
-		/// A relayed connection using Epic-provided servers to the peer over the Internet
-		/// </summary>
-		RelayedConnection = 2
-	}
+    /// <summary>
+    /// Types of network connections.
+    /// </summary>
+    public enum NetworkConnectionType : int
+    {
+        /// <summary>
+        /// There is no established connection
+        /// </summary>
+        NoConnection = 0,
+        /// <summary>
+        /// A direct connection to the peer over the Internet or Local Network
+        /// </summary>
+        DirectConnection = 1,
+        /// <summary>
+        /// A relayed connection using Epic-provided servers to the peer over the Internet
+        /// </summary>
+        RelayedConnection = 2
+    }
 }

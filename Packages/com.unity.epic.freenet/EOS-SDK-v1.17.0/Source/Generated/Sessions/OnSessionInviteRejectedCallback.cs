@@ -3,14 +3,14 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Function prototype definition for notifications that come from <see cref="SessionsInterface.AddNotifySessionInviteRejected" />
-	/// <seealso cref="SessionsInterface.CopySessionHandleByInviteId" />
-	/// <seealso cref="SessionsInterface.JoinSession" />
-	/// </summary>
-	/// <param name="data">A <see cref="SessionInviteRejectedCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnSessionInviteRejectedCallback(ref SessionInviteRejectedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that come from <see cref="SessionsInterface.AddNotifySessionInviteRejected" />
+    /// <seealso cref="SessionsInterface.CopySessionHandleByInviteId" />
+    /// <seealso cref="SessionsInterface.JoinSession" />
+    /// </summary>
+    /// <param name="data">A <see cref="SessionInviteRejectedCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnSessionInviteRejectedCallback(ref SessionInviteRejectedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnSessionInviteRejectedCallbackInternal(ref SessionInviteRejectedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnSessionInviteRejectedCallbackInternal(ref SessionInviteRejectedCallbackInfoInternal data);
 }

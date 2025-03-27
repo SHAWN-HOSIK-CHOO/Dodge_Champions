@@ -1,9 +1,9 @@
-using Unity.Collections;
-using UnityEngine;
-using Unity.Netcode;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using Unity.Collections;
+using Unity.Netcode;
+using UnityEngine;
 
 public class PingPong : NetworkBehaviour
 {
@@ -23,7 +23,7 @@ public class PingPong : NetworkBehaviour
     private const float Alpha = 0.125f;
     public override void OnNetworkSpawn()
     {
-        _smoothedRTT  = new Dictionary<ulong, double>();
+        _smoothedRTT = new Dictionary<ulong, double>();
 
         if (FreeNet._instance._ngoManager._useEpicOnlineTransport)
         {
@@ -59,7 +59,7 @@ public class PingPong : NetworkBehaviour
     }
     public override void OnNetworkDespawn()
     {
-        if(NetworkManager.CustomMessagingManager != null)
+        if (NetworkManager.CustomMessagingManager != null)
         {
             NetworkManager.CustomMessagingManager.UnregisterNamedMessageHandler(MessageName);
         }
@@ -73,7 +73,7 @@ public class PingPong : NetworkBehaviour
         messagePayload.ReadValueSafe(out sendTime);
         if (IsServer)
         {
-            if(_smoothedRTT.TryGetValue(senderId, out var smoothedRTT))
+            if (_smoothedRTT.TryGetValue(senderId, out var smoothedRTT))
             {
                 rtt = (NetworkManager.RealTimeProvider.RealTimeSinceStartup * 1000.0f - sendTime);
                 smoothedRTT = (1 - Alpha) * smoothedRTT + Alpha * rtt;
@@ -104,7 +104,7 @@ public class PingPong : NetworkBehaviour
         {
             if (_smoothedRTT.TryGetValue(clientID, out double rtt))
             {
-                double sendTime = NetworkManager.RealTimeProvider.RealTimeSinceStartup*1000;
+                double sendTime = NetworkManager.RealTimeProvider.RealTimeSinceStartup * 1000;
                 var writer = new FastBufferWriter(sizeof(double) * 2, Allocator.Temp);
                 using (writer)
                 {
@@ -124,9 +124,9 @@ public class PingPong : NetworkBehaviour
             rtt = _virtualRtt + jitter;
             return true;
         }
-        else if(_smoothedRTT.TryGetValue(clientId, out rtt))
+        else if (_smoothedRTT.TryGetValue(clientId, out rtt))
         {
-            rtt +=  jitter;
+            rtt += jitter;
             return true;
         }
         return false;

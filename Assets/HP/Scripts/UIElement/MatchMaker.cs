@@ -1,7 +1,5 @@
 ﻿using DG.Tweening;
 using System.Collections;
-using Unity.Netcode;
-using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -42,7 +40,7 @@ public class MatchMaker : MonoBehaviour
 
     IEnumerator WaitAuthComplete()
     {
-        while(!(_loginSuccess && _connectSuccess))
+        while (!(_loginSuccess && _connectSuccess))
         {
             yield return null;
         }

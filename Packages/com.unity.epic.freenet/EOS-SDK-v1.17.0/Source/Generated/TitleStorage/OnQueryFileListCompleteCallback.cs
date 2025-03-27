@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.TitleStorage
 {
-	/// <summary>
-	/// Callback for when <see cref="TitleStorageInterface.QueryFileList" /> completes
-	/// </summary>
-	public delegate void OnQueryFileListCompleteCallback(ref QueryFileListCallbackInfo data);
+    /// <summary>
+    /// Callback for when <see cref="TitleStorageInterface.QueryFileList" /> completes
+    /// </summary>
+    public delegate void OnQueryFileListCompleteCallback(ref QueryFileListCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryFileListCompleteCallbackInternal(ref QueryFileListCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryFileListCompleteCallbackInternal(ref QueryFileListCallbackInfoInternal data);
 }

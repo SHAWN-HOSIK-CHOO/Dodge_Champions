@@ -3,22 +3,22 @@
 
 namespace Epic.OnlineServices.RTCData
 {
-	/// <summary>
-	/// An enumeration of the different data channel statuses.
-	/// </summary>
-	public enum RTCDataStatus : int
-	{
-		/// <summary>
-		/// Data unsupported
-		/// </summary>
-		Unsupported = 0,
-		/// <summary>
-		/// Data enabled
-		/// </summary>
-		Enabled = 1,
-		/// <summary>
-		/// Data disabled
-		/// </summary>
-		Disabled = 2
-	}
+    /// <summary>
+    /// An enumeration of the different data channel statuses.
+    /// </summary>
+    public enum RTCDataStatus : int
+    {
+        /// <summary>
+        /// Data unsupported
+        /// </summary>
+        Unsupported = 0,
+        /// <summary>
+        /// Data enabled
+        /// </summary>
+        Enabled = 1,
+        /// <summary>
+        /// Data disabled
+        /// </summary>
+        Disabled = 2
+    }
 }

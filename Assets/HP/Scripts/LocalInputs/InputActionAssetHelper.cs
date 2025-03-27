@@ -1,9 +1,7 @@
-using System;
-using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputActionSetupExtensions;
 
-public static class InputActionAssetHelper 
+public static class InputActionAssetHelper
 {
     public static ControlSchemeSyntax CreateControlScheme(InputActionAsset asset, string schemeName)
     {

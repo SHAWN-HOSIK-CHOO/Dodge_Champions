@@ -3,22 +3,22 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// An enumeration of the different audio output device statuses.
-	/// </summary>
-	public enum RTCAudioOutputStatus : int
-	{
-		/// <summary>
-		/// The device is not in used right now (e.g: you are alone in the room). In such cases, the hardware resources are not allocated.
-		/// </summary>
-		Idle = 0,
-		/// <summary>
-		/// Device is in use
-		/// </summary>
-		Playing = 1,
-		/// <summary>
-		/// Something failed while trying to use the device
-		/// </summary>
-		Failed = 2
-	}
+    /// <summary>
+    /// An enumeration of the different audio output device statuses.
+    /// </summary>
+    public enum RTCAudioOutputStatus : int
+    {
+        /// <summary>
+        /// The device is not in used right now (e.g: you are alone in the room). In such cases, the hardware resources are not allocated.
+        /// </summary>
+        Idle = 0,
+        /// <summary>
+        /// Device is in use
+        /// </summary>
+        Playing = 1,
+        /// <summary>
+        /// Something failed while trying to use the device
+        /// </summary>
+        Failed = 2
+    }
 }

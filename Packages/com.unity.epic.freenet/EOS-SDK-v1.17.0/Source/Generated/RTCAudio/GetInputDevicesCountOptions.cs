@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// Input parameters for the <see cref="RTCAudioInterface.GetInputDevicesCount" /> function.
-	/// </summary>
-	public struct GetInputDevicesCountOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="RTCAudioInterface.GetInputDevicesCount" /> function.
+    /// </summary>
+    public struct GetInputDevicesCountOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetInputDevicesCountOptionsInternal : ISettable<GetInputDevicesCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetInputDevicesCountOptionsInternal : ISettable<GetInputDevicesCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref GetInputDevicesCountOptions other)
-		{
-			m_ApiVersion = RTCAudioInterface.GetinputdevicescountApiLatest;
-		}
+        public void Set(ref GetInputDevicesCountOptions other)
+        {
+            m_ApiVersion = RTCAudioInterface.GetinputdevicescountApiLatest;
+        }
 
-		public void Set(ref GetInputDevicesCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = RTCAudioInterface.GetinputdevicescountApiLatest;
-			}
-		}
+        public void Set(ref GetInputDevicesCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = RTCAudioInterface.GetinputdevicescountApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

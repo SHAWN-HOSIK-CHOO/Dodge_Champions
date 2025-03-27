@@ -3,18 +3,18 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Advertisement properties for a single attribute associated with a session
-	/// </summary>
-	public enum SessionAttributeAdvertisementType : int
-	{
-		/// <summary>
-		/// Don't advertise via the online service
-		/// </summary>
-		DontAdvertise = 0,
-		/// <summary>
-		/// Advertise via the online service only
-		/// </summary>
-		Advertise = 1
-	}
+    /// <summary>
+    /// Advertisement properties for a single attribute associated with a session
+    /// </summary>
+    public enum SessionAttributeAdvertisementType : int
+    {
+        /// <summary>
+        /// Don't advertise via the online service
+        /// </summary>
+        DontAdvertise = 0,
+        /// <summary>
+        /// Advertise via the online service only
+        /// </summary>
+        Advertise = 1
+    }
 }

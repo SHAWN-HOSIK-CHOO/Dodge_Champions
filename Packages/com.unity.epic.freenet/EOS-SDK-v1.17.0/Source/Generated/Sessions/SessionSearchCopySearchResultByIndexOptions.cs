@@ -3,49 +3,49 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Input parameters for the <see cref="SessionSearch.CopySearchResultByIndex" /> function.
-	/// </summary>
-	public struct SessionSearchCopySearchResultByIndexOptions
-	{
-		/// <summary>
-		/// The index of the session to retrieve within the completed search query
-		/// <seealso cref="SessionSearch.GetSearchResultCount" />
-		/// </summary>
-		public uint SessionIndex { get; set; }
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="SessionSearch.CopySearchResultByIndex" /> function.
+    /// </summary>
+    public struct SessionSearchCopySearchResultByIndexOptions
+    {
+        /// <summary>
+        /// The index of the session to retrieve within the completed search query
+        /// <seealso cref="SessionSearch.GetSearchResultCount" />
+        /// </summary>
+        public uint SessionIndex { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct SessionSearchCopySearchResultByIndexOptionsInternal : ISettable<SessionSearchCopySearchResultByIndexOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private uint m_SessionIndex;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct SessionSearchCopySearchResultByIndexOptionsInternal : ISettable<SessionSearchCopySearchResultByIndexOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private uint m_SessionIndex;
 
-		public uint SessionIndex
-		{
-			set
-			{
-				m_SessionIndex = value;
-			}
-		}
+        public uint SessionIndex
+        {
+            set
+            {
+                m_SessionIndex = value;
+            }
+        }
 
-		public void Set(ref SessionSearchCopySearchResultByIndexOptions other)
-		{
-			m_ApiVersion = SessionSearch.SessionsearchCopysearchresultbyindexApiLatest;
-			SessionIndex = other.SessionIndex;
-		}
+        public void Set(ref SessionSearchCopySearchResultByIndexOptions other)
+        {
+            m_ApiVersion = SessionSearch.SessionsearchCopysearchresultbyindexApiLatest;
+            SessionIndex = other.SessionIndex;
+        }
 
-		public void Set(ref SessionSearchCopySearchResultByIndexOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionSearch.SessionsearchCopysearchresultbyindexApiLatest;
-				SessionIndex = other.Value.SessionIndex;
-			}
-		}
+        public void Set(ref SessionSearchCopySearchResultByIndexOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionSearch.SessionsearchCopysearchresultbyindexApiLatest;
+                SessionIndex = other.Value.SessionIndex;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

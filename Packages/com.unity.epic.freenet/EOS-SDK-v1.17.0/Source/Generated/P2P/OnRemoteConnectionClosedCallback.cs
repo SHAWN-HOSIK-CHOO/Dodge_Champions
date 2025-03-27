@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Callback for information related to open connections being closed.
-	/// </summary>
-	public delegate void OnRemoteConnectionClosedCallback(ref OnRemoteConnectionClosedInfo data);
+    /// <summary>
+    /// Callback for information related to open connections being closed.
+    /// </summary>
+    public delegate void OnRemoteConnectionClosedCallback(ref OnRemoteConnectionClosedInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnRemoteConnectionClosedCallbackInternal(ref OnRemoteConnectionClosedInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnRemoteConnectionClosedCallbackInternal(ref OnRemoteConnectionClosedInfoInternal data);
 }

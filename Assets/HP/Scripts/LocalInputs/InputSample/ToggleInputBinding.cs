@@ -24,7 +24,7 @@ namespace HP
 
         public void Enable(bool b)
         {
-            if(b)
+            if (b)
             {
                 _inputActionAsset.Enable();
             }

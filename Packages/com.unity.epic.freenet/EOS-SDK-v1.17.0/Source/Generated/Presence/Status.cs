@@ -3,32 +3,32 @@
 
 namespace Epic.OnlineServices.Presence
 {
-	/// <summary>
-	/// Presence Status states of a user
-	/// <seealso cref="PresenceInterface.CopyPresence" />
-	/// <seealso cref="PresenceModification.SetStatus" />
-	/// </summary>
-	public enum Status : int
-	{
-		/// <summary>
-		/// The status of the account is offline or not known
-		/// </summary>
-		Offline = 0,
-		/// <summary>
-		/// The status of the account is online
-		/// </summary>
-		Online = 1,
-		/// <summary>
-		/// The status of the account is away
-		/// </summary>
-		Away = 2,
-		/// <summary>
-		/// The status of the account is away, and has been away for a while
-		/// </summary>
-		ExtendedAway = 3,
-		/// <summary>
-		/// The status of the account is do-not-disturb
-		/// </summary>
-		DoNotDisturb = 4
-	}
+    /// <summary>
+    /// Presence Status states of a user
+    /// <seealso cref="PresenceInterface.CopyPresence" />
+    /// <seealso cref="PresenceModification.SetStatus" />
+    /// </summary>
+    public enum Status : int
+    {
+        /// <summary>
+        /// The status of the account is offline or not known
+        /// </summary>
+        Offline = 0,
+        /// <summary>
+        /// The status of the account is online
+        /// </summary>
+        Online = 1,
+        /// <summary>
+        /// The status of the account is away
+        /// </summary>
+        Away = 2,
+        /// <summary>
+        /// The status of the account is away, and has been away for a while
+        /// </summary>
+        ExtendedAway = 3,
+        /// <summary>
+        /// The status of the account is do-not-disturb
+        /// </summary>
+        DoNotDisturb = 4
+    }
 }

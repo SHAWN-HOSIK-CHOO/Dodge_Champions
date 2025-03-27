@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.IO;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using System.Collections.Generic;
+using System.IO;
 using Unity.CompilationPipeline.Common.Diagnostics;
 using Unity.CompilationPipeline.Common.ILPostProcessing;
 using ILPPInterface = Unity.CompilationPipeline.Common.ILPostProcessing.ILPostProcessor;

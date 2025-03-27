@@ -8,7 +8,7 @@ namespace Ball
         {
             base.Initialize(target, speed, height, horizontalThrow, isThisOwner);
             hitEffectIndex = 6;
-            ballDamage     = 8;
+            ballDamage = 8;
         }
 
         public override float GetCalculatedBallHeight()

@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	public struct AddNotifyJoinLobbyAcceptedOptions
-	{
-	}
+    public struct AddNotifyJoinLobbyAcceptedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyJoinLobbyAcceptedOptionsInternal : ISettable<AddNotifyJoinLobbyAcceptedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyJoinLobbyAcceptedOptionsInternal : ISettable<AddNotifyJoinLobbyAcceptedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyJoinLobbyAcceptedOptions other)
-		{
-			m_ApiVersion = LobbyInterface.AddnotifyjoinlobbyacceptedApiLatest;
-		}
+        public void Set(ref AddNotifyJoinLobbyAcceptedOptions other)
+        {
+            m_ApiVersion = LobbyInterface.AddnotifyjoinlobbyacceptedApiLatest;
+        }
 
-		public void Set(ref AddNotifyJoinLobbyAcceptedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LobbyInterface.AddnotifyjoinlobbyacceptedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyJoinLobbyAcceptedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LobbyInterface.AddnotifyjoinlobbyacceptedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

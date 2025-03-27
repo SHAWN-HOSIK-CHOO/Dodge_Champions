@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.CustomInvites
 {
-	public struct AddNotifyRequestToJoinReceivedOptions
-	{
-	}
+    public struct AddNotifyRequestToJoinReceivedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyRequestToJoinReceivedOptionsInternal : ISettable<AddNotifyRequestToJoinReceivedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyRequestToJoinReceivedOptionsInternal : ISettable<AddNotifyRequestToJoinReceivedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyRequestToJoinReceivedOptions other)
-		{
-			m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinreceivedApiLatest;
-		}
+        public void Set(ref AddNotifyRequestToJoinReceivedOptions other)
+        {
+            m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinreceivedApiLatest;
+        }
 
-		public void Set(ref AddNotifyRequestToJoinReceivedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinreceivedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyRequestToJoinReceivedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinreceivedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

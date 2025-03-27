@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.CustomInvites
 {
-	public struct AddNotifyRequestToJoinRejectedOptions
-	{
-	}
+    public struct AddNotifyRequestToJoinRejectedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyRequestToJoinRejectedOptionsInternal : ISettable<AddNotifyRequestToJoinRejectedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyRequestToJoinRejectedOptionsInternal : ISettable<AddNotifyRequestToJoinRejectedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyRequestToJoinRejectedOptions other)
-		{
-			m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinrejectedApiLatest;
-		}
+        public void Set(ref AddNotifyRequestToJoinRejectedOptions other)
+        {
+            m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinrejectedApiLatest;
+        }
 
-		public void Set(ref AddNotifyRequestToJoinRejectedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinrejectedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyRequestToJoinRejectedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinrejectedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

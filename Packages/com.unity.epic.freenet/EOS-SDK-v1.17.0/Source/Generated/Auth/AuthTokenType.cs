@@ -3,20 +3,20 @@
 
 namespace Epic.OnlineServices.Auth
 {
-	/// <summary>
-	/// Types of auth tokens
-	/// <seealso cref="AuthInterface.CopyUserAuthToken" />
-	/// <seealso cref="Token" />
-	/// </summary>
-	public enum AuthTokenType : int
-	{
-		/// <summary>
-		/// Auth token is for a validated client
-		/// </summary>
-		Client = 0,
-		/// <summary>
-		/// Auth token is for a validated user
-		/// </summary>
-		User = 1
-	}
+    /// <summary>
+    /// Types of auth tokens
+    /// <seealso cref="AuthInterface.CopyUserAuthToken" />
+    /// <seealso cref="Token" />
+    /// </summary>
+    public enum AuthTokenType : int
+    {
+        /// <summary>
+        /// Auth token is for a validated client
+        /// </summary>
+        Client = 0,
+        /// <summary>
+        /// Auth token is for a validated user
+        /// </summary>
+        User = 1
+    }
 }

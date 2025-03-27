@@ -1,7 +1,7 @@
+using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Reflection;
-using NUnit.Framework;
 using Unity.Collections;
 using UnityEngine;
 using Random = System.Random;

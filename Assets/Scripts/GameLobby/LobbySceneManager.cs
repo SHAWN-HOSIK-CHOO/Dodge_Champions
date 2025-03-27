@@ -1,18 +1,16 @@
-using System;
-using System.Collections;
 using Game;
+using System.Collections;
 using Unity.Netcode;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using TMPro;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
-using UnityEngine.UI;
-using Unity.Services.Core;
 using Unity.Services.Authentication;
+using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEditor;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace GameLobby
 {
@@ -21,17 +19,17 @@ namespace GameLobby
         public GameObject pfNetworkManager;
 
         public Button startNetworkManager;
-        
+
         [Header("Debug")]
         public Button startHostDb;
         public Button startClientDb;
 
-        [Header("Confirm Button")] 
+        [Header("Confirm Button")]
         public Button confirmButton;
 
-        [Header("Start Button")] 
+        [Header("Start Button")]
         public Button startGameButton;
-        
+
         async void Start()
         {
             SceneManagerWrapper.LoadScene("LobbyUI", LoadSceneMode.Additive);
@@ -45,16 +43,16 @@ namespace GameLobby
             {
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
             }
-            
+
             startNetworkManager.onClick.AddListener(InstantiateNetworkManager);
             confirmButton.onClick.AddListener(Callback_Btn_ConfirmSelection);
             startGameButton.onClick.AddListener(Callback_Btn_StartGame);
-            
-            
+
+
             if (NetworkManager.Singleton != null)
                 NetworkManager.Singleton.OnClientConnectedCallback += Callback_onClientsConnected;
         }
-        
+
 
         private void OnDestroy()
         {
@@ -65,7 +63,7 @@ namespace GameLobby
             confirmButton.onClick.RemoveAllListeners();
             startGameButton.onClick.RemoveAllListeners();
         }
-        
+
         private void Callback_Btn_ConfirmSelection()
         {
             //PlayerSelectionManager.Instance.SetPlayerSelection(selectedBallIndex, selectedSkillIndex);
@@ -73,7 +71,7 @@ namespace GameLobby
             //여기서 멀티모드 선언
             GameMode.Instance.CurrentGameMode = EGameMode.MULTIPLAER;
         }
-        
+
         public void Callback_Btn_StartGame()
         {
             if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
@@ -81,7 +79,7 @@ namespace GameLobby
                 NetworkManager.Singleton.SceneManager.LoadScene("Stage", LoadSceneMode.Single);
             }
         }
-        
+
         private IEnumerator CoRestartNetworkManager()
         {
             if (NetworkManager.Singleton != null)
@@ -114,22 +112,22 @@ namespace GameLobby
             {
                 return;
             }
-            
+
             if (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
             {
-                NetworkManager.Singleton.Shutdown(); 
+                NetworkManager.Singleton.Shutdown();
             }
         }
         //DEBUG
         public void ExitApplication()
         {
 #if UNITY_EDITOR
-            EditorApplication.isPlaying = false; 
+            EditorApplication.isPlaying = false;
 #else
             Application.Quit(); 
 #endif
         }
-        
+
         public void Debug_StartHost()
         {
             if (NetworkManager.Singleton != null)
@@ -153,26 +151,26 @@ namespace GameLobby
                 Debug.LogError("NetworkManager is null");
             }
         }
-        
+
         //TODO: Delete All Legacy
         async void Callback_btn_CreateRelay()
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
-            string     joinCode   = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             //joinCodeText.text = "Code: " + joinCode;
-            RelayServerData relayServerData = AllocationUtils.ToRelayServerData(allocation,"dtls");
+            RelayServerData relayServerData = AllocationUtils.ToRelayServerData(allocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartHost();
         }
         async void Callback_btn_JoinRelay(string code)
         {
-            var joinAllocation  = await RelayService.Instance.JoinAllocationAsync(code);
-            var relayServerData = AllocationUtils.ToRelayServerData(joinAllocation,"dtls");
+            var joinAllocation = await RelayService.Instance.JoinAllocationAsync(code);
+            var relayServerData = AllocationUtils.ToRelayServerData(joinAllocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
         }
-        
+
         private void Callback_onClientsConnected(ulong clientID)
         {
             if (NetworkManager.Singleton.ConnectedClientsList.Count == 2)

@@ -3,67 +3,67 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// Input parameters for the <see cref="EcomInterface.RedeemEntitlements" /> function.
-	/// </summary>
-	public struct RedeemEntitlementsOptions
-	{
-		/// <summary>
-		/// The Epic Account ID of the user who is redeeming Entitlements
-		/// </summary>
-		public EpicAccountId LocalUserId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="EcomInterface.RedeemEntitlements" /> function.
+    /// </summary>
+    public struct RedeemEntitlementsOptions
+    {
+        /// <summary>
+        /// The Epic Account ID of the user who is redeeming Entitlements
+        /// </summary>
+        public EpicAccountId LocalUserId { get; set; }
 
-		/// <summary>
-		/// The array of Entitlements to redeem
-		/// </summary>
-		public Utf8String[] EntitlementIds { get; set; }
-	}
+        /// <summary>
+        /// The array of Entitlements to redeem
+        /// </summary>
+        public Utf8String[] EntitlementIds { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct RedeemEntitlementsOptionsInternal : ISettable<RedeemEntitlementsOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
-		private uint m_EntitlementIdCount;
-		private System.IntPtr m_EntitlementIds;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct RedeemEntitlementsOptionsInternal : ISettable<RedeemEntitlementsOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
+        private uint m_EntitlementIdCount;
+        private System.IntPtr m_EntitlementIds;
 
-		public EpicAccountId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public EpicAccountId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public Utf8String[] EntitlementIds
-		{
-			set
-			{
-				Helper.Set(value, ref m_EntitlementIds, out m_EntitlementIdCount);
-			}
-		}
+        public Utf8String[] EntitlementIds
+        {
+            set
+            {
+                Helper.Set(value, ref m_EntitlementIds, out m_EntitlementIdCount);
+            }
+        }
 
-		public void Set(ref RedeemEntitlementsOptions other)
-		{
-			m_ApiVersion = EcomInterface.RedeementitlementsApiLatest;
-			LocalUserId = other.LocalUserId;
-			EntitlementIds = other.EntitlementIds;
-		}
+        public void Set(ref RedeemEntitlementsOptions other)
+        {
+            m_ApiVersion = EcomInterface.RedeementitlementsApiLatest;
+            LocalUserId = other.LocalUserId;
+            EntitlementIds = other.EntitlementIds;
+        }
 
-		public void Set(ref RedeemEntitlementsOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = EcomInterface.RedeementitlementsApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-				EntitlementIds = other.Value.EntitlementIds;
-			}
-		}
+        public void Set(ref RedeemEntitlementsOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = EcomInterface.RedeementitlementsApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+                EntitlementIds = other.Value.EntitlementIds;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-			Helper.Dispose(ref m_EntitlementIds);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+            Helper.Dispose(ref m_EntitlementIds);
+        }
+    }
 }

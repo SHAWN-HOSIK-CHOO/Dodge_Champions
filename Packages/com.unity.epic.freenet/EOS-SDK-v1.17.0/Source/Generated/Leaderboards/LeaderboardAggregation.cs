@@ -3,26 +3,26 @@
 
 namespace Epic.OnlineServices.Leaderboards
 {
-	/// <summary>
-	/// An enumeration of the different leaderboard aggregation types.
-	/// </summary>
-	public enum LeaderboardAggregation : int
-	{
-		/// <summary>
-		/// Minimum
-		/// </summary>
-		Min = 0,
-		/// <summary>
-		/// Maximum
-		/// </summary>
-		Max = 1,
-		/// <summary>
-		/// Sum
-		/// </summary>
-		Sum = 2,
-		/// <summary>
-		/// Latest
-		/// </summary>
-		Latest = 3
-	}
+    /// <summary>
+    /// An enumeration of the different leaderboard aggregation types.
+    /// </summary>
+    public enum LeaderboardAggregation : int
+    {
+        /// <summary>
+        /// Minimum
+        /// </summary>
+        Min = 0,
+        /// <summary>
+        /// Maximum
+        /// </summary>
+        Max = 1,
+        /// <summary>
+        /// Sum
+        /// </summary>
+        Sum = 2,
+        /// <summary>
+        /// Latest
+        /// </summary>
+        Latest = 3
+    }
 }

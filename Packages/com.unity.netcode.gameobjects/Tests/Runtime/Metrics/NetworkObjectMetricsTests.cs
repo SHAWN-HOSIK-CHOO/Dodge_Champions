@@ -1,13 +1,12 @@
 #if MULTIPLAYER_TOOLS
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Unity.Multiplayer.Tools.MetricTypes;
+using Unity.Netcode.TestHelpers.Runtime.Metrics;
 using UnityEngine;
 using UnityEngine.TestTools;
-
-using Unity.Netcode.TestHelpers.Runtime.Metrics;
 
 namespace Unity.Netcode.RuntimeTests.Metrics
 {

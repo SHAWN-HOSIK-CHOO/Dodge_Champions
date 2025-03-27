@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.IntegratedPlatform
 {
-	/// <summary>
-	/// The callback function for when an integrated platform user is detected to have logged-out.
-	/// </summary>
-	public delegate IntegratedPlatformPreLogoutAction OnUserPreLogoutCallback(ref UserPreLogoutCallbackInfo data);
+    /// <summary>
+    /// The callback function for when an integrated platform user is detected to have logged-out.
+    /// </summary>
+    public delegate IntegratedPlatformPreLogoutAction OnUserPreLogoutCallback(ref UserPreLogoutCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate IntegratedPlatformPreLogoutAction OnUserPreLogoutCallbackInternal(ref UserPreLogoutCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate IntegratedPlatformPreLogoutAction OnUserPreLogoutCallbackInternal(ref UserPreLogoutCallbackInfoInternal data);
 }

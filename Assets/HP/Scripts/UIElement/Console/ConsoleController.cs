@@ -1,12 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
-using HP;
+﻿using HP;
 using System;
-using static System.Net.Mime.MediaTypeNames;
-public class ConsoleController : MonoBehaviour {
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+public class ConsoleController : MonoBehaviour
+{
 
     [SerializeField]
     GameObject _inputFieldObject;
@@ -24,7 +22,7 @@ public class ConsoleController : MonoBehaviour {
     private void Awake()
     {
         _inputField.onSubmit.AddListener(OnSubmit);
-       
+
     }
     private void Start()
     {
@@ -45,9 +43,9 @@ public class ConsoleController : MonoBehaviour {
     {
         if (newLine) _textField.text += "\n";
 
-        if(_inputField._InputMode == CutomTMPInputField.InputMode.S)
+        if (_inputField._InputMode == CutomTMPInputField.InputMode.S)
         {
-            _textField.text +=$"<color=yellow>{text}</color>";
+            _textField.text += $"<color=yellow>{text}</color>";
         }
         else
         {

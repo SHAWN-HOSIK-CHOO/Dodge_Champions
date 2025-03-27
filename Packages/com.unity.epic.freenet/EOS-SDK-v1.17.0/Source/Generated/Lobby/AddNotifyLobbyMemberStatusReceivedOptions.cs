@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Input parameters for the <see cref="LobbyInterface.AddNotifyLobbyMemberStatusReceived" /> function.
-	/// </summary>
-	public struct AddNotifyLobbyMemberStatusReceivedOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="LobbyInterface.AddNotifyLobbyMemberStatusReceived" /> function.
+    /// </summary>
+    public struct AddNotifyLobbyMemberStatusReceivedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyLobbyMemberStatusReceivedOptionsInternal : ISettable<AddNotifyLobbyMemberStatusReceivedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyLobbyMemberStatusReceivedOptionsInternal : ISettable<AddNotifyLobbyMemberStatusReceivedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyLobbyMemberStatusReceivedOptions other)
-		{
-			m_ApiVersion = LobbyInterface.AddnotifylobbymemberstatusreceivedApiLatest;
-		}
+        public void Set(ref AddNotifyLobbyMemberStatusReceivedOptions other)
+        {
+            m_ApiVersion = LobbyInterface.AddnotifylobbymemberstatusreceivedApiLatest;
+        }
 
-		public void Set(ref AddNotifyLobbyMemberStatusReceivedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LobbyInterface.AddnotifylobbymemberstatusreceivedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyLobbyMemberStatusReceivedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LobbyInterface.AddnotifylobbymemberstatusreceivedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

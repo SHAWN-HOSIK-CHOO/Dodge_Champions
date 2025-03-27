@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.IntegratedPlatform
 {
-	/// <summary>
-	/// Input parameters for the <see cref="IntegratedPlatformInterface.ClearUserPreLogoutCallback" /> function.
-	/// </summary>
-	public struct ClearUserPreLogoutCallbackOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="IntegratedPlatformInterface.ClearUserPreLogoutCallback" /> function.
+    /// </summary>
+    public struct ClearUserPreLogoutCallbackOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct ClearUserPreLogoutCallbackOptionsInternal : ISettable<ClearUserPreLogoutCallbackOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct ClearUserPreLogoutCallbackOptionsInternal : ISettable<ClearUserPreLogoutCallbackOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref ClearUserPreLogoutCallbackOptions other)
-		{
-			m_ApiVersion = IntegratedPlatformInterface.ClearuserprelogoutcallbackApiLatest;
-		}
+        public void Set(ref ClearUserPreLogoutCallbackOptions other)
+        {
+            m_ApiVersion = IntegratedPlatformInterface.ClearuserprelogoutcallbackApiLatest;
+        }
 
-		public void Set(ref ClearUserPreLogoutCallbackOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = IntegratedPlatformInterface.ClearuserprelogoutcallbackApiLatest;
-			}
-		}
+        public void Set(ref ClearUserPreLogoutCallbackOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = IntegratedPlatformInterface.ClearuserprelogoutcallbackApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

@@ -7,13 +7,13 @@ namespace Skill
     public class Skill_Dash : SkillBase
     {
         public override ESkillInputType ThisSkillType => ESkillInputType.Vector3Target;
-        
-        public float dashSpeed       = 20f;
-        public float dashDuration    = 0.2f;
+
+        public float dashSpeed = 20f;
+        public float dashDuration = 0.2f;
         public float bounceBackForce = 2f; // 튕겨져 나오는 힘
 
         private Vector3 _direction;
-        
+
         public override IEnumerator Activate(CharacterController characterController, ISkillInput input)
         {
             if (input is TargetVector3Input dashInput)

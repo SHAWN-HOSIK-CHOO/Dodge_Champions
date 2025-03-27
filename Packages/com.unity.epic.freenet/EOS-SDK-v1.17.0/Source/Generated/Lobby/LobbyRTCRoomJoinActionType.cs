@@ -3,18 +3,18 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Defines the type of action to take against RTC room when joining a lobby
-	/// </summary>
-	public enum LobbyRTCRoomJoinActionType : int
-	{
-		/// <summary>
-		/// Join RTC Room as soon as user joins the lobby
-		/// </summary>
-		AutomaticJoin = 0,
-		/// <summary>
-		/// Do not join RTC Room when joining the lobby. User must manually call Join RTC Room
-		/// </summary>
-		ManualJoin = 1
-	}
+    /// <summary>
+    /// Defines the type of action to take against RTC room when joining a lobby
+    /// </summary>
+    public enum LobbyRTCRoomJoinActionType : int
+    {
+        /// <summary>
+        /// Join RTC Room as soon as user joins the lobby
+        /// </summary>
+        AutomaticJoin = 0,
+        /// <summary>
+        /// Do not join RTC Room when joining the lobby. User must manually call Join RTC Room
+        /// </summary>
+        ManualJoin = 1
+    }
 }

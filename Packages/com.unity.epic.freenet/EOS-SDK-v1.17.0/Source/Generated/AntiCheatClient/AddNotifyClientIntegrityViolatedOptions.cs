@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.AntiCheatClient
 {
-	public struct AddNotifyClientIntegrityViolatedOptions
-	{
-	}
+    public struct AddNotifyClientIntegrityViolatedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyClientIntegrityViolatedOptionsInternal : ISettable<AddNotifyClientIntegrityViolatedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyClientIntegrityViolatedOptionsInternal : ISettable<AddNotifyClientIntegrityViolatedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyClientIntegrityViolatedOptions other)
-		{
-			m_ApiVersion = AntiCheatClientInterface.AddnotifyclientintegrityviolatedApiLatest;
-		}
+        public void Set(ref AddNotifyClientIntegrityViolatedOptions other)
+        {
+            m_ApiVersion = AntiCheatClientInterface.AddnotifyclientintegrityviolatedApiLatest;
+        }
 
-		public void Set(ref AddNotifyClientIntegrityViolatedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatClientInterface.AddnotifyclientintegrityviolatedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyClientIntegrityViolatedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatClientInterface.AddnotifyclientintegrityviolatedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

@@ -3,18 +3,18 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// An enumeration of the different ownership statuses.
-	/// </summary>
-	public enum OwnershipStatus : int
-	{
-		/// <summary>
-		/// The catalog item is not owned by the local user
-		/// </summary>
-		NotOwned = 0,
-		/// <summary>
-		/// The catalog item is owned by the local user
-		/// </summary>
-		Owned = 1
-	}
+    /// <summary>
+    /// An enumeration of the different ownership statuses.
+    /// </summary>
+    public enum OwnershipStatus : int
+    {
+        /// <summary>
+        /// The catalog item is not owned by the local user
+        /// </summary>
+        NotOwned = 0,
+        /// <summary>
+        /// The catalog item is owned by the local user
+        /// </summary>
+        Owned = 1
+    }
 }

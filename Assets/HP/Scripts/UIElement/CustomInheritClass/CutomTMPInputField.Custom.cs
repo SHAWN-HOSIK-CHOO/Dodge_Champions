@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 namespace HP
 {
     public partial class CutomTMPInputField
@@ -220,7 +219,7 @@ namespace HP
             }
             else if (multiLine)
             {
-                if (_inputModeLayout.gameObject.activeSelf&&!shift && c == '\t')
+                if (_inputModeLayout.gameObject.activeSelf && !shift && c == '\t')
                 {
                     _InputMode = _InputMode = (InputMode)(((int)_InputMode + 1) % System.Enum.GetValues(typeof(InputMode)).Length);
                     _inputModeText.text = _InputMode.ToString();

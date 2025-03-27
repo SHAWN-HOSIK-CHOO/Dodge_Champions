@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Input parameters for the <see cref="LobbyDetails.GetAttributeCount" /> function.
-	/// </summary>
-	public struct LobbyDetailsGetAttributeCountOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="LobbyDetails.GetAttributeCount" /> function.
+    /// </summary>
+    public struct LobbyDetailsGetAttributeCountOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct LobbyDetailsGetAttributeCountOptionsInternal : ISettable<LobbyDetailsGetAttributeCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct LobbyDetailsGetAttributeCountOptionsInternal : ISettable<LobbyDetailsGetAttributeCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref LobbyDetailsGetAttributeCountOptions other)
-		{
-			m_ApiVersion = LobbyDetails.LobbydetailsGetattributecountApiLatest;
-		}
+        public void Set(ref LobbyDetailsGetAttributeCountOptions other)
+        {
+            m_ApiVersion = LobbyDetails.LobbydetailsGetattributecountApiLatest;
+        }
 
-		public void Set(ref LobbyDetailsGetAttributeCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LobbyDetails.LobbydetailsGetattributecountApiLatest;
-			}
-		}
+        public void Set(ref LobbyDetailsGetAttributeCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LobbyDetails.LobbydetailsGetattributecountApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

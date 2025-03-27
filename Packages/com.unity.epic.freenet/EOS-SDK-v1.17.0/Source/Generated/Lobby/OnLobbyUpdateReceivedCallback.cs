@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Function prototype definition for notifications that comes from <see cref="LobbyInterface.AddNotifyLobbyUpdateReceived" />
-	/// </summary>
-	/// <param name="data">A <see cref="LobbyUpdateReceivedCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnLobbyUpdateReceivedCallback(ref LobbyUpdateReceivedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that comes from <see cref="LobbyInterface.AddNotifyLobbyUpdateReceived" />
+    /// </summary>
+    /// <param name="data">A <see cref="LobbyUpdateReceivedCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnLobbyUpdateReceivedCallback(ref LobbyUpdateReceivedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnLobbyUpdateReceivedCallbackInternal(ref LobbyUpdateReceivedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnLobbyUpdateReceivedCallbackInternal(ref LobbyUpdateReceivedCallbackInfoInternal data);
 }

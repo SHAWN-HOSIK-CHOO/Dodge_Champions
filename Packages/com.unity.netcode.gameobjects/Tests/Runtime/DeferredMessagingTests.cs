@@ -1,11 +1,10 @@
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Unity.Netcode.TestHelpers.Runtime;
 using UnityEngine;
 using UnityEngine.TestTools;
-
 using Object = UnityEngine.Object;
 
 namespace Unity.Netcode.RuntimeTests

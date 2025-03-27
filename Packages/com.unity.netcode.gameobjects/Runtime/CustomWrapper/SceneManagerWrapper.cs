@@ -51,7 +51,7 @@ public static class SceneManagerWrapper
     {
 #if UNITY_EDITOR
         var scenes = EditorBuildSettingsScene.GetActiveSceneList(EditorBuildSettings.scenes);
-        for (int i = 0; i<scenes.Length; i++)
+        for (int i = 0; i < scenes.Length; i++)
         {
             if (i == index)
             {

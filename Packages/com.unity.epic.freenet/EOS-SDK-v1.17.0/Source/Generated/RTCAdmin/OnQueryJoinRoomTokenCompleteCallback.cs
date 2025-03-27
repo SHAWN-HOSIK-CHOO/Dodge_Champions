@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.RTCAdmin
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="RTCAdminInterface.QueryJoinRoomToken" />
-	/// </summary>
-	/// <param name="data">An <see cref="QueryJoinRoomTokenCompleteCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnQueryJoinRoomTokenCompleteCallback(ref QueryJoinRoomTokenCompleteCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="RTCAdminInterface.QueryJoinRoomToken" />
+    /// </summary>
+    /// <param name="data">An <see cref="QueryJoinRoomTokenCompleteCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnQueryJoinRoomTokenCompleteCallback(ref QueryJoinRoomTokenCompleteCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryJoinRoomTokenCompleteCallbackInternal(ref QueryJoinRoomTokenCompleteCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryJoinRoomTokenCompleteCallbackInternal(ref QueryJoinRoomTokenCompleteCallbackInfoInternal data);
 }

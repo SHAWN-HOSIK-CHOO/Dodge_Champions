@@ -1,4 +1,3 @@
-using System;
 using CharacterAttributes;
 using GameInput;
 using Unity.Netcode;
@@ -10,7 +9,7 @@ namespace SinglePlayer
     public class SinglePlayerGM : MonoBehaviour
     {
         private static SinglePlayerGM _instance = null;
-        public static  SinglePlayerGM Instance => _instance == null ? null : _instance;
+        public static SinglePlayerGM Instance => _instance == null ? null : _instance;
 
         private void Awake()
         {
@@ -23,7 +22,7 @@ namespace SinglePlayer
             {
                 Destroy(this.gameObject);
             }
-            
+
             Initialize();
         }
 
@@ -33,12 +32,12 @@ namespace SinglePlayer
         public GameObject pfEnemyNpc;
 
         public GameObject pfSinglePlayerSpawner = null;
-        public Transform  playerSpawnTransform  = null;
-        public Transform  enemySpawnTransform   = null;
+        public Transform playerSpawnTransform = null;
+        public Transform enemySpawnTransform = null;
         public GameObject enemyNpc;
 
         public GameObject pfCurrentBall;
-        
+
         public bool isPlayerTurn = false;
 
         private bool _isGameReadyToStart;
@@ -50,9 +49,9 @@ namespace SinglePlayer
             {
                 if (_isGameReadyToStart != value) // 값이 변경될 때만 수행
                 {
-                    _isGameReadyToStart                                      = value;
-                    isPlayerTurn                                             = true;
-                    InputManager.Instance.canThrowBall                       = true;
+                    _isGameReadyToStart = value;
+                    isPlayerTurn = true;
+                    InputManager.Instance.canThrowBall = true;
                     localPlayer.GetComponent<CharacterManager>().hitApproved = true;
                     attackImage.gameObject.SetActive(true);
                     defenseImage.gameObject.SetActive(false);
@@ -61,13 +60,13 @@ namespace SinglePlayer
         }
 
 
-        [Header("UI")] 
+        [Header("UI")]
         public Image playerFillImage;
         public Image attackImage;
         public Image defenseImage;
 
         private SinglePlayerSpawner _singlePlayerSpawner;
-        private GameObject          _singlePlayerSpawnerGameObject = null;
+        private GameObject _singlePlayerSpawnerGameObject = null;
 
         private void Start()
         {
@@ -82,8 +81,8 @@ namespace SinglePlayer
 
         private void InitializeDefaultProperties()
         {
-            IsGameReadyToStart                 = false;
-            isPlayerTurn                       = false;
+            IsGameReadyToStart = false;
+            isPlayerTurn = false;
             InputManager.Instance.canThrowBall = false;
         }
         private void InitializeSinglePlayerSpawner()
@@ -92,8 +91,8 @@ namespace SinglePlayer
             {
                 Debug.LogError("NetworkManager is missing");
             }
-            
-            _singlePlayerSpawnerGameObject = Instantiate(pfSinglePlayerSpawner, Vector3.zero,Quaternion.identity );
+
+            _singlePlayerSpawnerGameObject = Instantiate(pfSinglePlayerSpawner, Vector3.zero, Quaternion.identity);
             NetworkObject networkObject = _singlePlayerSpawnerGameObject.GetComponent<NetworkObject>();
             if (networkObject == null)
             {
@@ -105,14 +104,14 @@ namespace SinglePlayer
                 networkObject.Spawn();
 
                 _singlePlayerSpawner = _singlePlayerSpawnerGameObject.GetComponent<SinglePlayerSpawner>();
-                localPlayer          = _singlePlayerSpawner.SpawnLocalPlayer(playerSpawnTransform);
+                localPlayer = _singlePlayerSpawner.SpawnLocalPlayer(playerSpawnTransform);
             }
             else
             {
                 Debug.LogError("Cannot spawn net objects on a non-host client");
             }
         }
-        
+
         public void StartGame()
         {
             DisplayCutScene(0);
@@ -135,7 +134,7 @@ namespace SinglePlayer
         public void SwitchTurn()
         {
             Debug.Log($"Requested turn swap to -> {!isPlayerTurn}");
-            
+
             isPlayerTurn = !isPlayerTurn;
 
             if (isPlayerTurn)
@@ -143,16 +142,16 @@ namespace SinglePlayer
                 attackImage.gameObject.SetActive(true);
                 defenseImage.gameObject.SetActive(false);
                 localPlayer.GetComponent<CharacterManager>().hitApproved = true;
-                InputManager.Instance.canThrowBall                       = true;
+                InputManager.Instance.canThrowBall = true;
             }
             else
             {
                 attackImage.gameObject.SetActive(false);
                 defenseImage.gameObject.SetActive(true);
                 localPlayer.GetComponent<CharacterManager>().hitApproved = false;
-                InputManager.Instance.canThrowBall                       = false;
+                InputManager.Instance.canThrowBall = false;
             }
-            
+
             PreSwitchTurnActions();
         }
 
@@ -167,11 +166,11 @@ namespace SinglePlayer
             {
                 Debug.Log("적 등장");
             }
-            else if(index == 1)
+            else if (index == 1)
             {
                 Debug.Log("적 퇴장");
             }
-            
+
         }
 
         private void PreSwitchTurnActions()

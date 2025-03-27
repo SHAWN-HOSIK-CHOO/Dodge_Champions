@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Input parameters for the <see cref="LobbyDetails.GetMemberCount" /> function.
-	/// </summary>
-	public struct LobbyDetailsGetMemberCountOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="LobbyDetails.GetMemberCount" /> function.
+    /// </summary>
+    public struct LobbyDetailsGetMemberCountOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct LobbyDetailsGetMemberCountOptionsInternal : ISettable<LobbyDetailsGetMemberCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct LobbyDetailsGetMemberCountOptionsInternal : ISettable<LobbyDetailsGetMemberCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref LobbyDetailsGetMemberCountOptions other)
-		{
-			m_ApiVersion = LobbyDetails.LobbydetailsGetmembercountApiLatest;
-		}
+        public void Set(ref LobbyDetailsGetMemberCountOptions other)
+        {
+            m_ApiVersion = LobbyDetails.LobbydetailsGetmembercountApiLatest;
+        }
 
-		public void Set(ref LobbyDetailsGetMemberCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LobbyDetails.LobbydetailsGetmembercountApiLatest;
-			}
-		}
+        public void Set(ref LobbyDetailsGetMemberCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LobbyDetails.LobbydetailsGetmembercountApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

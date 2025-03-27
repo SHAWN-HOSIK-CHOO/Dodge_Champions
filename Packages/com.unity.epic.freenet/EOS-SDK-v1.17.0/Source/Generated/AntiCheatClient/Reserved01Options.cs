@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.AntiCheatClient
 {
-	public struct Reserved01Options
-	{
-	}
+    public struct Reserved01Options
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct Reserved01OptionsInternal : ISettable<Reserved01Options>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct Reserved01OptionsInternal : ISettable<Reserved01Options>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref Reserved01Options other)
-		{
-			m_ApiVersion = AntiCheatClientInterface.Reserved01ApiLatest;
-		}
+        public void Set(ref Reserved01Options other)
+        {
+            m_ApiVersion = AntiCheatClientInterface.Reserved01ApiLatest;
+        }
 
-		public void Set(ref Reserved01Options? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatClientInterface.Reserved01ApiLatest;
-			}
-		}
+        public void Set(ref Reserved01Options? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatClientInterface.Reserved01ApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

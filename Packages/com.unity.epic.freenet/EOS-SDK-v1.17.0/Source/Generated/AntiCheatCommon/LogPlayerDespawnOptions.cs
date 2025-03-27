@@ -3,46 +3,46 @@
 
 namespace Epic.OnlineServices.AntiCheatCommon
 {
-	public struct LogPlayerDespawnOptions
-	{
-		/// <summary>
-		/// Locally unique value used in RegisterClient/RegisterPeer
-		/// </summary>
-		public System.IntPtr DespawnedPlayerHandle { get; set; }
-	}
+    public struct LogPlayerDespawnOptions
+    {
+        /// <summary>
+        /// Locally unique value used in RegisterClient/RegisterPeer
+        /// </summary>
+        public System.IntPtr DespawnedPlayerHandle { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct LogPlayerDespawnOptionsInternal : ISettable<LogPlayerDespawnOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_DespawnedPlayerHandle;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct LogPlayerDespawnOptionsInternal : ISettable<LogPlayerDespawnOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_DespawnedPlayerHandle;
 
-		public System.IntPtr DespawnedPlayerHandle
-		{
-			set
-			{
-				m_DespawnedPlayerHandle = value;
-			}
-		}
+        public System.IntPtr DespawnedPlayerHandle
+        {
+            set
+            {
+                m_DespawnedPlayerHandle = value;
+            }
+        }
 
-		public void Set(ref LogPlayerDespawnOptions other)
-		{
-			m_ApiVersion = AntiCheatCommonInterface.LogplayerdespawnApiLatest;
-			DespawnedPlayerHandle = other.DespawnedPlayerHandle;
-		}
+        public void Set(ref LogPlayerDespawnOptions other)
+        {
+            m_ApiVersion = AntiCheatCommonInterface.LogplayerdespawnApiLatest;
+            DespawnedPlayerHandle = other.DespawnedPlayerHandle;
+        }
 
-		public void Set(ref LogPlayerDespawnOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatCommonInterface.LogplayerdespawnApiLatest;
-				DespawnedPlayerHandle = other.Value.DespawnedPlayerHandle;
-			}
-		}
+        public void Set(ref LogPlayerDespawnOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatCommonInterface.LogplayerdespawnApiLatest;
+                DespawnedPlayerHandle = other.Value.DespawnedPlayerHandle;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_DespawnedPlayerHandle);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_DespawnedPlayerHandle);
+        }
+    }
 }

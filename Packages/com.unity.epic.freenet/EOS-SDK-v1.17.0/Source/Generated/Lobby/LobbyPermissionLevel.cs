@@ -3,22 +3,22 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Permission level gets more restrictive further down
-	/// </summary>
-	public enum LobbyPermissionLevel : int
-	{
-		/// <summary>
-		/// Anyone can find this lobby as long as it isn't full
-		/// </summary>
-		Publicadvertised = 0,
-		/// <summary>
-		/// Players who have access to presence can see this lobby
-		/// </summary>
-		Joinviapresence = 1,
-		/// <summary>
-		/// Only players with invites registered can see this lobby
-		/// </summary>
-		Inviteonly = 2
-	}
+    /// <summary>
+    /// Permission level gets more restrictive further down
+    /// </summary>
+    public enum LobbyPermissionLevel : int
+    {
+        /// <summary>
+        /// Anyone can find this lobby as long as it isn't full
+        /// </summary>
+        Publicadvertised = 0,
+        /// <summary>
+        /// Players who have access to presence can see this lobby
+        /// </summary>
+        Joinviapresence = 1,
+        /// <summary>
+        /// Only players with invites registered can see this lobby
+        /// </summary>
+        Inviteonly = 2
+    }
 }

@@ -135,10 +135,8 @@ namespace Unity.Netcode
             Advance(m_NetworkManager.RealTimeProvider.UnscaledDeltaTime);
             m_NetworkTickSystem.UpdateTick(LocalTime, ServerTime);
 
-            if (!m_ConnectionManager.LocalClient.IsServer)
-            {
+            if (m_NetworkManager.IsClient)
                 Sync(LastSyncedServerTimeSec + m_NetworkManager.RealTimeProvider.UnscaledDeltaTime, m_NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId) / 1000d);
-            }
         }
 
         /// <summary>
@@ -211,17 +209,18 @@ namespace Unity.Netcode
             }
             else
             {
-                double localRange = m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset;
-                if (Math.Abs(localRange) > double.Epsilon)
+                double localRange = Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset);
+                if (localRange > double.Epsilon)
                 {
                     m_CurrentLocalTimeOffset = m_CurrentLocalTimeOffset + (m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
                 }
-                localRange = m_DesiredServerTimeOffset - m_CurrentServerTimeOffset;
-                if (Math.Abs(localRange) > double.Epsilon)
+                localRange = Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset);
+                if (localRange > double.Epsilon)
                 {
                     m_CurrentServerTimeOffset = m_CurrentServerTimeOffset + (m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
                 }
             }
+
             return true;
         }
 
@@ -250,6 +249,15 @@ namespace Unity.Netcode
 
             m_DesiredServerTimeOffset = timeDif - ServerBufferSec;
             m_DesiredLocalTimeOffset = timeDif + rttSec + LocalBufferSec;
+
+            if (ServerTime < 0)
+            {
+                m_DesiredServerTimeOffset = -m_TimeSec;
+            }
+            if (LocalTime < 0)
+            {
+                m_DesiredLocalTimeOffset = -m_TimeSec;
+            }
         }
     }
 }

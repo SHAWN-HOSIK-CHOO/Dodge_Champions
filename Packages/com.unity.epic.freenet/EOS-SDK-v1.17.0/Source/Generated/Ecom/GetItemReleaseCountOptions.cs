@@ -3,66 +3,66 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// Input parameters for the <see cref="EcomInterface.GetItemReleaseCount" /> function.
-	/// </summary>
-	public struct GetItemReleaseCountOptions
-	{
-		/// <summary>
-		/// The Epic Account ID of the local user whose item release is being accessed
-		/// </summary>
-		public EpicAccountId LocalUserId { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="EcomInterface.GetItemReleaseCount" /> function.
+    /// </summary>
+    public struct GetItemReleaseCountOptions
+    {
+        /// <summary>
+        /// The Epic Account ID of the local user whose item release is being accessed
+        /// </summary>
+        public EpicAccountId LocalUserId { get; set; }
 
-		/// <summary>
-		/// The ID of the item to get the releases for.
-		/// </summary>
-		public Utf8String ItemId { get; set; }
-	}
+        /// <summary>
+        /// The ID of the item to get the releases for.
+        /// </summary>
+        public Utf8String ItemId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetItemReleaseCountOptionsInternal : ISettable<GetItemReleaseCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_LocalUserId;
-		private System.IntPtr m_ItemId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetItemReleaseCountOptionsInternal : ISettable<GetItemReleaseCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_LocalUserId;
+        private System.IntPtr m_ItemId;
 
-		public EpicAccountId LocalUserId
-		{
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+        public EpicAccountId LocalUserId
+        {
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public Utf8String ItemId
-		{
-			set
-			{
-				Helper.Set(value, ref m_ItemId);
-			}
-		}
+        public Utf8String ItemId
+        {
+            set
+            {
+                Helper.Set(value, ref m_ItemId);
+            }
+        }
 
-		public void Set(ref GetItemReleaseCountOptions other)
-		{
-			m_ApiVersion = EcomInterface.GetitemreleasecountApiLatest;
-			LocalUserId = other.LocalUserId;
-			ItemId = other.ItemId;
-		}
+        public void Set(ref GetItemReleaseCountOptions other)
+        {
+            m_ApiVersion = EcomInterface.GetitemreleasecountApiLatest;
+            LocalUserId = other.LocalUserId;
+            ItemId = other.ItemId;
+        }
 
-		public void Set(ref GetItemReleaseCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = EcomInterface.GetitemreleasecountApiLatest;
-				LocalUserId = other.Value.LocalUserId;
-				ItemId = other.Value.ItemId;
-			}
-		}
+        public void Set(ref GetItemReleaseCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = EcomInterface.GetitemreleasecountApiLatest;
+                LocalUserId = other.Value.LocalUserId;
+                ItemId = other.Value.ItemId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_LocalUserId);
-			Helper.Dispose(ref m_ItemId);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_LocalUserId);
+            Helper.Dispose(ref m_ItemId);
+        }
+    }
 }

@@ -3,48 +3,48 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// Input parameters for the <see cref="RTCAudioInterface.GetAudioInputDeviceByIndex" /> function.
-	/// </summary>
-	public struct GetAudioInputDeviceByIndexOptions
-	{
-		/// <summary>
-		/// Index of the device info to retrieve.
-		/// </summary>
-		public uint DeviceInfoIndex { get; set; }
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="RTCAudioInterface.GetAudioInputDeviceByIndex" /> function.
+    /// </summary>
+    public struct GetAudioInputDeviceByIndexOptions
+    {
+        /// <summary>
+        /// Index of the device info to retrieve.
+        /// </summary>
+        public uint DeviceInfoIndex { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetAudioInputDeviceByIndexOptionsInternal : ISettable<GetAudioInputDeviceByIndexOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private uint m_DeviceInfoIndex;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetAudioInputDeviceByIndexOptionsInternal : ISettable<GetAudioInputDeviceByIndexOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private uint m_DeviceInfoIndex;
 
-		public uint DeviceInfoIndex
-		{
-			set
-			{
-				m_DeviceInfoIndex = value;
-			}
-		}
+        public uint DeviceInfoIndex
+        {
+            set
+            {
+                m_DeviceInfoIndex = value;
+            }
+        }
 
-		public void Set(ref GetAudioInputDeviceByIndexOptions other)
-		{
-			m_ApiVersion = RTCAudioInterface.GetaudioinputdevicebyindexApiLatest;
-			DeviceInfoIndex = other.DeviceInfoIndex;
-		}
+        public void Set(ref GetAudioInputDeviceByIndexOptions other)
+        {
+            m_ApiVersion = RTCAudioInterface.GetaudioinputdevicebyindexApiLatest;
+            DeviceInfoIndex = other.DeviceInfoIndex;
+        }
 
-		public void Set(ref GetAudioInputDeviceByIndexOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = RTCAudioInterface.GetaudioinputdevicebyindexApiLatest;
-				DeviceInfoIndex = other.Value.DeviceInfoIndex;
-			}
-		}
+        public void Set(ref GetAudioInputDeviceByIndexOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = RTCAudioInterface.GetaudioinputdevicebyindexApiLatest;
+                DeviceInfoIndex = other.Value.DeviceInfoIndex;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

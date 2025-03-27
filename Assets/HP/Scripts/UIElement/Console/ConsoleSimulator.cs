@@ -23,7 +23,7 @@ public class ConsoleSimulator : MonoBehaviour
     int _beginSimulIndex;
     int _endSimulIndex;
     private void Awake()
-    { 
+    {
         var col = _circleImage.color;
         col.a = 0;
         _circleImage.color = col;
@@ -56,7 +56,7 @@ public class ConsoleSimulator : MonoBehaviour
 
     public IEnumerator WaitUntilComplete()
     {
-        if(_coroutine!=null)
+        if (_coroutine != null)
         {
             yield return _coroutine;
         }
@@ -66,7 +66,7 @@ public class ConsoleSimulator : MonoBehaviour
     {
         _textField.textComponent.maxVisibleCharacters = int.MaxValue;
     }
-    IEnumerator SimulateCoroutine(float stepTime,bool reset)
+    IEnumerator SimulateCoroutine(float stepTime, bool reset)
     {
         Color color = _circleImage.color;
         color.a = 1f;
@@ -76,14 +76,15 @@ public class ConsoleSimulator : MonoBehaviour
         _scrollbar.value = 1f;
         while (_beginSimulIndex < _endSimulIndex)
         {
-            if(_beginSimulIndex < _endSimulIndex)
+            if (_beginSimulIndex < _endSimulIndex)
             {
                 _beginSimulIndex++;
             }
             _textField.textComponent.maxVisibleCharacters = _beginSimulIndex;
             _scrollbar.value = 1f;
             yield return new WaitForSeconds(stepTime);
-        };
+        }
+        ;
         if (reset) _textField.textComponent.maxVisibleCharacters = int.MaxValue;
         color = _circleImage.color;
         color.a = 0f;

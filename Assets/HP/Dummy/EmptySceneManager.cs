@@ -1,9 +1,7 @@
 
 using HP;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 using static UnityEngine.InputSystem.InputAction;
 
 public class EmptySceneManager : MonoBehaviour

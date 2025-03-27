@@ -1,9 +1,9 @@
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
 
 public class NetworkHUD : MonoBehaviour
 {
-    private bool showHud = true; // HUD 표시 여부
+    private bool showHud = true;
     private void OnGUI()
     {
         if (showHud)
@@ -73,19 +73,19 @@ public class NetworkHUD : MonoBehaviour
     // 호스트 시작
     private void StartHost()
     {
-        NetworkManager.Singleton.StartHost();
+        (NetworkManager.Singleton as NgoManager).StartHost();
     }
 
     // 서버 시작
     private void StartServer()
     {
-        NetworkManager.Singleton.StartServer();
+        (NetworkManager.Singleton as NgoManager).StartServer();
     }
 
     // 클라이언트 시작
     private void StartClient()
     {
-        NetworkManager.Singleton.StartClient();
+        (NetworkManager.Singleton as NgoManager).StartClient();
     }
 
     // 연결 종료

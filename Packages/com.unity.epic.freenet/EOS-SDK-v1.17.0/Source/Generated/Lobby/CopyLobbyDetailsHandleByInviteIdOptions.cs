@@ -3,49 +3,49 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Input parameters for the <see cref="LobbyInterface.CopyLobbyDetailsHandleByInviteId" /> function.
-	/// </summary>
-	public struct CopyLobbyDetailsHandleByInviteIdOptions
-	{
-		/// <summary>
-		/// The ID of an invitation to join the lobby
-		/// </summary>
-		public Utf8String InviteId { get; set; }
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="LobbyInterface.CopyLobbyDetailsHandleByInviteId" /> function.
+    /// </summary>
+    public struct CopyLobbyDetailsHandleByInviteIdOptions
+    {
+        /// <summary>
+        /// The ID of an invitation to join the lobby
+        /// </summary>
+        public Utf8String InviteId { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct CopyLobbyDetailsHandleByInviteIdOptionsInternal : ISettable<CopyLobbyDetailsHandleByInviteIdOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_InviteId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct CopyLobbyDetailsHandleByInviteIdOptionsInternal : ISettable<CopyLobbyDetailsHandleByInviteIdOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_InviteId;
 
-		public Utf8String InviteId
-		{
-			set
-			{
-				Helper.Set(value, ref m_InviteId);
-			}
-		}
+        public Utf8String InviteId
+        {
+            set
+            {
+                Helper.Set(value, ref m_InviteId);
+            }
+        }
 
-		public void Set(ref CopyLobbyDetailsHandleByInviteIdOptions other)
-		{
-			m_ApiVersion = LobbyInterface.CopylobbydetailshandlebyinviteidApiLatest;
-			InviteId = other.InviteId;
-		}
+        public void Set(ref CopyLobbyDetailsHandleByInviteIdOptions other)
+        {
+            m_ApiVersion = LobbyInterface.CopylobbydetailshandlebyinviteidApiLatest;
+            InviteId = other.InviteId;
+        }
 
-		public void Set(ref CopyLobbyDetailsHandleByInviteIdOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LobbyInterface.CopylobbydetailshandlebyinviteidApiLatest;
-				InviteId = other.Value.InviteId;
-			}
-		}
+        public void Set(ref CopyLobbyDetailsHandleByInviteIdOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LobbyInterface.CopylobbydetailshandlebyinviteidApiLatest;
+                InviteId = other.Value.InviteId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_InviteId);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_InviteId);
+        }
+    }
 }

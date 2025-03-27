@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// Input parameters for the <see cref="Transaction.GetEntitlementsCount" /> function.
-	/// </summary>
-	public struct TransactionGetEntitlementsCountOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="Transaction.GetEntitlementsCount" /> function.
+    /// </summary>
+    public struct TransactionGetEntitlementsCountOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct TransactionGetEntitlementsCountOptionsInternal : ISettable<TransactionGetEntitlementsCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct TransactionGetEntitlementsCountOptionsInternal : ISettable<TransactionGetEntitlementsCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref TransactionGetEntitlementsCountOptions other)
-		{
-			m_ApiVersion = Transaction.TransactionGetentitlementscountApiLatest;
-		}
+        public void Set(ref TransactionGetEntitlementsCountOptions other)
+        {
+            m_ApiVersion = Transaction.TransactionGetentitlementscountApiLatest;
+        }
 
-		public void Set(ref TransactionGetEntitlementsCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = Transaction.TransactionGetentitlementscountApiLatest;
-			}
-		}
+        public void Set(ref TransactionGetEntitlementsCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = Transaction.TransactionGetentitlementscountApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

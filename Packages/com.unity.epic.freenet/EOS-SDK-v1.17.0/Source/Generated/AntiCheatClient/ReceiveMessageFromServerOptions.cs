@@ -3,47 +3,47 @@
 
 namespace Epic.OnlineServices.AntiCheatClient
 {
-	public struct ReceiveMessageFromServerOptions
-	{
-		/// <summary>
-		/// The data received
-		/// </summary>
-		public System.ArraySegment<byte> Data { get; set; }
-	}
+    public struct ReceiveMessageFromServerOptions
+    {
+        /// <summary>
+        /// The data received
+        /// </summary>
+        public System.ArraySegment<byte> Data { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct ReceiveMessageFromServerOptionsInternal : ISettable<ReceiveMessageFromServerOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private uint m_DataLengthBytes;
-		private System.IntPtr m_Data;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct ReceiveMessageFromServerOptionsInternal : ISettable<ReceiveMessageFromServerOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private uint m_DataLengthBytes;
+        private System.IntPtr m_Data;
 
-		public System.ArraySegment<byte> Data
-		{
-			set
-			{
-				Helper.Set(value, ref m_Data, out m_DataLengthBytes);
-			}
-		}
+        public System.ArraySegment<byte> Data
+        {
+            set
+            {
+                Helper.Set(value, ref m_Data, out m_DataLengthBytes);
+            }
+        }
 
-		public void Set(ref ReceiveMessageFromServerOptions other)
-		{
-			m_ApiVersion = AntiCheatClientInterface.ReceivemessagefromserverApiLatest;
-			Data = other.Data;
-		}
+        public void Set(ref ReceiveMessageFromServerOptions other)
+        {
+            m_ApiVersion = AntiCheatClientInterface.ReceivemessagefromserverApiLatest;
+            Data = other.Data;
+        }
 
-		public void Set(ref ReceiveMessageFromServerOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatClientInterface.ReceivemessagefromserverApiLatest;
-				Data = other.Value.Data;
-			}
-		}
+        public void Set(ref ReceiveMessageFromServerOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatClientInterface.ReceivemessagefromserverApiLatest;
+                Data = other.Value.Data;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_Data);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_Data);
+        }
+    }
 }

@@ -3,80 +3,80 @@
 
 namespace Epic.OnlineServices.AntiCheatCommon
 {
-	public struct LogEventOptions
-	{
-		/// <summary>
-		/// Optional client who this event is primarily associated with. If not applicable, use 0.
-		/// </summary>
-		public System.IntPtr ClientHandle { get; set; }
+    public struct LogEventOptions
+    {
+        /// <summary>
+        /// Optional client who this event is primarily associated with. If not applicable, use 0.
+        /// </summary>
+        public System.IntPtr ClientHandle { get; set; }
 
-		/// <summary>
-		/// Unique event identifier previously configured in RegisterEvent
-		/// </summary>
-		public uint EventId { get; set; }
+        /// <summary>
+        /// Unique event identifier previously configured in RegisterEvent
+        /// </summary>
+        public uint EventId { get; set; }
 
-		/// <summary>
-		/// Set of parameter types previously configured in RegisterEvent, and their values
-		/// </summary>
-		public LogEventParamPair[] Params { get; set; }
-	}
+        /// <summary>
+        /// Set of parameter types previously configured in RegisterEvent, and their values
+        /// </summary>
+        public LogEventParamPair[] Params { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct LogEventOptionsInternal : ISettable<LogEventOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_ClientHandle;
-		private uint m_EventId;
-		private uint m_ParamsCount;
-		private System.IntPtr m_Params;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct LogEventOptionsInternal : ISettable<LogEventOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_ClientHandle;
+        private uint m_EventId;
+        private uint m_ParamsCount;
+        private System.IntPtr m_Params;
 
-		public System.IntPtr ClientHandle
-		{
-			set
-			{
-				m_ClientHandle = value;
-			}
-		}
+        public System.IntPtr ClientHandle
+        {
+            set
+            {
+                m_ClientHandle = value;
+            }
+        }
 
-		public uint EventId
-		{
-			set
-			{
-				m_EventId = value;
-			}
-		}
+        public uint EventId
+        {
+            set
+            {
+                m_EventId = value;
+            }
+        }
 
-		public LogEventParamPair[] Params
-		{
-			set
-			{
-				Helper.Set<LogEventParamPair, LogEventParamPairInternal>(ref value, ref m_Params, out m_ParamsCount);
-			}
-		}
+        public LogEventParamPair[] Params
+        {
+            set
+            {
+                Helper.Set<LogEventParamPair, LogEventParamPairInternal>(ref value, ref m_Params, out m_ParamsCount);
+            }
+        }
 
-		public void Set(ref LogEventOptions other)
-		{
-			m_ApiVersion = AntiCheatCommonInterface.LogeventApiLatest;
-			ClientHandle = other.ClientHandle;
-			EventId = other.EventId;
-			Params = other.Params;
-		}
+        public void Set(ref LogEventOptions other)
+        {
+            m_ApiVersion = AntiCheatCommonInterface.LogeventApiLatest;
+            ClientHandle = other.ClientHandle;
+            EventId = other.EventId;
+            Params = other.Params;
+        }
 
-		public void Set(ref LogEventOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatCommonInterface.LogeventApiLatest;
-				ClientHandle = other.Value.ClientHandle;
-				EventId = other.Value.EventId;
-				Params = other.Value.Params;
-			}
-		}
+        public void Set(ref LogEventOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatCommonInterface.LogeventApiLatest;
+                ClientHandle = other.Value.ClientHandle;
+                EventId = other.Value.EventId;
+                Params = other.Value.Params;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_ClientHandle);
-			Helper.Dispose(ref m_Params);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_ClientHandle);
+            Helper.Dispose(ref m_Params);
+        }
+    }
 }

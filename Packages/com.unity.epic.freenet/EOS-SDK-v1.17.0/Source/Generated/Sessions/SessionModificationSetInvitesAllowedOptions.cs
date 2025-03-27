@@ -3,48 +3,48 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Input parameters for the <see cref="SessionModification.SetInvitesAllowed" /> function.
-	/// </summary>
-	public struct SessionModificationSetInvitesAllowedOptions
-	{
-		/// <summary>
-		/// If true then invites can currently be sent for the associated session
-		/// </summary>
-		public bool InvitesAllowed { get; set; }
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="SessionModification.SetInvitesAllowed" /> function.
+    /// </summary>
+    public struct SessionModificationSetInvitesAllowedOptions
+    {
+        /// <summary>
+        /// If true then invites can currently be sent for the associated session
+        /// </summary>
+        public bool InvitesAllowed { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct SessionModificationSetInvitesAllowedOptionsInternal : ISettable<SessionModificationSetInvitesAllowedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private int m_InvitesAllowed;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct SessionModificationSetInvitesAllowedOptionsInternal : ISettable<SessionModificationSetInvitesAllowedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private int m_InvitesAllowed;
 
-		public bool InvitesAllowed
-		{
-			set
-			{
-				Helper.Set(value, ref m_InvitesAllowed);
-			}
-		}
+        public bool InvitesAllowed
+        {
+            set
+            {
+                Helper.Set(value, ref m_InvitesAllowed);
+            }
+        }
 
-		public void Set(ref SessionModificationSetInvitesAllowedOptions other)
-		{
-			m_ApiVersion = SessionModification.SessionmodificationSetinvitesallowedApiLatest;
-			InvitesAllowed = other.InvitesAllowed;
-		}
+        public void Set(ref SessionModificationSetInvitesAllowedOptions other)
+        {
+            m_ApiVersion = SessionModification.SessionmodificationSetinvitesallowedApiLatest;
+            InvitesAllowed = other.InvitesAllowed;
+        }
 
-		public void Set(ref SessionModificationSetInvitesAllowedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionModification.SessionmodificationSetinvitesallowedApiLatest;
-				InvitesAllowed = other.Value.InvitesAllowed;
-			}
-		}
+        public void Set(ref SessionModificationSetInvitesAllowedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionModification.SessionmodificationSetinvitesallowedApiLatest;
+                InvitesAllowed = other.Value.InvitesAllowed;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

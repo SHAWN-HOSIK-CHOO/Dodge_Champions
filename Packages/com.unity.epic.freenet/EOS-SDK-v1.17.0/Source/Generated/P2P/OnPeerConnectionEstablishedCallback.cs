@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Callback for information related to new connections being established
-	/// </summary>
-	public delegate void OnPeerConnectionEstablishedCallback(ref OnPeerConnectionEstablishedInfo data);
+    /// <summary>
+    /// Callback for information related to new connections being established
+    /// </summary>
+    public delegate void OnPeerConnectionEstablishedCallback(ref OnPeerConnectionEstablishedInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnPeerConnectionEstablishedCallbackInternal(ref OnPeerConnectionEstablishedInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnPeerConnectionEstablishedCallbackInternal(ref OnPeerConnectionEstablishedInfoInternal data);
 }

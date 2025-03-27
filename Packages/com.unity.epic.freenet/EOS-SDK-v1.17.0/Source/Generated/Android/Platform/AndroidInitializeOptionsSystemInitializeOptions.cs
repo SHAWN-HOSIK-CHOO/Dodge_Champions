@@ -3,116 +3,116 @@
 
 namespace Epic.OnlineServices.Platform
 {
-	/// <summary>
-	/// Options for initializing mount paths required for some platforms.
-	/// </summary>
-	public struct AndroidInitializeOptionsSystemInitializeOptions
-	{
-		/// <summary>
-		/// Reserved, set to null
-		/// </summary>
-		public System.IntPtr Reserved { get; set; }
+    /// <summary>
+    /// Options for initializing mount paths required for some platforms.
+    /// </summary>
+    public struct AndroidInitializeOptionsSystemInitializeOptions
+    {
+        /// <summary>
+        /// Reserved, set to null
+        /// </summary>
+        public System.IntPtr Reserved { get; set; }
 
-		/// <summary>
-		/// Full internal directory path. Can be null
-		/// </summary>
-		public Utf8String OptionalInternalDirectory { get; set; }
+        /// <summary>
+        /// Full internal directory path. Can be null
+        /// </summary>
+        public Utf8String OptionalInternalDirectory { get; set; }
 
-		/// <summary>
-		/// Full external directory path. Can be null
-		/// </summary>
-		public Utf8String OptionalExternalDirectory { get; set; }
+        /// <summary>
+        /// Full external directory path. Can be null
+        /// </summary>
+        public Utf8String OptionalExternalDirectory { get; set; }
 
-		internal void Set(ref AndroidInitializeOptionsSystemInitializeOptionsInternal other)
-		{
-			Reserved = other.Reserved;
-			OptionalInternalDirectory = other.OptionalInternalDirectory;
-			OptionalExternalDirectory = other.OptionalExternalDirectory;
-		}
-	}
+        internal void Set(ref AndroidInitializeOptionsSystemInitializeOptionsInternal other)
+        {
+            Reserved = other.Reserved;
+            OptionalInternalDirectory = other.OptionalInternalDirectory;
+            OptionalExternalDirectory = other.OptionalExternalDirectory;
+        }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AndroidInitializeOptionsSystemInitializeOptionsInternal : IGettable<AndroidInitializeOptionsSystemInitializeOptions>, ISettable<AndroidInitializeOptionsSystemInitializeOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_Reserved;
-		private System.IntPtr m_OptionalInternalDirectory;
-		private System.IntPtr m_OptionalExternalDirectory;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AndroidInitializeOptionsSystemInitializeOptionsInternal : IGettable<AndroidInitializeOptionsSystemInitializeOptions>, ISettable<AndroidInitializeOptionsSystemInitializeOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_Reserved;
+        private System.IntPtr m_OptionalInternalDirectory;
+        private System.IntPtr m_OptionalExternalDirectory;
 
-		public System.IntPtr Reserved
-		{
-			get
-			{
-				return m_Reserved;
-			}
+        public System.IntPtr Reserved
+        {
+            get
+            {
+                return m_Reserved;
+            }
 
-			set
-			{
-				m_Reserved = value;
-			}
-		}
+            set
+            {
+                m_Reserved = value;
+            }
+        }
 
-		public Utf8String OptionalInternalDirectory
-		{
-			get
-			{
-				Utf8String value;
-				Helper.Get(m_OptionalInternalDirectory, out value);
-				return value;
-			}
+        public Utf8String OptionalInternalDirectory
+        {
+            get
+            {
+                Utf8String value;
+                Helper.Get(m_OptionalInternalDirectory, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_OptionalInternalDirectory);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_OptionalInternalDirectory);
+            }
+        }
 
-		public Utf8String OptionalExternalDirectory
-		{
-			get
-			{
-				Utf8String value;
-				Helper.Get(m_OptionalExternalDirectory, out value);
-				return value;
-			}
+        public Utf8String OptionalExternalDirectory
+        {
+            get
+            {
+                Utf8String value;
+                Helper.Get(m_OptionalExternalDirectory, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_OptionalExternalDirectory);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_OptionalExternalDirectory);
+            }
+        }
 
-		public void Set(ref AndroidInitializeOptionsSystemInitializeOptions other)
-		{
-			m_ApiVersion = PlatformInterface.AndroidInitializeoptionssysteminitializeoptionsApiLatest;
-			Reserved = other.Reserved;
-			OptionalInternalDirectory = other.OptionalInternalDirectory;
-			OptionalExternalDirectory = other.OptionalExternalDirectory;
-		}
+        public void Set(ref AndroidInitializeOptionsSystemInitializeOptions other)
+        {
+            m_ApiVersion = PlatformInterface.AndroidInitializeoptionssysteminitializeoptionsApiLatest;
+            Reserved = other.Reserved;
+            OptionalInternalDirectory = other.OptionalInternalDirectory;
+            OptionalExternalDirectory = other.OptionalExternalDirectory;
+        }
 
-		public void Set(ref AndroidInitializeOptionsSystemInitializeOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = PlatformInterface.AndroidInitializeoptionssysteminitializeoptionsApiLatest;
-				m_Reserved = other.Value.Reserved;
-				if (m_Reserved == System.IntPtr.Zero) Helper.Set(new int[] { 1, 1 }, ref m_Reserved);
-				OptionalInternalDirectory = other.Value.OptionalInternalDirectory;
-				OptionalExternalDirectory = other.Value.OptionalExternalDirectory;
-			}
-		}
+        public void Set(ref AndroidInitializeOptionsSystemInitializeOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = PlatformInterface.AndroidInitializeoptionssysteminitializeoptionsApiLatest;
+                m_Reserved = other.Value.Reserved;
+                if (m_Reserved == System.IntPtr.Zero) Helper.Set(new int[] { 1, 1 }, ref m_Reserved);
+                OptionalInternalDirectory = other.Value.OptionalInternalDirectory;
+                OptionalExternalDirectory = other.Value.OptionalExternalDirectory;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_Reserved);
-			Helper.Dispose(ref m_OptionalInternalDirectory);
-			Helper.Dispose(ref m_OptionalExternalDirectory);
-		}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_Reserved);
+            Helper.Dispose(ref m_OptionalInternalDirectory);
+            Helper.Dispose(ref m_OptionalExternalDirectory);
+        }
 
-		public void Get(out AndroidInitializeOptionsSystemInitializeOptions output)
-		{
-			output = new AndroidInitializeOptionsSystemInitializeOptions();
-			output.Set(ref this);
-		}
-	}
+        public void Get(out AndroidInitializeOptionsSystemInitializeOptions output)
+        {
+            output = new AndroidInitializeOptionsSystemInitializeOptions();
+            output.Set(ref this);
+        }
+    }
 }

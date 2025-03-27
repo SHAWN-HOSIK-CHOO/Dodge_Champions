@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.CustomInvites
 {
-	public struct AddNotifyCustomInviteAcceptedOptions
-	{
-	}
+    public struct AddNotifyCustomInviteAcceptedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyCustomInviteAcceptedOptionsInternal : ISettable<AddNotifyCustomInviteAcceptedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyCustomInviteAcceptedOptionsInternal : ISettable<AddNotifyCustomInviteAcceptedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyCustomInviteAcceptedOptions other)
-		{
-			m_ApiVersion = CustomInvitesInterface.AddnotifycustominviteacceptedApiLatest;
-		}
+        public void Set(ref AddNotifyCustomInviteAcceptedOptions other)
+        {
+            m_ApiVersion = CustomInvitesInterface.AddnotifycustominviteacceptedApiLatest;
+        }
 
-		public void Set(ref AddNotifyCustomInviteAcceptedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = CustomInvitesInterface.AddnotifycustominviteacceptedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyCustomInviteAcceptedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = CustomInvitesInterface.AddnotifycustominviteacceptedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

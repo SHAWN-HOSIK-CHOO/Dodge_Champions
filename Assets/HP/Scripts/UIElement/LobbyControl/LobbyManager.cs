@@ -3,8 +3,6 @@ using Epic.OnlineServices.Lobby;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using static EOSWrapper;
 
 public class LobbyManager : EOS_LobbyManager
 {
@@ -23,7 +21,7 @@ public class LobbyManager : EOS_LobbyManager
     public void CreateLobby(string mode, string name, uint maxMember, LobbySecurityType securityType, string code, Action<Result, EOS_Lobby> onComplete = null)
     {
         Epic.OnlineServices.Lobby.AttributeData[] searchParams = new Epic.OnlineServices.Lobby.AttributeData[6]
-        { 
+        {
             new AttributeData { Key = "SOCKET", Value = "Lobby"},
             new AttributeData { Key = "OWNERNAME", Value = _localUser._localUserInfo.Value.DisplayName},
             new AttributeData{ Key = "MODE", Value = mode},

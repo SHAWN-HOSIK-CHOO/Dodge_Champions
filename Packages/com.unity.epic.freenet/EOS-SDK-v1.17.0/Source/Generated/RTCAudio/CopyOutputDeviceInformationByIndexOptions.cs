@@ -3,48 +3,48 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// Output parameters for the <see cref="RTCAudioInterface.CopyOutputDeviceInformationByIndex" /> function.
-	/// </summary>
-	public struct CopyOutputDeviceInformationByIndexOptions
-	{
-		/// <summary>
-		/// Index of the audio output device's information to retrieve.
-		/// </summary>
-		public uint DeviceIndex { get; set; }
-	}
+    /// <summary>
+    /// Output parameters for the <see cref="RTCAudioInterface.CopyOutputDeviceInformationByIndex" /> function.
+    /// </summary>
+    public struct CopyOutputDeviceInformationByIndexOptions
+    {
+        /// <summary>
+        /// Index of the audio output device's information to retrieve.
+        /// </summary>
+        public uint DeviceIndex { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct CopyOutputDeviceInformationByIndexOptionsInternal : ISettable<CopyOutputDeviceInformationByIndexOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private uint m_DeviceIndex;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct CopyOutputDeviceInformationByIndexOptionsInternal : ISettable<CopyOutputDeviceInformationByIndexOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private uint m_DeviceIndex;
 
-		public uint DeviceIndex
-		{
-			set
-			{
-				m_DeviceIndex = value;
-			}
-		}
+        public uint DeviceIndex
+        {
+            set
+            {
+                m_DeviceIndex = value;
+            }
+        }
 
-		public void Set(ref CopyOutputDeviceInformationByIndexOptions other)
-		{
-			m_ApiVersion = RTCAudioInterface.CopyoutputdeviceinformationbyindexApiLatest;
-			DeviceIndex = other.DeviceIndex;
-		}
+        public void Set(ref CopyOutputDeviceInformationByIndexOptions other)
+        {
+            m_ApiVersion = RTCAudioInterface.CopyoutputdeviceinformationbyindexApiLatest;
+            DeviceIndex = other.DeviceIndex;
+        }
 
-		public void Set(ref CopyOutputDeviceInformationByIndexOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = RTCAudioInterface.CopyoutputdeviceinformationbyindexApiLatest;
-				DeviceIndex = other.Value.DeviceIndex;
-			}
-		}
+        public void Set(ref CopyOutputDeviceInformationByIndexOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = RTCAudioInterface.CopyoutputdeviceinformationbyindexApiLatest;
+                DeviceIndex = other.Value.DeviceIndex;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

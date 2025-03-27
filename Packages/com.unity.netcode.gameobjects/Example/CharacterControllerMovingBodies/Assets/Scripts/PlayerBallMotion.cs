@@ -17,7 +17,7 @@ public class PlayerBallMotionEditor : NetworkTransformEditor
 {
     private SerializedProperty m_RotationAxis;
     private SerializedProperty m_RotationSpeed;
-    
+
 
     public override void OnEnable()
     {
@@ -35,8 +35,9 @@ public class PlayerBallMotionEditor : NetworkTransformEditor
     public override void OnInspectorGUI()
     {
         var playerBallMotion = target as PlayerBallMotion;
-        void SetExpanded(bool expanded) { playerBallMotion.ExpandPlayerBallMotion = expanded; };
-        DrawFoldOutGroup< PlayerBallMotion>(playerBallMotion.GetType(), DrawPlayerBallMotionProperties, playerBallMotion.ExpandPlayerBallMotion, SetExpanded);
+        void SetExpanded(bool expanded) { playerBallMotion.ExpandPlayerBallMotion = expanded; }
+        ;
+        DrawFoldOutGroup<PlayerBallMotion>(playerBallMotion.GetType(), DrawPlayerBallMotionProperties, playerBallMotion.ExpandPlayerBallMotion, SetExpanded);
         base.OnInspectorGUI();
     }
 }
@@ -74,7 +75,7 @@ public class PlayerBallMotion : NetworkTransform
 
     protected override void Awake()
     {
-        m_Children = GetComponentsInChildren<PlayerBallMotion>().Where((c)=> c != this).ToList();
+        m_Children = GetComponentsInChildren<PlayerBallMotion>().Where((c) => c != this).ToList();
         base.Awake();
     }
 
@@ -104,7 +105,7 @@ public class PlayerBallMotion : NetworkTransform
     {
         if (direction == 0.0f)
         {
-            if(!m_ContinualMotion)
+            if (!m_ContinualMotion)
             {
                 return;
             }
@@ -118,7 +119,7 @@ public class PlayerBallMotion : NetworkTransform
         transform.LookAt(transform.parent);
         SetRotationAixs();
         transform.RotateAround(transform.parent.position, m_AxisRotation, m_CurrentRotionMotion);
-        foreach(var child in m_Children)
+        foreach (var child in m_Children)
         {
             child.HasMotion(direction);
         }

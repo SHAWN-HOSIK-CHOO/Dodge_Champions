@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
-using CharacterAttributes;
 using Game;
 using GameInput;
-using SinglePlayer;
+using System.Collections;
 using UnityEngine;
 
 namespace Ball
@@ -11,21 +8,21 @@ namespace Ball
     public class BallScript : MonoBehaviour
     {
         protected bool _canStart = false;
-        
+
         protected Vector3 _startPosition;
         protected Vector3 _targetPosition;
-        protected float   _timeElapsed;
-        protected bool    _isInitialized;
-        protected bool    _ownerSpawnThisBall;
+        protected float _timeElapsed;
+        protected bool _isInitialized;
+        protected bool _ownerSpawnThisBall;
 
         private Rigidbody rb;
 
-        public int ballDamage     = 10;
+        public int ballDamage = 10;
         public int hitEffectIndex = 0;
 
         public float ballLaunchSpeed = 42f;
-        public float ballHeight      = 0.3f;
-        public bool  isInfinite      = false;
+        public float ballHeight = 0.3f;
+        public bool isInfinite = false;
 
         [Header("Curve mode")] public bool isHorizontalThrow = false;
 
@@ -49,18 +46,18 @@ namespace Ball
         {
             return ballHeight;
         }
-        
-        public virtual void Initialize(Vector3 target, float speed, float height, 
+
+        public virtual void Initialize(Vector3 target, float speed, float height,
              bool horizontalThrow = false, bool isThisOwner = true)
         {
-            _startPosition      = Vector3.zero;
-            _targetPosition     = target;
-            ballLaunchSpeed     = speed;
-            ballHeight          = height;
-            _timeElapsed        = 0f;
-            isHorizontalThrow   = horizontalThrow;
-            _isInitialized      = true;
-            _canStart           = false;
+            _startPosition = Vector3.zero;
+            _targetPosition = target;
+            ballLaunchSpeed = speed;
+            ballHeight = height;
+            _timeElapsed = 0f;
+            isHorizontalThrow = horizontalThrow;
+            _isInitialized = true;
+            _canStart = false;
             _ownerSpawnThisBall = isThisOwner;
         }
 
@@ -68,16 +65,16 @@ namespace Ball
         {
             if (_isInitialized)
             {
-                _canStart      = true;
+                _canStart = true;
                 _startPosition = startPosition;
-                
+
                 if (startPosition == _targetPosition)
                 {
                     Destroy(this.gameObject);
                 }
             }
         }
-        
+
         void Update()
         {
             if (_isInitialized && _canStart)
@@ -90,11 +87,11 @@ namespace Ball
         {
             _timeElapsed += Time.deltaTime;
             float travelDuration = Vector3.Distance(_startPosition, _targetPosition) / ballLaunchSpeed;
-            float t              = _timeElapsed                                      / travelDuration;
-                
+            float t = _timeElapsed / travelDuration;
+
             transform.position = CalculateParabolicPosition(_startPosition, _targetPosition, ballHeight, t, isHorizontalThrow);
         }
-        
+
         Vector3 CalculateParabolicPosition(Vector3 start, Vector3 target, float maxHeight, float t, bool horizontal)
         {
             // 수평 또는 수직 궤적에 따라 Lerp 방향 변경
@@ -132,10 +129,10 @@ namespace Ball
                         InputManager.Instance.RequestTurnSwapToEnemy();
                     }
                 }
-                
+
                 // 태그 변경
                 this.gameObject.tag = "Useless";
-                _canStart           = false;
+                _canStart = false;
 
                 // 충돌 법선 계산: 충돌체의 중심 기준
                 Vector3 collisionNormal = (transform.position - other.bounds.center).normalized;
@@ -158,7 +155,7 @@ namespace Ball
 
         private IEnumerator BounceEffect(Vector3 velocity)
         {
-            float duration    = 1f; // 튕기는 효과 지속 시간
+            float duration = 1f; // 튕기는 효과 지속 시간
             float elapsedTime = 0f;
 
             while (elapsedTime < duration)
@@ -172,9 +169,9 @@ namespace Ball
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
-            
+
             Destroy(this.gameObject);
-            
+
         }
 
 

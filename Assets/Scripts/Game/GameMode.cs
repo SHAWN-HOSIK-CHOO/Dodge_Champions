@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Game
@@ -9,11 +8,11 @@ namespace Game
         SINGLEPLAYER,
         Count
     }
-    
+
     public class GameMode : MonoBehaviour
     {
         private static GameMode _instance = null;
-        public static  GameMode Instance => _instance == null ? null : _instance;
+        public static GameMode Instance => _instance == null ? null : _instance;
 
         private void Awake()
         {

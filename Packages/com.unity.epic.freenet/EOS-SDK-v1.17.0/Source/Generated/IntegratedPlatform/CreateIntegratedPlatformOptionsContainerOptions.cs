@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.IntegratedPlatform
 {
-	/// <summary>
-	/// Data for the <see cref="IntegratedPlatformInterface.CreateIntegratedPlatformOptionsContainer" /> function.
-	/// </summary>
-	public struct CreateIntegratedPlatformOptionsContainerOptions
-	{
-	}
+    /// <summary>
+    /// Data for the <see cref="IntegratedPlatformInterface.CreateIntegratedPlatformOptionsContainer" /> function.
+    /// </summary>
+    public struct CreateIntegratedPlatformOptionsContainerOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct CreateIntegratedPlatformOptionsContainerOptionsInternal : ISettable<CreateIntegratedPlatformOptionsContainerOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct CreateIntegratedPlatformOptionsContainerOptionsInternal : ISettable<CreateIntegratedPlatformOptionsContainerOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref CreateIntegratedPlatformOptionsContainerOptions other)
-		{
-			m_ApiVersion = IntegratedPlatformInterface.CreateintegratedplatformoptionscontainerApiLatest;
-		}
+        public void Set(ref CreateIntegratedPlatformOptionsContainerOptions other)
+        {
+            m_ApiVersion = IntegratedPlatformInterface.CreateintegratedplatformoptionscontainerApiLatest;
+        }
 
-		public void Set(ref CreateIntegratedPlatformOptionsContainerOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = IntegratedPlatformInterface.CreateintegratedplatformoptionscontainerApiLatest;
-			}
-		}
+        public void Set(ref CreateIntegratedPlatformOptionsContainerOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = IntegratedPlatformInterface.CreateintegratedplatformoptionscontainerApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

@@ -3,8 +3,8 @@
 
 namespace Epic.OnlineServices.RTC
 {
-	public delegate void OnRoomStatisticsUpdatedCallback(ref RoomStatisticsUpdatedInfo data);
+    public delegate void OnRoomStatisticsUpdatedCallback(ref RoomStatisticsUpdatedInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnRoomStatisticsUpdatedCallbackInternal(ref RoomStatisticsUpdatedInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnRoomStatisticsUpdatedCallbackInternal(ref RoomStatisticsUpdatedInfoInternal data);
 }

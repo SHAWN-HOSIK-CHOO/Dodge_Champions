@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.Friends
 {
-	/// <summary>
-	/// Callback for information related to a friend status update.
-	/// </summary>
-	public delegate void OnFriendsUpdateCallback(ref OnFriendsUpdateInfo data);
+    /// <summary>
+    /// Callback for information related to a friend status update.
+    /// </summary>
+    public delegate void OnFriendsUpdateCallback(ref OnFriendsUpdateInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnFriendsUpdateCallbackInternal(ref OnFriendsUpdateInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnFriendsUpdateCallbackInternal(ref OnFriendsUpdateInfoInternal data);
 }

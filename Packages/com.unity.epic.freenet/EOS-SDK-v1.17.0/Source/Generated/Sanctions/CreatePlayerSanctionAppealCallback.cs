@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Sanctions
 {
-	/// <summary>
-	/// Function definition for callbacks passed to <see cref="SanctionsInterface.CreatePlayerSanctionAppeal" />.
-	/// </summary>
-	/// <param name="data">- <see cref="CreatePlayerSanctionAppealCallbackInfo" /> containing the output information and result.</param>
-	public delegate void CreatePlayerSanctionAppealCallback(ref CreatePlayerSanctionAppealCallbackInfo data);
+    /// <summary>
+    /// Function definition for callbacks passed to <see cref="SanctionsInterface.CreatePlayerSanctionAppeal" />.
+    /// </summary>
+    /// <param name="data">- <see cref="CreatePlayerSanctionAppealCallbackInfo" /> containing the output information and result.</param>
+    public delegate void CreatePlayerSanctionAppealCallback(ref CreatePlayerSanctionAppealCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void CreatePlayerSanctionAppealCallbackInternal(ref CreatePlayerSanctionAppealCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void CreatePlayerSanctionAppealCallbackInternal(ref CreatePlayerSanctionAppealCallbackInfoInternal data);
 }

@@ -3,67 +3,67 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Input parameters for the <see cref="SessionsInterface.UnregisterPlayers" /> function.
-	/// </summary>
-	public struct UnregisterPlayersOptions
-	{
-		/// <summary>
-		/// Name of the session for which to unregister players
-		/// </summary>
-		public Utf8String SessionName { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="SessionsInterface.UnregisterPlayers" /> function.
+    /// </summary>
+    public struct UnregisterPlayersOptions
+    {
+        /// <summary>
+        /// Name of the session for which to unregister players
+        /// </summary>
+        public Utf8String SessionName { get; set; }
 
-		/// <summary>
-		/// Array of players to unregister from the session
-		/// </summary>
-		public ProductUserId[] PlayersToUnregister { get; set; }
-	}
+        /// <summary>
+        /// Array of players to unregister from the session
+        /// </summary>
+        public ProductUserId[] PlayersToUnregister { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct UnregisterPlayersOptionsInternal : ISettable<UnregisterPlayersOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_SessionName;
-		private System.IntPtr m_PlayersToUnregister;
-		private uint m_PlayersToUnregisterCount;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct UnregisterPlayersOptionsInternal : ISettable<UnregisterPlayersOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_SessionName;
+        private System.IntPtr m_PlayersToUnregister;
+        private uint m_PlayersToUnregisterCount;
 
-		public Utf8String SessionName
-		{
-			set
-			{
-				Helper.Set(value, ref m_SessionName);
-			}
-		}
+        public Utf8String SessionName
+        {
+            set
+            {
+                Helper.Set(value, ref m_SessionName);
+            }
+        }
 
-		public ProductUserId[] PlayersToUnregister
-		{
-			set
-			{
-				Helper.Set(value, ref m_PlayersToUnregister, out m_PlayersToUnregisterCount);
-			}
-		}
+        public ProductUserId[] PlayersToUnregister
+        {
+            set
+            {
+                Helper.Set(value, ref m_PlayersToUnregister, out m_PlayersToUnregisterCount);
+            }
+        }
 
-		public void Set(ref UnregisterPlayersOptions other)
-		{
-			m_ApiVersion = SessionsInterface.UnregisterplayersApiLatest;
-			SessionName = other.SessionName;
-			PlayersToUnregister = other.PlayersToUnregister;
-		}
+        public void Set(ref UnregisterPlayersOptions other)
+        {
+            m_ApiVersion = SessionsInterface.UnregisterplayersApiLatest;
+            SessionName = other.SessionName;
+            PlayersToUnregister = other.PlayersToUnregister;
+        }
 
-		public void Set(ref UnregisterPlayersOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionsInterface.UnregisterplayersApiLatest;
-				SessionName = other.Value.SessionName;
-				PlayersToUnregister = other.Value.PlayersToUnregister;
-			}
-		}
+        public void Set(ref UnregisterPlayersOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionsInterface.UnregisterplayersApiLatest;
+                SessionName = other.Value.SessionName;
+                PlayersToUnregister = other.Value.PlayersToUnregister;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_SessionName);
-			Helper.Dispose(ref m_PlayersToUnregister);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_SessionName);
+            Helper.Dispose(ref m_PlayersToUnregister);
+        }
+    }
 }

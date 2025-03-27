@@ -3,28 +3,28 @@
 
 namespace Epic.OnlineServices
 {
-	/// <summary>
-	/// Supported types of data that can be stored with inside an attribute (used by sessions/lobbies/etc)
-	/// <seealso cref="Lobby.LobbySearch.SetParameter" />
-	/// <seealso cref="Sessions.SessionSearch.SetParameter" />
-	/// </summary>
-	public enum AttributeType : int
-	{
-		/// <summary>
-		/// Boolean value (true/false)
-		/// </summary>
-		Boolean = 0,
-		/// <summary>
-		/// 64 bit integers
-		/// </summary>
-		Int64 = 1,
-		/// <summary>
-		/// Double/floating point precision
-		/// </summary>
-		Double = 2,
-		/// <summary>
-		/// UTF8 Strings
-		/// </summary>
-		String = 3
-	}
+    /// <summary>
+    /// Supported types of data that can be stored with inside an attribute (used by sessions/lobbies/etc)
+    /// <seealso cref="Lobby.LobbySearch.SetParameter" />
+    /// <seealso cref="Sessions.SessionSearch.SetParameter" />
+    /// </summary>
+    public enum AttributeType : int
+    {
+        /// <summary>
+        /// Boolean value (true/false)
+        /// </summary>
+        Boolean = 0,
+        /// <summary>
+        /// 64 bit integers
+        /// </summary>
+        Int64 = 1,
+        /// <summary>
+        /// Double/floating point precision
+        /// </summary>
+        Double = 2,
+        /// <summary>
+        /// UTF8 Strings
+        /// </summary>
+        String = 3
+    }
 }

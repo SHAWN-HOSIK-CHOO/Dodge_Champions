@@ -1,11 +1,11 @@
-using System;
-using System.Collections;
 using Game;
 using GameInput;
 using SinglePlayer;
+using System;
+using System.Collections;
 using Unity.Cinemachine;
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
@@ -14,7 +14,7 @@ namespace CharacterAttributes
     public class CharacterMovement : NetworkBehaviour
     {
         public CharacterController characterController;
-        
+
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
         public float moveSpeed = 2f;
@@ -28,7 +28,7 @@ namespace CharacterAttributes
         public AudioClip landingAudioClip;
         public AudioClip[] footstepAudioClips;
 
-        [Range(0, 1)] 
+        [Range(0, 1)]
         public float footstepAudioVolume = 0.5f;
 
         [Space(10)]
@@ -74,16 +74,16 @@ namespace CharacterAttributes
         [Tooltip("For locking the camera position on all axis")]
         public bool lockCameraPosition = false;
 
-        [Header("Animation blend tree")] 
+        [Header("Animation blend tree")]
         [Range(0, 1)]
         public float walkAnimationTargetValue = 0.3f;
-        [Range(0, 1)] 
+        [Range(0, 1)]
         public float runAnimationTargetValue = 1f;
 
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
-        
+
         // player
         private float _speed;
         private float _animationBlend;
@@ -94,7 +94,7 @@ namespace CharacterAttributes
         // timeout deltatime
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
-        
+
         // animation IDs
         private int _animIDSpeed;
         private int _animIDGrounded;
@@ -105,36 +105,36 @@ namespace CharacterAttributes
 
         private int _animIDXVelocity;
         private int _animIDZVelocity;
-        
+
         private float xVelocity = 0f;
         private float zVelocity = 0f;
-        
-        //animation layer transit
-        public int   targetLayerIndex = 1;  // A 레이어의 인덱스 (Base Layer는 0)
-        public float transitionSpeed  = 1f; // 전환 속도
 
-        private NetworkVariable<float> _upperLayerWeight        = new NetworkVariable<float>(0.0f);
-        private bool                   _isTransitioningToLayer = true; // A 레이어로 전환 여부
+        //animation layer transit
+        public int targetLayerIndex = 1;  // A 레이어의 인덱스 (Base Layer는 0)
+        public float transitionSpeed = 1f; // 전환 속도
+
+        private NetworkVariable<float> _upperLayerWeight = new NetworkVariable<float>(0.0f);
+        private bool _isTransitioningToLayer = true; // A 레이어로 전환 여부
 
         private PlayerInput _playerInput;
-        private Animator    _animator;
-        private GameObject  _mainCamera;
+        private Animator _animator;
+        private GameObject _mainCamera;
 
         private const float Threshold = 0.01f;
 
         private bool _hasAnimator;
 
         //땅에 떨어졌을때 벌칙
-        [Header("Lock penalty seconds")] 
+        [Header("Lock penalty seconds")]
         public float lockSeconds = 3f;
-        public  bool      shouldLockMovement = false;
+        public bool shouldLockMovement = false;
         private Coroutine _lockMoveCoroutine;
-        
-        
+
+
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
             if (lfAngle < -360f) lfAngle += 360f;
-            if (lfAngle > 360f) lfAngle  -= 360f;
+            if (lfAngle > 360f) lfAngle -= 360f;
             return Mathf.Clamp(lfAngle, lfMin, lfMax);
         }
 
@@ -150,10 +150,10 @@ namespace CharacterAttributes
                     {
                         _mainCamera = GameManager.Instance.mainCamera;
                     }
-                    
+
                     GameManager.Instance.cinemachineCamera.GetComponent<CinemachineCamera>().Follow =
                         cinemachineCameraTarget.transform;
-                    GameManager.Instance.cinemachineCamera.transform.rotation = Quaternion.Euler(30f,0f,0f);
+                    GameManager.Instance.cinemachineCamera.transform.rotation = Quaternion.Euler(30f, 0f, 0f);
                 }
                 else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
                 {
@@ -163,7 +163,7 @@ namespace CharacterAttributes
                     }
                     SinglePlayerGM.Instance.cinemachineCameraSinglePlayer.GetComponent<CinemachineCamera>().Follow =
                         cinemachineCameraTarget.transform;
-                    SinglePlayerGM.Instance.cinemachineCameraSinglePlayer.transform.rotation = Quaternion.Euler(20f,0f,0f);
+                    SinglePlayerGM.Instance.cinemachineCameraSinglePlayer.transform.rotation = Quaternion.Euler(20f, 0f, 0f);
                 }
             }
         }
@@ -179,13 +179,13 @@ namespace CharacterAttributes
             {
                 characterController = GetComponent<CharacterController>();
             }
-            
+
             _cinemachineTargetYaw = cinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            _hasAnimator          = TryGetComponent(out _animator);
-            characterController  = GetComponent<CharacterController>();
-            
+            _hasAnimator = TryGetComponent(out _animator);
+            characterController = GetComponent<CharacterController>();
+
             AssignAnimationIDs();
-            
+
             _jumpTimeoutDelta = jumpTimeout;
             _fallTimeoutDelta = fallTimeout;
 
@@ -199,7 +199,7 @@ namespace CharacterAttributes
 
         private void Update()
         {
-            
+
             if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
             {
                 if (!IsOwner || !GameManager.Instance.isGameReadyToStart || shouldLockMovement)
@@ -209,12 +209,12 @@ namespace CharacterAttributes
             }
             else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(!SinglePlayerGM.Instance.IsGameReadyToStart || shouldLockMovement)
+                if (!SinglePlayerGM.Instance.IsGameReadyToStart || shouldLockMovement)
                     return;
             }
-            
+
             _hasAnimator = TryGetComponent(out _animator);
-            
+
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -231,25 +231,25 @@ namespace CharacterAttributes
             }
             else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(!SinglePlayerGM.Instance.IsGameReadyToStart)
+                if (!SinglePlayerGM.Instance.IsGameReadyToStart)
                     return;
             }
-            
+
             CameraRotation();
         }
-        
+
         private void AssignAnimationIDs()
         {
-            _animIDSpeed       = Animator.StringToHash("Speed");
-            _animIDGrounded    = Animator.StringToHash("Grounded");
-            _animIDJump        = Animator.StringToHash("Jump");
-            _animIDFreeFall    = Animator.StringToHash("FreeFall");
+            _animIDSpeed = Animator.StringToHash("Speed");
+            _animIDGrounded = Animator.StringToHash("Grounded");
+            _animIDJump = Animator.StringToHash("Jump");
+            _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
-            _animIDThrow       = Animator.StringToHash("Throw");
+            _animIDThrow = Animator.StringToHash("Throw");
             _animIDXVelocity = Animator.StringToHash("X_Velocity");
             _animIDZVelocity = Animator.StringToHash("Z_Velocity");
         }
-        
+
         private void GroundedCheck()
         {
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundedOffset,
@@ -262,10 +262,10 @@ namespace CharacterAttributes
 
             // 디버깅용 구체 그리기
             Debug.DrawLine(transform.position, spherePosition, grounded ? Color.green : Color.red);
-            
+
             if (_hasAnimator)
             {
-                _animator.SetBool(_animIDGrounded,grounded);
+                _animator.SetBool(_animIDGrounded, grounded);
             }
         }
 
@@ -273,33 +273,33 @@ namespace CharacterAttributes
         {
             if (InputManager.Instance.look.sqrMagnitude >= Threshold && !lockCameraPosition)
             {
-                _cinemachineTargetYaw   += InputManager.Instance.look.x;
+                _cinemachineTargetYaw += InputManager.Instance.look.x;
                 _cinemachineTargetPitch += InputManager.Instance.look.y;
             }
-            
-            _cinemachineTargetYaw   = ClampAngle(_cinemachineTargetYaw,   float.MinValue, float.MaxValue);
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, bottomClamp,    topClamp);
-            
+
+            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, bottomClamp, topClamp);
+
             cinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + cameraAngleOverride,
                                                                           _cinemachineTargetYaw, 0.0f);
         }
-        
+
         private void Move()
         {
             // 입력이 없다면 속도를 0으로 설정
             float targetSpeed = InputManager.Instance.sprint ? sprintSpeed : moveSpeed;
             float animationTargetValue =
                 InputManager.Instance.sprint ? runAnimationTargetValue : walkAnimationTargetValue;
-            
+
             if (InputManager.Instance.move == Vector2.zero)
             {
                 targetSpeed = 0.0f;
             }
-        
+
             // 현재 속도 계산
             float currentHorizontalSpeed = new Vector3(characterController.velocity.x, 0.0f, characterController.velocity.z).magnitude;
             float speedOffset = 0.1f;
-        
+
             // 속도를 부드럽게 보간
             if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
             {
@@ -310,32 +310,32 @@ namespace CharacterAttributes
             {
                 _speed = targetSpeed;
             }
-            
-        
+
+
             // 입력 방향 계산
             Vector3 inputDirection = new Vector3(InputManager.Instance.move.x, 0.0f, InputManager.Instance.move.y).normalized;
-            
+
             // x, z 속도 계산 (블렌딩 추가)
             float targetXVelocity = 0f;
             float targetZVelocity = 0f;
-        
+
             if (InputManager.Instance.move != Vector2.zero)
             {
                 // 메인 카메라를 기준으로 이동 방향 설정
                 Vector3 cameraForward = _mainCamera.transform.forward;
                 cameraForward.y = 0;
                 cameraForward.Normalize();
-        
+
                 Vector3 cameraRight = _mainCamera.transform.right;
                 cameraRight.y = 0;
                 cameraRight.Normalize();
-        
+
                 Vector3 moveDirection = cameraForward * inputDirection.z + cameraRight * inputDirection.x;
-        
+
                 // 이동 처리
-                characterController.Move(moveDirection.normalized                   * (_speed * Time.deltaTime) +
+                characterController.Move(moveDirection.normalized * (_speed * Time.deltaTime) +
                                          new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-        
+
                 // 목표 속도 설정
                 targetXVelocity = Vector3.Dot(moveDirection.normalized, cameraRight) * animationTargetValue;
                 targetZVelocity = Vector3.Dot(moveDirection.normalized, cameraForward) * animationTargetValue;
@@ -345,11 +345,11 @@ namespace CharacterAttributes
                 // 입력이 없을 때 수직 이동만 적용
                 characterController.Move(new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
             }
-        
+
             // xVelocity와 zVelocity를 부드럽게 변화
             xVelocity = Mathf.Lerp(xVelocity, targetXVelocity, Time.deltaTime * speedChangeRate);
             zVelocity = Mathf.Lerp(zVelocity, targetZVelocity, Time.deltaTime * speedChangeRate);
-            
+
             // 애니메이션 업데이트
             if (_hasAnimator)
             {
@@ -357,23 +357,23 @@ namespace CharacterAttributes
                 _animator.SetFloat(_animIDZVelocity, zVelocity); // 앞/뒤 (-1: 뒤로, 1: 앞으로)
                 _animator.SetFloat(_animIDMotionSpeed, 1);
             }
-        
+
             // 플레이어의 회전을 화면 중심으로 고정
             transform.rotation = Quaternion.Euler(0.0f, _mainCamera.transform.eulerAngles.y, 0.0f);
         }
-        
+
         private void JumpAndGravity()
         {
             if (grounded)
             {
                 _fallTimeoutDelta = fallTimeout;
-                
+
                 if (_hasAnimator)
                 {
-                    _animator.SetBool(_animIDJump,     false);
+                    _animator.SetBool(_animIDJump, false);
                     _animator.SetBool(_animIDFreeFall, false);
                 }
-                
+
                 if (_verticalVelocity < 0.0f)
                 {
                     _verticalVelocity = -2f;
@@ -387,7 +387,7 @@ namespace CharacterAttributes
                         _animator.SetBool(_animIDJump, true);
                     }
                 }
-                
+
                 if (_jumpTimeoutDelta >= 0.0f)
                 {
                     _jumpTimeoutDelta -= Time.deltaTime;
@@ -411,7 +411,7 @@ namespace CharacterAttributes
 
                 InputManager.Instance.jump = false;
             }
-            
+
             if (_verticalVelocity < _terminalVelocity)
             {
                 _verticalVelocity += gravity * Time.deltaTime;
@@ -424,12 +424,12 @@ namespace CharacterAttributes
             {
                 return;
             }
-            
+
             _isTransitioningToLayer = is0To1;
             float targetWeight = _isTransitioningToLayer ? 1f : 0f;
-            
+
             WriteNetworkVariableLayerWeightServerRPC(targetWeight);
-            
+
             _animator.SetLayerWeight(targetLayerIndex, _upperLayerWeight.Value);
         }
 
@@ -438,10 +438,10 @@ namespace CharacterAttributes
         {
             _upperLayerWeight.Value = newValue;
         }
-        
+
         private void OnUpperLayerWeightChanged(float oldWeight, float newWeight)
         {
-            _animator.SetLayerWeight(1, newWeight); 
+            _animator.SetLayerWeight(1, newWeight);
         }
 
         public void Callback_Layer1To0()
@@ -456,16 +456,16 @@ namespace CharacterAttributes
 
         public void Callback_SetThrowFalse()
         {
-            _animator.SetBool(_animIDThrow,false);
+            _animator.SetBool(_animIDThrow, false);
         }
-        
+
         private void OnDrawGizmosSelected()
         {
             Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
-            Color transparentRed   = new Color(1.0f, 0.0f, 0.0f, 0.35f);
+            Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
 
             if (grounded) Gizmos.color = transparentGreen;
-            else Gizmos.color          = transparentRed;
+            else Gizmos.color = transparentRed;
 
             // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
             Gizmos.DrawSphere(
@@ -517,7 +517,7 @@ namespace CharacterAttributes
                 {
                     PlacePositionServerRPC(spawnTransforms[index].position, spawnTransforms[index].rotation);
                 }
-                
+
                 if (GameManager.Instance.isLocalPlayerAttackTurn)
                 {
                     GameManager.Instance.SwapTurnServerRPC();
@@ -531,7 +531,7 @@ namespace CharacterAttributes
             yield return new WaitForSeconds(nSec);
             shouldLockMovement = false;
         }
-        
+
         [ServerRpc]
         private void PlacePositionServerRPC(Vector3 positions, Quaternion rotations)
         {
@@ -547,20 +547,20 @@ namespace CharacterAttributes
                 StopCoroutine(_lockMoveCoroutine);
             }
             _lockMoveCoroutine = StartCoroutine(CoLockMoveForNSecs(lockSeconds));
-            
+
             if (!IsOwner)
             {
                 this.GetComponent<CharacterManager>().ResetThrowCountBeforeTurnSwap();
                 return;
             }
-            
+
             Debug.Log($"ServerRPC executed. Position: {positions}, Rotation: {rotations}, Owner: {OwnerClientId}");
 
             if (characterController != null)
             {
                 characterController.enabled = false;
             }
-            
+
             // 서버에서 위치 변경
             this.transform.position = positions;
             this.transform.rotation = rotations;

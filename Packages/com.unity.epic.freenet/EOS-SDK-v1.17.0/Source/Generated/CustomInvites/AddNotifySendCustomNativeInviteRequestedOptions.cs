@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.CustomInvites
 {
-	public struct AddNotifySendCustomNativeInviteRequestedOptions
-	{
-	}
+    public struct AddNotifySendCustomNativeInviteRequestedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifySendCustomNativeInviteRequestedOptionsInternal : ISettable<AddNotifySendCustomNativeInviteRequestedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifySendCustomNativeInviteRequestedOptionsInternal : ISettable<AddNotifySendCustomNativeInviteRequestedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifySendCustomNativeInviteRequestedOptions other)
-		{
-			m_ApiVersion = CustomInvitesInterface.AddnotifysendcustomnativeinviterequestedApiLatest;
-		}
+        public void Set(ref AddNotifySendCustomNativeInviteRequestedOptions other)
+        {
+            m_ApiVersion = CustomInvitesInterface.AddnotifysendcustomnativeinviterequestedApiLatest;
+        }
 
-		public void Set(ref AddNotifySendCustomNativeInviteRequestedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = CustomInvitesInterface.AddnotifysendcustomnativeinviterequestedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifySendCustomNativeInviteRequestedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = CustomInvitesInterface.AddnotifysendcustomnativeinviterequestedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

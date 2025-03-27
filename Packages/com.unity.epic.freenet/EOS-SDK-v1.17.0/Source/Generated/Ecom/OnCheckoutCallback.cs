@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="EcomInterface.Checkout" />
-	/// </summary>
-	/// <param name="data">A <see cref="CheckoutCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnCheckoutCallback(ref CheckoutCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="EcomInterface.Checkout" />
+    /// </summary>
+    /// <param name="data">A <see cref="CheckoutCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnCheckoutCallback(ref CheckoutCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnCheckoutCallbackInternal(ref CheckoutCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnCheckoutCallbackInternal(ref CheckoutCallbackInfoInternal data);
 }

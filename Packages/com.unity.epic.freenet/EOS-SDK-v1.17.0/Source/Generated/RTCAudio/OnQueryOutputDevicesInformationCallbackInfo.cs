@@ -3,101 +3,101 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// This struct is passed in with a call to <see cref="OnQueryOutputDevicesInformationCallback" />.
-	/// </summary>
-	public struct OnQueryOutputDevicesInformationCallbackInfo : ICallbackInfo
-	{
-		/// <summary>
-		/// This returns:
-		/// <see cref="Result.Success" /> if the operation succeeded.
-		/// <see cref="Result.InvalidParameters" /> if any of the parameters are incorrect.
-		/// </summary>
-		public Result ResultCode { get; set; }
+    /// <summary>
+    /// This struct is passed in with a call to <see cref="OnQueryOutputDevicesInformationCallback" />.
+    /// </summary>
+    public struct OnQueryOutputDevicesInformationCallbackInfo : ICallbackInfo
+    {
+        /// <summary>
+        /// This returns:
+        /// <see cref="Result.Success" /> if the operation succeeded.
+        /// <see cref="Result.InvalidParameters" /> if any of the parameters are incorrect.
+        /// </summary>
+        public Result ResultCode { get; set; }
 
-		/// <summary>
-		/// Client-specified data passed into <see cref="RTCAudioInterface.QueryOutputDevicesInformation" />.
-		/// </summary>
-		public object ClientData { get; set; }
+        /// <summary>
+        /// Client-specified data passed into <see cref="RTCAudioInterface.QueryOutputDevicesInformation" />.
+        /// </summary>
+        public object ClientData { get; set; }
 
-		public Result? GetResultCode()
-		{
-			return ResultCode;
-		}
+        public Result? GetResultCode()
+        {
+            return ResultCode;
+        }
 
-		internal void Set(ref OnQueryOutputDevicesInformationCallbackInfoInternal other)
-		{
-			ResultCode = other.ResultCode;
-			ClientData = other.ClientData;
-		}
-	}
+        internal void Set(ref OnQueryOutputDevicesInformationCallbackInfoInternal other)
+        {
+            ResultCode = other.ResultCode;
+            ClientData = other.ClientData;
+        }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct OnQueryOutputDevicesInformationCallbackInfoInternal : ICallbackInfoInternal, IGettable<OnQueryOutputDevicesInformationCallbackInfo>, ISettable<OnQueryOutputDevicesInformationCallbackInfo>, System.IDisposable
-	{
-		private Result m_ResultCode;
-		private System.IntPtr m_ClientData;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct OnQueryOutputDevicesInformationCallbackInfoInternal : ICallbackInfoInternal, IGettable<OnQueryOutputDevicesInformationCallbackInfo>, ISettable<OnQueryOutputDevicesInformationCallbackInfo>, System.IDisposable
+    {
+        private Result m_ResultCode;
+        private System.IntPtr m_ClientData;
 
-		public Result ResultCode
-		{
-			get
-			{
-				return m_ResultCode;
-			}
+        public Result ResultCode
+        {
+            get
+            {
+                return m_ResultCode;
+            }
 
-			set
-			{
-				m_ResultCode = value;
-			}
-		}
+            set
+            {
+                m_ResultCode = value;
+            }
+        }
 
-		public object ClientData
-		{
-			get
-			{
-				object value;
-				Helper.Get(m_ClientData, out value);
-				return value;
-			}
+        public object ClientData
+        {
+            get
+            {
+                object value;
+                Helper.Get(m_ClientData, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_ClientData);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_ClientData);
+            }
+        }
 
-		public System.IntPtr ClientDataAddress
-		{
-			get
-			{
-				return m_ClientData;
-			}
-		}
+        public System.IntPtr ClientDataAddress
+        {
+            get
+            {
+                return m_ClientData;
+            }
+        }
 
-		public void Set(ref OnQueryOutputDevicesInformationCallbackInfo other)
-		{
-			ResultCode = other.ResultCode;
-			ClientData = other.ClientData;
-		}
+        public void Set(ref OnQueryOutputDevicesInformationCallbackInfo other)
+        {
+            ResultCode = other.ResultCode;
+            ClientData = other.ClientData;
+        }
 
-		public void Set(ref OnQueryOutputDevicesInformationCallbackInfo? other)
-		{
-			if (other.HasValue)
-			{
-				ResultCode = other.Value.ResultCode;
-				ClientData = other.Value.ClientData;
-			}
-		}
+        public void Set(ref OnQueryOutputDevicesInformationCallbackInfo? other)
+        {
+            if (other.HasValue)
+            {
+                ResultCode = other.Value.ResultCode;
+                ClientData = other.Value.ClientData;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_ClientData);
-		}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_ClientData);
+        }
 
-		public void Get(out OnQueryOutputDevicesInformationCallbackInfo output)
-		{
-			output = new OnQueryOutputDevicesInformationCallbackInfo();
-			output.Set(ref this);
-		}
-	}
+        public void Get(out OnQueryOutputDevicesInformationCallbackInfo output)
+        {
+            output = new OnQueryOutputDevicesInformationCallbackInfo();
+            output.Set(ref this);
+        }
+    }
 }

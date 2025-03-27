@@ -3,16 +3,16 @@
 
 namespace Epic.OnlineServices.Types
 {
-	public sealed partial class IntegratedPlatform
-	{
-		/// <summary>
-		/// A macro to identify the Steam integrated platform.
-		/// </summary>
-		public static readonly Utf8String IptSteam = "STEAM";
+    public sealed partial class IntegratedPlatform
+    {
+        /// <summary>
+        /// A macro to identify the Steam integrated platform.
+        /// </summary>
+        public static readonly Utf8String IptSteam = "STEAM";
 
-		/// <summary>
-		/// A macro to identify an unknown integrated platform.
-		/// </summary>
-		public static readonly Utf8String IptUnknown = (string)null;
-	}
+        /// <summary>
+        /// A macro to identify an unknown integrated platform.
+        /// </summary>
+        public static readonly Utf8String IptUnknown = (string)null;
+    }
 }

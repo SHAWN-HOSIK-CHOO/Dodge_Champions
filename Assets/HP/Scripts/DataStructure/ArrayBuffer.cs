@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
-
 public class ArrayBuffer<T>
 {
     public T[] _buffer { get; private set; }

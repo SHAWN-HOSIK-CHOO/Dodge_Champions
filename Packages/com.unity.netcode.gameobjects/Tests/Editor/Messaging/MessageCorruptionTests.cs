@@ -1,8 +1,8 @@
+using NUnit.Framework;
+using NUnit.Framework.Internal;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
-using NUnit.Framework.Internal;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;

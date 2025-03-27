@@ -35,14 +35,14 @@ public partial class EOS_Core : MonoBehaviour
     }
     void InitP2P()
     {
-        _sockets = new DoubleKeyDict<EOSWrapper.ETC.PUID, string, EOS_Socket> ();
+        _sockets = new DoubleKeyDict<EOSWrapper.ETC.PUID, string, EOS_Socket>();
         var options = new AddNotifyIncomingPacketQueueFullOptions();
-        EOSWrapper.P2PControl.SetPacketQueueSize(_IP2P, _incomingQueueMaxSizeBytes,_outgoingQueueMaxSizeBytes);
-        if(EOSWrapper.P2PControl.SetRelayControl(_IP2P, _relayType)!=Result.Success)
+        EOSWrapper.P2PControl.SetPacketQueueSize(_IP2P, _incomingQueueMaxSizeBytes, _outgoingQueueMaxSizeBytes);
+        if (EOSWrapper.P2PControl.SetRelayControl(_IP2P, _relayType) != Result.Success)
         {
             Debug.LogError($"SetRelayControl {_relayType} Failed");
         }
-        _onPacketQueueFullHandle = _IP2P.AddNotifyIncomingPacketQueueFull(ref options, null,(ref OnIncomingPacketQueueFullInfo info) =>
+        _onPacketQueueFullHandle = _IP2P.AddNotifyIncomingPacketQueueFull(ref options, null, (ref OnIncomingPacketQueueFullInfo info) =>
         {
             string errLog = @$"PacketQueueIsFull 
                     ""The maximum size in bytes the incoming packet queue is..{info.PacketQueueMaxSizeBytes}
@@ -71,13 +71,13 @@ public partial class EOS_Core : MonoBehaviour
     }
     public EOS_Socket CreateSocket(EOSWrapper.ETC.PUID localpuid, string socketid)
     {
-        if(_sockets.TryGetValue(localpuid,socketid,out var oldSock))
+        if (_sockets.TryGetValue(localpuid, socketid, out var oldSock))
         {
             return oldSock;
         }
         else
         {
-            var socket = new EOS_Socket(this,localpuid, socketid);
+            var socket = new EOS_Socket(this, localpuid, socketid);
             if (_sockets.TryAdd(localpuid, socketid, socket))
             {
                 socket.AddCB();
@@ -96,7 +96,7 @@ public partial class EOS_Core : MonoBehaviour
     {
         return _sockets.TryGetValue(localpuid, socketid, out socket);
     }
-    public void SendPeer(EOS_Socket socket, ProductUserId remotePUID, byte channel, ArraySegment<byte> data , PacketReliability reliability)
+    public void SendPeer(EOS_Socket socket, ProductUserId remotePUID, byte channel, ArraySegment<byte> data, PacketReliability reliability)
     {
         var packet = new EOS_Packet()
         {
@@ -117,7 +117,7 @@ public partial class EOS_Core : MonoBehaviour
             DisableAutoAcceptConnection = true
         });
     }
-    public void SendLocal(EOS_Socket socket,Role role, byte channel, ArraySegment<byte> data)
+    public void SendLocal(EOS_Socket socket, Role role, byte channel, ArraySegment<byte> data)
     {
         var packet = new EOS_Packet()
         {
@@ -126,7 +126,7 @@ public partial class EOS_Core : MonoBehaviour
             _channel = channel,
             _data = data.ToArray()
         };
-        if (socket.GetConnection(role, socket._localPUID,out var connection))
+        if (socket.GetConnection(role, socket._localPUID, out var connection))
         {
             connection.EnqueuePacket(packet);
         }
@@ -137,8 +137,8 @@ public partial class EOS_Core : MonoBehaviour
         foreach (var localPUID in _sockets.GetKeys1())
         {
             int validClientPacketNum = _maxPacketsPerClient;
-            ReceivePacket(localPUID ,ref curframePacketNum);
-            if(curframePacketNum > _maxPacketsPerFrame)
+            ReceivePacket(localPUID, ref curframePacketNum);
+            if (curframePacketNum > _maxPacketsPerFrame)
             {
                 break;
             }
@@ -168,7 +168,7 @@ public partial class EOS_Core : MonoBehaviour
                 }
             }
 
-            if(++curframePacketNum > _maxPacketsPerFrame || ++curClientPacketNum > _maxPacketsPerClient)
+            if (++curframePacketNum > _maxPacketsPerFrame || ++curClientPacketNum > _maxPacketsPerClient)
             {
                 break;
             }

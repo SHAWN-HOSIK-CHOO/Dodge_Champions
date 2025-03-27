@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="SessionsInterface.DestroySession" />
-	/// </summary>
-	/// <param name="data">A <see cref="DestroySessionCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnDestroySessionCallback(ref DestroySessionCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="SessionsInterface.DestroySession" />
+    /// </summary>
+    /// <param name="data">A <see cref="DestroySessionCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnDestroySessionCallback(ref DestroySessionCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnDestroySessionCallbackInternal(ref DestroySessionCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnDestroySessionCallbackInternal(ref DestroySessionCallbackInfoInternal data);
 }

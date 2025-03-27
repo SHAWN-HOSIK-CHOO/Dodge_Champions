@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.PlayerDataStorage
 {
-	/// <summary>
-	/// Callback for when <see cref="PlayerDataStorageInterface.WriteFile" /> completes
-	/// </summary>
-	public delegate void OnWriteFileCompleteCallback(ref WriteFileCallbackInfo data);
+    /// <summary>
+    /// Callback for when <see cref="PlayerDataStorageInterface.WriteFile" /> completes
+    /// </summary>
+    public delegate void OnWriteFileCompleteCallback(ref WriteFileCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnWriteFileCompleteCallbackInternal(ref WriteFileCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnWriteFileCompleteCallbackInternal(ref WriteFileCallbackInfoInternal data);
 }

@@ -3,13 +3,13 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	/// <summary>
-	/// Function prototype definition for notifications that comes from <see cref="LobbyInterface.AddNotifyRTCRoomConnectionChanged" />
-	/// <seealso cref="LobbyInterface.IsRTCRoomConnected" />
-	/// </summary>
-	/// <param name="data">containing the connection state of the RTC Room for a lobby</param>
-	public delegate void OnRTCRoomConnectionChangedCallback(ref RTCRoomConnectionChangedCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that comes from <see cref="LobbyInterface.AddNotifyRTCRoomConnectionChanged" />
+    /// <seealso cref="LobbyInterface.IsRTCRoomConnected" />
+    /// </summary>
+    /// <param name="data">containing the connection state of the RTC Room for a lobby</param>
+    public delegate void OnRTCRoomConnectionChangedCallback(ref RTCRoomConnectionChangedCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnRTCRoomConnectionChangedCallbackInternal(ref RTCRoomConnectionChangedCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnRTCRoomConnectionChangedCallbackInternal(ref RTCRoomConnectionChangedCallbackInfoInternal data);
 }

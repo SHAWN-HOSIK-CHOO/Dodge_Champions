@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.CustomInvites
 {
-	public struct AddNotifyRequestToJoinResponseReceivedOptions
-	{
-	}
+    public struct AddNotifyRequestToJoinResponseReceivedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyRequestToJoinResponseReceivedOptionsInternal : ISettable<AddNotifyRequestToJoinResponseReceivedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyRequestToJoinResponseReceivedOptionsInternal : ISettable<AddNotifyRequestToJoinResponseReceivedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyRequestToJoinResponseReceivedOptions other)
-		{
-			m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinresponsereceivedApiLatest;
-		}
+        public void Set(ref AddNotifyRequestToJoinResponseReceivedOptions other)
+        {
+            m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinresponsereceivedApiLatest;
+        }
 
-		public void Set(ref AddNotifyRequestToJoinResponseReceivedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinresponsereceivedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyRequestToJoinResponseReceivedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = CustomInvitesInterface.AddnotifyrequesttojoinresponsereceivedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

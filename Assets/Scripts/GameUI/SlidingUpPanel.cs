@@ -1,5 +1,5 @@
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
 namespace GameUI
 {
@@ -7,7 +7,7 @@ namespace GameUI
     {
         public RectTransform panelRect;       // Panel의 RectTransform
         public RectTransform buttonRect;      // Button의 RectTransform
-        public float         duration = 0.5f; // 애니메이션 지속 시간
+        public float duration = 0.5f; // 애니메이션 지속 시간
 
         private Vector2 _panelStartPos;
         private Vector2 _panelEndPos;
@@ -19,13 +19,13 @@ namespace GameUI
         void Start()
         {
             // 패널과 버튼의 시작 위치 설정
-            _panelStartPos             = new Vector2(0, -panelRect.rect.height);
+            _panelStartPos = new Vector2(0, -panelRect.rect.height);
             panelRect.anchoredPosition = _panelStartPos;
 
             _buttonStartPos = buttonRect.anchoredPosition;
-        
+
             // 패널이 올라갔을 때의 위치
-            _panelEndPos  = new Vector2(0,                 0);
+            _panelEndPos = new Vector2(0, 0);
             _buttonEndPos = new Vector2(_buttonStartPos.x, _buttonStartPos.y + panelRect.rect.height);
         }
 
@@ -35,7 +35,7 @@ namespace GameUI
             {
                 return;
             }
-            
+
             if (_isOpen)
             {
                 // 패널 & 버튼을 아래로 슬라이드 (닫기)

@@ -3,121 +3,121 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// Output parameters for the <see cref="EcomInterface.QueryEntitlements" /> Function.
-	/// </summary>
-	public struct QueryEntitlementsCallbackInfo : ICallbackInfo
-	{
-		public Result ResultCode { get; set; }
+    /// <summary>
+    /// Output parameters for the <see cref="EcomInterface.QueryEntitlements" /> Function.
+    /// </summary>
+    public struct QueryEntitlementsCallbackInfo : ICallbackInfo
+    {
+        public Result ResultCode { get; set; }
 
-		/// <summary>
-		/// Context that was passed into <see cref="EcomInterface.QueryEntitlements" />
-		/// </summary>
-		public object ClientData { get; set; }
+        /// <summary>
+        /// Context that was passed into <see cref="EcomInterface.QueryEntitlements" />
+        /// </summary>
+        public object ClientData { get; set; }
 
-		/// <summary>
-		/// The Epic Account ID of the local user whose entitlement was queried
-		/// </summary>
-		public EpicAccountId LocalUserId { get; set; }
+        /// <summary>
+        /// The Epic Account ID of the local user whose entitlement was queried
+        /// </summary>
+        public EpicAccountId LocalUserId { get; set; }
 
-		public Result? GetResultCode()
-		{
-			return ResultCode;
-		}
+        public Result? GetResultCode()
+        {
+            return ResultCode;
+        }
 
-		internal void Set(ref QueryEntitlementsCallbackInfoInternal other)
-		{
-			ResultCode = other.ResultCode;
-			ClientData = other.ClientData;
-			LocalUserId = other.LocalUserId;
-		}
-	}
+        internal void Set(ref QueryEntitlementsCallbackInfoInternal other)
+        {
+            ResultCode = other.ResultCode;
+            ClientData = other.ClientData;
+            LocalUserId = other.LocalUserId;
+        }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct QueryEntitlementsCallbackInfoInternal : ICallbackInfoInternal, IGettable<QueryEntitlementsCallbackInfo>, ISettable<QueryEntitlementsCallbackInfo>, System.IDisposable
-	{
-		private Result m_ResultCode;
-		private System.IntPtr m_ClientData;
-		private System.IntPtr m_LocalUserId;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct QueryEntitlementsCallbackInfoInternal : ICallbackInfoInternal, IGettable<QueryEntitlementsCallbackInfo>, ISettable<QueryEntitlementsCallbackInfo>, System.IDisposable
+    {
+        private Result m_ResultCode;
+        private System.IntPtr m_ClientData;
+        private System.IntPtr m_LocalUserId;
 
-		public Result ResultCode
-		{
-			get
-			{
-				return m_ResultCode;
-			}
+        public Result ResultCode
+        {
+            get
+            {
+                return m_ResultCode;
+            }
 
-			set
-			{
-				m_ResultCode = value;
-			}
-		}
+            set
+            {
+                m_ResultCode = value;
+            }
+        }
 
-		public object ClientData
-		{
-			get
-			{
-				object value;
-				Helper.Get(m_ClientData, out value);
-				return value;
-			}
+        public object ClientData
+        {
+            get
+            {
+                object value;
+                Helper.Get(m_ClientData, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_ClientData);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_ClientData);
+            }
+        }
 
-		public System.IntPtr ClientDataAddress
-		{
-			get
-			{
-				return m_ClientData;
-			}
-		}
+        public System.IntPtr ClientDataAddress
+        {
+            get
+            {
+                return m_ClientData;
+            }
+        }
 
-		public EpicAccountId LocalUserId
-		{
-			get
-			{
-				EpicAccountId value;
-				Helper.Get(m_LocalUserId, out value);
-				return value;
-			}
+        public EpicAccountId LocalUserId
+        {
+            get
+            {
+                EpicAccountId value;
+                Helper.Get(m_LocalUserId, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_LocalUserId);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_LocalUserId);
+            }
+        }
 
-		public void Set(ref QueryEntitlementsCallbackInfo other)
-		{
-			ResultCode = other.ResultCode;
-			ClientData = other.ClientData;
-			LocalUserId = other.LocalUserId;
-		}
+        public void Set(ref QueryEntitlementsCallbackInfo other)
+        {
+            ResultCode = other.ResultCode;
+            ClientData = other.ClientData;
+            LocalUserId = other.LocalUserId;
+        }
 
-		public void Set(ref QueryEntitlementsCallbackInfo? other)
-		{
-			if (other.HasValue)
-			{
-				ResultCode = other.Value.ResultCode;
-				ClientData = other.Value.ClientData;
-				LocalUserId = other.Value.LocalUserId;
-			}
-		}
+        public void Set(ref QueryEntitlementsCallbackInfo? other)
+        {
+            if (other.HasValue)
+            {
+                ResultCode = other.Value.ResultCode;
+                ClientData = other.Value.ClientData;
+                LocalUserId = other.Value.LocalUserId;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_ClientData);
-			Helper.Dispose(ref m_LocalUserId);
-		}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_ClientData);
+            Helper.Dispose(ref m_LocalUserId);
+        }
 
-		public void Get(out QueryEntitlementsCallbackInfo output)
-		{
-			output = new QueryEntitlementsCallbackInfo();
-			output.Set(ref this);
-		}
-	}
+        public void Get(out QueryEntitlementsCallbackInfo output)
+        {
+            output = new QueryEntitlementsCallbackInfo();
+            output.Set(ref this);
+        }
+    }
 }

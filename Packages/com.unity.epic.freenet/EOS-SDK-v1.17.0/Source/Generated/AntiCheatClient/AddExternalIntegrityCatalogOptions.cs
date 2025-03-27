@@ -3,46 +3,46 @@
 
 namespace Epic.OnlineServices.AntiCheatClient
 {
-	public struct AddExternalIntegrityCatalogOptions
-	{
-		/// <summary>
-		/// UTF-8 path to the .bin catalog file to add
-		/// </summary>
-		public Utf8String PathToBinFile { get; set; }
-	}
+    public struct AddExternalIntegrityCatalogOptions
+    {
+        /// <summary>
+        /// UTF-8 path to the .bin catalog file to add
+        /// </summary>
+        public Utf8String PathToBinFile { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddExternalIntegrityCatalogOptionsInternal : ISettable<AddExternalIntegrityCatalogOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_PathToBinFile;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddExternalIntegrityCatalogOptionsInternal : ISettable<AddExternalIntegrityCatalogOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_PathToBinFile;
 
-		public Utf8String PathToBinFile
-		{
-			set
-			{
-				Helper.Set(value, ref m_PathToBinFile);
-			}
-		}
+        public Utf8String PathToBinFile
+        {
+            set
+            {
+                Helper.Set(value, ref m_PathToBinFile);
+            }
+        }
 
-		public void Set(ref AddExternalIntegrityCatalogOptions other)
-		{
-			m_ApiVersion = AntiCheatClientInterface.AddexternalintegritycatalogApiLatest;
-			PathToBinFile = other.PathToBinFile;
-		}
+        public void Set(ref AddExternalIntegrityCatalogOptions other)
+        {
+            m_ApiVersion = AntiCheatClientInterface.AddexternalintegritycatalogApiLatest;
+            PathToBinFile = other.PathToBinFile;
+        }
 
-		public void Set(ref AddExternalIntegrityCatalogOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AntiCheatClientInterface.AddexternalintegritycatalogApiLatest;
-				PathToBinFile = other.Value.PathToBinFile;
-			}
-		}
+        public void Set(ref AddExternalIntegrityCatalogOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AntiCheatClientInterface.AddexternalintegritycatalogApiLatest;
+                PathToBinFile = other.Value.PathToBinFile;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_PathToBinFile);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_PathToBinFile);
+        }
+    }
 }

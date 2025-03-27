@@ -1,7 +1,6 @@
 using Epic.OnlineServices;
 using Epic.OnlineServices.P2P;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using static EOS_Socket;
@@ -11,7 +10,7 @@ public class EOS_Server : EOS_Peer
     public EOSWrapper.ETC.PUID _localPUID { get; private set; }
     private Dictionary<int, EOSWrapper.ETC.PUID> _ConnectIDmapping;
     private Dictionary<EOSWrapper.ETC.PUID, int> _PUIDmapping;
-    public event Action<int,int> _onReceivedPacket;
+    public event Action<int, int> _onReceivedPacket;
     Dictionary<EOSWrapper.ETC.PUID, Dictionary<int, Queue<EOS_Core.EOS_Packet>>> _incomingPackets;
     public event Action<(int, EOS_Socket.Connection)> _onConnectionStateChanged;
 
@@ -30,7 +29,7 @@ public class EOS_Server : EOS_Peer
         _socket._onClosed += OnClosedCB;
         _ConnectIDmapping = new Dictionary<int, EOSWrapper.ETC.PUID>();
         _PUIDmapping = new Dictionary<EOSWrapper.ETC.PUID, int>();
-        _incomingPackets = new Dictionary<EOSWrapper.ETC.PUID, Dictionary<int, Queue<EOS_Core.EOS_Packet>>>();  
+        _incomingPackets = new Dictionary<EOSWrapper.ETC.PUID, Dictionary<int, Queue<EOS_Core.EOS_Packet>>>();
     }
     public void RemoveMapping(EOSWrapper.ETC.PUID puid)
     {
@@ -97,7 +96,7 @@ public class EOS_Server : EOS_Peer
             return newID;
         }
     }
-    public void OnServerEnqueuePacket(EOS_Socket.Connection connection,int channel)
+    public void OnServerEnqueuePacket(EOS_Socket.Connection connection, int channel)
     {
         if (connection.DeqeuePacket(channel, out var packet))
         {
@@ -115,7 +114,7 @@ public class EOS_Server : EOS_Peer
             queue.Enqueue(packet);
             if (GetConnectID(connection._remotePUID, out int id))
             {
-                _onReceivedPacket?.Invoke(id,channel);
+                _onReceivedPacket?.Invoke(id, channel);
             }
         }
     }
@@ -123,7 +122,7 @@ public class EOS_Server : EOS_Peer
     public bool DequeuePacket(EOSWrapper.ETC.PUID puid, int channel, out EOS_Core.EOS_Packet packet)
     {
         packet = default;
-        if(_incomingPackets.TryGetValue(puid, out var incomingpackets))
+        if (_incomingPackets.TryGetValue(puid, out var incomingpackets))
         {
             if (incomingpackets.TryGetValue(channel, out var queue))
             {
@@ -139,7 +138,7 @@ public class EOS_Server : EOS_Peer
         {
             foreach (var queue in incomingpackets)
             {
-                if(channel == queue.Key)
+                if (channel == queue.Key)
                 {
                     foreach (var item in queue.Value)
                     {
@@ -150,15 +149,15 @@ public class EOS_Server : EOS_Peer
         }
         return false;
     }
-    public bool DequeuePacket(int id,int channel, out EOS_Core.EOS_Packet packet)
+    public bool DequeuePacket(int id, int channel, out EOS_Core.EOS_Packet packet)
     {
         packet = default;
-        if (GetPUID(id,out var puid))
+        if (GetPUID(id, out var puid))
         {
             if (_incomingPackets.TryGetValue(puid, out var incomingPackets))
             {
-                if(incomingPackets.TryGetValue(channel,out var queue))
-                { 
+                if (incomingPackets.TryGetValue(channel, out var queue))
+                {
                     return queue.TryDequeue(out packet);
                 }
             }
@@ -169,7 +168,7 @@ public class EOS_Server : EOS_Peer
     {
         if (GetPUID(connectionId, out var puid))
         {
-            if(puid._puid == _localPUID._puid)
+            if (puid._puid == _localPUID._puid)
             {
                 _eosCore.SendLocal(_socket, EOS_Core.Role.localClient, channel, segment);
 

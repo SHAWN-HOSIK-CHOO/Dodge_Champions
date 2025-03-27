@@ -3,22 +3,22 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// An enumeration defining the possible orientation for the checkout page. This will be used on mobile.
-	/// </summary>
-	public enum CheckoutOrientation : int
-	{
-		/// <summary>
-		/// Current orientation will be used
-		/// </summary>
-		Default = 0,
-		/// <summary>
-		/// Portrait orientation
-		/// </summary>
-		Portrait = 1,
-		/// <summary>
-		/// Landscape orientation
-		/// </summary>
-		Landscape = 2
-	}
+    /// <summary>
+    /// An enumeration defining the possible orientation for the checkout page. This will be used on mobile.
+    /// </summary>
+    public enum CheckoutOrientation : int
+    {
+        /// <summary>
+        /// Current orientation will be used
+        /// </summary>
+        Default = 0,
+        /// <summary>
+        /// Portrait orientation
+        /// </summary>
+        Portrait = 1,
+        /// <summary>
+        /// Landscape orientation
+        /// </summary>
+        Landscape = 2
+    }
 }

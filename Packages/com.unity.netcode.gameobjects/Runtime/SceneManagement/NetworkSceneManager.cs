@@ -7,7 +7,6 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEditor.SceneManagement;
 #endif
 using UnityEngine.SceneManagement;
 
@@ -674,8 +673,8 @@ namespace Unity.Netcode
         /// </summary>
         internal string GetSceneNameFromPath(string scenePath)
         {
-            int begin = scenePath.LastIndexOf("/", StringComparison.Ordinal) +1;
-            if (begin == -1) begin = 0; 
+            int begin = scenePath.LastIndexOf("/", StringComparison.Ordinal) + 1;
+            if (begin == -1) begin = 0;
 
             int end = scenePath.LastIndexOf(".", StringComparison.Ordinal);
             if (end == -1 || end < begin) end = scenePath.Length;
@@ -763,7 +762,7 @@ namespace Unity.Netcode
         /// </summary>
         /// 
 
-        
+
         internal string ScenePathFromHash(uint sceneHash)
         {
             if (HashToBuildIndex.ContainsKey(sceneHash))
@@ -2148,7 +2147,7 @@ namespace Unity.Netcode
             var sceneHandle = sceneEventData.GetNextSceneSynchronizationHandle();
             var sceneName = SceneNameFromHash(sceneHash);
             var activeScene = SceneManager.GetActiveScene();
-            
+
             var loadSceneMode = sceneHash == sceneEventData.SceneHash ? sceneEventData.LoadSceneMode : LoadSceneMode.Additive;
 
             // Store the sceneHandle and hash

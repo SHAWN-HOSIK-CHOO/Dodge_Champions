@@ -1,7 +1,7 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Unity.Netcode.TestHelpers.Runtime;
 using UnityEngine;
 using UnityEngine.TestTools;

@@ -3,46 +3,46 @@
 
 namespace Epic.OnlineServices.IntegratedPlatform
 {
-	public sealed partial class IntegratedPlatformOptionsContainer : Handle
-	{
-		public IntegratedPlatformOptionsContainer()
-		{
-		}
+    public sealed partial class IntegratedPlatformOptionsContainer : Handle
+    {
+        public IntegratedPlatformOptionsContainer()
+        {
+        }
 
-		public IntegratedPlatformOptionsContainer(System.IntPtr innerHandle) : base(innerHandle)
-		{
-		}
+        public IntegratedPlatformOptionsContainer(System.IntPtr innerHandle) : base(innerHandle)
+        {
+        }
 
-		public const int IntegratedplatformoptionscontainerAddApiLatest = 1;
+        public const int IntegratedplatformoptionscontainerAddApiLatest = 1;
 
-		/// <summary>
-		/// Adds an integrated platform options to the container.
-		/// </summary>
-		/// <param name="options">Object containing properties related to setting a user's Status</param>
-		/// <returns>
-		/// Success if modification was added successfully, otherwise an error code related to the problem
-		/// </returns>
-		public Result Add(ref IntegratedPlatformOptionsContainerAddOptions inOptions)
-		{
-			IntegratedPlatformOptionsContainerAddOptionsInternal inOptionsInternal = new IntegratedPlatformOptionsContainerAddOptionsInternal();
-			inOptionsInternal.Set(ref inOptions);
+        /// <summary>
+        /// Adds an integrated platform options to the container.
+        /// </summary>
+        /// <param name="options">Object containing properties related to setting a user's Status</param>
+        /// <returns>
+        /// Success if modification was added successfully, otherwise an error code related to the problem
+        /// </returns>
+        public Result Add(ref IntegratedPlatformOptionsContainerAddOptions inOptions)
+        {
+            IntegratedPlatformOptionsContainerAddOptionsInternal inOptionsInternal = new IntegratedPlatformOptionsContainerAddOptionsInternal();
+            inOptionsInternal.Set(ref inOptions);
 
-			var funcResult = Bindings.EOS_IntegratedPlatformOptionsContainer_Add(InnerHandle, ref inOptionsInternal);
+            var funcResult = Bindings.EOS_IntegratedPlatformOptionsContainer_Add(InnerHandle, ref inOptionsInternal);
 
-			Helper.Dispose(ref inOptionsInternal);
+            Helper.Dispose(ref inOptionsInternal);
 
-			return funcResult;
-		}
+            return funcResult;
+        }
 
-		/// <summary>
-		/// Release the memory associated with an <see cref="IntegratedPlatformOptionsContainer" /> handle. This must be called on Handles retrieved from <see cref="IntegratedPlatformInterface.CreateIntegratedPlatformOptionsContainer" />.
-		/// This can be safely called on a <see langword="null" /> integrated platform options container handle.
-		/// <seealso cref="IntegratedPlatformInterface.CreateIntegratedPlatformOptionsContainer" />
-		/// </summary>
-		/// <param name="integratedPlatformOptionsContainerHandle">The integrated platform options container handle to release.</param>
-		public void Release()
-		{
-			Bindings.EOS_IntegratedPlatformOptionsContainer_Release(InnerHandle);
-		}
-	}
+        /// <summary>
+        /// Release the memory associated with an <see cref="IntegratedPlatformOptionsContainer" /> handle. This must be called on Handles retrieved from <see cref="IntegratedPlatformInterface.CreateIntegratedPlatformOptionsContainer" />.
+        /// This can be safely called on a <see langword="null" /> integrated platform options container handle.
+        /// <seealso cref="IntegratedPlatformInterface.CreateIntegratedPlatformOptionsContainer" />
+        /// </summary>
+        /// <param name="integratedPlatformOptionsContainerHandle">The integrated platform options container handle to release.</param>
+        public void Release()
+        {
+            Bindings.EOS_IntegratedPlatformOptionsContainer_Release(InnerHandle);
+        }
+    }
 }

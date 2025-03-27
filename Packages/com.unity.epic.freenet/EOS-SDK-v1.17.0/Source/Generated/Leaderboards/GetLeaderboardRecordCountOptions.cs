@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Leaderboards
 {
-	/// <summary>
-	/// Input parameters for the <see cref="LeaderboardsInterface.GetLeaderboardRecordCount" /> function.
-	/// </summary>
-	public struct GetLeaderboardRecordCountOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="LeaderboardsInterface.GetLeaderboardRecordCount" /> function.
+    /// </summary>
+    public struct GetLeaderboardRecordCountOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetLeaderboardRecordCountOptionsInternal : ISettable<GetLeaderboardRecordCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetLeaderboardRecordCountOptionsInternal : ISettable<GetLeaderboardRecordCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref GetLeaderboardRecordCountOptions other)
-		{
-			m_ApiVersion = LeaderboardsInterface.GetleaderboardrecordcountApiLatest;
-		}
+        public void Set(ref GetLeaderboardRecordCountOptions other)
+        {
+            m_ApiVersion = LeaderboardsInterface.GetleaderboardrecordcountApiLatest;
+        }
 
-		public void Set(ref GetLeaderboardRecordCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = LeaderboardsInterface.GetleaderboardrecordcountApiLatest;
-			}
-		}
+        public void Set(ref GetLeaderboardRecordCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = LeaderboardsInterface.GetleaderboardrecordcountApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

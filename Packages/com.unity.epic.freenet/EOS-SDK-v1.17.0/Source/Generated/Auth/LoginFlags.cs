@@ -3,17 +3,17 @@
 
 namespace Epic.OnlineServices.Auth
 {
-	[System.Flags]
-	public enum LoginFlags : ulong
-	{
-		None = 0x0,
-		/// <summary>
-		/// Specify login to be performed without SDK provided user interface.
-		/// 
-		/// By default, and without this flag, the SDK uses the overlay or a system browser to show user interfaces during login
-		/// when the user needs to perform some action. With this flag, an error such as <see cref="Result.AuthUserInterfaceRequired" /> is returned
-		/// to the login callback, and no user interface is shown in those cases.
-		/// </summary>
-		NoUserInterface = 0x00001
-	}
+    [System.Flags]
+    public enum LoginFlags : ulong
+    {
+        None = 0x0,
+        /// <summary>
+        /// Specify login to be performed without SDK provided user interface.
+        /// 
+        /// By default, and without this flag, the SDK uses the overlay or a system browser to show user interfaces during login
+        /// when the user needs to perform some action. With this flag, an error such as <see cref="Result.AuthUserInterfaceRequired" /> is returned
+        /// to the login callback, and no user interface is shown in those cases.
+        /// </summary>
+        NoUserInterface = 0x00001
+    }
 }

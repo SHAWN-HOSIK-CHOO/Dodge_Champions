@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.PlayerDataStorage
 {
-	/// <summary>
-	/// Callback for when <see cref="PlayerDataStorageInterface.QueryFile" /> completes
-	/// </summary>
-	public delegate void OnQueryFileCompleteCallback(ref QueryFileCallbackInfo data);
+    /// <summary>
+    /// Callback for when <see cref="PlayerDataStorageInterface.QueryFile" /> completes
+    /// </summary>
+    public delegate void OnQueryFileCompleteCallback(ref QueryFileCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryFileCompleteCallbackInternal(ref QueryFileCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryFileCompleteCallbackInternal(ref QueryFileCallbackInfoInternal data);
 }

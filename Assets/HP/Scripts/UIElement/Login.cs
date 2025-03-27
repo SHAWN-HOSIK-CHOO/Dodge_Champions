@@ -30,7 +30,7 @@ public class Login : MonoBehaviour
     public event Action onConnect;
     IEnumerator Start()
     {
-       yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
+        yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
         _guestLogin.onClick.AddListener(OnGuestLogin);
         _epicPortalLogin.onClick.AddListener(OnEpicPortalLogin);
         _developerLogin.onClick.AddListener(OnDeveloperLogin);
@@ -45,8 +45,8 @@ public class Login : MonoBehaviour
             string[] parts = text.Split(' ', 3);
             if (parts.Length == 3)
             {
-                string command = parts[0];      
-                if(command == "Developer_Login")
+                string command = parts[0];
+                if (command == "Developer_Login")
                 {
                     _LoginID = parts[1];
                     _LoginCredential = parts[2];
@@ -187,7 +187,7 @@ public class Login : MonoBehaviour
         _consoleController.AddText($"OnDeveloperLogin Start...");
         simulator.EndTracking();
         simulator.Simulate(0.05f);
-        EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet._instance._eosCore._IAuth, _LoginID, _LoginCredential , (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
+        EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet._instance._eosCore._IAuth, _LoginID, _LoginCredential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if (EOSWrapper.ETC.ErrControl<EpicAccountId>(info.ResultCode, OnLoginComplete))
             {

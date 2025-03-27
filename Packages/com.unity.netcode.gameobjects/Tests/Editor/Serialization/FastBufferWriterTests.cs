@@ -1,6 +1,6 @@
+using NUnit.Framework;
 using System;
 using System.Reflection;
-using NUnit.Framework;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;

@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Auth
 {
-	/// <summary>
-	/// Input parameters for the <see cref="AuthInterface.CopyUserAuthToken" /> function.
-	/// </summary>
-	public struct CopyUserAuthTokenOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="AuthInterface.CopyUserAuthToken" /> function.
+    /// </summary>
+    public struct CopyUserAuthTokenOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct CopyUserAuthTokenOptionsInternal : ISettable<CopyUserAuthTokenOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct CopyUserAuthTokenOptionsInternal : ISettable<CopyUserAuthTokenOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref CopyUserAuthTokenOptions other)
-		{
-			m_ApiVersion = AuthInterface.CopyuserauthtokenApiLatest;
-		}
+        public void Set(ref CopyUserAuthTokenOptions other)
+        {
+            m_ApiVersion = AuthInterface.CopyuserauthtokenApiLatest;
+        }
 
-		public void Set(ref CopyUserAuthTokenOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AuthInterface.CopyuserauthtokenApiLatest;
-			}
-		}
+        public void Set(ref CopyUserAuthTokenOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AuthInterface.CopyuserauthtokenApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

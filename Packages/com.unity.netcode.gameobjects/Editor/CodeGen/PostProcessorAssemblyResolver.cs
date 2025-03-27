@@ -1,9 +1,9 @@
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Mono.Cecil;
 using Unity.CompilationPipeline.Common.ILPostProcessing;
 
 namespace Unity.Netcode.Editor.CodeGen

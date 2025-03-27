@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// This struct is passed in with a call to <see cref="RTCAudioInterface.QueryOutputDevicesInformation" />.
-	/// </summary>
-	public struct QueryOutputDevicesInformationOptions
-	{
-	}
+    /// <summary>
+    /// This struct is passed in with a call to <see cref="RTCAudioInterface.QueryOutputDevicesInformation" />.
+    /// </summary>
+    public struct QueryOutputDevicesInformationOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct QueryOutputDevicesInformationOptionsInternal : ISettable<QueryOutputDevicesInformationOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct QueryOutputDevicesInformationOptionsInternal : ISettable<QueryOutputDevicesInformationOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref QueryOutputDevicesInformationOptions other)
-		{
-			m_ApiVersion = RTCAudioInterface.QueryoutputdevicesinformationApiLatest;
-		}
+        public void Set(ref QueryOutputDevicesInformationOptions other)
+        {
+            m_ApiVersion = RTCAudioInterface.QueryoutputdevicesinformationApiLatest;
+        }
 
-		public void Set(ref QueryOutputDevicesInformationOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = RTCAudioInterface.QueryoutputdevicesinformationApiLatest;
-			}
-		}
+        public void Set(ref QueryOutputDevicesInformationOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = RTCAudioInterface.QueryoutputdevicesinformationApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

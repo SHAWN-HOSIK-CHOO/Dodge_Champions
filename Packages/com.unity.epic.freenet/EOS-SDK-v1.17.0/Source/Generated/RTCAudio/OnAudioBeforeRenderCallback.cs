@@ -3,8 +3,8 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	public delegate void OnAudioBeforeRenderCallback(ref AudioBeforeRenderCallbackInfo data);
+    public delegate void OnAudioBeforeRenderCallback(ref AudioBeforeRenderCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnAudioBeforeRenderCallbackInternal(ref AudioBeforeRenderCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnAudioBeforeRenderCallbackInternal(ref AudioBeforeRenderCallbackInfoInternal data);
 }

@@ -3,18 +3,18 @@
 
 namespace Epic.OnlineServices.CustomInvites
 {
-	/// <summary>
-	/// Response to an invite request.
-	/// </summary>
-	public enum RequestToJoinResponse : int
-	{
-		/// <summary>
-		/// The target of the invite request has accepted.
-		/// </summary>
-		Accepted = 0,
-		/// <summary>
-		/// The target of the invite request has rejected.
-		/// </summary>
-		Rejected = 1
-	}
+    /// <summary>
+    /// Response to an invite request.
+    /// </summary>
+    public enum RequestToJoinResponse : int
+    {
+        /// <summary>
+        /// The target of the invite request has accepted.
+        /// </summary>
+        Accepted = 0,
+        /// <summary>
+        /// The target of the invite request has rejected.
+        /// </summary>
+        Rejected = 1
+    }
 }

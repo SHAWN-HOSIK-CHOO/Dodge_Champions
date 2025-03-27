@@ -3,92 +3,92 @@
 
 namespace Epic.OnlineServices.Platform
 {
-	/// <summary>
-	/// Platform RTC options.
-	/// </summary>
-	public struct WindowsRTCOptions
-	{
-		/// <summary>
-		/// This field is for platform specific initialization if any.
-		/// 
-		/// If provided then the structure will be located in "PLATFORM_NAME"/eos_"PLATFORM_NAME".h.
-		/// The structure will be named EOS_"PLATFORM_NAME"_RTCOptions.
-		/// </summary>
-		public WindowsRTCOptionsPlatformSpecificOptions? PlatformSpecificOptions { get; set; }
+    /// <summary>
+    /// Platform RTC options.
+    /// </summary>
+    public struct WindowsRTCOptions
+    {
+        /// <summary>
+        /// This field is for platform specific initialization if any.
+        /// 
+        /// If provided then the structure will be located in "PLATFORM_NAME"/eos_"PLATFORM_NAME".h.
+        /// The structure will be named EOS_"PLATFORM_NAME"_RTCOptions.
+        /// </summary>
+        public WindowsRTCOptionsPlatformSpecificOptions? PlatformSpecificOptions { get; set; }
 
-		/// <summary>
-		/// Configures RTC behavior upon entering to any background application statuses
-		/// </summary>
-		public RTCBackgroundMode BackgroundMode { get; set; }
+        /// <summary>
+        /// Configures RTC behavior upon entering to any background application statuses
+        /// </summary>
+        public RTCBackgroundMode BackgroundMode { get; set; }
 
-		internal void Set(ref WindowsRTCOptionsInternal other)
-		{
-			PlatformSpecificOptions = other.PlatformSpecificOptions;
-			BackgroundMode = other.BackgroundMode;
-		}
-	}
+        internal void Set(ref WindowsRTCOptionsInternal other)
+        {
+            PlatformSpecificOptions = other.PlatformSpecificOptions;
+            BackgroundMode = other.BackgroundMode;
+        }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct WindowsRTCOptionsInternal : IGettable<WindowsRTCOptions>, ISettable<WindowsRTCOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_PlatformSpecificOptions;
-		private RTCBackgroundMode m_BackgroundMode;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct WindowsRTCOptionsInternal : IGettable<WindowsRTCOptions>, ISettable<WindowsRTCOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_PlatformSpecificOptions;
+        private RTCBackgroundMode m_BackgroundMode;
 
-		public WindowsRTCOptionsPlatformSpecificOptions? PlatformSpecificOptions
-		{
-			get
-			{
-				WindowsRTCOptionsPlatformSpecificOptions? value;
-				Helper.Get<WindowsRTCOptionsPlatformSpecificOptionsInternal, WindowsRTCOptionsPlatformSpecificOptions>(m_PlatformSpecificOptions, out value);
-				return value;
-			}
+        public WindowsRTCOptionsPlatformSpecificOptions? PlatformSpecificOptions
+        {
+            get
+            {
+                WindowsRTCOptionsPlatformSpecificOptions? value;
+                Helper.Get<WindowsRTCOptionsPlatformSpecificOptionsInternal, WindowsRTCOptionsPlatformSpecificOptions>(m_PlatformSpecificOptions, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set<WindowsRTCOptionsPlatformSpecificOptions, WindowsRTCOptionsPlatformSpecificOptionsInternal>(ref value, ref m_PlatformSpecificOptions);
-			}
-		}
+            set
+            {
+                Helper.Set<WindowsRTCOptionsPlatformSpecificOptions, WindowsRTCOptionsPlatformSpecificOptionsInternal>(ref value, ref m_PlatformSpecificOptions);
+            }
+        }
 
-		public RTCBackgroundMode BackgroundMode
-		{
-			get
-			{
-				return m_BackgroundMode;
-			}
+        public RTCBackgroundMode BackgroundMode
+        {
+            get
+            {
+                return m_BackgroundMode;
+            }
 
-			set
-			{
-				m_BackgroundMode = value;
-			}
-		}
+            set
+            {
+                m_BackgroundMode = value;
+            }
+        }
 
-		public void Set(ref WindowsRTCOptions other)
-		{
-			m_ApiVersion = PlatformInterface.RtcoptionsApiLatest;
-			PlatformSpecificOptions = other.PlatformSpecificOptions;
-			BackgroundMode = other.BackgroundMode;
-		}
+        public void Set(ref WindowsRTCOptions other)
+        {
+            m_ApiVersion = PlatformInterface.RtcoptionsApiLatest;
+            PlatformSpecificOptions = other.PlatformSpecificOptions;
+            BackgroundMode = other.BackgroundMode;
+        }
 
-		public void Set(ref WindowsRTCOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = PlatformInterface.RtcoptionsApiLatest;
-				PlatformSpecificOptions = other.Value.PlatformSpecificOptions;
-				BackgroundMode = other.Value.BackgroundMode;
-			}
-		}
+        public void Set(ref WindowsRTCOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = PlatformInterface.RtcoptionsApiLatest;
+                PlatformSpecificOptions = other.Value.PlatformSpecificOptions;
+                BackgroundMode = other.Value.BackgroundMode;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_PlatformSpecificOptions);
-		}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_PlatformSpecificOptions);
+        }
 
-		public void Get(out WindowsRTCOptions output)
-		{
-			output = new WindowsRTCOptions();
-			output.Set(ref this);
-		}
-	}
+        public void Get(out WindowsRTCOptions output)
+        {
+            output = new WindowsRTCOptions();
+            output.Set(ref this);
+        }
+    }
 }

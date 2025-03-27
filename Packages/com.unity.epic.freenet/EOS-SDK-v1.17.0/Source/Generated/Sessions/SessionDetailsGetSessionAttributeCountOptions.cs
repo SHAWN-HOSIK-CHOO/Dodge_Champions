@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Input parameters for the <see cref="SessionDetails.GetSessionAttributeCount" /> function.
-	/// </summary>
-	public struct SessionDetailsGetSessionAttributeCountOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="SessionDetails.GetSessionAttributeCount" /> function.
+    /// </summary>
+    public struct SessionDetailsGetSessionAttributeCountOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct SessionDetailsGetSessionAttributeCountOptionsInternal : ISettable<SessionDetailsGetSessionAttributeCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct SessionDetailsGetSessionAttributeCountOptionsInternal : ISettable<SessionDetailsGetSessionAttributeCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref SessionDetailsGetSessionAttributeCountOptions other)
-		{
-			m_ApiVersion = SessionDetails.SessiondetailsGetsessionattributecountApiLatest;
-		}
+        public void Set(ref SessionDetailsGetSessionAttributeCountOptions other)
+        {
+            m_ApiVersion = SessionDetails.SessiondetailsGetsessionattributecountApiLatest;
+        }
 
-		public void Set(ref SessionDetailsGetSessionAttributeCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionDetails.SessiondetailsGetsessionattributecountApiLatest;
-			}
-		}
+        public void Set(ref SessionDetailsGetSessionAttributeCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionDetails.SessiondetailsGetsessionattributecountApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

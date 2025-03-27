@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.Friends
 {
-	/// <summary>
-	/// Callback for information related to a blocklist update.
-	/// </summary>
-	public delegate void OnBlockedUsersUpdateCallback(ref OnBlockedUsersUpdateInfo data);
+    /// <summary>
+    /// Callback for information related to a blocklist update.
+    /// </summary>
+    public delegate void OnBlockedUsersUpdateCallback(ref OnBlockedUsersUpdateInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnBlockedUsersUpdateCallbackInternal(ref OnBlockedUsersUpdateInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnBlockedUsersUpdateCallbackInternal(ref OnBlockedUsersUpdateInfoInternal data);
 }

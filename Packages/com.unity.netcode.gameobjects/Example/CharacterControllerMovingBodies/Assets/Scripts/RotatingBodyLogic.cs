@@ -39,7 +39,8 @@ public class RotatingBodyLogicEditor : NetworkTransformEditor
     public override void OnInspectorGUI()
     {
         var rotatingBodyLogic = target as RotatingBodyLogic;
-        void SetExpanded(bool expanded) { rotatingBodyLogic.RotatingBodyLogicExpanded = expanded; };
+        void SetExpanded(bool expanded) { rotatingBodyLogic.RotatingBodyLogicExpanded = expanded; }
+        ;
         DrawFoldOutGroup<RotatingBodyLogic>(rotatingBodyLogic.GetType(), DisplayRotatingBodyLogicProperties, rotatingBodyLogic.RotatingBodyLogicExpanded, SetExpanded);
         base.OnInspectorGUI();
     }

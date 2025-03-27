@@ -47,7 +47,6 @@ public class NgoManager : NetworkManager
     public NetworkSpawner _networkSpawner;
     public Action _onSpawnerSpawned;
     public event Action _onNgoManagerReady;
-    public event Action _onTick;
 
     [SerializeField]
     private List<string> _networkScene;
@@ -58,50 +57,56 @@ public class NgoManager : NetworkManager
     }
     public void SetNetworkValue()
     {
-        if(NetworkTimeSystem != null)
+        if (NetworkTimeSystem != null)
         {
             NetworkTimeSystem.LocalBufferSec = _localBufferSec;
             NetworkTimeSystem.ServerBufferSec = _serverBufferSec;
         }
 
-        if(MessageManager!= null)
+        if (MessageManager != null)
         {
             MessageManager.NonFragmentedMessageMaxSize = P2PInterface.MaxPacketSize;
         }
     }
-    public bool StartServer(EOSWrapper.ETC.PUID localPUID, string socketName)
+
+    public new bool StartServer()
     {
-        var result = false;
-        if (_useEpicOnlineTransport)
-        {
-            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel,_urgentChannel) && StartServer();
-        }
-        else
-        {
-            result = base.StartServer();
-        }
-        
+        var result = base.StartServer();
         if (result)
         {
             SetNetworkValue();
             _onSpawnerSpawned += OnSpawnedSpawner;
             _networkSpawner = Instantiate(_networkSpawnerPref);
             _networkSpawner.GetComponent<NetworkObject>().Spawn(false);
-            MessageManager.NonFragmentedMessageMaxSize = P2PInterface.MaxPacketSize;
+        }
+        return result;
+    }
+    public bool StartServer(EOSWrapper.ETC.PUID localPUID, string socketName)
+    {
+        var result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel, _urgentChannel) && base.StartServer();
+        if (result)
+        {
+            SetNetworkValue();
+            _onSpawnerSpawned += OnSpawnedSpawner;
+            _networkSpawner = Instantiate(_networkSpawnerPref);
+            _networkSpawner.GetComponent<NetworkObject>().Spawn(false);
+        }
+        return result;
+    }
+    public new bool StartClient()
+    {
+        var result = base.StartClient();
+        if (result)
+        {
+            SetNetworkValue();
+            SceneManager.VerifySceneBeforeLoading = NetworkSceneValidation;
+            _onSpawnerSpawned += OnSpawnedSpawner;
         }
         return result;
     }
     public bool StartClient(EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketName)
     {
-        var result = false;
-        if (_useEpicOnlineTransport)
-        {
-            result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel, _urgentChannel) && StartClient();
-        }
-        else
-        {
-            result =  base.StartClient();
-        }
+        var result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel, _urgentChannel) && base.StartClient();
         if (result)
         {
             SetNetworkValue();
@@ -119,20 +124,24 @@ public class NgoManager : NetworkManager
         }
         return false;
     }
+    public new bool StartHost()
+    {
+        var result = base.StartHost();
+        if (result)
+        {
+            SetNetworkValue();
+            _onSpawnerSpawned += OnSpawnedSpawner;
+            _networkSpawner = Instantiate(_networkSpawnerPref);
+            _networkSpawner.GetComponent<NetworkObject>().Spawn(false);
+        }
+        return result;
+    }
     public bool StartHost(EOSWrapper.ETC.PUID localPUID, string socketName)
     {
-        var result = false;
-        if (_useEpicOnlineTransport)
-        {
-            result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel, _urgentChannel) &&
+        var result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel, _urgentChannel) &&
             _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, localPUID, socketName, _channel, _urgentChannel) &&
             StartHost() && _EOSNetcodeTransport.StartClient();
-        }
-        else
-        {
-            result = base.StartHost();
-        }
-        if(result)
+        if (result)
         {
             SetNetworkValue();
             _onSpawnerSpawned += OnSpawnedSpawner;
@@ -158,8 +167,7 @@ public class NgoManager : NetworkManager
                 destroyWithScene = false
             });
         }
-        base.NetworkTickSystem.Tick += _onTick;
         _onNgoManagerReady?.Invoke();
     }
-    
+
 }

@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.KWS
 {
-	public struct AddNotifyPermissionsUpdateReceivedOptions
-	{
-	}
+    public struct AddNotifyPermissionsUpdateReceivedOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct AddNotifyPermissionsUpdateReceivedOptionsInternal : ISettable<AddNotifyPermissionsUpdateReceivedOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct AddNotifyPermissionsUpdateReceivedOptionsInternal : ISettable<AddNotifyPermissionsUpdateReceivedOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref AddNotifyPermissionsUpdateReceivedOptions other)
-		{
-			m_ApiVersion = KWSInterface.AddnotifypermissionsupdatereceivedApiLatest;
-		}
+        public void Set(ref AddNotifyPermissionsUpdateReceivedOptions other)
+        {
+            m_ApiVersion = KWSInterface.AddnotifypermissionsupdatereceivedApiLatest;
+        }
 
-		public void Set(ref AddNotifyPermissionsUpdateReceivedOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = KWSInterface.AddnotifypermissionsupdatereceivedApiLatest;
-			}
-		}
+        public void Set(ref AddNotifyPermissionsUpdateReceivedOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = KWSInterface.AddnotifypermissionsupdatereceivedApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

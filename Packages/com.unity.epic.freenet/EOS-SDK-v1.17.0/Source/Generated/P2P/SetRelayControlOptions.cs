@@ -3,49 +3,49 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	/// <summary>
-	/// Structure containing information about new relay configurations.
-	/// </summary>
-	public struct SetRelayControlOptions
-	{
-		/// <summary>
-		/// The requested level of relay servers for P2P connections. This setting is only applied to new P2P connections, or when existing P2P connections
-		/// reconnect during a temporary connectivity outage. Peers with an incompatible setting to the local setting will not be able to connect.
-		/// </summary>
-		public RelayControl RelayControl { get; set; }
-	}
+    /// <summary>
+    /// Structure containing information about new relay configurations.
+    /// </summary>
+    public struct SetRelayControlOptions
+    {
+        /// <summary>
+        /// The requested level of relay servers for P2P connections. This setting is only applied to new P2P connections, or when existing P2P connections
+        /// reconnect during a temporary connectivity outage. Peers with an incompatible setting to the local setting will not be able to connect.
+        /// </summary>
+        public RelayControl RelayControl { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct SetRelayControlOptionsInternal : ISettable<SetRelayControlOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private RelayControl m_RelayControl;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct SetRelayControlOptionsInternal : ISettable<SetRelayControlOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private RelayControl m_RelayControl;
 
-		public RelayControl RelayControl
-		{
-			set
-			{
-				m_RelayControl = value;
-			}
-		}
+        public RelayControl RelayControl
+        {
+            set
+            {
+                m_RelayControl = value;
+            }
+        }
 
-		public void Set(ref SetRelayControlOptions other)
-		{
-			m_ApiVersion = P2PInterface.SetrelaycontrolApiLatest;
-			RelayControl = other.RelayControl;
-		}
+        public void Set(ref SetRelayControlOptions other)
+        {
+            m_ApiVersion = P2PInterface.SetrelaycontrolApiLatest;
+            RelayControl = other.RelayControl;
+        }
 
-		public void Set(ref SetRelayControlOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = P2PInterface.SetrelaycontrolApiLatest;
-				RelayControl = other.Value.RelayControl;
-			}
-		}
+        public void Set(ref SetRelayControlOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = P2PInterface.SetrelaycontrolApiLatest;
+                RelayControl = other.Value.RelayControl;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

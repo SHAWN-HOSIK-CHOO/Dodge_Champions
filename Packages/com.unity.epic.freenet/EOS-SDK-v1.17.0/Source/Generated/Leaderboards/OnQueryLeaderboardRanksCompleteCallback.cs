@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Leaderboards
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="LeaderboardsInterface.QueryLeaderboardRanks" />
-	/// </summary>
-	/// <param name="data">A <see cref="OnQueryLeaderboardRanksCompleteCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnQueryLeaderboardRanksCompleteCallback(ref OnQueryLeaderboardRanksCompleteCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="LeaderboardsInterface.QueryLeaderboardRanks" />
+    /// </summary>
+    /// <param name="data">A <see cref="OnQueryLeaderboardRanksCompleteCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnQueryLeaderboardRanksCompleteCallback(ref OnQueryLeaderboardRanksCompleteCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryLeaderboardRanksCompleteCallbackInternal(ref OnQueryLeaderboardRanksCompleteCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryLeaderboardRanksCompleteCallbackInternal(ref OnQueryLeaderboardRanksCompleteCallbackInfoInternal data);
 }

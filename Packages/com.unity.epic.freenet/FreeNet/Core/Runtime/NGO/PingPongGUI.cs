@@ -38,7 +38,7 @@ public class PingPongGUI : MonoBehaviour
 
     void OnRttChanged()
     {
-        if(_pingpong.GetRtt(FreeNet._instance._ngoManager.GetComponent<EOSNetcodeTransport>().ServerClientId, out var rtt))
+        if (_pingpong.GetRtt(FreeNet._instance._ngoManager.GetComponent<EOSNetcodeTransport>().ServerClientId, out var rtt))
         {
             _pingText.text = $"Ping : {(int)rtt}";
         }

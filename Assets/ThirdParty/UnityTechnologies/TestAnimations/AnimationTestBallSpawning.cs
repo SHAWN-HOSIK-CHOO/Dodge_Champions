@@ -1,12 +1,12 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 namespace ThirdParty.UnityTechnologies.TestAnimations
 {
     public class AnimationTestBallSpawning : MonoBehaviour
     {
-        public  GameObject pfBall;
-        public  Transform  ballSpawnPos;
+        public GameObject pfBall;
+        public Transform ballSpawnPos;
         private GameObject _ball;
 
         public void CallBack_Throw3Animation()

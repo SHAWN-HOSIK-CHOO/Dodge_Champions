@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="SessionsInterface.QueryInvites" />
-	/// </summary>
-	/// <param name="data">A <see cref="SessionsInterface.QueryInvites" /> CallbackInfo containing the output information and result</param>
-	public delegate void OnQueryInvitesCallback(ref QueryInvitesCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="SessionsInterface.QueryInvites" />
+    /// </summary>
+    /// <param name="data">A <see cref="SessionsInterface.QueryInvites" /> CallbackInfo containing the output information and result</param>
+    public delegate void OnQueryInvitesCallback(ref QueryInvitesCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryInvitesCallbackInternal(ref QueryInvitesCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryInvitesCallbackInternal(ref QueryInvitesCallbackInfoInternal data);
 }

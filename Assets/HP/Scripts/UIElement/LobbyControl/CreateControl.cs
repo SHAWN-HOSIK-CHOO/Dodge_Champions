@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 public class CreateControl : MonoBehaviour
@@ -36,7 +35,7 @@ public class CreateControl : MonoBehaviour
     }
     public void SelecteMode(ModeElement element)
     {
-        if(curSelectedMode != null)
+        if (curSelectedMode != null)
         {
             curSelectedMode.UnSelect();
         }
@@ -47,7 +46,7 @@ public class CreateControl : MonoBehaviour
     {
         var item = Instantiate(_modeElementPrf).GetComponent<ModeElement>();
         item.transform.SetParent(_ModeElementParent.transform);
-        item.Init(this,mode);
+        item.Init(this, mode);
         return item;
     }
 }

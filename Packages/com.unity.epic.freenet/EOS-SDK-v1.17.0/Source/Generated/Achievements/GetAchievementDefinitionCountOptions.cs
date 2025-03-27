@@ -3,33 +3,33 @@
 
 namespace Epic.OnlineServices.Achievements
 {
-	/// <summary>
-	/// Input parameters for the <see cref="AchievementsInterface.GetAchievementDefinitionCount" /> function.
-	/// </summary>
-	public struct GetAchievementDefinitionCountOptions
-	{
-	}
+    /// <summary>
+    /// Input parameters for the <see cref="AchievementsInterface.GetAchievementDefinitionCount" /> function.
+    /// </summary>
+    public struct GetAchievementDefinitionCountOptions
+    {
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct GetAchievementDefinitionCountOptionsInternal : ISettable<GetAchievementDefinitionCountOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct GetAchievementDefinitionCountOptionsInternal : ISettable<GetAchievementDefinitionCountOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
 
-		public void Set(ref GetAchievementDefinitionCountOptions other)
-		{
-			m_ApiVersion = AchievementsInterface.GetachievementdefinitioncountApiLatest;
-		}
+        public void Set(ref GetAchievementDefinitionCountOptions other)
+        {
+            m_ApiVersion = AchievementsInterface.GetachievementdefinitioncountApiLatest;
+        }
 
-		public void Set(ref GetAchievementDefinitionCountOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = AchievementsInterface.GetachievementdefinitioncountApiLatest;
-			}
-		}
+        public void Set(ref GetAchievementDefinitionCountOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = AchievementsInterface.GetachievementdefinitioncountApiLatest;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
-	}
+        public void Dispose()
+        {
+        }
+    }
 }

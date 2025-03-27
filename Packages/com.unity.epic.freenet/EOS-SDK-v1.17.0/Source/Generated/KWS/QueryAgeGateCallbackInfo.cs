@@ -3,146 +3,146 @@
 
 namespace Epic.OnlineServices.KWS
 {
-	/// <summary>
-	/// Output parameters for the <see cref="KWSInterface.QueryAgeGate" /> Function. These parameters are received through the callback provided to <see cref="KWSInterface.QueryAgeGate" />
-	/// </summary>
-	public struct QueryAgeGateCallbackInfo : ICallbackInfo
-	{
-		/// <summary>
-		/// The <see cref="Result" /> code for the operation. <see cref="Result.Success" /> indicates that the operation succeeded; other codes indicate errors.
-		/// </summary>
-		public Result ResultCode { get; set; }
+    /// <summary>
+    /// Output parameters for the <see cref="KWSInterface.QueryAgeGate" /> Function. These parameters are received through the callback provided to <see cref="KWSInterface.QueryAgeGate" />
+    /// </summary>
+    public struct QueryAgeGateCallbackInfo : ICallbackInfo
+    {
+        /// <summary>
+        /// The <see cref="Result" /> code for the operation. <see cref="Result.Success" /> indicates that the operation succeeded; other codes indicate errors.
+        /// </summary>
+        public Result ResultCode { get; set; }
 
-		/// <summary>
-		/// Context that was passed into <see cref="KWSInterface.QueryAgeGate" />
-		/// </summary>
-		public object ClientData { get; set; }
+        /// <summary>
+        /// Context that was passed into <see cref="KWSInterface.QueryAgeGate" />
+        /// </summary>
+        public object ClientData { get; set; }
 
-		/// <summary>
-		/// Country code determined for this request based on the local client's ip address that the backend resolves
-		/// </summary>
-		public Utf8String CountryCode { get; set; }
+        /// <summary>
+        /// Country code determined for this request based on the local client's ip address that the backend resolves
+        /// </summary>
+        public Utf8String CountryCode { get; set; }
 
-		/// <summary>
-		/// Age of consent in the given country
-		/// </summary>
-		public uint AgeOfConsent { get; set; }
+        /// <summary>
+        /// Age of consent in the given country
+        /// </summary>
+        public uint AgeOfConsent { get; set; }
 
-		public Result? GetResultCode()
-		{
-			return ResultCode;
-		}
+        public Result? GetResultCode()
+        {
+            return ResultCode;
+        }
 
-		internal void Set(ref QueryAgeGateCallbackInfoInternal other)
-		{
-			ResultCode = other.ResultCode;
-			ClientData = other.ClientData;
-			CountryCode = other.CountryCode;
-			AgeOfConsent = other.AgeOfConsent;
-		}
-	}
+        internal void Set(ref QueryAgeGateCallbackInfoInternal other)
+        {
+            ResultCode = other.ResultCode;
+            ClientData = other.ClientData;
+            CountryCode = other.CountryCode;
+            AgeOfConsent = other.AgeOfConsent;
+        }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct QueryAgeGateCallbackInfoInternal : ICallbackInfoInternal, IGettable<QueryAgeGateCallbackInfo>, ISettable<QueryAgeGateCallbackInfo>, System.IDisposable
-	{
-		private Result m_ResultCode;
-		private System.IntPtr m_ClientData;
-		private System.IntPtr m_CountryCode;
-		private uint m_AgeOfConsent;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct QueryAgeGateCallbackInfoInternal : ICallbackInfoInternal, IGettable<QueryAgeGateCallbackInfo>, ISettable<QueryAgeGateCallbackInfo>, System.IDisposable
+    {
+        private Result m_ResultCode;
+        private System.IntPtr m_ClientData;
+        private System.IntPtr m_CountryCode;
+        private uint m_AgeOfConsent;
 
-		public Result ResultCode
-		{
-			get
-			{
-				return m_ResultCode;
-			}
+        public Result ResultCode
+        {
+            get
+            {
+                return m_ResultCode;
+            }
 
-			set
-			{
-				m_ResultCode = value;
-			}
-		}
+            set
+            {
+                m_ResultCode = value;
+            }
+        }
 
-		public object ClientData
-		{
-			get
-			{
-				object value;
-				Helper.Get(m_ClientData, out value);
-				return value;
-			}
+        public object ClientData
+        {
+            get
+            {
+                object value;
+                Helper.Get(m_ClientData, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_ClientData);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_ClientData);
+            }
+        }
 
-		public System.IntPtr ClientDataAddress
-		{
-			get
-			{
-				return m_ClientData;
-			}
-		}
+        public System.IntPtr ClientDataAddress
+        {
+            get
+            {
+                return m_ClientData;
+            }
+        }
 
-		public Utf8String CountryCode
-		{
-			get
-			{
-				Utf8String value;
-				Helper.Get(m_CountryCode, out value);
-				return value;
-			}
+        public Utf8String CountryCode
+        {
+            get
+            {
+                Utf8String value;
+                Helper.Get(m_CountryCode, out value);
+                return value;
+            }
 
-			set
-			{
-				Helper.Set(value, ref m_CountryCode);
-			}
-		}
+            set
+            {
+                Helper.Set(value, ref m_CountryCode);
+            }
+        }
 
-		public uint AgeOfConsent
-		{
-			get
-			{
-				return m_AgeOfConsent;
-			}
+        public uint AgeOfConsent
+        {
+            get
+            {
+                return m_AgeOfConsent;
+            }
 
-			set
-			{
-				m_AgeOfConsent = value;
-			}
-		}
+            set
+            {
+                m_AgeOfConsent = value;
+            }
+        }
 
-		public void Set(ref QueryAgeGateCallbackInfo other)
-		{
-			ResultCode = other.ResultCode;
-			ClientData = other.ClientData;
-			CountryCode = other.CountryCode;
-			AgeOfConsent = other.AgeOfConsent;
-		}
+        public void Set(ref QueryAgeGateCallbackInfo other)
+        {
+            ResultCode = other.ResultCode;
+            ClientData = other.ClientData;
+            CountryCode = other.CountryCode;
+            AgeOfConsent = other.AgeOfConsent;
+        }
 
-		public void Set(ref QueryAgeGateCallbackInfo? other)
-		{
-			if (other.HasValue)
-			{
-				ResultCode = other.Value.ResultCode;
-				ClientData = other.Value.ClientData;
-				CountryCode = other.Value.CountryCode;
-				AgeOfConsent = other.Value.AgeOfConsent;
-			}
-		}
+        public void Set(ref QueryAgeGateCallbackInfo? other)
+        {
+            if (other.HasValue)
+            {
+                ResultCode = other.Value.ResultCode;
+                ClientData = other.Value.ClientData;
+                CountryCode = other.Value.CountryCode;
+                AgeOfConsent = other.Value.AgeOfConsent;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_ClientData);
-			Helper.Dispose(ref m_CountryCode);
-		}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_ClientData);
+            Helper.Dispose(ref m_CountryCode);
+        }
 
-		public void Get(out QueryAgeGateCallbackInfo output)
-		{
-			output = new QueryAgeGateCallbackInfo();
-			output.Set(ref this);
-		}
-	}
+        public void Get(out QueryAgeGateCallbackInfo output)
+        {
+            output = new QueryAgeGateCallbackInfo();
+            output.Set(ref this);
+        }
+    }
 }

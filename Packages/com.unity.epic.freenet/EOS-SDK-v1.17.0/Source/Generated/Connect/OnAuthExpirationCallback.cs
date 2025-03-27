@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Connect
 {
-	/// <summary>
-	/// Function prototype definition for notifications that come from <see cref="ConnectInterface.AddNotifyAuthExpiration" />.
-	/// </summary>
-	/// <param name="data">A <see cref="AuthExpirationCallbackInfo" /> containing the output information and result.</param>
-	public delegate void OnAuthExpirationCallback(ref AuthExpirationCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for notifications that come from <see cref="ConnectInterface.AddNotifyAuthExpiration" />.
+    /// </summary>
+    /// <param name="data">A <see cref="AuthExpirationCallbackInfo" /> containing the output information and result.</param>
+    public delegate void OnAuthExpirationCallback(ref AuthExpirationCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnAuthExpirationCallbackInternal(ref AuthExpirationCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnAuthExpirationCallbackInternal(ref AuthExpirationCallbackInfoInternal data);
 }

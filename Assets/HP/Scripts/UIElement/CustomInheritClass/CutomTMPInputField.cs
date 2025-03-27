@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Text.RegularExpressions;
+using System.Threading;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using TMPro;
+using UnityEngine.UI;
 
 
 namespace HP
@@ -1591,7 +1591,7 @@ namespace HP
         /// Update the text based on input.
         /// </summary>
         // TODO: Make LateUpdate a coroutine instead. Allows us to control the update to only be when the field is active.
-       
+
 
         private bool MayDrag(PointerEventData eventData)
         {
@@ -1854,7 +1854,7 @@ namespace HP
             Finish
         }
 
-       
+
 
         protected virtual bool IsValidChar(char c)
         {
@@ -2950,7 +2950,7 @@ namespace HP
                 onEndEdit.Invoke(m_Text);
         }
 
-       
+
 
         protected void SendOnFocus()
         {

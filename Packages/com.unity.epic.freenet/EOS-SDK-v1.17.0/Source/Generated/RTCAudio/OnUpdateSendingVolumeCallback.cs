@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// Callback for completion of update sending volume request.
-	/// </summary>
-	public delegate void OnUpdateSendingVolumeCallback(ref UpdateSendingVolumeCallbackInfo data);
+    /// <summary>
+    /// Callback for completion of update sending volume request.
+    /// </summary>
+    public delegate void OnUpdateSendingVolumeCallback(ref UpdateSendingVolumeCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnUpdateSendingVolumeCallbackInternal(ref UpdateSendingVolumeCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnUpdateSendingVolumeCallbackInternal(ref UpdateSendingVolumeCallbackInfoInternal data);
 }

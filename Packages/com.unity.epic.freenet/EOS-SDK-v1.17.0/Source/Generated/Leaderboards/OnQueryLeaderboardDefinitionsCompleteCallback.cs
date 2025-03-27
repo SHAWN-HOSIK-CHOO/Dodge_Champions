@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Leaderboards
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="LeaderboardsInterface.QueryLeaderboardDefinitions" />
-	/// </summary>
-	/// <param name="data">A <see cref="OnQueryLeaderboardDefinitionsCompleteCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnQueryLeaderboardDefinitionsCompleteCallback(ref OnQueryLeaderboardDefinitionsCompleteCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="LeaderboardsInterface.QueryLeaderboardDefinitions" />
+    /// </summary>
+    /// <param name="data">A <see cref="OnQueryLeaderboardDefinitionsCompleteCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnQueryLeaderboardDefinitionsCompleteCallback(ref OnQueryLeaderboardDefinitionsCompleteCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryLeaderboardDefinitionsCompleteCallbackInternal(ref OnQueryLeaderboardDefinitionsCompleteCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryLeaderboardDefinitionsCompleteCallbackInternal(ref OnQueryLeaderboardDefinitionsCompleteCallbackInfoInternal data);
 }

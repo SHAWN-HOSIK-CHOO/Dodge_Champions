@@ -1,5 +1,5 @@
-using System.Collections;
 using NUnit.Framework;
+using System.Collections;
 using Unity.Netcode.TestHelpers.Runtime;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;

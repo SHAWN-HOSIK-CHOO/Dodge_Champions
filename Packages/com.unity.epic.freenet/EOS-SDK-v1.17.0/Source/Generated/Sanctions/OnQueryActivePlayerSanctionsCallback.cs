@@ -3,12 +3,12 @@
 
 namespace Epic.OnlineServices.Sanctions
 {
-	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="SanctionsInterface.QueryActivePlayerSanctions" />
-	/// </summary>
-	/// <param name="data">A <see cref="QueryActivePlayerSanctionsCallbackInfo" /> containing the output information and result</param>
-	public delegate void OnQueryActivePlayerSanctionsCallback(ref QueryActivePlayerSanctionsCallbackInfo data);
+    /// <summary>
+    /// Function prototype definition for callbacks passed to <see cref="SanctionsInterface.QueryActivePlayerSanctions" />
+    /// </summary>
+    /// <param name="data">A <see cref="QueryActivePlayerSanctionsCallbackInfo" /> containing the output information and result</param>
+    public delegate void OnQueryActivePlayerSanctionsCallback(ref QueryActivePlayerSanctionsCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnQueryActivePlayerSanctionsCallbackInternal(ref QueryActivePlayerSanctionsCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnQueryActivePlayerSanctionsCallbackInternal(ref QueryActivePlayerSanctionsCallbackInfoInternal data);
 }

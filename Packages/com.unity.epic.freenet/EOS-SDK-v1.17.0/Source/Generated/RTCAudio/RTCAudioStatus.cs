@@ -3,30 +3,30 @@
 
 namespace Epic.OnlineServices.RTCAudio
 {
-	/// <summary>
-	/// An enumeration of the different audio channel statuses.
-	/// </summary>
-	public enum RTCAudioStatus : int
-	{
-		/// <summary>
-		/// Audio unsupported by the source (no devices)
-		/// </summary>
-		Unsupported = 0,
-		/// <summary>
-		/// Audio enabled
-		/// </summary>
-		Enabled = 1,
-		/// <summary>
-		/// Audio disabled
-		/// </summary>
-		Disabled = 2,
-		/// <summary>
-		/// Audio disabled by the administrator
-		/// </summary>
-		AdminDisabled = 3,
-		/// <summary>
-		/// Audio channel is disabled temporarily for both sending and receiving
-		/// </summary>
-		NotListeningDisabled = 4
-	}
+    /// <summary>
+    /// An enumeration of the different audio channel statuses.
+    /// </summary>
+    public enum RTCAudioStatus : int
+    {
+        /// <summary>
+        /// Audio unsupported by the source (no devices)
+        /// </summary>
+        Unsupported = 0,
+        /// <summary>
+        /// Audio enabled
+        /// </summary>
+        Enabled = 1,
+        /// <summary>
+        /// Audio disabled
+        /// </summary>
+        Disabled = 2,
+        /// <summary>
+        /// Audio disabled by the administrator
+        /// </summary>
+        AdminDisabled = 3,
+        /// <summary>
+        /// Audio channel is disabled temporarily for both sending and receiving
+        /// </summary>
+        NotListeningDisabled = 4
+    }
 }

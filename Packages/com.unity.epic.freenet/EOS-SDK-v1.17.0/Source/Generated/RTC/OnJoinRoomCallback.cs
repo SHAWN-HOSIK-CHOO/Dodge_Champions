@@ -3,11 +3,11 @@
 
 namespace Epic.OnlineServices.RTC
 {
-	/// <summary>
-	/// Callback for completion of room join request.
-	/// </summary>
-	public delegate void OnJoinRoomCallback(ref JoinRoomCallbackInfo data);
+    /// <summary>
+    /// Callback for completion of room join request.
+    /// </summary>
+    public delegate void OnJoinRoomCallback(ref JoinRoomCallbackInfo data);
 
-	[System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
-	internal delegate void OnJoinRoomCallbackInternal(ref JoinRoomCallbackInfoInternal data);
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(Config.LibraryCallingConvention)]
+    internal delegate void OnJoinRoomCallbackInternal(ref JoinRoomCallbackInfoInternal data);
 }

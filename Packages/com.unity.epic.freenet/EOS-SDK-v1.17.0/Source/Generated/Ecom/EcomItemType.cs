@@ -3,23 +3,23 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	/// <summary>
-	/// An enumeration defining the type of catalog item. The primary use is to identify how the item is expended.
-	/// </summary>
-	public enum EcomItemType : int
-	{
-		/// <summary>
-		/// This entitlement is intended to persist.
-		/// </summary>
-		Durable = 0,
-		/// <summary>
-		/// This entitlement is intended to be transient and redeemed.
-		/// <seealso cref="EcomInterface.RedeemEntitlements" />
-		/// </summary>
-		Consumable = 1,
-		/// <summary>
-		/// This entitlement has a type that is not currently intended for an in-game store.
-		/// </summary>
-		Other = 2
-	}
+    /// <summary>
+    /// An enumeration defining the type of catalog item. The primary use is to identify how the item is expended.
+    /// </summary>
+    public enum EcomItemType : int
+    {
+        /// <summary>
+        /// This entitlement is intended to persist.
+        /// </summary>
+        Durable = 0,
+        /// <summary>
+        /// This entitlement is intended to be transient and redeemed.
+        /// <seealso cref="EcomInterface.RedeemEntitlements" />
+        /// </summary>
+        Consumable = 1,
+        /// <summary>
+        /// This entitlement has a type that is not currently intended for an in-game store.
+        /// </summary>
+        Other = 2
+    }
 }

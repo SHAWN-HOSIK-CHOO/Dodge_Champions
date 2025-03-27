@@ -3,49 +3,49 @@
 
 namespace Epic.OnlineServices.IntegratedPlatform
 {
-	/// <summary>
-	/// Data for the <see cref="IntegratedPlatformOptionsContainer.Add" /> function.
-	/// </summary>
-	public struct IntegratedPlatformOptionsContainerAddOptions
-	{
-		/// <summary>
-		/// The integrated platform options to add.
-		/// </summary>
-		public Options? Options { get; set; }
-	}
+    /// <summary>
+    /// Data for the <see cref="IntegratedPlatformOptionsContainer.Add" /> function.
+    /// </summary>
+    public struct IntegratedPlatformOptionsContainerAddOptions
+    {
+        /// <summary>
+        /// The integrated platform options to add.
+        /// </summary>
+        public Options? Options { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct IntegratedPlatformOptionsContainerAddOptionsInternal : ISettable<IntegratedPlatformOptionsContainerAddOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_Options;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct IntegratedPlatformOptionsContainerAddOptionsInternal : ISettable<IntegratedPlatformOptionsContainerAddOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_Options;
 
-		public Options? Options
-		{
-			set
-			{
-				Helper.Set<Options, OptionsInternal>(ref value, ref m_Options);
-			}
-		}
+        public Options? Options
+        {
+            set
+            {
+                Helper.Set<Options, OptionsInternal>(ref value, ref m_Options);
+            }
+        }
 
-		public void Set(ref IntegratedPlatformOptionsContainerAddOptions other)
-		{
-			m_ApiVersion = IntegratedPlatformOptionsContainer.IntegratedplatformoptionscontainerAddApiLatest;
-			Options = other.Options;
-		}
+        public void Set(ref IntegratedPlatformOptionsContainerAddOptions other)
+        {
+            m_ApiVersion = IntegratedPlatformOptionsContainer.IntegratedplatformoptionscontainerAddApiLatest;
+            Options = other.Options;
+        }
 
-		public void Set(ref IntegratedPlatformOptionsContainerAddOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = IntegratedPlatformOptionsContainer.IntegratedplatformoptionscontainerAddApiLatest;
-				Options = other.Value.Options;
-			}
-		}
+        public void Set(ref IntegratedPlatformOptionsContainerAddOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = IntegratedPlatformOptionsContainer.IntegratedplatformoptionscontainerAddApiLatest;
+                Options = other.Value.Options;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_Options);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_Options);
+        }
+    }
 }

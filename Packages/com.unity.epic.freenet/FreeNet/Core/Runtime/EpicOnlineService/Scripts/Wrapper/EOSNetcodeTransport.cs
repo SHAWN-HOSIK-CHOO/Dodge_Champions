@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Epic.OnlineServices.P2P;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
-using Epic.OnlineServices.P2P;
 using Unity.Netcode;
+using UnityEngine;
 public class EOSNetcodeTransport : NetworkTransport
 {
     [HideInInspector]
@@ -46,7 +46,7 @@ public class EOSNetcodeTransport : NetworkTransport
 
     private void Update()
     {
-        if(_isUrgent)
+        if (_isUrgent)
         {
             // 1.버그 유발하는지 테스트 해봐야 한다. 2.정말 필요할까?
             //_ngoManager.NetworkUpdate(NetworkUpdateStage.EarlyUpdate);
@@ -61,13 +61,13 @@ public class EOSNetcodeTransport : NetworkTransport
         this._ngoManager.NetworkConfig.ClientConnectionBufferTimeout = 30;
         this._ngoManager.OnClientConnectedCallback += SetMTU;
 
-       _ServerConnectionChangeInfo = new Queue<ServerConnectionChangeInfo>();
+        _ServerConnectionChangeInfo = new Queue<ServerConnectionChangeInfo>();
         _ClientConnectionChangeInfo = new Queue<EOS_Socket.Connection>();
     }
 
     void SetMTU(ulong clientID)
     {
-        this._ngoManager.SetPeerMTU(clientID,P2PInterface.MaxPacketSize);
+        this._ngoManager.SetPeerMTU(clientID, P2PInterface.MaxPacketSize);
     }
     public override NetworkEvent PollEvent(out ulong transportId, out ArraySegment<byte> payload, out float receiveTime)
     {
@@ -152,7 +152,7 @@ public class EOSNetcodeTransport : NetworkTransport
                 if (_server != null)
                 {
                     bool dequed = (id == null) ? _server.DequeuePacket(_channel, out var packetInfo) : _server.DequeuePacket(id.Value, _channel, out packetInfo);
-                    if(dequed)
+                    if (dequed)
                     {
                         if (_server.GetConnectID(packetInfo._senderPUID, out var transportId))
                         {
@@ -173,7 +173,7 @@ public class EOSNetcodeTransport : NetworkTransport
 
     protected override void OnEarlyUpdate()
     {
-        if(_ngoManager.IsListening)
+        if (_ngoManager.IsListening)
         {
             PollConnectEvent();
             PollServerDataEvent();
@@ -272,7 +272,7 @@ public class EOSNetcodeTransport : NetworkTransport
         if (_server != null) return false;
         _server = Instantiate(_serverPrefab);
         _server.transform.parent = this.transform;
-        _server.Init(eosCore,localPUID, socketid, GetNewConnectID);
+        _server.Init(eosCore, localPUID, socketid, GetNewConnectID);
         _channel = channel;
         _urgentchannel = urgnetChannel;
         _server._onConnectionStateChanged -= OnServerConnectionStateChangedCB;
@@ -298,7 +298,7 @@ public class EOSNetcodeTransport : NetworkTransport
     {
         if (channel == _ngoManager._urgentChannel)
         {
-            _server.DequeuePacket(id,channel,out var _);
+            _server.DequeuePacket(id, channel, out var _);
             _isUrgent = true;
         }
     }
@@ -306,12 +306,12 @@ public class EOSNetcodeTransport : NetworkTransport
     {
 
     }
-    public bool InitializeEOSClient(EOS_Core eosCore,EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketid, byte channel,byte urgentChannel)
+    public bool InitializeEOSClient(EOS_Core eosCore, EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketid, byte channel, byte urgentChannel)
     {
         if (_client != null) return false;
         _client = Instantiate(_clientPrefab);
         _client.transform.parent = this.transform;
-        _client.Init(eosCore,localPUID, remotePUID, socketid);
+        _client.Init(eosCore, localPUID, remotePUID, socketid);
         _channel = channel;
         _urgentchannel = urgentChannel;
         _client._onConnectionStateChanged -= OnClientConnectionStateChangedCB;
@@ -330,8 +330,8 @@ public class EOSNetcodeTransport : NetworkTransport
         }
     }
     void OnClientReceivedPacketCB(int channel)
-    {        
-        if(channel == _ngoManager._urgentChannel)
+    {
+        if (channel == _ngoManager._urgentChannel)
         {
             _client.DequeuePacket(channel, out var _);
             _isUrgent = true;

@@ -1,10 +1,9 @@
-using System;
-using System.Collections;
 using CharacterAttributes;
 using Game;
 using GameUI;
 using SinglePlayer;
 using Skill;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,39 +12,39 @@ namespace GameInput
     public class InputManager : MonoBehaviour
     {
         private static InputManager _instance = null;
-        public  static InputManager Instance => _instance == null ? null : _instance;
+        public static InputManager Instance => _instance == null ? null : _instance;
 
         public PlayerInput playerInput;
 
-        private CharacterMovement      _localCharacterMovement;
-        private CharacterBallLauncher  _characterBallLauncher;
+        private CharacterMovement _localCharacterMovement;
+        private CharacterBallLauncher _characterBallLauncher;
         private CharacterSkillLauncher _characterSkillLauncher;
-        private CharacterManager       _characterManager;
-        private CharacterController    _characterController;
-        private CharacterStatus        _characterStatus;
-        
+        private CharacterManager _characterManager;
+        private CharacterController _characterController;
+        private CharacterStatus _characterStatus;
+
         public LayerMask mouseColliderLayerMask = new LayerMask();
-      
+
         public Vector3 currentTargetPosition;
 
         public void InitCallWhenLocalPlayerSpawned(GameObject localPlayerGameObject)
         {
             _localCharacterMovement = localPlayerGameObject.GetComponent<CharacterMovement>();
-            _characterBallLauncher  = localPlayerGameObject.GetComponent<CharacterBallLauncher>();
+            _characterBallLauncher = localPlayerGameObject.GetComponent<CharacterBallLauncher>();
             _characterSkillLauncher = localPlayerGameObject.GetComponent<CharacterSkillLauncher>();
-            _characterManager       = localPlayerGameObject.GetComponent<CharacterManager>();
-            _characterController    = localPlayerGameObject.GetComponent<CharacterController>();
-            _characterStatus        = localPlayerGameObject.GetComponent<CharacterStatus>();
-            
-            playerInput.actions["Attack"].started  += OnAttackPressed;
+            _characterManager = localPlayerGameObject.GetComponent<CharacterManager>();
+            _characterController = localPlayerGameObject.GetComponent<CharacterController>();
+            _characterStatus = localPlayerGameObject.GetComponent<CharacterStatus>();
+
+            playerInput.actions["Attack"].started += OnAttackPressed;
             playerInput.actions["Attack"].canceled += OnAttackReleased;
 
-            playerInput.actions["Action"].started  += OnActionPressed;
+            playerInput.actions["Action"].started += OnActionPressed;
             playerInput.actions["Action"].canceled += OnActionReleased;
-            
+
             Cursor.lockState = CursorLockMode.Locked;
         }
-        
+
         private void Awake()
         {
             if (_instance == null)
@@ -61,17 +60,17 @@ namespace GameInput
 
         private void OnDisable()
         {
-            playerInput.actions["Attack"].started  -= OnAttackPressed;
+            playerInput.actions["Attack"].started -= OnAttackPressed;
             playerInput.actions["Attack"].canceled -= OnAttackReleased;
 
-            playerInput.actions["Action"].started  -= OnActionPressed;
+            playerInput.actions["Action"].started -= OnActionPressed;
             playerInput.actions["Action"].canceled -= OnActionReleased;
         }
 
         public Vector2 move;
         public Vector2 look;
-        public bool    jump;
-        public bool    sprint;
+        public bool jump;
+        public bool sprint;
 
         public void OnMove(InputValue value)
         {
@@ -93,27 +92,27 @@ namespace GameInput
             SprintInput(value.isPressed);
         }
 
-        public  bool canThrowBall       = false;
+        public bool canThrowBall = false;
 
         public void RequestTurnSwapToEnemy()
         {
             _characterManager.RequestTurnSwapServerRPC();
         }
-        
+
         private bool _isAttackAlreadyPressed = false;
-        
+
         public void OnAttackPressed(InputAction.CallbackContext ctx)
         {
             Debug.Log($"Canthrowball : {canThrowBall} and hitApproved : {_characterManager.hitApproved}");
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.IsGameReadyToStart && _characterManager.hitApproved && 
-                   SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement&& !_isAttackAlreadyPressed)
+                if (SinglePlayerGM.Instance.IsGameReadyToStart && _characterManager.hitApproved &&
+                   SinglePlayerGM.Instance.isPlayerTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement && !_isAttackAlreadyPressed)
                     AttackPressed();
             }
-            else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-                if (GameManager.Instance.isGameReadyToStart && _characterManager.hitApproved && 
-                    GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement&& !_isAttackAlreadyPressed)
+            else if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                if (GameManager.Instance.isGameReadyToStart && _characterManager.hitApproved &&
+                    GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement && !_isAttackAlreadyPressed)
                 {
                     AttackPressed();
                 }
@@ -130,19 +129,19 @@ namespace GameInput
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if (SinglePlayerGM.Instance.IsGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn  && _characterManager.hitApproved && 
-                    canThrowBall                               && !_localCharacterMovement.shouldLockMovement&& _isAttackAlreadyPressed)
+                if (SinglePlayerGM.Instance.IsGameReadyToStart && SinglePlayerGM.Instance.isPlayerTurn && _characterManager.hitApproved &&
+                    canThrowBall && !_localCharacterMovement.shouldLockMovement && _isAttackAlreadyPressed)
                 {
                     //TODO: Fill image 초기화
                     AttackReleased();
                 }
-                    
+
             }
-            else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-                if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn && 
-                    canThrowBall && _characterManager.hitApproved && !_localCharacterMovement.shouldLockMovement&& _isAttackAlreadyPressed)
+            else if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn &&
+                    canThrowBall && _characterManager.hitApproved && !_localCharacterMovement.shouldLockMovement && _isAttackAlreadyPressed)
                 {
-                    UIManager.Instance.coolDownImage.fillAmount = 0f; 
+                    UIManager.Instance.coolDownImage.fillAmount = 0f;
                     AttackReleased();
                 }
         }
@@ -150,9 +149,9 @@ namespace GameInput
         private void AttackReleased()
         {
             _localCharacterMovement.SetThrowAnimation(true); // Animation 동작이 완료되면 throw = false 만드는 콜백 존재함
-                
+
             _characterBallLauncher.ThrowBallServerRPC(currentTargetPosition);
-                
+
             FixPlayerForwardDirection(0f);
             _characterManager.IncreaseThrowCount();
 
@@ -163,53 +162,53 @@ namespace GameInput
         }
 
         public float throwCountDown = 0.8f;
-        
+
         private Coroutine _allowThrowAfterNSecCoroutine = null;
         private IEnumerator CoAllowThrowAfterNSec()
         {
             float elapsedTime = 0f;
             canThrowBall = false;
-           
+
             while (elapsedTime < throwCountDown)
             {
-                elapsedTime += Time.deltaTime;                           
-                float fillAmount = elapsedTime / throwCountDown;          
+                elapsedTime += Time.deltaTime;
+                float fillAmount = elapsedTime / throwCountDown;
 
                 if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
                 {
-                    UIManager.Instance.coolDownImage.fillAmount = fillAmount; 
+                    UIManager.Instance.coolDownImage.fillAmount = fillAmount;
                 }
                 else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
                 {
-                   
+
                 }
-                yield return null;                                       
+                yield return null;
             }
 
             if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
             {
-                UIManager.Instance.coolDownImage.fillAmount = 1f; 
+                UIManager.Instance.coolDownImage.fillAmount = 1f;
             }
             else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                   
+
             }
-           
+
             canThrowBall = true;
-            
+
             _allowThrowAfterNSecCoroutine = null;
-            
+
             _isAttackAlreadyPressed = false;
         }
-        
+
         public void OnActionPressed(InputAction.CallbackContext ctx)
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
+                if (SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
                     ActionPressed();
             }
-            else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+            else if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
                 if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
                 {
                     ActionPressed();
@@ -225,34 +224,34 @@ namespace GameInput
             }
 
             _characterSkillLauncher.StartSkillCoolDown();
-            
+
             switch (_characterSkillLauncher.currentSkill.ThisSkillType)
             {
                 case ESkillInputType.Vector3Target:
-                {
-                    Vector3 currentDirection = _localCharacterMovement.transform.TransformDirection(new Vector3(move.normalized.x, 0f, move.normalized.y));
-
-                    if (currentDirection == Vector3.zero)
                     {
-                        currentDirection = -_localCharacterMovement.transform.forward;
-                    }
+                        Vector3 currentDirection = _localCharacterMovement.transform.TransformDirection(new Vector3(move.normalized.x, 0f, move.normalized.y));
 
-                    var input = new TargetVector3Input
-                                {
-                                    TargetVector = currentDirection
-                                };
-                        
-                    _characterSkillLauncher.StartSkill(input);
-                    break;
-                }
+                        if (currentDirection == Vector3.zero)
+                        {
+                            currentDirection = -_localCharacterMovement.transform.forward;
+                        }
+
+                        var input = new TargetVector3Input
+                        {
+                            TargetVector = currentDirection
+                        };
+
+                        _characterSkillLauncher.StartSkill(input);
+                        break;
+                    }
                 case ESkillInputType.Scalar3Value:
-                {
-                    break;
-                }
+                    {
+                        break;
+                    }
                 case ESkillInputType.JustBoolean:
-                {
-                    break;
-                }
+                    {
+                        break;
+                    }
             }
         }
 
@@ -260,21 +259,21 @@ namespace GameInput
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if(SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
+                if (SinglePlayerGM.Instance.IsGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
                     ActionReleased();
             }
-            else if(GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-             if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
-             {
-                 ActionReleased();
-             }
+            else if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
+                if (GameManager.Instance.isGameReadyToStart && !_localCharacterMovement.shouldLockMovement && _characterSkillLauncher.canUseSkill)
+                {
+                    ActionReleased();
+                }
         }
 
         private void ActionReleased()
         {
-            
+
         }
-        
+
         private void MoveInput(Vector2 newMovementVector)
         {
             move = newMovementVector;
@@ -301,19 +300,19 @@ namespace GameInput
             {
                 return;
             }
-            
+
             Vector3 worldAimTarget = currentTargetPosition;
             worldAimTarget.y = _localCharacterMovement.transform.position.y;
-            Vector3 aimDirection = ( worldAimTarget - _localCharacterMovement.transform.position ).normalized;
-            
+            Vector3 aimDirection = (worldAimTarget - _localCharacterMovement.transform.position).normalized;
+
             _localCharacterMovement.transform.forward = Vector3.Lerp(_localCharacterMovement.transform.forward, aimDirection, Time.deltaTime * lerpFactor);
         }
-        
+
         private void Update()
         {
             Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
-            Ray     ray               = Camera.main.ScreenPointToRay(screenCenterPoint);
-            if (Physics.Raycast(ray,out RaycastHit hit, 999f, mouseColliderLayerMask))
+            Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
+            if (Physics.Raycast(ray, out RaycastHit hit, 999f, mouseColliderLayerMask))
             {
                 currentTargetPosition = hit.point;
 

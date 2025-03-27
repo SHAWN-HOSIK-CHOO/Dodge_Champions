@@ -3,67 +3,67 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	/// <summary>
-	/// Input parameters for the <see cref="SessionSearch.RemoveParameter" /> function.
-	/// 
-	/// Removal requires both the key and its comparator in order to remove as the same key can be used in more than one operation
-	/// </summary>
-	public struct SessionSearchRemoveParameterOptions
-	{
-		/// <summary>
-		/// Search parameter key to remove from the search
-		/// </summary>
-		public Utf8String Key { get; set; }
+    /// <summary>
+    /// Input parameters for the <see cref="SessionSearch.RemoveParameter" /> function.
+    /// 
+    /// Removal requires both the key and its comparator in order to remove as the same key can be used in more than one operation
+    /// </summary>
+    public struct SessionSearchRemoveParameterOptions
+    {
+        /// <summary>
+        /// Search parameter key to remove from the search
+        /// </summary>
+        public Utf8String Key { get; set; }
 
-		/// <summary>
-		/// Search comparison operation associated with the key to remove
-		/// </summary>
-		public ComparisonOp ComparisonOp { get; set; }
-	}
+        /// <summary>
+        /// Search comparison operation associated with the key to remove
+        /// </summary>
+        public ComparisonOp ComparisonOp { get; set; }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct SessionSearchRemoveParameterOptionsInternal : ISettable<SessionSearchRemoveParameterOptions>, System.IDisposable
-	{
-		private int m_ApiVersion;
-		private System.IntPtr m_Key;
-		private ComparisonOp m_ComparisonOp;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct SessionSearchRemoveParameterOptionsInternal : ISettable<SessionSearchRemoveParameterOptions>, System.IDisposable
+    {
+        private int m_ApiVersion;
+        private System.IntPtr m_Key;
+        private ComparisonOp m_ComparisonOp;
 
-		public Utf8String Key
-		{
-			set
-			{
-				Helper.Set(value, ref m_Key);
-			}
-		}
+        public Utf8String Key
+        {
+            set
+            {
+                Helper.Set(value, ref m_Key);
+            }
+        }
 
-		public ComparisonOp ComparisonOp
-		{
-			set
-			{
-				m_ComparisonOp = value;
-			}
-		}
+        public ComparisonOp ComparisonOp
+        {
+            set
+            {
+                m_ComparisonOp = value;
+            }
+        }
 
-		public void Set(ref SessionSearchRemoveParameterOptions other)
-		{
-			m_ApiVersion = SessionSearch.SessionsearchRemoveparameterApiLatest;
-			Key = other.Key;
-			ComparisonOp = other.ComparisonOp;
-		}
+        public void Set(ref SessionSearchRemoveParameterOptions other)
+        {
+            m_ApiVersion = SessionSearch.SessionsearchRemoveparameterApiLatest;
+            Key = other.Key;
+            ComparisonOp = other.ComparisonOp;
+        }
 
-		public void Set(ref SessionSearchRemoveParameterOptions? other)
-		{
-			if (other.HasValue)
-			{
-				m_ApiVersion = SessionSearch.SessionsearchRemoveparameterApiLatest;
-				Key = other.Value.Key;
-				ComparisonOp = other.Value.ComparisonOp;
-			}
-		}
+        public void Set(ref SessionSearchRemoveParameterOptions? other)
+        {
+            if (other.HasValue)
+            {
+                m_ApiVersion = SessionSearch.SessionsearchRemoveparameterApiLatest;
+                Key = other.Value.Key;
+                ComparisonOp = other.Value.ComparisonOp;
+            }
+        }
 
-		public void Dispose()
-		{
-			Helper.Dispose(ref m_Key);
-		}
-	}
+        public void Dispose()
+        {
+            Helper.Dispose(ref m_Key);
+        }
+    }
 }

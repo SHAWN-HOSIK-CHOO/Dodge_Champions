@@ -3,105 +3,105 @@
 
 namespace Epic.OnlineServices.AntiCheatCommon
 {
-	/// <summary>
-	/// Vector using left-handed coordinate system (as in Unreal Engine)
-	/// </summary>
-	public struct Vec3f
-	{
-		/// <summary>
-		/// X axis coordinate - forward direction
-		/// </summary>
-		public float x { get; set; }
+    /// <summary>
+    /// Vector using left-handed coordinate system (as in Unreal Engine)
+    /// </summary>
+    public struct Vec3f
+    {
+        /// <summary>
+        /// X axis coordinate - forward direction
+        /// </summary>
+        public float x { get; set; }
 
-		/// <summary>
-		/// Y axis coordinate - right direction
-		/// </summary>
-		public float y { get; set; }
+        /// <summary>
+        /// Y axis coordinate - right direction
+        /// </summary>
+        public float y { get; set; }
 
-		/// <summary>
-		/// Z axis coordinate - up direction
-		/// </summary>
-		public float z { get; set; }
+        /// <summary>
+        /// Z axis coordinate - up direction
+        /// </summary>
+        public float z { get; set; }
 
-		internal void Set(ref Vec3fInternal other)
-		{
-			x = other.x;
-			y = other.y;
-			z = other.z;
-		}
-	}
+        internal void Set(ref Vec3fInternal other)
+        {
+            x = other.x;
+            y = other.y;
+            z = other.z;
+        }
+    }
 
-	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
-	internal struct Vec3fInternal : IGettable<Vec3f>, ISettable<Vec3f>, System.IDisposable
-	{
-		private float m_x;
-		private float m_y;
-		private float m_z;
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
+    internal struct Vec3fInternal : IGettable<Vec3f>, ISettable<Vec3f>, System.IDisposable
+    {
+        private float m_x;
+        private float m_y;
+        private float m_z;
 
-		public float x
-		{
-			get
-			{
-				return m_x;
-			}
+        public float x
+        {
+            get
+            {
+                return m_x;
+            }
 
-			set
-			{
-				m_x = value;
-			}
-		}
+            set
+            {
+                m_x = value;
+            }
+        }
 
-		public float y
-		{
-			get
-			{
-				return m_y;
-			}
+        public float y
+        {
+            get
+            {
+                return m_y;
+            }
 
-			set
-			{
-				m_y = value;
-			}
-		}
+            set
+            {
+                m_y = value;
+            }
+        }
 
-		public float z
-		{
-			get
-			{
-				return m_z;
-			}
+        public float z
+        {
+            get
+            {
+                return m_z;
+            }
 
-			set
-			{
-				m_z = value;
-			}
-		}
+            set
+            {
+                m_z = value;
+            }
+        }
 
-		public void Set(ref Vec3f other)
-		{
-			x = other.x;
-			y = other.y;
-			z = other.z;
-		}
+        public void Set(ref Vec3f other)
+        {
+            x = other.x;
+            y = other.y;
+            z = other.z;
+        }
 
-		public void Set(ref Vec3f? other)
-		{
-			if (other.HasValue)
-			{
-				x = other.Value.x;
-				y = other.Value.y;
-				z = other.Value.z;
-			}
-		}
+        public void Set(ref Vec3f? other)
+        {
+            if (other.HasValue)
+            {
+                x = other.Value.x;
+                y = other.Value.y;
+                z = other.Value.z;
+            }
+        }
 
-		public void Dispose()
-		{
-		}
+        public void Dispose()
+        {
+        }
 
-		public void Get(out Vec3f output)
-		{
-			output = new Vec3f();
-			output.Set(ref this);
-		}
-	}
+        public void Get(out Vec3f output)
+        {
+            output = new Vec3f();
+            output.Set(ref this);
+        }
+    }
 }

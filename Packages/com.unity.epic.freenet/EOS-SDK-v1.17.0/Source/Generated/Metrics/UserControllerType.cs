@@ -3,26 +3,26 @@
 
 namespace Epic.OnlineServices.Metrics
 {
-	/// <summary>
-	/// User game controller types.
-	/// </summary>
-	public enum UserControllerType : int
-	{
-		/// <summary>
-		/// The game controller type is unknown.
-		/// </summary>
-		Unknown = 0,
-		/// <summary>
-		/// Mouse and keyboard controller.
-		/// </summary>
-		MouseKeyboard = 1,
-		/// <summary>
-		/// Gamepad controller.
-		/// </summary>
-		GamepadControl = 2,
-		/// <summary>
-		/// Touch controller.
-		/// </summary>
-		TouchControl = 3
-	}
+    /// <summary>
+    /// User game controller types.
+    /// </summary>
+    public enum UserControllerType : int
+    {
+        /// <summary>
+        /// The game controller type is unknown.
+        /// </summary>
+        Unknown = 0,
+        /// <summary>
+        /// Mouse and keyboard controller.
+        /// </summary>
+        MouseKeyboard = 1,
+        /// <summary>
+        /// Gamepad controller.
+        /// </summary>
+        GamepadControl = 2,
+        /// <summary>
+        /// Touch controller.
+        /// </summary>
+        TouchControl = 3
+    }
 }
