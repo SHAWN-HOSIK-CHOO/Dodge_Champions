@@ -68,7 +68,6 @@ public class NgoManager : NetworkManager
             MessageManager.NonFragmentedMessageMaxSize = P2PInterface.MaxPacketSize;
         }
     }
-
     public new bool StartServer()
     {
         var result = base.StartServer();
@@ -120,6 +119,7 @@ public class NgoManager : NetworkManager
         int index = _networkScene.FindIndex(x => x == sceneName);
         if (index != -1)
         {
+            Debug.Log($"Network Scene {sceneName} Validation Success");
             return true;
         }
         return false;

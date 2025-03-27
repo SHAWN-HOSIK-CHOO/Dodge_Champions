@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2685244746326216958}
   - component: {fileID: 8184979098866391671}
-  - component: {fileID: 6569323057831756536}
+  - component: {fileID: 2658222101141518681}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -62,7 +62,7 @@ MonoBehaviour:
     PacketDelayMS: 0
     PacketJitterMS: 0
     PacketDropRate: 0
---- !u!114 &6569323057831756536
+--- !u!114 &2658222101141518681
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,17 +71,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 4480243785762716758}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 593a2fe42fa9d37498c96f9a383b6521, type: 3}
+  m_Script: {fileID: 11500000, guid: 6203ba09d8ed6dd47813ddfd1dc315c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NetworkManagerExpanded: 0
+  NetworkManagerExpanded: 1
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 8184979098866391671}
     PlayerPrefab: {fileID: 0}
     Prefabs:
       NetworkPrefabsLists:
-      - {fileID: 11400000, guid: 1079e6c9d130b8f4692a87dbc7a5b73f, type: 2}
+      - {fileID: 11400000, guid: 5cd35b9d37ba14d49b0625f1545c4347, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -94,7 +94,7 @@ MonoBehaviour:
     RecycleNetworkIds: 1
     NetworkIdRecycleDelay: 120
     RpcHashSize: 0
-    LoadSceneTimeOut: 60
+    LoadSceneTimeOut: 120
     SpawnTimeout: 10
     EnableNetworkLogs: 1
     NetworkTopology: 0
@@ -105,3 +105,10 @@ MonoBehaviour:
     OldPrefabList: []
   RunInBackground: 1
   LogLevel: 1
+  _localBufferSec: 0
+  _serverBufferSec: 0
+  _useEpicOnlineTransport: 0
+  _networkSpawnerPref: {fileID: 5844752406703323982, guid: 01fce0d3821c66f4db49b1efd7c73206, type: 3}
+  _networkSpawner: {fileID: 0}
+  _networkScene:
+  - Stage

@@ -34,6 +34,7 @@ namespace GameLobby
         {
             await SceneManagerWrapper.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
 
+            Debug.Log("Load LobbyUI Success");
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
             {
                 await UnityServices.InitializeAsync();
@@ -49,8 +50,12 @@ namespace GameLobby
             startGameButton.onClick.AddListener(Callback_Btn_StartGame);
 
 
-            if (NetworkManager.Singleton != null)
-                NetworkManager.Singleton.OnClientConnectedCallback += Callback_onClientsConnected;
+            if (NetworkManager.Singleton.ConnectedClientsList.Count == 2)
+            {
+                startClientDb.gameObject.SetActive(false);
+                startHostDb.gameObject.SetActive(false);
+            }
+
         }
 
 
@@ -132,7 +137,7 @@ namespace GameLobby
         {
             if (NetworkManager.Singleton != null)
             {
-                NetworkManager.Singleton.StartHost();
+                (NetworkManager.Singleton as NgoManager).StartHost();
             }
             else
             {
@@ -144,7 +149,7 @@ namespace GameLobby
         {
             if (NetworkManager.Singleton != null)
             {
-                NetworkManager.Singleton.StartClient();
+                (NetworkManager.Singleton as NgoManager).StartClient();
             }
             else
             {

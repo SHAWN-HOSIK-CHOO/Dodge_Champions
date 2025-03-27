@@ -43,7 +43,7 @@ public static class SceneManagerWrapper
             }
         }
 #else
-        return SceneManager.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
+        return SceneManager.LoadSceneAsync(sceneName, mode);
 #endif
         return null;
     }
