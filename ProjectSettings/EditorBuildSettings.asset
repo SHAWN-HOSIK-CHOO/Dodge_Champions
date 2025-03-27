@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/HP/Dummy/DummyScene.unity
-    guid: 8537e002cc582d349a03f674c56fff2b
-  - enabled: 0
     path: Assets/HP/Dummy/DummyScene2.unity
     guid: d866da8526aa9474fadbe1bcff3c093f
   - enabled: 0
