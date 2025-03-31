@@ -2,6 +2,7 @@ using HP;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using static PlayerMoveControl;
 using static PlayerMoveControl.IMoveEvent;
 
 public class PlayerMoveControl : NetworkBehaviour
@@ -12,8 +13,6 @@ public class PlayerMoveControl : NetworkBehaviour
 
     [SerializeField]
     float _mouseSpeed;
-
-
     [SerializeField]
     Vector3 _curMoveSpeed;
     [SerializeField]
@@ -74,7 +73,7 @@ public class PlayerMoveControl : NetworkBehaviour
         public bool _isJumpValid;
         public Vector3 _moveSpeed;
         public Vector3 _envSpeed;
-        public bool _isClientPredicted; //for Debug
+        public bool _isClientPredicted;
     }
     public struct MoveEventMessage : INetworkSerializable
     {
@@ -133,6 +132,8 @@ public class PlayerMoveControl : NetworkBehaviour
                             eventList[i] = mouseEvent;
                             break;
                     }
+                    eventList[i]._isUsed = false;
+                    eventList[i]._isClientPredicted = false;
                 }
             }
         }
@@ -148,13 +149,15 @@ public class PlayerMoveControl : NetworkBehaviour
         public MoveEventType _eventType { get; }
 
         public IMoveEvent DeepCopy();
-        public bool _isUsed { get; set; }
+        public bool _isClientPredicted { get; set; }
+        public bool _isUsed { get; set; } // for Debug
     }
     public struct MoveInputEvent : IMoveEvent
     {
         public int _tick;
         public Vector3 _moveInput;
-        public bool _isUsed;
+        public bool _isClientPredicted;
+        public bool _isUsed; 
         public IMoveEvent DeepCopy()
         {
             return new MoveInputEvent()
@@ -167,6 +170,7 @@ public class PlayerMoveControl : NetworkBehaviour
 
         int IMoveEvent._tick { get => _tick; set => _tick = value; }
         bool IMoveEvent._isUsed { get => _isUsed; set => _isUsed = value; }
+        bool IMoveEvent._isClientPredicted { get => _isClientPredicted; set => _isClientPredicted = value; }
         public IMoveEvent.MoveEventType _eventType => IMoveEvent.MoveEventType.MoveInputEvent;
 
     }
@@ -175,6 +179,8 @@ public class PlayerMoveControl : NetworkBehaviour
         public Vector2 _mouseInput;
         public bool _isUsed;
         public int _tick;
+
+        public bool _isClientPredicted;
         public IMoveEvent DeepCopy()
         {
             return new MouseInputEvent()
@@ -184,7 +190,7 @@ public class PlayerMoveControl : NetworkBehaviour
                 _isUsed = _isUsed
             };
         }
-
+        bool IMoveEvent._isClientPredicted { get => _isClientPredicted; set => _isClientPredicted = value; }
         bool IMoveEvent._isUsed { get => _isUsed; set => _isUsed = value; }
         int IMoveEvent._tick { get => _tick; set => _tick = value; }
         public IMoveEvent.MoveEventType _eventType => IMoveEvent.MoveEventType.MouseInputEvent;
@@ -217,20 +223,15 @@ public class PlayerMoveControl : NetworkBehaviour
 
         _reconMoveEventList = new List<MoveEventMessage>();
         _reconMoveStateList = new List<MoveStateMessage>();
-
-
         for (int i = 0; i < MaxBufferedTick; i++)
         {
             _moveStateHistory._buffer[i]._tick = -1;
             _moveStateHistory._buffer[i]._isClientPredicted = true;
             _moveEventHistory._buffer[i] = new List<IMoveEvent>();
         }
-
         NetworkManager.NetworkTickSystem.Tick += OnLocalTick;
         NetworkManager.NetworkTickSystem.ServerTick += OnServerTick;
     }
-
-
     private void Update()
     {
         if (IsSpawned)
@@ -245,13 +246,12 @@ public class PlayerMoveControl : NetworkBehaviour
             DebugExtension.DebugCapsule(capsuleBottom, capsuleTop, radius: _characterController.radius + 0.05f, color: color);
         }
     }
-
     void ClearOldMoveEvent(int tick)
     {
         int historyIndex = tick % MaxBufferedTick;
         foreach (var moveEvent in _moveEventHistory._buffer[historyIndex].ToArray())
         {
-            if (moveEvent._tick != tick)
+            if ((moveEvent._tick != tick) || moveEvent._isClientPredicted)
             {
                 if (moveEvent._isUsed == false)
                 {
@@ -261,48 +261,43 @@ public class PlayerMoveControl : NetworkBehaviour
             }
         }
     }
-    bool AddPrevMoveInputEvent(int tick)
+    void AddPrevMoveInputEvent(int tick)
     {
         int historyIndex = tick % MaxBufferedTick;
-        // 만약 이번 틱의 MoveInputEvent가 없다면 이전의 MoveInputEvent에서 가져온다
-        var moveInputEvent = _moveEventHistory._buffer[historyIndex].FindLast(e => e._eventType == MoveEventType.MoveInputEvent);
-        if (moveInputEvent == null)
+        for (int i = 0; i < MaxBufferedTick; i++)
         {
-            int prevhistoryIndex = (tick + MaxBufferedTick - 1) % MaxBufferedTick;
-            var prevEvent = _moveEventHistory._buffer[prevhistoryIndex].FindLast(e => e._eventType == MoveEventType.MoveInputEvent);
-            if (prevEvent == null)
+            int prevHistoryIndex = (tick + MaxBufferedTick - i) % MaxBufferedTick;
+            var IMoveEvent = _moveEventHistory._buffer[prevHistoryIndex].FindLast(e => e._eventType == MoveEventType.MoveInputEvent);
+            if (IMoveEvent != null)
             {
-                var prevMoveEvent = new MoveInputEvent();
-                prevMoveEvent._tick = tick;
-                prevMoveEvent._moveInput = Vector3.zero;
-                prevMoveEvent._isUsed = false;
-                _moveEventHistory._buffer[historyIndex].Insert(0, prevMoveEvent);
-
+                var moveInputEvent = (MoveInputEvent)IMoveEvent;
+                moveInputEvent._tick = tick;
+                moveInputEvent._isUsed = false;
+                moveInputEvent._isClientPredicted = true;
+                _moveEventHistory._buffer[historyIndex].Insert(0, moveInputEvent);
+                return;
             }
-            else
-            {
-                var prevMoveEvent = (MoveInputEvent)prevEvent;
-                prevMoveEvent._tick = tick;
-                prevMoveEvent._isUsed = false;
-                _moveEventHistory._buffer[historyIndex].Insert(0, prevMoveEvent);
-            }
-            return true;
         }
-        return false;
+        var defaultMoveInputEvent = new MoveInputEvent();
+        defaultMoveInputEvent._tick = tick;
+        defaultMoveInputEvent._isUsed = false;
+        defaultMoveInputEvent._isClientPredicted = true;
+        _moveEventHistory._buffer[historyIndex].Insert(0, defaultMoveInputEvent);
     }
-    bool CheckMoveStateExist(int tick)
+    bool CheckMoveStateValid(int tick , bool checkClientPredict = false)
     {
         int historyIndex = tick % MaxBufferedTick;
-        if (_moveStateHistory._buffer[historyIndex]._tick == tick)
+        bool tickDirty = _moveStateHistory._buffer[historyIndex]._tick != tick;
+        bool isClientPredict = _moveStateHistory._buffer[historyIndex]._isClientPredicted;
+        if (tickDirty)
         {
-            return true;
+            return false;
         }
-        return false;
-    }
-    bool CheckMoveStateClientPredicted(int tick)
-    {
-        int historyIndex = tick % MaxBufferedTick;
-        return _moveStateHistory._buffer[historyIndex]._isClientPredicted;
+        else if (checkClientPredict)
+        {
+            return !isClientPredict;
+        }
+        return true;
     }
     public void SendMoveEvent(int tick)
     {
@@ -332,9 +327,9 @@ public class PlayerMoveControl : NetworkBehaviour
         bool onGround = Physics.CapsuleCast(capsuleBottomCenter, capsuleTopCenter, _characterController.radius, Vector3.down, out RaycastHit hit, capsuleCastLength);
         return onGround;
     }
-    public void ApplyMove(int tick)
+    public void ApplyMoveState(int tick)
     {
-        if (CheckMoveStateExist(tick))
+        if (CheckMoveStateValid(tick , true))
         {
             SetMoveStateFromHistory(tick);
         }
@@ -350,36 +345,6 @@ public class PlayerMoveControl : NetworkBehaviour
                 _envSpeed = _curEnvSpeed,
                 _isJumpValid = _curIsJumpValid
             });
-        }
-        ApplyMoveEvent(tick);
-        if (!CheckMoveStateExist(tick + 1))
-        {
-            CashState(new MoveState()
-            {
-                _tick = tick,
-                _worldPos = transform.position,
-                _worldRot = transform.rotation,
-                _isClientPredicted = true,
-                _moveSpeed = _curMoveSpeed,
-                _envSpeed = _curEnvSpeed,
-                _isJumpValid = _curIsJumpValid
-            });
-        }
-    }
-    public void OnServerTick()
-    {
-        int serverTick = NetworkManager.NetworkTickSystem.ServerTime.Tick;
-        if (!IsOwner)
-        {
-            ReconciliationMove(serverTick);
-            ApplyMove(serverTick);
-        }
-
-        if (IsServer)
-        {
-            int historyIndex = serverTick % MaxBufferedTick;
-            _moveStateHistory._buffer[historyIndex]._isClientPredicted = false;
-            SendMoveStateRpc(MoveStateMessage.FromMoveState(_moveStateHistory._buffer[historyIndex]));
         }
     }
     int ReconciliateMoveState(int tick)
@@ -413,6 +378,7 @@ public class PlayerMoveControl : NetworkBehaviour
         {
             bool dirty = false;
             int historyIndex = _reconMoveEventList[i]._tick % MaxBufferedTick;
+            ClearOldMoveEvent(_reconMoveEventList[i]._tick);
             if (_reconMoveEventList[i]._tick <= tick)
             {
                 if (_moveEventHistory._buffer[historyIndex].Count != _reconMoveEventList[i].eventList.Length)
@@ -431,10 +397,11 @@ public class PlayerMoveControl : NetworkBehaviour
                     }
                 }
             }
-            ClearOldMoveEvent(_reconMoveEventList[i]._tick);
             foreach (var item in _reconMoveEventList[i].eventList)
             {
                 item._isUsed = !dirty;
+
+
                 _moveEventHistory._buffer[historyIndex].Add(item);
             }
             if (dirty)
@@ -450,37 +417,68 @@ public class PlayerMoveControl : NetworkBehaviour
     }
     void ReconciliationMove(int tick)
     {
+        // 서버 기준으로 지난 이벤트는 무시하는 것이 맞다.
+        // 그런데 key Release 이벤트는 적용해야함으로 무시하면 안된다.
+        // 무조건 적용 후 재시뮬레이션 해야하는데 치트는 어떻게 막지? 
+
         int moveEventDirtTick = ReconciliateMoveEvent(tick);
         int moveStateDirtTick = ReconciliateMoveState(tick);
 
-        int dirtyTick = -1;
+        int dirtyTick = tick;
         dirtyTick = (moveEventDirtTick == -1) ? dirtyTick : moveEventDirtTick;
         dirtyTick = (moveStateDirtTick == -1) ? dirtyTick : moveStateDirtTick;
-        if (dirtyTick != -1)
+        for (int i = dirtyTick; i <= tick; i++)
         {
-            for (int i = dirtyTick; i < tick; i++)
+            int historyIndex = i % MaxBufferedTick;
+            ApplyMoveState(i);
+            Debug.Log($"before {transform.position}");
+            ClearOldMoveEvent(i);
+            if (!CheckMoveStateValid(i + 1, true))
             {
-                int historyIndex = i % MaxBufferedTick;
-                ApplyMove(i);
+                ApplyMoveEvent(i);
             }
+            else
+            {
+                for (int index = 0; index < _moveEventHistory._buffer[historyIndex].Count; index++)
+                {
+                    _moveEventHistory._buffer[historyIndex][index]._isUsed = true;
+                }
+            }
+            ApplyMoveState(i + 1);
+            Debug.Log($"after {transform.position}");
         }
+
+        Debug.Log($"final {transform.position}");
+
     }
     public void OnLocalTick()
     {
         int localTick = NetworkManager.NetworkTickSystem.LocalTime.Tick;
         if (IsOwner)
         {
-            ReconciliationMove(localTick);
             ClearOldMoveEvent(localTick);
+            SendMoveEvent(localTick);
 
-            int historyIndex = localTick % MaxBufferedTick;
-            bool hasMoveEvent = _moveEventHistory._buffer[historyIndex].Count != 0;
-            AddPrevMoveInputEvent(localTick);
-            ApplyMove(localTick);
-            if (hasMoveEvent)
+            ReconciliationMove(localTick);
+        }
+    }
+    public void OnServerTick()
+    {
+        int serverTick = NetworkManager.NetworkTickSystem.ServerTime.Tick;
+        if(!IsOwner)
+        {
+            ReconciliationMove(serverTick);
+        }
+
+        if (IsServer)
+        {
+            int historyIndex = serverTick % MaxBufferedTick;
+            _moveStateHistory._buffer[historyIndex]._isClientPredicted = false;
+            if(_moveStateHistory._buffer[historyIndex]._tick != -1)
             {
-                SendMoveEvent(localTick);
+                SendMoveStateRpc(MoveStateMessage.FromMoveState(_moveStateHistory._buffer[historyIndex]));
             }
+
         }
     }
     void SetMoveStateFromHistory(int tick)
@@ -540,6 +538,7 @@ public class PlayerMoveControl : NetworkBehaviour
     }
     void ApplyMoveEvent(int tick)
     {
+        AddPrevMoveInputEvent(tick);
         int historyIndex = tick % MaxBufferedTick;
         for (int i = 0; i < _moveEventHistory._buffer[historyIndex].Count; i++)
         {
@@ -598,6 +597,7 @@ public class PlayerMoveControl : NetworkBehaviour
         var moveEvent = new MoveInputEvent();
         moveEvent._tick = NetworkManager.NetworkTickSystem.LocalTime.Tick + 1;
         moveEvent._moveInput = val;
+        moveEvent._isClientPredicted = false;
         CashEvent(moveEvent);
     }
     private void OnMouseInputChanged(Vector2 val)
@@ -605,6 +605,7 @@ public class PlayerMoveControl : NetworkBehaviour
         if (!IsSpawned) return;
         var moveEvent = new MouseInputEvent();
         moveEvent._tick = NetworkManager.NetworkTickSystem.LocalTime.Tick + 1;
+        moveEvent._isClientPredicted = false;
         moveEvent._mouseInput = val;
         CashEvent(moveEvent);
     }
