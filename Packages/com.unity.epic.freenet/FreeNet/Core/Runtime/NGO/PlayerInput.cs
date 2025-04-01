@@ -1,21 +1,29 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using static InputSystemNaming;
+using UnityEngine.InputSystem;
+using HP;
+
 namespace HP
 {
-    public class WASD_MouseBinding
+    public class PlayerInput
     {
         public InputActionAsset _inputActionAsset;
         public InputActionMap _inputActionMap;
         public InputAction _WASDAction;
         public InputAction _mouseAction;
+        public InputAction _jumpAction;
+
         public Vector3 _moveInput { get; private set; }
         public Vector2 _mouseInput { get; private set; }
+        public float _jumpInput { get; private set; }
+
+
         public event Action<Vector3> _onMoveInputChanged;
         public event Action<Vector2> _onMouseInputChanged;
+        public event Action<float> _onJumpInputChanged;
 
-        public WASD_MouseBinding()
+        public PlayerInput()
         {
             _inputActionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
             var controlSyntax = InputActionAssetHelper.CreateControlScheme(_inputActionAsset, "KeyboardMouse");
@@ -30,6 +38,11 @@ namespace HP
             InputActionAssetHelper.AddCompositeBinding(compositeSyntax, InputSystemNaming.Vector2DSyntax.Left, Device.Keyboard, Key.A);
             InputActionAssetHelper.AddCompositeBinding(compositeSyntax, InputSystemNaming.Vector2DSyntax.Right, Device.Keyboard, Key.D);
             _WASDAction.performed += OnWASD;
+
+            _jumpAction = _inputActionMap.AddAction("Jump", InputActionType.Value);
+            InputActionAssetHelper.AddKeyboardBinding(_jumpAction, Key.Space);
+            _jumpAction.performed += OnJump;
+
 
             _mouseAction = _inputActionMap.AddAction("MouseMove", InputActionType.Value);
             var bindsyntax = InputActionAssetHelper.AddMouseBinding(_mouseAction, MouseType.delta);
@@ -62,6 +75,11 @@ namespace HP
         {
             _mouseInput = ctx.ReadValue<Vector2>();
             _onMouseInputChanged?.Invoke(_mouseInput);
+        }
+        private void OnJump(InputAction.CallbackContext ctx)
+        {
+            _jumpInput = ctx.ReadValue<float>();
+            _onJumpInputChanged?.Invoke(_jumpInput);
         }
     }
 }

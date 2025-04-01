@@ -18,7 +18,7 @@ public interface ITickEvent
     public void Serelize<T>(BufferSerializer<T> serializer) where T : IReaderWriter;
 }
 
-public class ClientPrediction : NetworkBehaviour
+public abstract class ClientPrediction : NetworkBehaviour
 {
     public interface ITickStateMessage : INetworkSerializable
     {
