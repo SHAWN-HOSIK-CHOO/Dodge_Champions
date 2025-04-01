@@ -207,7 +207,7 @@ namespace Unity.Netcode
                 m_CurrentServerTimeOffset = 0;
                 hardReset = true;
             }
-            if(Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) > HardResetThresholdSec)
+            if (Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) > HardResetThresholdSec)
             {
                 m_TimeSec += m_DesiredLocalTimeOffset;
                 m_DesiredServerTimeOffset -= m_DesiredLocalTimeOffset;

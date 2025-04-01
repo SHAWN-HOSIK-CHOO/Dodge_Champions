@@ -226,10 +226,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  MaxBufferedTick: 300
   _characterController: {fileID: 4471449990706994904}
-  _mouseSpeed: 5
-  _curMoveSpeed: {x: 15, y: 0, z: 15}
+  _curMouseSpeed: {x: 5, y: 5}
+  _curMoveSpeed: {x: 10, y: 0, z: 10}
   _curEnvSpeed: {x: 0, y: 0, z: 0}
+  _curIsJumpValid: 0
 --- !u!143 &4471449990706994904
 CharacterController:
   m_ObjectHideFlags: 0
