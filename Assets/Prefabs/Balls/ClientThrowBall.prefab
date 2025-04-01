@@ -130,6 +130,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballDamage: 10
+  hitEffectIndex: 0
+  ballLaunchSpeed: 42
+  ballHeight: 0.3
+  isInfinite: 0
   isHorizontalThrow: 1
 --- !u!135 &6277498973621325976
 SphereCollider:

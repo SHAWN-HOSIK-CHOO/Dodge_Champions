@@ -21,14 +21,6 @@ MonoBehaviour:
   m_OverrideGlobalSceneList: 0
   m_Scenes:
   - m_enabled: 0
-    m_path: Assets/Scenes/HP/Lobby/Scene/AcitveLobbyScene.unity
-  - m_enabled: 0
-    m_path: Assets/Scenes/HP/Login/Scene/Login.unity
-  - m_enabled: 0
-    m_path: Assets/Scenes/HP/Lobby/Scene/LobbyScene.unity
-  - m_enabled: 0
-    m_path: Assets/Scenes/HP/Lobby/Scene/Game.unity
-  - m_enabled: 0
     m_path: Assets/Scenes/Lobby.unity
   - m_enabled: 0
     m_path: Assets/Scenes/Stage.unity
