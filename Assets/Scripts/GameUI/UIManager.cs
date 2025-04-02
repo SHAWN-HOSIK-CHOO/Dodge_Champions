@@ -56,6 +56,7 @@ namespace GameUI
         private void Start()
         {
             Initialize();
+            this.gameObject.SetActive(false);
         }
 
         public void Initialize()
