@@ -1,8 +1,11 @@
 using HP;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using static PlayerMoveControl;
 using static PlayerMoveControl.MoveEvent;
 
 public class PlayerMoveControl : ClientPrediction
@@ -19,7 +22,7 @@ public class PlayerMoveControl : ClientPrediction
     Vector3 _curEnvSpeed;
     [SerializeField]
     bool _curIsJumpValid;
-
+    LinkedList<IMoveEvent> _userInput;
     public struct TickStateMessage : ITickStateMessage
     {
         public ITickState _tickState;
@@ -310,10 +313,27 @@ public class PlayerMoveControl : ClientPrediction
         base.OnNetworkSpawn();
         if (IsOwner)
         {
+            _userInput = new LinkedList<IMoveEvent>();
             BindKey();
         }
     }
-
+    public override void OnLocalTick()
+    {
+        int localTick = NetworkManager.NetworkTickSystem.LocalTime.Tick;
+        if(IsOwner)
+        {
+            foreach (var imoveEvent in _userInput)
+            {
+                MoveEvent newEvent = new MoveEvent();
+                newEvent._iMoveEvent = imoveEvent;
+                newEvent._iMoveEvent._tick = localTick;
+                newEvent._iMoveEvent._isPredict = false;
+                CashEvent(newEvent);
+            }
+            _userInput.Clear();
+        }
+        base.OnLocalTick();
+    }
     void BindKey()
     {
         _playerInput = new HP.PlayerInput();
@@ -322,7 +342,6 @@ public class PlayerMoveControl : ClientPrediction
         _playerInput._onMoveInputChanged += OnMoveInputChanged;
         _playerInput._onJumpInputChanged += OnJumpInputChanged;
     }
-
     private void Update()
     {
         if (IsSpawned)
@@ -337,13 +356,12 @@ public class PlayerMoveControl : ClientPrediction
             DebugExtension.DebugCapsule(capsuleBottom, capsuleTop, radius: _characterController.radius + 0.05f, color: color);
         }
     }
-    
     void ApplyMoveEvent(int tick)
     {
         int historyIndex = tick % MaxBufferedTick;
-        for (int i = 0; i < _tickEventHistory._buffer[historyIndex].Count; i++)
+        foreach (var moveEvent in _tickEventHistory._buffer[historyIndex])
         {
-            var history = (MoveEvent)_tickEventHistory._buffer[historyIndex][i];
+            var history = (MoveEvent)moveEvent;
             if (history._iMoveEvent._moveEventType == MoveEvent.MoveEventType.MouseInputEvent)
             {
                 var message = (MouseInputEvent)history._iMoveEvent;
@@ -398,7 +416,6 @@ public class PlayerMoveControl : ClientPrediction
             _curIsJumpValid = false;
         }
     }
-    
     override public void ApplyTickEvent(int tick)
     {
         AddPrevMoveInputEvent(tick);
@@ -450,9 +467,11 @@ public class PlayerMoveControl : ClientPrediction
         if (_tickEventHistory._buffer[historyIndex].Count != 0)
         {
             var eventList = new ITickEvent[_tickEventHistory._buffer[historyIndex].Count];
-            for (int i = 0; i < _tickEventHistory._buffer[historyIndex].Count; i++)
+            int i = 0;
+            foreach (var moveEvent in _tickEventHistory._buffer[historyIndex])
             {
-                eventList[i] = _tickEventHistory._buffer[historyIndex][i].DeepCopy();
+                eventList[i] = moveEvent.DeepCopy();
+                i++;
             }
             SendTickEventListRpc(new TickEventListMessage()
             {
@@ -461,7 +480,6 @@ public class PlayerMoveControl : ClientPrediction
             });
         }
     }
-
     [Rpc(SendTo.NotServer)]
     void SendTickStateRpc(TickStateMessage tickStateMessage)
     {
@@ -479,20 +497,21 @@ public class PlayerMoveControl : ClientPrediction
         {
             int prevHistoryIndex = (tick + MaxBufferedTick - i) % MaxBufferedTick;
             var prevhistory = _tickEventHistory._buffer[prevHistoryIndex];
-            var moveEvent = prevhistory.FindLast(e => ((MoveEvent)e)._iMoveEvent._moveEventType == MoveEventType.MoveInputEvent);
+            var moveEvent = prevhistory.LastOrDefault(e => ((MoveEvent)e)._iMoveEvent._moveEventType == MoveEventType.MoveInputEvent);
             if (moveEvent != null)
             {
+                if (i == 0) return;
                 var moveInputEvent = (MoveEvent)moveEvent;
                 moveInputEvent._iMoveEvent._tick = tick;
                 moveInputEvent._iMoveEvent._isPredict = true;
-                _tickEventHistory._buffer[historyIndex].Insert(0, moveInputEvent);
+                _tickEventHistory._buffer[historyIndex].AddFirst(moveInputEvent);
                 return;
             }
         }
         var defaultMoveInputEvent = new MoveInputEvent();
         defaultMoveInputEvent._tick = tick;
         defaultMoveInputEvent._isPredict = true;
-        _tickEventHistory._buffer[historyIndex].Insert(0, new MoveEvent()
+        _tickEventHistory._buffer[historyIndex].AddFirst(new MoveEvent()
         {
             _iMoveEvent = defaultMoveInputEvent
         });
@@ -513,37 +532,33 @@ public class PlayerMoveControl : ClientPrediction
     {
         if (!IsSpawned) return;
         var moveEvent = new MoveInputEvent();
-        moveEvent._tick = NetworkManager.NetworkTickSystem.LocalTime.Tick + 1;
         moveEvent._moveInput = val;
-        moveEvent._isPredict = false;
-        CashEvent(new MoveEvent()
-        {
-            _iMoveEvent = moveEvent
-        });
+        _userInput.AddLast(moveEvent);
     }
     private void OnMouseInputChanged(Vector2 val)
     {
         if (!IsSpawned) return;
         var moveEvent = new MouseInputEvent();
-        moveEvent._tick = NetworkManager.NetworkTickSystem.LocalTime.Tick + 1;
-        moveEvent._isPredict = false;
         moveEvent._mouseInput = val;
-        CashEvent(new MoveEvent()
+
+        var input = _userInput.Last;
+        if (input !=null)
         {
-            _iMoveEvent = moveEvent
-        });
+            if(input.Value is MouseInputEvent inputMouse)
+            {
+                inputMouse._mouseInput += val;
+                input.Value = inputMouse;
+                return;
+            }
+        }
+        _userInput.AddLast(moveEvent);
     }
     private void OnJumpInputChanged(float val)
     {
         if (!IsSpawned) return;
         if (val == 0) return;
         var moveEvent = new JumpInputEvent();
-        moveEvent._tick = NetworkManager.NetworkTickSystem.LocalTime.Tick + 1;
-        moveEvent._isPredict = false;
         moveEvent._jumpInput = val;
-        CashEvent(new MoveEvent()
-        {
-            _iMoveEvent = moveEvent
-        });
+        _userInput.AddLast(moveEvent);
     }
 }

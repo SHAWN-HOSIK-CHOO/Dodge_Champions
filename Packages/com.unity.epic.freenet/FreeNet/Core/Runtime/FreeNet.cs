@@ -13,8 +13,10 @@ public class FreeNet : SingletonMonoBehaviour<FreeNet>
         _ngoManager = GetComponent<NgoManager>();
         _localUser = GetComponent<EOS_LocalUser>();
         _eosCore = GetComponent<EOS_Core>();
+
         _ngoManager.Init(this);
         _eosCore.Run();
         SingletonInitialize();
     }
+
 }

@@ -49,7 +49,7 @@ public class EOSNetcodeTransport : NetworkTransport
         if (_isUrgent)
         {
             // 1.버그 유발하는지 테스트 해봐야 한다. 2.정말 필요할까?
-            //_ngoManager.NetworkUpdate(NetworkUpdateStage.EarlyUpdate);
+            _ngoManager.NetworkUpdate(NetworkUpdateStage.EarlyUpdate);
         }
         _isUrgent = false;
     }

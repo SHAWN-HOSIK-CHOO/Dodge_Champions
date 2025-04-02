@@ -73,10 +73,12 @@ public class NetworkSpawner : NetworkBehaviour
             NetworkObject networkObject = playerInstance.GetComponent<NetworkObject>();
             if (transferOwnership)
             {
+                //networkObject.SpawnWithObservers = false;
                 networkObject.SpawnWithOwnership(clientID, param.destroyWithScene);
             }
             else
             {
+                //networkObject.SpawnWithObservers = false;
                 networkObject.Spawn(param.destroyWithScene);
             }
             return networkObject;

@@ -7,19 +7,33 @@ public class SpawnManager : MonoBehaviour
     TimeSystemGUI timesystemGUI;
     [SerializeField]
     Transform _spawnPointB;
-    [SerializeField]
-    NgoManager _ngoManager;
     void Start()
     {
-        _ngoManager._onNgoManagerReady += OnNgoManagerReady;
+        if(NgoManager.Singleton._ngoReady)
+        {
+            OnNgoManagerReady();
+        }
+        else
+        {
+            NgoManager.Singleton._onNgoManagerReady += OnNgoManagerReady;
+        }
     }
 
     void OnNgoManagerReady()
     {
         timesystemGUI.Init();
-        if (_ngoManager.IsServer)
+        if (NgoManager.Singleton.IsServer)
         {
-            _ngoManager._networkSpawner.Spawn(new SpawnParams()
+            NgoManager.Singleton._networkSpawner.Spawn(new SpawnParams()
+            {
+                pos = _spawnPointB.position,
+                rot = _spawnPointB.rotation,
+                prefabListName = "DummyPrefab",
+                prefabName = "ConsoleUI",
+                destroyWithScene = true
+            });
+
+            NgoManager.Singleton._networkSpawner.Spawn(new SpawnParams()
             {
                 pos = _spawnPointB.position,
                 rot = _spawnPointB.rotation,
@@ -27,10 +41,11 @@ public class SpawnManager : MonoBehaviour
                 prefabName = "Player",
                 destroyWithScene = true
             });
+
         }
         else
         {
-            _ngoManager._networkSpawner.SpawnObjectRpc(true, new SpawnParams()
+            NgoManager.Singleton._networkSpawner.SpawnObjectRpc(true, new SpawnParams()
             {
                 pos = _spawnPointB.position,
                 rot = _spawnPointB.rotation,

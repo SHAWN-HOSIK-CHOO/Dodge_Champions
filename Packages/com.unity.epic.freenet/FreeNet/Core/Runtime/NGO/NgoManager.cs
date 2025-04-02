@@ -41,6 +41,8 @@ public class NgoManager : NetworkManager
     public byte _channel => 0;
     public byte _urgentChannel => 1;
 
+    public bool _ngoReady {get; private set;}
+
     [SerializeField]
     NetworkSpawner _networkSpawnerPref;
 
@@ -50,6 +52,8 @@ public class NgoManager : NetworkManager
 
     [SerializeField]
     private List<string> _networkScene;
+    public static new NgoManager Singleton => (NetworkManager.Singleton as NgoManager);
+
     public void Init(FreeNet freeNet)
     {
         _freeNet = freeNet;
@@ -70,6 +74,7 @@ public class NgoManager : NetworkManager
     }
     public new bool StartServer()
     {
+        _ngoReady = false;
         var result = base.StartServer();
         if (result)
         {
@@ -82,6 +87,7 @@ public class NgoManager : NetworkManager
     }
     public bool StartServer(EOSWrapper.ETC.PUID localPUID, string socketName)
     {
+        _ngoReady = false;
         var result = _EOSNetcodeTransport.InitializeEOSServer(_freeNet._eosCore, localPUID, socketName, _channel, _urgentChannel) && base.StartServer();
         if (result)
         {
@@ -94,6 +100,7 @@ public class NgoManager : NetworkManager
     }
     public new bool StartClient()
     {
+        _ngoReady = false;
         var result = base.StartClient();
         if (result)
         {
@@ -103,8 +110,10 @@ public class NgoManager : NetworkManager
         }
         return result;
     }
+    
     public bool StartClient(EOSWrapper.ETC.PUID localPUID, EOSWrapper.ETC.PUID remotePUID, string socketName)
     {
+        _ngoReady = false;
         var result = _EOSNetcodeTransport.InitializeEOSClient(_freeNet._eosCore, localPUID, remotePUID, socketName, _channel, _urgentChannel) && base.StartClient();
         if (result)
         {
@@ -126,6 +135,7 @@ public class NgoManager : NetworkManager
     }
     public new bool StartHost()
     {
+        _ngoReady = false;
         var result = base.StartHost();
         if (result)
         {
@@ -167,7 +177,7 @@ public class NgoManager : NetworkManager
                 destroyWithScene = false
             });
         }
+        _ngoReady = true;
         _onNgoManagerReady?.Invoke();
     }
-
 }

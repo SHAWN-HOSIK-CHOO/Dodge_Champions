@@ -39,8 +39,6 @@ namespace Game
                 ulong clientId = NetworkManager.Singleton.ConnectedClientsList[playerIndex].ClientId;
                 networkObject.SpawnWithOwnership(clientId);
             }
-
-
         }
 
         private void Update()

@@ -23,7 +23,11 @@ public class TransformInterporator : NetworkBehaviour
     private void Update()
     {
         _camera.transform.SetParent(subject);
-        subject.position = Vector3.SmoothDamp(subject.position, target.position, ref _velocity, positionSmoothTime);
+        float smoothTimeY = positionSmoothTime * 0.5f; // 중력은 더 빠르게 보간
+        float newX = Mathf.SmoothDamp(subject.position.x, target.position.x, ref _velocity.x, positionSmoothTime);
+        float newY = Mathf.SmoothDamp(subject.position.y, target.position.y, ref _velocity.y, smoothTimeY);
+        float newZ = Mathf.SmoothDamp(subject.position.z, target.position.z, ref _velocity.z, positionSmoothTime);
+        subject.position = new Vector3(newX, newY, newZ);
         subject.rotation = Quaternion.Slerp(subject.rotation, target.rotation, 1 - Mathf.Exp(-Time.deltaTime * rotationSmoothTime));
         _camera.transform.SetParent(gameObject.transform);
     }

@@ -1,8 +1,23 @@
 using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputActionSetupExtensions;
 
-public static class InputActionAssetHelper
+
+public class InputActionAssetHelper
 {
+
+    private static InputActionAssetHelper _singleton;
+    public static InputActionAssetHelper Singleton
+    {
+        get
+        {
+            if (_singleton == null)
+                _singleton = new InputActionAssetHelper();
+            return _singleton;
+        }
+    }
+
+
+
     public static ControlSchemeSyntax CreateControlScheme(InputActionAsset asset, string schemeName)
     {
         return asset.AddControlScheme(schemeName);

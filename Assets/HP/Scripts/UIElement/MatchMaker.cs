@@ -16,7 +16,8 @@ public class MatchMaker : MonoBehaviour
     CoroutineHandler _coroutineHandler;
     [SerializeField]
     Image _transition;
-
+    [SerializeField]
+    string lobbyScene;
 
     bool _loginSuccess;
     bool _connectSuccess;
@@ -110,7 +111,7 @@ public class MatchMaker : MonoBehaviour
         if (FreeNet._instance._ngoManager.IsServer)
         {
             FreeNet._instance._ngoManager.SceneManager.OnLoad += OnLoad;
-            FreeNet._instance._ngoManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+            FreeNet._instance._ngoManager.SceneManager.LoadScene(lobbyScene, LoadSceneMode.Single);
         }
     }
 

@@ -1,3 +1,4 @@
+using Epic.OnlineServices.P2P;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -5,20 +6,27 @@ namespace HP
 {
     public partial class CutomTMPInputField
     {
-        public enum InputMode
+        public interface IInputMode
         {
-            T, // Normal Text Mode
-            S, // System command Mode
+            void ChangeModeNext();
+            string GetName();
         }
-        public InputMode _InputMode { get; private set; }
+
+        private IInputMode _inputMode;
+        public IInputMode InputMode
+        {
+            get => _inputMode;
+            set
+            {
+                _inputMode = value;
+                _inputModeText.text = _inputMode.GetName();
+            }
+        }
         [SerializeField]
         TMP_Text _inputModeText;
         [SerializeField]
         GameObject _inputModeLayout;
-
         ToggleInputBinding _enterInputBinding;
-        [SerializeField]
-        public bool _useInputMode = false;
         [SerializeField]
         public bool _useAutoFocus = false;
         [SerializeField]
@@ -27,8 +35,6 @@ namespace HP
         protected override void Start()
         {
             if (!Application.isPlaying) return;
-            _inputModeLayout.SetActive(_useInputMode);
-            _inputModeText.text = _InputMode.ToString();
             if (initialized == false)
             {
                 _enterInputBinding = new ToggleInputBinding(UnityEngine.InputSystem.Key.Enter);
@@ -40,8 +46,7 @@ namespace HP
         }
         public void ShowInputMode(bool b)
         {
-            _useInputMode = b;
-            _inputModeLayout.SetActive(_useInputMode);
+            _inputModeLayout.SetActive(b);
         }
 
         void EnterPressed(bool b)
@@ -219,10 +224,10 @@ namespace HP
             }
             else if (multiLine)
             {
-                if (_inputModeLayout.gameObject.activeSelf && !shift && c == '\t')
+                if (_inputModeLayout.gameObject.activeSelf && InputMode != null && !shift && c == '\t')
                 {
-                    _InputMode = _InputMode = (InputMode)(((int)_InputMode + 1) % System.Enum.GetValues(typeof(InputMode)).Length);
-                    _inputModeText.text = _InputMode.ToString();
+                    InputMode.ChangeModeNext();
+                    _inputModeText.text = InputMode.GetName();
                     return EditState.Continue;
                 }
                 // Convert carriage return and end-of-text characters to newline.

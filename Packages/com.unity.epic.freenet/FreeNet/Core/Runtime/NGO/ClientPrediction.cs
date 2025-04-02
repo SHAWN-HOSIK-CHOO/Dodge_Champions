@@ -32,7 +32,7 @@ public abstract class ClientPrediction : NetworkBehaviour
     protected List<ITickEventListMessage> _reconTickEventList;
     protected List<ITickStateMessage> _reconTickStateList;
     protected ArrayBuffer<ITickState> _tickStateHistory;
-    protected ArrayBuffer<List<ITickEvent>> _tickEventHistory;
+    protected ArrayBuffer<LinkedList<ITickEvent>> _tickEventHistory;
 
     [SerializeField]
     public int MaxBufferedTick = 30 * 10;
@@ -73,13 +73,13 @@ public abstract class ClientPrediction : NetworkBehaviour
     override public void OnNetworkSpawn()
     {
         _tickStateHistory = new ArrayBuffer<ITickState>(MaxBufferedTick);
-        _tickEventHistory = new ArrayBuffer<List<ITickEvent>>(MaxBufferedTick);
+        _tickEventHistory = new ArrayBuffer<LinkedList<ITickEvent>>(MaxBufferedTick);
 
         _reconTickEventList = new List<ITickEventListMessage>();
         _reconTickStateList = new List<ITickStateMessage>();
         for (int i = 0; i < MaxBufferedTick; i++)
         {
-            _tickEventHistory._buffer[i] = new List<ITickEvent>();
+            _tickEventHistory._buffer[i] = new LinkedList<ITickEvent>();
         }
         NetworkManager.NetworkTickSystem.Tick += OnLocalTick;
         NetworkManager.NetworkTickSystem.ServerTick += OnServerTick;
@@ -87,11 +87,19 @@ public abstract class ClientPrediction : NetworkBehaviour
     void ClearOldEvent(int tick)
     {
         int historyIndex = tick % MaxBufferedTick;
-        foreach (var moveEvent in _tickEventHistory._buffer[historyIndex].ToArray())
+        var node = _tickEventHistory._buffer[historyIndex].First;
+        while (node != null)
         {
+            var moveEvent = node.Value;
             if ((moveEvent._tick != tick) || moveEvent._isPredict)
             {
-                _tickEventHistory._buffer[historyIndex].Remove(moveEvent);
+                var nextNode = node.Next;
+                _tickEventHistory._buffer[historyIndex].Remove(node);
+                node = nextNode;
+            }
+            else
+            {
+                node = node.Next;
             }
         }
     }
@@ -103,7 +111,7 @@ public abstract class ClientPrediction : NetworkBehaviour
     protected void CashEvent(ITickEvent tickEvent)
     {
         int historyIndex = tickEvent._tick % MaxBufferedTick;
-        _tickEventHistory._buffer[historyIndex].Add(tickEvent);
+        _tickEventHistory._buffer[historyIndex].AddLast(tickEvent);
     }
     int ReconciliateState(int tick)
     {
@@ -145,19 +153,21 @@ public abstract class ClientPrediction : NetworkBehaviour
                 }
                 else
                 {
-                    for (int j = 0; j < _reconTickEventList[i]._eventList.Length; j++)
+                    int j = 0;
+                    foreach (var moveEvent in _tickEventHistory._buffer[historyIndex])
                     {
-                        if (_tickEventHistory._buffer[historyIndex][j].CheckEventDirty(_reconTickEventList[i]._eventList[j]))
+                        if (moveEvent.CheckEventDirty(_reconTickEventList[i]._eventList[j]))
                         {
                             dirty = true;
                             break;
                         }
+                        j++;
                     }
                 }
             }
             foreach (var item in _reconTickEventList[i]._eventList)
             {
-                _tickEventHistory._buffer[historyIndex].Add(item);
+                _tickEventHistory._buffer[historyIndex].AddLast(item);
             }
             if (dirty)
             {
