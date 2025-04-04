@@ -60,6 +60,28 @@ public class MatchMaker : MonoBehaviour
         _consoleController.AddText("Enjoy Game");
         simulator.EndTracking();
         simulator.Simulate(0.05f);
+
+        //// 테스트 코드
+        var eosCore = FreeNet._instance._eosCore;
+
+        var record = new PlayRecord();
+        record.win = 3;
+        record.lose = 5;
+
+        string playRecordJson = JsonUtility.ToJson(record);
+        var deserializedplayRecordJson = JsonUtility.FromJson<PlayRecord>(playRecordJson);
+        byte[] jsonbyte = Encoding.UTF8.GetBytes(playRecordJson);
+
+
+        EOSWrapper.PlayerStorage.DownLoadFile(eosCore._IDATA, "Test", FreeNet._instance._localUser._localPUID._PUID, (Result reslut, EOSWrapper.PlayerStorage.ReadAsyncOperator op) =>
+        {
+
+        });
+
+        //EOSWrapper.PlayerStorage.UploadFile(eosCore._IDATA, "Test", jsonbyte, FreeNet._instance._localUser._localPUID._PUID, (Result reslut, EOSWrapper.PlayerStorage.WriteAsyncOperator op) =>
+        //{
+
+        //});
     }
 
     void OnConnect()
