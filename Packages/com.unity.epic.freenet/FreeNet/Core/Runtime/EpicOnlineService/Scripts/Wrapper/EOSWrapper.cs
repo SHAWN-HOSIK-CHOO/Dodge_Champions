@@ -4,12 +4,22 @@ using Epic.OnlineServices.Connect;
 using Epic.OnlineServices.Lobby;
 using Epic.OnlineServices.P2P;
 using Epic.OnlineServices.Platform;
+using Epic.OnlineServices.PlayerDataStorage;
 using Epic.OnlineServices.Sessions;
+using Epic.OnlineServices.TitleStorage;
 using Epic.OnlineServices.UserInfo;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using Unity.Android.Gradle.Manifest;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Analytics;
+using UnityEngine.LightTransport;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UIElements;
 
 public class EOSWrapper
 {
@@ -1259,6 +1269,332 @@ public class EOSWrapper
                     };
                     var result = IUSER.CopyUserInfo(ref options, out UserInfoData? outUserInfo);
                     onComplete?.Invoke(result, outUserInfo);
+                }
+            });
+        }
+    }
+
+
+    public class PlayerStorage
+    {
+        //Read or write	1000 requests per minute
+        //Maximum individual file size(see note below)   200 MB
+        //Auto-delete file size	400 MB
+        //Total storage space per user	400 MB
+        //Maximum files per user	1000
+        public class ReadAsyncOperator
+        {
+            public bool IsCompleted { get; private set; }
+            public Result result { get; private set; }
+            public uint totalFileSize { get; private set; }
+            public int transferredFileSize { get; private set; }
+            public byte[] data { get; private set; }
+            bool cancle;
+            public void Cancle()
+            {
+                cancle = true;
+            }
+            public ReadAsyncOperator(PlayerDataStorageInterface ITitle, string filename, ProductUserId localPUID)
+            {
+                void FileTransferProgressCallback(ref Epic.OnlineServices.PlayerDataStorage.FileTransferProgressCallbackInfo info)
+                {
+                    transferredFileSize = 0;
+                    if (info.TotalFileSizeBytes > 0)
+                    {
+                        totalFileSize = info.TotalFileSizeBytes;
+                        data = new byte[totalFileSize];
+                    }
+                }
+
+                Epic.OnlineServices.PlayerDataStorage.ReadResult ReadFileDataCallback(ref Epic.OnlineServices.PlayerDataStorage.ReadFileDataCallbackInfo info)
+                {
+                    string fileName = info.Filename;
+                    info.DataChunk.CopyTo(data, transferredFileSize);
+                    transferredFileSize += info.DataChunk.Count;
+                    if (data == null) return Epic.OnlineServices.PlayerDataStorage.ReadResult.FailRequest;
+                    if (cancle) return Epic.OnlineServices.PlayerDataStorage.ReadResult.CancelRequest;
+                    return Epic.OnlineServices.PlayerDataStorage.ReadResult.ContinueReading;
+                }
+
+                var ReadFileOptions = new Epic.OnlineServices.PlayerDataStorage.ReadFileOptions()
+                {
+                    LocalUserId = localPUID,
+                    Filename = filename,
+                    ReadChunkLengthBytes = 1024,
+                    ReadFileDataCallback = ReadFileDataCallback,
+                    FileTransferProgressCallback = FileTransferProgressCallback
+                };
+
+                var transferReq = ITitle.ReadFile(ref ReadFileOptions, null, (ref Epic.OnlineServices.PlayerDataStorage.ReadFileCallbackInfo info) =>
+                {
+                    result = info.ResultCode;
+                    if (transferredFileSize != totalFileSize)
+                    {
+                        Debug.LogWarning("Title Storage failed");
+                    }
+                    IsCompleted = true;
+                });
+            }
+        }
+        public class WriteAsyncOperator
+        {
+            public bool IsCompleted { get; private set; }
+            public Result result { get; private set; }
+            public uint totalFileSize { get; private set; }
+            public int transferredFileSize { get; private set; }
+            public ArraySegment<byte> playerData { get; private set; }
+            bool cancle;
+            public void Cancle()
+            {
+                cancle = true;
+            }
+            public WriteAsyncOperator(PlayerDataStorageInterface ITitle, string filename, ArraySegment<byte> data, ProductUserId localPUID)
+            {
+                playerData = data;
+                totalFileSize = (uint)data.Count;
+                transferredFileSize = 0;
+                WriteResult WriteFileDataCallback(ref WriteFileDataCallbackInfo info, out ArraySegment<byte> outDataBuffer)
+                {
+                    outDataBuffer = new ArraySegment<byte>();
+                    if(totalFileSize == transferredFileSize) return WriteResult.CompleteRequest;
+                    if (playerData == null) return Epic.OnlineServices.PlayerDataStorage.WriteResult.FailRequest;
+                    int writeSize = (int)Math.Min(info.DataBufferLengthBytes, totalFileSize - transferredFileSize);
+                    var Buffer = new byte[writeSize];
+                    playerData.Slice(transferredFileSize, writeSize).CopyTo(Buffer);
+                    transferredFileSize += writeSize;
+                    outDataBuffer = Buffer;
+                    if (cancle) return Epic.OnlineServices.PlayerDataStorage.WriteResult.CancelRequest;
+                    return Epic.OnlineServices.PlayerDataStorage.WriteResult.ContinueWriting;
+                }
+                void FileTransferProgressCallback(ref Epic.OnlineServices.PlayerDataStorage.FileTransferProgressCallbackInfo info)
+                {
+                    // 업로드 직전에 호출
+                }
+                var WriteFileOptions = new Epic.OnlineServices.PlayerDataStorage.WriteFileOptions()
+                {
+                    LocalUserId = localPUID,
+                    Filename = filename,
+                    ChunkLengthBytes = 1024,
+                    FileTransferProgressCallback = FileTransferProgressCallback,
+                    WriteFileDataCallback = WriteFileDataCallback,
+                };
+                var transferReq = ITitle.WriteFile(ref WriteFileOptions, null, (ref Epic.OnlineServices.PlayerDataStorage.WriteFileCallbackInfo info) =>
+                {
+                    result = info.ResultCode;
+                    if (transferredFileSize != totalFileSize)
+                    {
+                        Debug.LogWarning("Title Storage failed");
+                    }
+                    IsCompleted = true;
+                });
+            }
+        }
+        public static void QueryFile(PlayerDataStorageInterface IData, string filename, ProductUserId localPUID, Action<Result, string> onComplete)
+        {
+            var options = new Epic.OnlineServices.PlayerDataStorage.QueryFileOptions
+            {
+                LocalUserId = localPUID,
+                Filename = filename
+            };
+            IData.QueryFile(ref options, null, (ref Epic.OnlineServices.PlayerDataStorage.QueryFileCallbackInfo info) =>
+            {
+                onComplete?.Invoke(info.ResultCode, filename);
+
+            });
+        }
+        public static void QueryFileList(PlayerDataStorageInterface IData, string filename, ProductUserId localPUID, Action<Result, List<string>> onComplete = null)
+        {
+            List<string> CurrentFileNames = new List<string>();
+            var options = new Epic.OnlineServices.PlayerDataStorage.QueryFileListOptions
+            {
+                LocalUserId = localPUID
+            };
+            IData.QueryFileList(ref options, null, (ref Epic.OnlineServices.PlayerDataStorage.QueryFileListCallbackInfo info) =>
+            {
+                if (ETC.ErrControl(info.ResultCode))
+                {
+                    for (uint fileIndex = 0; fileIndex < info.FileCount; fileIndex++)
+                    {
+                        var copyFileOptions = new Epic.OnlineServices.PlayerDataStorage.CopyFileMetadataAtIndexOptions()
+                        {
+                            Index = fileIndex,
+                            LocalUserId = localPUID
+                        };
+
+                        if (ETC.ErrControl(IData.CopyFileMetadataAtIndex(ref copyFileOptions, out Epic.OnlineServices.PlayerDataStorage.FileMetadata? fileMetadata)))
+                        {
+                            if (fileMetadata != null)
+                            {
+                                if (!string.IsNullOrEmpty(fileMetadata?.Filename))
+                                {
+                                    CurrentFileNames.Add(fileMetadata?.Filename);
+                                }
+                            }
+                        }
+                    }
+                    onComplete?.Invoke(Result.Success, CurrentFileNames);
+                }
+            });
+        }
+        public static void DownLoadFile(PlayerDataStorageInterface IData, string filename, ProductUserId localPUID, Action<Result, ReadAsyncOperator> onComplete = null)
+        {
+            var options = new Epic.OnlineServices.PlayerDataStorage.QueryFileOptions
+            {
+                Filename = filename,
+                LocalUserId = localPUID
+            };
+
+            IData.QueryFile(ref options, null, (ref Epic.OnlineServices.PlayerDataStorage.QueryFileCallbackInfo data) =>
+            {
+                if (ETC.ErrControl(data.ResultCode))
+                {
+                    var options = new Epic.OnlineServices.PlayerDataStorage.CopyFileMetadataByFilenameOptions
+                    {
+                        Filename = filename,
+                        LocalUserId = localPUID
+                    };
+
+                    if (ETC.ErrControl(IData.CopyFileMetadataByFilename(ref options, out Epic.OnlineServices.PlayerDataStorage.FileMetadata? fileMetadata)))
+                    {
+                        onComplete?.Invoke(Result.Success, new ReadAsyncOperator(IData, filename, localPUID));
+                    }
+                }
+            });
+        }
+        public static void UploadFile(PlayerDataStorageInterface IData, string filename, ArraySegment<byte> data, ProductUserId localPUID, Action<Result, WriteAsyncOperator> onComplete = null)
+        {
+            onComplete?.Invoke(Result.Success, new WriteAsyncOperator(IData, filename, data, localPUID));
+        }
+        public static void DeleteFile(PlayerDataStorageInterface IData, string filename, ProductUserId localPUID, Action<Result> onComplete = null)
+        {
+            var options = new DeleteFileOptions()
+            {
+                LocalUserId = localPUID,
+                Filename = filename
+            };
+            IData.DeleteFile(ref options,null,(ref DeleteFileCallbackInfo info) =>
+            {
+                onComplete?.Invoke(info.ResultCode);
+            });
+        }
+    }
+
+    public class TitleStorage
+    {
+        //Downloads files that have been put into the cloud through the Developer Portal
+        //Total storage capacity	10 GB
+        //Max number of files	    100
+        public class AsyncOperator
+        {
+            public bool IsCompleted { get; private set; }
+            public Result result { get; private set; }
+            public uint totalFileSize { get; private set; }
+            public int transferredFileSize { get; private set; }
+            public byte[] data { get; private set; }
+            bool cancle;
+            public void Cancle()
+            {
+                cancle = true;
+            }
+            public AsyncOperator(TitleStorageInterface ITitle, string filename, ProductUserId localPUID)
+            {
+                void FileTransferProgressCallback(ref Epic.OnlineServices.TitleStorage.FileTransferProgressCallbackInfo info)
+                {
+                    transferredFileSize = 0;
+                    if (info.TotalFileSizeBytes > 0)
+                    {
+                        totalFileSize = info.TotalFileSizeBytes;
+                        data = new byte[totalFileSize];
+                    }
+                }
+
+                Epic.OnlineServices.TitleStorage.ReadResult ReadFileDataCallback(ref Epic.OnlineServices.TitleStorage.ReadFileDataCallbackInfo info)
+                {
+                    string fileName = info.Filename;
+                    info.DataChunk.CopyTo(data, transferredFileSize);
+                    transferredFileSize += info.DataChunk.Count;
+                    if (data == null) return Epic.OnlineServices.TitleStorage.ReadResult.RrFailrequest;
+                    if(cancle) return Epic.OnlineServices.TitleStorage.ReadResult.RrCancelrequest;
+                    return Epic.OnlineServices.TitleStorage.ReadResult.RrContinuereading;
+                }
+
+                var ReadFileOptions = new Epic.OnlineServices.TitleStorage.ReadFileOptions()
+                {
+                    LocalUserId = localPUID,
+                    Filename = filename,
+                    ReadChunkLengthBytes = 1024,
+                    ReadFileDataCallback = ReadFileDataCallback,
+                    FileTransferProgressCallback = FileTransferProgressCallback
+                };
+
+                var transferReq = ITitle.ReadFile(ref ReadFileOptions, null, (ref Epic.OnlineServices.TitleStorage.ReadFileCallbackInfo info) =>
+                {
+                    result = info.ResultCode;
+                    if(transferredFileSize != totalFileSize)
+                    {
+                        Debug.LogWarning("Title Storage failed");
+                    }
+                    IsCompleted = true;
+                });
+            }
+        }
+        public static void DownLoadFile(TitleStorageInterface ITitle, string filename, ProductUserId localPUID , Action<Result, AsyncOperator> onComplete)
+        {   
+            var options = new Epic.OnlineServices.TitleStorage.QueryFileOptions
+            {
+                Filename = filename,
+                LocalUserId = localPUID
+            };
+
+            ITitle.QueryFile(ref options, null, (ref Epic.OnlineServices.TitleStorage.QueryFileCallbackInfo data) =>
+            {
+                if (ETC.ErrControl(data.ResultCode))
+                {
+                    var options = new Epic.OnlineServices.TitleStorage.CopyFileMetadataByFilenameOptions
+                    {
+                        Filename = filename,
+                        LocalUserId = localPUID
+                    };
+
+                    if (ETC.ErrControl(ITitle.CopyFileMetadataByFilename(ref options, out Epic.OnlineServices.TitleStorage.FileMetadata? fileMetadata)))
+                    {
+                        onComplete?.Invoke(Result.Success, new AsyncOperator(ITitle, filename, localPUID));
+                    }
+                }
+            });
+        }
+        public static void QueryFileList(TitleStorageInterface ITitle, ProductUserId localPUID, Utf8String[] utf8StringTags, Action<Result, List<string>> onComplete = null)
+        {
+            List<string> CurrentFileNames = new List<string>();
+            var queryOptions = new Epic.OnlineServices.TitleStorage.QueryFileListOptions()
+            {
+                ListOfTags = utf8StringTags,
+                LocalUserId = localPUID
+            };
+            ITitle.QueryFileList(ref queryOptions, null, (ref Epic.OnlineServices.TitleStorage.QueryFileListCallbackInfo info) =>
+            {
+                if (ETC.ErrControl(info.ResultCode))
+                {
+                    for (uint fileIndex = 0; fileIndex < info.FileCount; fileIndex++)
+                    {
+                        var copyFileOptions = new Epic.OnlineServices.TitleStorage.CopyFileMetadataAtIndexOptions()
+                        {
+                            Index = fileIndex,
+                            LocalUserId = localPUID
+                        };
+
+                        if (ETC.ErrControl(ITitle.CopyFileMetadataAtIndex(ref copyFileOptions, out Epic.OnlineServices.TitleStorage.FileMetadata? fileMetadata)))
+                        {
+                            if (fileMetadata != null)
+                            {
+                                if (!string.IsNullOrEmpty(fileMetadata?.Filename))
+                                {
+                                    CurrentFileNames.Add(fileMetadata?.Filename);
+                                }
+                            }
+                        }
+                    }
+                    onComplete?.Invoke(Result.Success, CurrentFileNames);
                 }
             });
         }

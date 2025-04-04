@@ -1,8 +1,14 @@
 ﻿using DG.Tweening;
+using Epic.OnlineServices;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static PlayerData;
+using AsyncOperation = UnityEngine.AsyncOperation;
 
 public class MatchMaker : MonoBehaviour
 {
@@ -16,7 +22,8 @@ public class MatchMaker : MonoBehaviour
     CoroutineHandler _coroutineHandler;
     [SerializeField]
     Image _transition;
-
+    [SerializeField]
+    string lobbyScene;
 
     bool _loginSuccess;
     bool _connectSuccess;
@@ -53,6 +60,28 @@ public class MatchMaker : MonoBehaviour
         _consoleController.AddText("Enjoy Game");
         simulator.EndTracking();
         simulator.Simulate(0.05f);
+
+        //// 테스트 코드
+        var eosCore = FreeNet._instance._eosCore;
+
+        var record = new PlayRecord();
+        record.win = 3;
+        record.lose = 5;
+
+        string playRecordJson = JsonUtility.ToJson(record);
+        var deserializedplayRecordJson = JsonUtility.FromJson<PlayRecord>(playRecordJson);
+        byte[] jsonbyte = Encoding.UTF8.GetBytes(playRecordJson);
+
+
+        EOSWrapper.PlayerStorage.DownLoadFile(eosCore._IDATA, "Test", FreeNet._instance._localUser._localPUID._PUID, (Result reslut, EOSWrapper.PlayerStorage.ReadAsyncOperator op) =>
+        {
+
+        });
+
+        //EOSWrapper.PlayerStorage.UploadFile(eosCore._IDATA, "Test", jsonbyte, FreeNet._instance._localUser._localPUID._PUID, (Result reslut, EOSWrapper.PlayerStorage.WriteAsyncOperator op) =>
+        //{
+
+        //});
     }
 
     void OnConnect()
@@ -110,7 +139,7 @@ public class MatchMaker : MonoBehaviour
         if (FreeNet._instance._ngoManager.IsServer)
         {
             FreeNet._instance._ngoManager.SceneManager.OnLoad += OnLoad;
-            FreeNet._instance._ngoManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+            FreeNet._instance._ngoManager.SceneManager.LoadScene(lobbyScene, LoadSceneMode.Single);
         }
     }
 
@@ -142,5 +171,4 @@ public class MatchMaker : MonoBehaviour
         _login.onConnect -= OnConnect;
         _lobbyControl.OnJoinLobby -= OnJoinLobby;
     }
-
 }

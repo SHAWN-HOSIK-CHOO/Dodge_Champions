@@ -4,9 +4,11 @@ using Epic.OnlineServices.Lobby;
 using Epic.OnlineServices.Logging;
 using Epic.OnlineServices.P2P;
 using Epic.OnlineServices.Platform;
+using Epic.OnlineServices.PlayerDataStorage;
 using Epic.OnlineServices.RTC;
 using Epic.OnlineServices.RTCAudio;
 using Epic.OnlineServices.Sessions;
+using Epic.OnlineServices.TitleStorage;
 using Epic.OnlineServices.UI;
 using Epic.OnlineServices.UserInfo;
 using System.Collections;
@@ -31,6 +33,12 @@ public partial class EOS_Core : MonoBehaviour
     public P2PInterface _IP2P { get; private set; }
     public UIInterface _IUI { get; private set; }
     public UserInfoInterface _IUSER { get; private set; }
+
+    public PlayerDataStorageInterface _IDATA { get; private set; }
+    public TitleStorageInterface _ITitle { get; private set; }
+
+    public EOS_Credential _credential { get; private set; }
+
     #endregion
     #region Credentials
     [SerializeField]
@@ -91,18 +99,18 @@ public partial class EOS_Core : MonoBehaviour
 #endif
         _factory = EOS_Factory.GetFactory();
         if (!_factory.LoadDLL()) return SDKState.Released;
-        EOS_Credential credential = null;
+         _credential = null;
         if (type == EOS_Credential.CredentialType.Dev)
         {
-            credential = _dev;
+            _credential = _dev;
         }
         else if (type == EOS_Credential.CredentialType.Stage)
         {
-            credential = _stage;
+            _credential = _stage;
         }
         else if (type == EOS_Credential.CredentialType.Live)
         {
-            credential = _live;
+            _credential = _live;
         }
         if (!_factory.MakePlatform(_dev, category, level, out var IPlatform))
         {
@@ -118,6 +126,8 @@ public partial class EOS_Core : MonoBehaviour
         _IRTCAUDIO = _IRTC.GetAudioInterface();
         _IUI = _IPlatform.GetUIInterface();
         _IUSER = _IPlatform.GetUserInfoInterface();
+        _IDATA = _IPlatform.GetPlayerDataStorageInterface();
+        _ITitle = _IPlatform.GetTitleStorageInterface();
         InitP2P();
         EOSWrapper.ETC.SetApplicationStatus(_IPlatform, ApplicationStatus.Foreground);
         return SDKState.Initialized;

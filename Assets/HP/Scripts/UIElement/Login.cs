@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Epic.OnlineServices;
+using Epic.OnlineServices.Connect;
 using Epic.OnlineServices.UserInfo;
 using HP;
 using System;
@@ -38,9 +39,10 @@ public class Login : MonoBehaviour
         _consoleController.onSubmit += OnSubmit;
 
     }
-    void OnSubmit(CutomTMPInputField.InputMode mode, string text)
+    void OnSubmit(CutomTMPInputField.IInputMode mode, string text)
     {
-        if (mode == CutomTMPInputField.InputMode.S)
+        var inputmode = (ConsoleController.Mode)mode;
+        if (inputmode._mode == ConsoleController.Mode.InputMode.S)
         {
             string[] parts = text.Split(' ', 3);
             if (parts.Length == 3)
@@ -128,8 +130,7 @@ public class Login : MonoBehaviour
         _consoleController.AddText($"OnGuestLogin Start...");
         simulator.EndTracking();
         simulator.Simulate(0.05f);
-
-        string username = "Anonymouse";
+        var username = "Unkown";
         EOSWrapper.ConnectControl.DeviceIDConnect(FreeNet._instance._eosCore._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
         {
             if (info.ResultCode == Epic.OnlineServices.Result.NotFound)

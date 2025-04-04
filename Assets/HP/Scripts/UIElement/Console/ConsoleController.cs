@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 public class ConsoleController : MonoBehaviour
 {
-
     [SerializeField]
     GameObject _inputFieldObject;
     [SerializeField]
@@ -15,9 +14,30 @@ public class ConsoleController : MonoBehaviour
     [SerializeField]
     Scrollbar _scrollbar;
     [SerializeField]
-    bool _showInputField;
+    bool _useInputField;
+    [SerializeField]
+    bool _useInputMode;
+    public class Mode : CutomTMPInputField.IInputMode
+    {
+        public enum InputMode
+        {
+            T, // Normal Text Mode
+            S, // System command Mode
+        }
+        public InputMode _mode;
 
-    public event Action<CutomTMPInputField.InputMode, string> onSubmit;
+        void CutomTMPInputField.IInputMode.ChangeModeNext()
+        {
+            _mode = (InputMode)(((int)_mode + 1) % System.Enum.GetValues(typeof(InputMode)).Length);
+        }
+
+        string CutomTMPInputField.IInputMode.GetName()
+        {
+            return _mode.ToString();
+        }
+    }
+
+    public event Action<CutomTMPInputField.IInputMode, string> onSubmit;
 
     private void Awake()
     {
@@ -26,31 +46,25 @@ public class ConsoleController : MonoBehaviour
     }
     private void Start()
     {
-        _inputFieldObject.SetActive(_showInputField);
+        _inputFieldObject.SetActive(_useInputField);
+        _inputField.InputMode = new Mode();
+        _inputField.ShowInputMode(_useInputMode);
     }
     public void ShowInputField(bool b)
     {
-        _showInputField = b;
+        _useInputField = b;
         _inputFieldObject.SetActive(b);
     }
 
     private void OnEnable()
     {
-        ShowInputField(_showInputField);
+        ShowInputField(_useInputField);
     }
 
     public void AddText(string text, bool scroll = true, bool newLine = true)
     {
         if (newLine) _textField.text += "\n";
-
-        if (_inputField._InputMode == CutomTMPInputField.InputMode.S)
-        {
-            _textField.text += $"<color=yellow>{text}</color>";
-        }
-        else
-        {
-            _textField.text += text;
-        }
+        _textField.text += text;
         if (scroll) _scrollbar.value = 1f;
     }
 
@@ -59,7 +73,7 @@ public class ConsoleController : MonoBehaviour
         if (newText != string.Empty)
         {
             AddText(newText);
-            onSubmit?.Invoke(_inputField._InputMode, newText);
+            onSubmit?.Invoke(_inputField.InputMode, newText);
         }
     }
 

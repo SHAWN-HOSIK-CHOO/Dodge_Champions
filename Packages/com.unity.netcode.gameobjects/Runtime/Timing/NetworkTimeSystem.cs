@@ -117,7 +117,7 @@ namespace Unity.Netcode
             // Only the server side needs to register for tick based time synchronization
             if (m_ConnectionManager.LocalClient.IsServer)
             {
-                m_NetworkTickSystem.Tick += OnTickSyncTime;
+                m_NetworkTickSystem.ServerTick += OnTickSyncTime;
             }
 
             return m_NetworkTickSystem;
@@ -135,8 +135,8 @@ namespace Unity.Netcode
             Advance(m_NetworkManager.RealTimeProvider.UnscaledDeltaTime);
             m_NetworkTickSystem.UpdateTick(LocalTime, ServerTime);
 
-            if (m_NetworkManager.IsClient)
-                Sync(LastSyncedServerTimeSec + m_NetworkManager.RealTimeProvider.UnscaledDeltaTime, m_NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId) / 1000d);
+            //if (m_NetworkManager.IsClient)
+            Sync(LastSyncedServerTimeSec + m_NetworkManager.RealTimeProvider.UnscaledDeltaTime, m_NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId) / 1000d);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace Unity.Netcode
         {
             if (m_ConnectionManager.LocalClient.IsServer)
             {
-                m_NetworkTickSystem.Tick -= OnTickSyncTime;
+                m_NetworkTickSystem.ServerTick -= OnTickSyncTime;
             }
         }
 
@@ -197,31 +197,37 @@ namespace Unity.Netcode
         public bool Advance(double deltaTimeSec)
         {
             m_TimeSec += deltaTimeSec;
-            if (Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) > HardResetThresholdSec || Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) > HardResetThresholdSec)
+            bool hardReset = false;
+            if (Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) > HardResetThresholdSec)
             {
                 m_TimeSec += m_DesiredServerTimeOffset;
-
                 m_DesiredLocalTimeOffset -= m_DesiredServerTimeOffset;
                 m_CurrentLocalTimeOffset = m_DesiredLocalTimeOffset;
-
                 m_DesiredServerTimeOffset = 0;
                 m_CurrentServerTimeOffset = 0;
+                hardReset = true;
             }
-            else
+            if (Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) > HardResetThresholdSec)
             {
-                double localRange = Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset);
-                if (localRange > double.Epsilon)
-                {
-                    m_CurrentLocalTimeOffset = m_CurrentLocalTimeOffset + (m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
-                }
-                localRange = Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset);
-                if (localRange > double.Epsilon)
-                {
-                    m_CurrentServerTimeOffset = m_CurrentServerTimeOffset + (m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
-                }
+                m_TimeSec += m_DesiredLocalTimeOffset;
+                m_DesiredServerTimeOffset -= m_DesiredLocalTimeOffset;
+                m_CurrentServerTimeOffset = m_DesiredServerTimeOffset;
+                m_DesiredLocalTimeOffset = 0;
+                m_CurrentLocalTimeOffset = 0;
+                hardReset = true;
+            }
+            double localRange = Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset);
+            if (localRange > double.Epsilon)
+            {
+                m_CurrentLocalTimeOffset = m_CurrentLocalTimeOffset + (m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
+            }
+            localRange = Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset);
+            if (localRange > double.Epsilon)
+            {
+                m_CurrentServerTimeOffset = m_CurrentServerTimeOffset + (m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
             }
 
-            return true;
+            return hardReset;
         }
 
         /// <summary>
@@ -249,15 +255,6 @@ namespace Unity.Netcode
 
             m_DesiredServerTimeOffset = timeDif - ServerBufferSec;
             m_DesiredLocalTimeOffset = timeDif + rttSec + LocalBufferSec;
-
-            if (ServerTime < 0)
-            {
-                m_DesiredServerTimeOffset = -m_TimeSec;
-            }
-            if (LocalTime < 0)
-            {
-                m_DesiredLocalTimeOffset = -m_TimeSec;
-            }
         }
     }
 }
