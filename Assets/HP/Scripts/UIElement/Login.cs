@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Epic.OnlineServices;
+using Epic.OnlineServices.Connect;
 using Epic.OnlineServices.UserInfo;
 using HP;
 using System;
@@ -129,8 +130,7 @@ public class Login : MonoBehaviour
         _consoleController.AddText($"OnGuestLogin Start...");
         simulator.EndTracking();
         simulator.Simulate(0.05f);
-
-        string username = "Anonymouse";
+        var username = "Unkown";
         EOSWrapper.ConnectControl.DeviceIDConnect(FreeNet._instance._eosCore._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
         {
             if (info.ResultCode == Epic.OnlineServices.Result.NotFound)

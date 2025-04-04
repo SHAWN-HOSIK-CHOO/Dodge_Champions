@@ -336,7 +336,7 @@ public class PlayerMoveControl : ClientPrediction
     }
     void BindKey()
     {
-        _playerInput = new HP.PlayerInput();
+        _playerInput = new HP.PlayerInput("Player");
         _playerInput.Enable(true);
         _playerInput._onMouseInputChanged += OnMouseInputChanged;
         _playerInput._onMoveInputChanged += OnMoveInputChanged;

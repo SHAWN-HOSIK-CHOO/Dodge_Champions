@@ -8,6 +8,7 @@ namespace HP
 {
     public class PlayerInput
     {
+        string _inputActionAssetName;
         public InputActionAsset _inputActionAsset;
         public InputActionMap _inputActionMap;
         public InputAction _WASDAction;
@@ -23,9 +24,10 @@ namespace HP
         public event Action<Vector2> _onMouseInputChanged;
         public event Action<float> _onJumpInputChanged;
 
-        public PlayerInput()
+        public PlayerInput(string inputActionAssetName)
         {
-            _inputActionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
+            _inputActionAssetName = inputActionAssetName;
+            _inputActionAsset = InputActionAssetHelper.CreateInputActionAsset(_inputActionAssetName);
             var controlSyntax = InputActionAssetHelper.CreateControlScheme(_inputActionAsset, "KeyboardMouse");
             InputActionAssetHelper.AddControlScheme(controlSyntax, InputSystemNaming.Device.Keyboard);
             InputActionAssetHelper.AddControlScheme(controlSyntax, InputSystemNaming.Device.Mouse);
@@ -49,7 +51,7 @@ namespace HP
             bindsyntax.WithProcessor(InputSystemNaming.Processor.ScaleVector2.ToInputSystemName(new Vector2(0.5f, 0.5f)));
             bindsyntax.WithProcessor(InputSystemNaming.Processor.Invert.ToInputSystemName());
             _mouseAction.performed += OnMouse;
-
+            _inputActionAssetName = inputActionAssetName;
         }
         public void Enable(bool b)
         {
@@ -64,7 +66,7 @@ namespace HP
         }
         public void Dispose()
         {
-            GameObject.Destroy(_inputActionAsset);
+            InputActionAssetHelper.DisposeInputActionAsset(_inputActionAssetName);
         }
         private void OnWASD(InputAction.CallbackContext ctx)
         {

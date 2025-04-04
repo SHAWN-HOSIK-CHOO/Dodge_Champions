@@ -29,7 +29,7 @@ public class SpawnManager : MonoBehaviour
                 pos = _spawnPointB.position,
                 rot = _spawnPointB.rotation,
                 prefabListName = "DummyPrefab",
-                prefabName = "ConsoleUI",
+                prefabName = "NetworkConsoleUI",
                 destroyWithScene = true
             });
 

@@ -95,3 +95,6 @@ Library/com.unity.addressables/Build/Android/  # Android 빌드 데이터
 
 # Editor Seeting
 EditorSettings.asset # 빌드 씬 목록 
+
+#EOS Temp Data
+Assets\EOSCacheDirectory

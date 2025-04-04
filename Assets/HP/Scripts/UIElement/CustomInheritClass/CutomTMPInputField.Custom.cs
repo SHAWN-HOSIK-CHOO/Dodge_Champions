@@ -2,6 +2,9 @@ using Epic.OnlineServices.P2P;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static InputSystemNaming;
+using UnityEngine.InputSystem;
+using static UnityEngine.InputSystem.InputAction;
 namespace HP
 {
     public partial class CutomTMPInputField
@@ -26,20 +29,26 @@ namespace HP
         TMP_Text _inputModeText;
         [SerializeField]
         GameObject _inputModeLayout;
-        ToggleInputBinding _enterInputBinding;
         [SerializeField]
         public bool _useAutoFocus = false;
         [SerializeField]
         public bool _resetOnSubmit = true;
         bool initialized; //아니 왜 start랑 destroy 두번 불림? 
+        InputActionAsset _inputActionAsset;
+        string _inputActionAssetName = "CustomTMPInputField";
         protected override void Start()
         {
             if (!Application.isPlaying) return;
             if (initialized == false)
             {
-                _enterInputBinding = new ToggleInputBinding(UnityEngine.InputSystem.Key.Enter);
-                _enterInputBinding.Enable(true);
-                _enterInputBinding._onToggleInputChanged += EnterPressed;
+                _inputActionAsset = InputActionAssetHelper.CreateInputActionAsset(_inputActionAssetName);
+                var controlSyntax = InputActionAssetHelper.CreateControlScheme(_inputActionAsset, "keyBoard");
+                InputActionAssetHelper.AddControlScheme(controlSyntax, InputSystemNaming.Device.Keyboard);
+                var inputActionMap = InputActionAssetHelper.CreateActionMap(_inputActionAsset, "EnterActionMap");
+                var enterAction = InputActionAssetHelper.AddAction(inputActionMap,"Enter", InputActionType.Value);
+                InputActionAssetHelper.AddKeyboardBinding(enterAction, Key.Enter);
+                _inputActionAsset.Enable();
+                enterAction.performed += EnterPressed;
                 onFocusSelectAll = true;
                 initialized = true;
             }
@@ -49,8 +58,9 @@ namespace HP
             _inputModeLayout.SetActive(b);
         }
 
-        void EnterPressed(bool b)
+        void EnterPressed(CallbackContext ctx)
         {
+            bool b = ctx.ReadValue<float>() == 1;
             if (EventSystem.current != null)
             {
                 var obj = EventSystem.current.currentSelectedGameObject;
@@ -58,7 +68,6 @@ namespace HP
                 if (b && !isFocused && _useAutoFocus)
                 {
                     ActivateInputField();
-                    _enterInputBinding.Enable(false);
                 }
             }
         }
@@ -268,7 +277,7 @@ namespace HP
         {
             if (!Application.isPlaying) return;
             if (initialized)
-                _enterInputBinding.Dispose();
+                InputActionAssetHelper.DisposeInputActionAsset(_inputActionAssetName);
             initialized = false;
         }
         protected virtual void LateUpdate()
@@ -285,11 +294,6 @@ namespace HP
 
                 // Reset as we are already activated.
                 m_ShouldActivateNextUpdate = false;
-            }
-            else if (!isFocused && _enterInputBinding != null)
-            {
-
-                _enterInputBinding.Enable(true);
             }
 
             // If the device's state changed in a way that affects whether we should use a touchscreen keyboard or not,

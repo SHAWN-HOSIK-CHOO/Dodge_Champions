@@ -31,7 +31,6 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour
         }
         gameObject.SetActive(false);
         Destroy(gameObject);
-
         return false;
     }
     protected void SingletonInitialize()

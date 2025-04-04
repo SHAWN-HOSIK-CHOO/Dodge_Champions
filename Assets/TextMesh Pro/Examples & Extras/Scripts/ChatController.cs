@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 public class ChatController : MonoBehaviour
 {
-
-
     public TMP_InputField ChatInputField;
 
     public TMP_Text ChatDisplayOutput;

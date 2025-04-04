@@ -106,7 +106,7 @@ public class WindowsFactory : IEOS_PlatformFactory
         var initializeOptions = new InitializeOptions()
         {
             ProductName = credential.GameName,
-            ProductVersion = "1.0"
+            ProductVersion = "1.0",
         };
         var result = PlatformInterface.Initialize(ref initializeOptions);
         if (result != Result.Success)
@@ -159,6 +159,8 @@ public class WindowsFactory : IEOS_PlatformFactory
             IsServer = false,
             TickBudgetInMilliseconds = 10,
             TaskNetworkTimeoutSeconds = 30,
+            EncryptionKey = credential.EncryptionKey,
+            CacheDirectory = Path.Combine(Application.dataPath, "EOSCacheDirectory"),
             RTCOptions = new WindowsRTCOptions()
             {
                 PlatformSpecificOptions = new WindowsRTCOptionsPlatformSpecificOptions()
