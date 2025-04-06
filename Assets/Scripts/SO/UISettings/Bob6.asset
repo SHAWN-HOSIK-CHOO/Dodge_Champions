@@ -18,4 +18,4 @@ MonoBehaviour:
   characterName: CLASSIC
   ballDesc: "\uD3C9\uBC94\uD55C"
   skillDesc: "\uD53C\uD558\uACE0 \uD53C\uD558\uACE0 \uD53C\uD558\uACE0"
-  pfDancer: {fileID: 7763766301168784623, guid: 8631378f2604e3544b4a9d2a5b4600df, type: 3}
+  pfDancer: {fileID: 7763766301168784623, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}
