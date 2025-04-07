@@ -18,12 +18,12 @@ public class ModeElement : MonoBehaviour
     TweenerCore<Color, Color, ColorOptions> _colorTween;
     private void OnDestroy()
     {
-        var triggerHelper = GetComponent<EventTriggerHelper>();
+        var triggerHelper = GetComponent<EventTriggerHelp>();
         triggerHelper.RemoveTriggerEvent(EventTriggerType.PointerClick, onPointerClick);
     }
     void Awake()
     {
-        var triggerHelper = GetComponent<EventTriggerHelper>();
+        var triggerHelper = GetComponent<EventTriggerHelp>();
         triggerHelper.AddTriggerEvent(EventTriggerType.PointerClick, onPointerClick);
         _originColor = _image.color;
         _colorTween = _image.DOColor(_originColor, 0f).SetAutoKill(false);

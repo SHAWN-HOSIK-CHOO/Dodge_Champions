@@ -10,16 +10,8 @@ using Epic.OnlineServices.TitleStorage;
 using Epic.OnlineServices.UserInfo;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using Unity.Android.Gradle.Manifest;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Analytics;
-using UnityEngine.LightTransport;
-using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.UIElements;
 
 public class EOSWrapper
 {
@@ -209,13 +201,29 @@ public class EOSWrapper
             };
             IAuth.Login(ref loginOptions, null, onComplete);
         }
+
+        static public void PersistentLogin(Epic.OnlineServices.Auth.AuthInterface IAuth,Epic.OnlineServices.Auth.OnLoginCallback onComplete)
+        {
+            var loginOptions = new Epic.OnlineServices.Auth.LoginOptions
+            {
+                ScopeFlags = AuthScopeFlags.BasicProfile | AuthScopeFlags.FriendsList | AuthScopeFlags.Presence,
+                Credentials = new Epic.OnlineServices.Auth.Credentials
+                {
+                    Type = LoginCredentialType.PersistentAuth,
+                    ExternalType = ExternalCredentialType.Epic,
+                    Id = null,
+                    Token = null,
+                },
+            };
+            IAuth.Login(ref loginOptions, null, onComplete);
+        }
         static public void LoginByRefreshToken(Epic.OnlineServices.Auth.AuthInterface IAuth, EpicAccountId localEAID, Epic.OnlineServices.Auth.OnLoginCallback onComplete)
         {
             var copyUserTokenOptions = new CopyUserAuthTokenOptions();
             IAuth.CopyUserAuthToken(ref copyUserTokenOptions, localEAID, out Token? authToken);
             var loginOptions = new Epic.OnlineServices.Auth.LoginOptions
             {
-                ScopeFlags = AuthScopeFlags.BasicProfile | AuthScopeFlags.FriendsList | AuthScopeFlags.Presence,
+                ScopeFlags = AuthScopeFlags.BasicProfile | AuthScopeFlags.FriendsList | AuthScopeFlags.Presence | AuthScopeFlags.Country,
                 Credentials = new Epic.OnlineServices.Auth.Credentials
                 {
                     Type = LoginCredentialType.RefreshToken,
