@@ -74,30 +74,41 @@ namespace GameInput
 
         public void OnMove(InputValue value)
         {
-            MoveInput(value.Get<Vector2>());
+            if(GameManager.Instance == null)
+                return;
+            
+            if(GameManager.Instance.isGameReadyToStart)
+                MoveInput(value.Get<Vector2>());
         }
 
         public void OnLook(InputValue value)
         {
-            LookInput(value.Get<Vector2>());
+            if(GameManager.Instance == null)
+                return;
+            
+            if(GameManager.Instance.isGameReadyToStart)
+                LookInput(value.Get<Vector2>());
         }
 
         public void OnJump(InputValue value)
         {
-            JumpInput(value.isPressed);
+            if(GameManager.Instance == null)
+                return;
+            
+            if(GameManager.Instance.isGameReadyToStart)
+                JumpInput(value.isPressed);
         }
 
         public void OnSprint(InputValue value)
         {
-            SprintInput(value.isPressed);
+            if(GameManager.Instance == null)
+                return;
+            
+            if(GameManager.Instance.isGameReadyToStart)
+                SprintInput(value.isPressed);
         }
 
         public bool canThrowBall = false;
-
-        public void RequestTurnSwapToEnemy()
-        {
-            _characterManager.RequestTurnSwapServerRPC();
-        }
 
         private bool _isAttackAlreadyPressed = false;
 
@@ -112,7 +123,7 @@ namespace GameInput
             }
             else if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
                 if (GameManager.Instance.isGameReadyToStart && _characterManager.hitApproved &&
-                    GameManager.Instance.isLocalPlayerAttackTurn && canThrowBall && !_localCharacterMovement.shouldLockMovement && !_isAttackAlreadyPressed)
+                     canThrowBall && !_localCharacterMovement.shouldLockMovement && !_isAttackAlreadyPressed)
                 {
                     AttackPressed();
                 }
@@ -138,7 +149,7 @@ namespace GameInput
 
             }
             else if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-                if (GameManager.Instance.isGameReadyToStart && GameManager.Instance.isLocalPlayerAttackTurn &&
+                if (GameManager.Instance.isGameReadyToStart &&
                     canThrowBall && _characterManager.hitApproved && !_localCharacterMovement.shouldLockMovement && _isAttackAlreadyPressed)
                 {
                     UIManager.Instance.coolDownImage.fillAmount = 0f;
@@ -312,13 +323,15 @@ namespace GameInput
         {
             Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
             Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
-            if (Physics.Raycast(ray, out RaycastHit hit, 999f, mouseColliderLayerMask))
-            {
-                currentTargetPosition = hit.point;
+            
+            if(GameManager.Instance.isGameReadyToStart)
+                if (Physics.Raycast(ray, out RaycastHit hit, 999f, mouseColliderLayerMask))
+                {
+                    currentTargetPosition = hit.point;
 
-                //debugTransform.transform.position = hit.point;
-                FixPlayerForwardDirection(25f);
-            }
+                    //debugTransform.transform.position = hit.point;
+                    FixPlayerForwardDirection(25f);
+                }
 
             // if (Input.GetKeyDown(KeyCode.Escape))
             // {

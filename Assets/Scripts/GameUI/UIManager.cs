@@ -12,6 +12,8 @@ namespace GameUI
     {
         private static UIManager _instance = null;
         public static UIManager Instance => _instance == null ? null : _instance;
+        
+        public bool IsInitialized { get; private set; } = false;
 
         private void Awake()
         {
@@ -24,17 +26,10 @@ namespace GameUI
             {
                 Destroy(this.gameObject);
             }
-            startPanel.SetActive(false);
         }
 
         [Header("Game Start Info Panel")]
-        public GameObject startPanel;
         public TMP_Text startText;
-
-        [Header("Dodge")] public GameObject dodgeText;
-
-        [Header("State, 0 for attack 1 for defense")]
-        public Image[] statesUIImages = new Image[2];
 
         [Header("Players' Hp bar")]
         public Image playerFill;
@@ -56,20 +51,30 @@ namespace GameUI
         private void Start()
         {
             Initialize();
-            this.gameObject.SetActive(false);
         }
 
         public void Initialize()
         {
-            dodgeText.SetActive(false);
             ResetFill(playerFill);
             ResetFill(enemyFill);
 
             //Debug
             playerBallSkillIndex.text = "Player Character No.  " + PlayerSelectionManager.Instance.GetLocalPlayerSelection();
             enemyBallSkillIndex.text = "Enemy Character No.  " + PlayerSelectionManager.Instance.GetEnemySelection();
+            
+            IsInitialized = true;
         }
 
+        public void SetActiveAllObjects(bool flag)
+        {
+            startText.gameObject.SetActive(flag);
+            playerFill.gameObject.SetActive(flag);
+            enemyFill.gameObject.SetActive(flag);
+            coolDownImage.gameObject.SetActive(flag);
+            skillCoolDownImage.gameObject.SetActive(flag);
+            turnCoolDownImage.gameObject.SetActive(flag);
+        }
+        
         private void ResetFill(Image fillImage)
         {
             if (fillImage != null)
@@ -92,12 +97,12 @@ namespace GameUI
 
         public void StartGameCountDown(float time = 5f)
         {
-            StartCoroutine(CoStartCountDown(5f));
+            StartCoroutine(CoStartCountDown(time));
         }
 
         private IEnumerator CoStartCountDown(float time)
         {
-            startPanel.SetActive(true);
+            startText.gameObject.SetActive(true);
             while (time > 0)
             {
                 startText.text = time.ToString(CultureInfo.InvariantCulture);
@@ -107,15 +112,13 @@ namespace GameUI
 
             startText.text = "Game Start!";
             yield return new WaitForSeconds(1f);
-            startPanel.SetActive(false);
 
+            startText.gameObject.SetActive(false);
             GameManager.Instance.isGameReadyToStart = true;
-            GameManager.Instance.JustForTheBeginningCoroutine();
         }
 
         public void GameOverUI(int loserID)
         {
-            startPanel.SetActive(true);
             if (GameManager.Instance.localClientID == loserID)
             {
                 startText.text = "You Lose!";

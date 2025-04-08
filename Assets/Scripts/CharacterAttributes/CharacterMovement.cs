@@ -204,6 +204,7 @@ namespace CharacterAttributes
             {
                 if (!IsOwner || !GameManager.Instance.isGameReadyToStart || shouldLockMovement)
                 {
+                    characterController.Move(Vector3.zero);
                     return;
                 }
             }
@@ -362,6 +363,18 @@ namespace CharacterAttributes
             transform.rotation = Quaternion.Euler(0.0f, _mainCamera.transform.eulerAngles.y, 0.0f);
         }
 
+        public void SetAnimationIdle()
+        {
+            if (_hasAnimator)
+            {
+                xVelocity = 0f;
+                zVelocity = 0f;
+                _animator.SetFloat(_animIDXVelocity,   0); // 좌/우 (-1: 왼쪽, 1: 오른쪽)
+                _animator.SetFloat(_animIDZVelocity,   0); // 앞/뒤 (-1: 뒤로, 1: 앞으로)
+                _animator.SetFloat(_animIDMotionSpeed, 1);
+            }
+        }
+
         private void JumpAndGravity()
         {
             if (grounded)
@@ -517,11 +530,6 @@ namespace CharacterAttributes
                 {
                     PlacePositionServerRPC(spawnTransforms[index].position, spawnTransforms[index].rotation);
                 }
-
-                if (GameManager.Instance.isLocalPlayerAttackTurn)
-                {
-                    GameManager.Instance.SwapTurnServerRPC();
-                }
             }
         }
 
@@ -550,7 +558,6 @@ namespace CharacterAttributes
 
             if (!IsOwner)
             {
-                this.GetComponent<CharacterManager>().ResetThrowCountBeforeTurnSwap();
                 return;
             }
 
@@ -569,21 +576,7 @@ namespace CharacterAttributes
             {
                 characterController.enabled = true;
             }
-
-            // if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-            // {
-            //     if (GameManager.Instance.isLocalPlayerAttackTurn)
-            //     {
-            //         GameManager.Instance.SwapTurnServerRPC();
-            //     }
-            // }
-            // else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
-            // {
-            //     if (SinglePlayerGM.Instance.isPlayerTurn)
-            //     {
-            //         SinglePlayerGM.Instance.SwitchTurn();
-            //     }
-            // }
+            
         }
     }
 }

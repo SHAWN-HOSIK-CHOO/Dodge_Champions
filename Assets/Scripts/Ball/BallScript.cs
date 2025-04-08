@@ -118,7 +118,8 @@ namespace Ball
                 if (this.CompareTag("Fake"))
                 {
                     //상대방에게 턴을 넘기라고 RPC로 지시한다.
-                    InputManager.Instance.RequestTurnSwapToEnemy();
+                    //TODO:턴제 제거에 따른 조치 필요
+                    //InputManager.Instance.RequestTurnSwapToEnemy();
                 }
 
                 if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
@@ -126,7 +127,7 @@ namespace Ball
                     //싱글플레이 모드에서는 플레이어 위주로 회피, 피격, 적중 판단이 진행된다
                     if (this.CompareTag("Real"))
                     {
-                        InputManager.Instance.RequestTurnSwapToEnemy();
+                        //InputManager.Instance.RequestTurnSwapToEnemy();
                     }
                 }
 
