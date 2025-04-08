@@ -13,7 +13,7 @@ public class NetworkChat : NetworkBehaviour
         _controller.onSubmit += OnSubmit;
     }
 
-    void OnSubmit(CutomTMPInputField.IInputMode mode, string text)
+    void OnSubmit(TMPInputField.IInputMode mode, string text)
     {
         SendChatRpc(text);
     }

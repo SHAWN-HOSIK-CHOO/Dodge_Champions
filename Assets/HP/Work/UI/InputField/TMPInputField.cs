@@ -9,10 +9,9 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-
 namespace HP
 {
-    public partial class CutomTMPInputField : Selectable,
+    public partial class TMPInputField : Selectable,
             IUpdateSelectedHandler,
             IBeginDragHandler,
             IDragHandler,
@@ -365,7 +364,7 @@ namespace HP
 
 
 
-        protected CutomTMPInputField()
+        protected TMPInputField()
         {
             SetTextComponentWrapMode();
         }

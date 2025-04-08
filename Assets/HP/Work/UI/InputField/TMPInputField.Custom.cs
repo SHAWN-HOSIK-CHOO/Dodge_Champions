@@ -1,13 +1,13 @@
-using Epic.OnlineServices.P2P;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static InputSystemNaming;
 using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputAction;
+
 namespace HP
 {
-    public partial class CutomTMPInputField
+    public partial class TMPInputField
     {
         public interface IInputMode
         {
@@ -28,47 +28,17 @@ namespace HP
         [SerializeField]
         TMP_Text _inputModeText;
         [SerializeField]
-        GameObject _inputModeLayout;
-        [SerializeField]
         public bool _useAutoFocus = false;
         [SerializeField]
         public bool _resetOnSubmit = true;
         bool initialized; //아니 왜 start랑 destroy 두번 불림? 
-        InputActionAsset _inputActionAsset;
-        string _inputActionAssetName = "CustomTMPInputField";
         protected override void Start()
         {
             if (!Application.isPlaying) return;
             if (initialized == false)
             {
-                _inputActionAsset = InputActionAssetHelper.CreateInputActionAsset(_inputActionAssetName);
-                var controlSyntax = InputActionAssetHelper.CreateControlScheme(_inputActionAsset, "keyBoard");
-                InputActionAssetHelper.AddControlScheme(controlSyntax, InputSystemNaming.Device.Keyboard);
-                var inputActionMap = InputActionAssetHelper.CreateActionMap(_inputActionAsset, "EnterActionMap");
-                var enterAction = InputActionAssetHelper.AddAction(inputActionMap,"Enter", InputActionType.Value);
-                InputActionAssetHelper.AddKeyboardBinding(enterAction, Key.Enter);
-                _inputActionAsset.Enable();
-                enterAction.performed += EnterPressed;
                 onFocusSelectAll = true;
                 initialized = true;
-            }
-        }
-        public void ShowInputMode(bool b)
-        {
-            _inputModeLayout.SetActive(b);
-        }
-
-        void EnterPressed(CallbackContext ctx)
-        {
-            bool b = ctx.ReadValue<float>() == 1;
-            if (EventSystem.current != null)
-            {
-                var obj = EventSystem.current.currentSelectedGameObject;
-                if (obj != null && obj.GetComponent<CutomTMPInputField>() != null) return;
-                if (b && !isFocused && _useAutoFocus)
-                {
-                    ActivateInputField();
-                }
             }
         }
         protected EditState KeyPressed(Event evt)
@@ -233,7 +203,7 @@ namespace HP
             }
             else if (multiLine)
             {
-                if (_inputModeLayout.gameObject.activeSelf && InputMode != null && !shift && c == '\t')
+                if (InputMode != null && !shift && c == '\t')
                 {
                     InputMode.ChangeModeNext();
                     _inputModeText.text = InputMode.GetName();
@@ -276,8 +246,6 @@ namespace HP
         protected override void OnDestroy()
         {
             if (!Application.isPlaying) return;
-            if (initialized)
-                InputActionAssetHelper.DisposeInputActionAsset(_inputActionAssetName);
             initialized = false;
         }
         protected virtual void LateUpdate()

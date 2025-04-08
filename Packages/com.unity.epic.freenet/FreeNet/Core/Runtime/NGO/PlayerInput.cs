@@ -66,7 +66,7 @@ namespace HP
         }
         public void Dispose()
         {
-            InputActionAssetHelper.DisposeInputActionAsset(_inputActionAssetName);
+            InputActionAssetHelper.ReleaseInputActionAsset(_inputActionAssetName);
         }
         private void OnWASD(InputAction.CallbackContext ctx)
         {

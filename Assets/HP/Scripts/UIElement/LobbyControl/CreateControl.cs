@@ -3,11 +3,11 @@ using UnityEngine.UI;
 public class CreateControl : MonoBehaviour
 {
     [SerializeField]
-    public HP.CutomTMPInputField _roomNameInputField;
+    public HP.TMPInputField _roomNameInputField;
     [SerializeField]
     public Toggle _isPrivate;
     [SerializeField]
-    public HP.CutomTMPInputField _roomCodeInputField;
+    public HP.TMPInputField _roomCodeInputField;
 
     [SerializeField]
     public Button _submitButton;

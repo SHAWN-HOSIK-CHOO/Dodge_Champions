@@ -39,7 +39,7 @@ public class Login : MonoBehaviour
         _consoleController.onSubmit += OnSubmit;
 
     }
-    void OnSubmit(CutomTMPInputField.IInputMode mode, string text)
+    void OnSubmit(TMPInputField.IInputMode mode, string text)
     {
         var inputmode = (ConsoleController.Mode)mode;
         if (inputmode._mode == ConsoleController.Mode.InputMode.S)

@@ -22,7 +22,7 @@ public class InputActionAssetHelper
         _inputActionAssets = new Dictionary<string, (int,InputActionAsset)>();
         
     }
-    public static void DisposeInputActionAsset(string name)
+    public static void ReleaseInputActionAsset(string name)
     {
         if (_singleton._inputActionAssets.TryGetValue(name, out var value))
         {

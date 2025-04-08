@@ -1,12 +1,14 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class UIElement : MonoBehaviour
 {
     [SerializeField]
     private bool _isActivated;
+
     public bool IsActivated => _isActivated;
 
     protected bool _useDeselect;
@@ -17,7 +19,6 @@ public class UIElement : MonoBehaviour
     protected bool _usePointerEnter;
     protected bool _usePointerExit;
     protected bool _usePointerDown;
-
 
     public Action OnActivateAction;
     public Action OnDeActivateAction;
@@ -32,16 +33,17 @@ public class UIElement : MonoBehaviour
     public Action<BaseEventData> OnPointerExitAction;
     public Action<BaseEventData> OnPointerDownAction;
 
+    protected InputActionAsset _inputActionAsset;
+    const string _inputActionAssetName = "UI";
+
 
     protected virtual void Awake()
     {
         var eventTrigger = GetComponent<EventTrigger>() ?? gameObject.AddComponent<EventTrigger>();
-
         if (_isActivated)
             Activate();
         else
             DeActivate();
-
         if (_useDeselect)
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.Deselect, OnDeselectInternal);
         if (_useDrag)

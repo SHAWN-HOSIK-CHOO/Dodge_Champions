@@ -5,7 +5,7 @@ using UnityEngine;
 public class PrivateCodeControl : MonoBehaviour
 {
     [SerializeField]
-    public CutomTMPInputField _inputField;
+    public TMPInputField _inputField;
     LobbyInfoElement _lobbyInfoElement;
 
     public event Action<string, LobbyInfoElement> _onJoinRequest;
