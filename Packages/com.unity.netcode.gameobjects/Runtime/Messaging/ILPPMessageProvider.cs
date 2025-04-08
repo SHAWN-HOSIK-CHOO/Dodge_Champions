@@ -103,7 +103,7 @@ namespace Unity.Netcode
                 { typeof(SceneEventMessage), NetworkMessageTypes.SceneEvent },
                 { typeof(ServerLogMessage), NetworkMessageTypes.ServerLog },
                 { typeof(ServerRpcMessage), NetworkMessageTypes.ServerRpc },
-                { typeof(TimeSyncMessage), NetworkMessageTypes.TimeSync },
+                //{ typeof(TimeSyncMessage), NetworkMessageTypes.TimeSync },
                 { typeof(UnnamedMessage), NetworkMessageTypes.Unnamed },
                 { typeof(SessionOwnerMessage), NetworkMessageTypes.SessionOwner },
                 { typeof(AnticipationCounterSyncPingMessage), NetworkMessageTypes.AnticipationCounterSyncPingMessage},

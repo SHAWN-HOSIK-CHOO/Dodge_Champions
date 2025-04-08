@@ -6,9 +6,9 @@ public class PrivateCodeControl : MonoBehaviour
 {
     [SerializeField]
     public TMPInputField _inputField;
-    LobbyInfoElement _lobbyInfoElement;
+    LobbyElement _lobbyInfoElement;
 
-    public event Action<string, LobbyInfoElement> _onJoinRequest;
+    public event Action<string, LobbyElement> _onJoinRequest;
     void Start()
     {
         _inputField.onSubmit.AddListener(OnSubmit);
@@ -20,7 +20,7 @@ public class PrivateCodeControl : MonoBehaviour
     {
         transform.SetAsLastSibling();
     }
-    public void ActivateInpuField(LobbyInfoElement element)
+    public void ActivateInpuField(LobbyElement element)
     {
         _lobbyInfoElement = element;
         _inputField.text = string.Empty;

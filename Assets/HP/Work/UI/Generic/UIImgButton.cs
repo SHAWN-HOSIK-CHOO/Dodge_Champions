@@ -4,35 +4,40 @@ using UnityEngine.UI;
 using DG.Tweening;
 public class UIImgButton : UIButton
 {
-    Image _image;
+    protected Image _image;
 
     [SerializeField]
-    Color _normalColor;
+    protected Color _normalColor;
 
-    [SerializeField]
-    Color _deactivateColor;
+    protected Color _deactivateColor;
 
-    [SerializeField]
-    Color _pointerEnterColor;
+    protected Color _pointerEnterColor;
 
-    [SerializeField]
-    Color _pointerDownColor;
+    protected Color _pointerDownColor;
 
-    bool _isMouseIn;
+    protected bool _isMouseIn;
 
     protected override void Awake()
     {
         _image = GetComponent<Image>();
+        GenerateColorsFrom(_normalColor);
         base.Awake();
     }
-
+    protected virtual void GenerateColorsFrom(Color baseColor)
+    {
+        _deactivateColor = Color.red;
+        Color.RGBToHSV(baseColor, out float h, out float s, out float v);
+        float enterS = Mathf.Clamp01(s + 0.2f);
+        float downS = Mathf.Clamp01(s + 0.4f);
+        _pointerEnterColor = Color.HSVToRGB(h, enterS, v);
+        _pointerDownColor = Color.HSVToRGB(h, downS, v);
+    }
     protected override void OnPointerClickInternal(BaseEventData data)
     {
         if (!IsActivated) return;
         OnPointerClickAction?.Invoke(data);
         OnPointerClick(data);
     }
-
     public override void OnPointerEnter(BaseEventData data)
     {
         if (!IsActivated) return;
@@ -51,13 +56,11 @@ public class UIImgButton : UIButton
             _image.DOColor(_normalColor, 0.2f);
         }
     }
-
     public override void OnPointerDown(BaseEventData data)
     {
         if (!IsActivated) return;
         _image.DOColor(_pointerDownColor, 0.2f);
     }
-
     public override void OnPointerExit(BaseEventData data)
     {
         if (!IsActivated) return;
@@ -66,7 +69,6 @@ public class UIImgButton : UIButton
             _image.DOColor(_normalColor, 0.2f);
         }
     }
-
     public override void OnActivate()
     {
         _image.DOColor(_normalColor, 0.2f);

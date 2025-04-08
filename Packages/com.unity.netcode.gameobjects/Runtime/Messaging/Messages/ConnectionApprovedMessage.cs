@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Collections;
 
@@ -48,7 +49,7 @@ namespace Unity.Netcode
         public int Version => k_AddCMBServiceConfig;
 
         public ulong OwnerClientId;
-        public int NetworkTick;
+        //public int NetworkTick;
         // The cloud state service should set this if we are restoring a session
         public ServiceConfig ServiceConfig;
         public bool IsRestoredSession;
@@ -108,7 +109,7 @@ namespace Unity.Netcode
             // ============================================================
 
             BytePacker.WriteValueBitPacked(writer, OwnerClientId);
-            BytePacker.WriteValueBitPacked(writer, NetworkTick);
+            //BytePacker.WriteValueBitPacked(writer, NetworkTick);
             if (IsDistributedAuthority)
             {
                 if (targetVersion >= k_AddCMBServiceConfig)
@@ -199,7 +200,7 @@ namespace Unity.Netcode
             // ============================================================
             m_ReceiveMessageVersion = receivedMessageVersion;
             ByteUnpacker.ReadValueBitPacked(reader, out OwnerClientId);
-            ByteUnpacker.ReadValueBitPacked(reader, out NetworkTick);
+            //ByteUnpacker.ReadValueBitPacked(reader, out NetworkTick);
             if (networkManager.DistributedAuthorityMode)
             {
                 if (receivedMessageVersion >= k_AddCMBServiceConfig)
@@ -248,9 +249,8 @@ namespace Unity.Netcode
                 }
             }
 
-            var time = new NetworkTime(networkManager.NetworkTickSystem.TickRate, NetworkTick);
-            networkManager.NetworkTimeSystem.Reset(time.Time, 0.15f); // Start with a constant RTT of 150 until we receive values from the transport.
-            networkManager.NetworkTickSystem.Reset(networkManager.NetworkTimeSystem.LocalTime, networkManager.NetworkTimeSystem.ServerTime);
+            networkManager.NetworkTimeSystem.Reset(networkManager.NetworkTickSystem.TickRate);
+            networkManager.NetworkTickSystem.Reset(networkManager.NetworkTimeSystem.m_TimeSec);
 
             networkManager.ConnectionManager.LocalClient.SetRole(false, true, networkManager);
             networkManager.ConnectionManager.LocalClient.IsApproved = true;

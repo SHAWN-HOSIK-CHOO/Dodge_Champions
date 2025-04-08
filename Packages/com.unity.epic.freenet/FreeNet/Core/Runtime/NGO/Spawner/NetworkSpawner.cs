@@ -47,12 +47,10 @@ public class NetworkSpawner : NetworkBehaviour
         ngoManager._networkSpawner = this;
         ngoManager._onSpawnerSpawned?.Invoke();
     }
-
     public override void OnNetworkDespawn()
     {
         Debug.Log("Spawner Despawned");
     }
-
     public bool GetNetworkPref(string prefabListName, string prefabName, out NetworkPrefab netPrefab)
     {
         netPrefab = null;

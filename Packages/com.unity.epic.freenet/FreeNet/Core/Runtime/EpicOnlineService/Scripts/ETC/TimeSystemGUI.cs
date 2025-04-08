@@ -24,7 +24,7 @@ public class TimeSystemGUI : MonoBehaviour
         _localBufferedTickSlider.onValueChanged.AddListener(OnLocalBufferedTick);
         _serverBufferedTickSlider.onValueChanged.AddListener(OnServerBufferedTick);
         NgoManager.Singleton.NetworkTickSystem.Tick += OnLocalTick;
-        NgoManager.Singleton.NetworkTickSystem.ServerTick += OnServerTick;
+        NgoManager.Singleton.NetworkTickSystem.Tick += OnServerTick;
 
         _localBufferedTickSlider.maxValue = 30;
         _localBufferedTickSlider.minValue = -30;
@@ -37,11 +37,11 @@ public class TimeSystemGUI : MonoBehaviour
     }
     void OnLocalTick()
     {
-        _localTickText.text = $"LocalTick : {NgoManager.Singleton.NetworkTickSystem.LocalTime.Tick}";
+        _localTickText.text = $"LocalTick : {NgoManager.Singleton.NetworkTickSystem.Time.Tick}";
     }
     void OnServerTick()
     {
-        _serverTickText.text = $"ServerTick : {NgoManager.Singleton.NetworkTickSystem.ServerTime.Tick}";
+        _serverTickText.text = $"ServerTick : {NgoManager.Singleton.NetworkTickSystem.Time.Tick}";
     }
     void OnLocalBufferedTick(float val)
     {

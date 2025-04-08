@@ -385,7 +385,7 @@ namespace Unity.Netcode
 
             // Apply the relative tick offset for when this NetworkObject should be despawned on
             // non-authoritative instances.
-            DeferredDespawnTick = NetworkManager.ServerTime.Tick + tickOffset;
+            DeferredDespawnTick = NetworkManager.NetTime.Tick + tickOffset;
 
             var connectionManager = NetworkManager.ConnectionManager;
 

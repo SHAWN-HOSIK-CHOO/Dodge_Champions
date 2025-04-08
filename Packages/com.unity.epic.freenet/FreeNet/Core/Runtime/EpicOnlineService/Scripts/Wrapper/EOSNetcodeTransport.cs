@@ -5,8 +5,6 @@ using Unity.Netcode;
 using UnityEngine;
 public class EOSNetcodeTransport : NetworkTransport
 {
-    [HideInInspector]
-    public PingPong _pingpong;
     [SerializeField]
     EOS_Server _serverPrefab;
     [SerializeField]
@@ -192,9 +190,9 @@ public class EOSNetcodeTransport : NetworkTransport
     public override ulong GetCurrentRtt(ulong clientId)
     {
         double rtt = 0;
-        if (_pingpong != null)
+        if (_ngoManager._pingPong != null)
         {
-            _pingpong.GetRtt(clientId, out rtt);
+            _ngoManager._pingPong.GetRtt(clientId, out rtt);
         }
         return (ulong)rtt;
     }

@@ -1,9 +1,7 @@
 using Unity.Netcode;
+using UnityEngine;
 
-public class Player : NetworkBehaviour
+public class Player : MonoBehaviour
 {
-    public override void OnNetworkSpawn()
-    {
 
-    }
 }

@@ -67,4 +67,5 @@ public class UITmpInputField : UIKeyEvent
         }
     }
 
+    public string text => _inputField.text;
 }

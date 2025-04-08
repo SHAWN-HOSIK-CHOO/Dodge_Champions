@@ -639,7 +639,7 @@ namespace Unity.Netcode
         /// </summary>
         private IEnumerator ApprovalTimeout(ulong clientId)
         {
-            var timeStarted = LocalClient.IsServer ? NetworkManager.LocalTime.TimeAsFloat : NetworkManager.RealTimeProvider.RealTimeSinceStartup;
+            var timeStarted = LocalClient.IsServer ? NetworkManager.NetTime.TimeAsFloat : NetworkManager.RealTimeProvider.RealTimeSinceStartup;
             var timedOut = false;
             var connectionApproved = false;
             var connectionNotApproved = false;
@@ -649,7 +649,7 @@ namespace Unity.Netcode
             {
                 yield return null;
                 // Check if we timed out
-                timedOut = timeoutMarker < (LocalClient.IsServer ? NetworkManager.LocalTime.TimeAsFloat : NetworkManager.RealTimeProvider.RealTimeSinceStartup);
+                timedOut = timeoutMarker < (LocalClient.IsServer ? NetworkManager.NetTime.TimeAsFloat : NetworkManager.RealTimeProvider.RealTimeSinceStartup);
 
                 if (LocalClient.IsServer)
                 {
@@ -815,7 +815,7 @@ namespace Unity.Netcode
                     var message = new ConnectionApprovedMessage
                     {
                         OwnerClientId = ownerClientId,
-                        NetworkTick = NetworkManager.LocalTime.Tick,
+                        //NetworkTick = NetworkManager.LocalTime.Tick,
                         IsDistributedAuthority = NetworkManager.DistributedAuthorityMode,
                         ConnectedClientIds = new NativeArray<ulong>(ConnectedClientIds.Count, Allocator.Temp)
                     };

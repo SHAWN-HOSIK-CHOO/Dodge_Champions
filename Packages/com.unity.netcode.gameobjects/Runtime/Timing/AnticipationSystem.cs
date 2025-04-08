@@ -64,7 +64,7 @@ namespace Unity.Netcode
 
         public void ProcessReanticipation()
         {
-            var lastRoundTripTime = m_NetworkManager.LocalTime.Time - LastAnticipationAckTime;
+            var lastRoundTripTime = m_NetworkManager.NetTime.Time - LastAnticipationAckTime;
             foreach (var item in ObjectsToReanticipate)
             {
                 foreach (var behaviour in item.OwnerObject.ChildNetworkBehaviours)
@@ -90,7 +90,7 @@ namespace Unity.Netcode
         {
             if (AllAnticipatedObjects.Count != 0 && !m_NetworkManager.ShutdownInProgress && !m_NetworkManager.ConnectionManager.LocalClient.IsServer && m_NetworkManager.ConnectionManager.LocalClient.IsConnected)
             {
-                var message = new AnticipationCounterSyncPingMessage { Counter = AnticipationCounter, Time = m_NetworkManager.LocalTime.Time };
+                var message = new AnticipationCounterSyncPingMessage { Counter = AnticipationCounter, Time = m_NetworkManager.NetTime.Time };
                 m_NetworkManager.MessageManager.SendMessage(ref message, NetworkDelivery.Reliable, NetworkManager.ServerClientId);
             }
 
