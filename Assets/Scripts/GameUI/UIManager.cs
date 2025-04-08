@@ -31,10 +31,6 @@ namespace GameUI
         [Header("Game Start Info Panel")]
         public TMP_Text startText;
 
-        [Header("Players' Hp bar")]
-        public Image playerFill;
-        public Image enemyFill;
-
         [Header("Throw CoolDown")]
         public Image coolDownImage;
 
@@ -48,6 +44,11 @@ namespace GameUI
         public TMP_Text playerBallSkillIndex;
         public TMP_Text enemyBallSkillIndex;
 
+        [Header("Canvas")] 
+        public Canvas canvas;
+
+        [Header("HealthBar")] public GameObject pfHealthBar;
+        
         private void Start()
         {
             Initialize();
@@ -55,9 +56,6 @@ namespace GameUI
 
         public void Initialize()
         {
-            ResetFill(playerFill);
-            ResetFill(enemyFill);
-
             //Debug
             playerBallSkillIndex.text = "Player Character No.  " + PlayerSelectionManager.Instance.GetLocalPlayerSelection();
             enemyBallSkillIndex.text = "Enemy Character No.  " + PlayerSelectionManager.Instance.GetEnemySelection();
@@ -68,31 +66,9 @@ namespace GameUI
         public void SetActiveAllObjects(bool flag)
         {
             startText.gameObject.SetActive(flag);
-            playerFill.gameObject.SetActive(flag);
-            enemyFill.gameObject.SetActive(flag);
             coolDownImage.gameObject.SetActive(flag);
             skillCoolDownImage.gameObject.SetActive(flag);
             turnCoolDownImage.gameObject.SetActive(flag);
-        }
-        
-        private void ResetFill(Image fillImage)
-        {
-            if (fillImage != null)
-            {
-                fillImage.fillAmount = 1.0f;
-            }
-        }
-
-        public void ChangeFillWithRatio(float fillRatio, bool isThisPlayer)
-        {
-            if (isThisPlayer)
-            {
-                playerFill.fillAmount = fillRatio;
-            }
-            else
-            {
-                enemyFill.fillAmount = fillRatio;
-            }
         }
 
         public void StartGameCountDown(float time = 5f)
