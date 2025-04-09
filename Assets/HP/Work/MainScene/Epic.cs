@@ -56,7 +56,7 @@ namespace MainScene
         void OnUserNameActivate()
         {
             var textUI = _userName.GetComponent<TMP_Text>();
-            UserInfoData? _localUserInfo = FreeNet._instance._localUser._localUserInfo;
+            UserInfoData? _localUserInfo = FreeNet.Instance._localUser._localUserInfo;
             if (_localUserInfo.HasValue)
             {
                 textUI.text = _localUserInfo.Value.DisplayName;
@@ -65,7 +65,7 @@ namespace MainScene
         void OnUserCountryActivate()
         {
             var textUI = _userCountry.GetComponent<TMP_Text>();
-            UserInfoData? _localUserInfo = FreeNet._instance._localUser._localUserInfo;
+            UserInfoData? _localUserInfo = FreeNet.Instance._localUser._localUserInfo;
             if (_localUserInfo.HasValue)
             {
                 textUI.text = _localUserInfo.Value.Country;
@@ -74,7 +74,7 @@ namespace MainScene
         void OnNatTypeActivate()
         {
             var textUI = _NatType.GetComponent<TMP_Text>();
-            EOSWrapper.P2PControl.QueryNATType(FreeNet._instance._eosCore._IP2P, (ref OnQueryNATTypeCompleteInfo info) =>
+            EOSWrapper.P2PControl.QueryNATType(FreeNet.Instance._eosCore._IP2P, (ref OnQueryNATTypeCompleteInfo info) =>
             {
                 if(info.ResultCode == Result.Success)
                 {
@@ -85,7 +85,7 @@ namespace MainScene
         void OnRelayControlActivate()
         {
             var textUI = _RelayControl.GetComponent<TMP_Text>();
-            if(EOSWrapper.P2PControl.GetRelayControl(FreeNet._instance._eosCore._IP2P, out RelayControl control))
+            if(EOSWrapper.P2PControl.GetRelayControl(FreeNet.Instance._eosCore._IP2P, out RelayControl control))
             {
                 textUI.text = control.ToString();
             }
@@ -99,8 +99,8 @@ namespace MainScene
         void OnLogOutClick(BaseEventData data)
         {
             var options = new DeletePersistentAuthOptions();
-            FreeNet._instance._eosCore._IAuth.DeletePersistentAuth(ref options, null, null);
-            EOSWrapper.LoginControl.LogOut(FreeNet._instance._eosCore._IAuth, FreeNet._instance._localUser._localEAID._EAID,(ref LogoutCallbackInfo info) =>
+            FreeNet.Instance._eosCore._IAuth.DeletePersistentAuth(ref options, null, null);
+            EOSWrapper.LoginControl.LogOut(FreeNet.Instance._eosCore._IAuth, FreeNet.Instance._localUser._localEAID._EAID,(ref LogoutCallbackInfo info) =>
             {
                 SceneManagerWrapper.LoadScene("BootScene",LoadSceneMode.Single);
             });

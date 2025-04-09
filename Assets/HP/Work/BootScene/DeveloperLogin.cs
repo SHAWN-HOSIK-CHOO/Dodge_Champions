@@ -28,16 +28,16 @@ public class DeveloperLogin : EpicLogin
     }
     void OnDeveloperLogin(string id , string credential)
     {
-        EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet._instance._eosCore._IAuth, id, credential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
+        EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet.Instance._eosCore._IAuth, id, credential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if (EOSWrapper.ETC.ErrControl<EpicAccountId>(info.ResultCode, OnLoginComplete))
             {
                 OnLoginComplete(Result.Success, info.LocalUserId);
-                EOSWrapper.ConnectControl.EpicIDConnect(FreeNet._instance._eosCore._IAuth, FreeNet._instance._eosCore._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
+                EOSWrapper.ConnectControl.EpicIDConnect(FreeNet.Instance._eosCore._IAuth, FreeNet.Instance._eosCore._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
                 {
                     if (info.ResultCode == Epic.OnlineServices.Result.InvalidUser)
                     {
-                        EOSWrapper.ConnectControl.CreateUser(FreeNet._instance._eosCore._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
+                        EOSWrapper.ConnectControl.CreateUser(FreeNet.Instance._eosCore._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
                         {
                             if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnConnectComplete))
                             {

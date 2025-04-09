@@ -9,7 +9,7 @@ namespace MainScene
         [SerializeField]
         Talk _talkPrefab;
         [SerializeField]
-        Canvas _talkCanvas;
+        GameObject _talkElement;
         ObjectPool<Talk> _talkObjPool;
         [SerializeField]
         UIConsole _uiConsole;
@@ -17,8 +17,8 @@ namespace MainScene
         {
             _talkObjPool = new ObjectPool<Talk>(() =>
             {
-                Talk obj = Instantiate(_talkPrefab, _talkCanvas.transform, false);
-                obj.transform.SetParent(_talkCanvas.transform);
+                Talk obj = Instantiate(_talkPrefab, _talkElement.transform, false);
+                obj.transform.SetParent(_talkElement.transform);
                 obj.gameObject.SetActive(false);
                 return obj;
             });
@@ -38,7 +38,7 @@ namespace MainScene
             if (talkObj != null)
             {
                 talkObj.gameObject.SetActive(true);
-                talkObj.Show(_talkCanvas.GetComponent<RectTransform>(), message, () =>
+                talkObj.Show(_talkElement.GetComponent<RectTransform>(), message, () =>
                 {
                     _talkObjPool.Release(talkObj);
                 });

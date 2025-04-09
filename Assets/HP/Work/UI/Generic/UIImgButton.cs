@@ -27,10 +27,11 @@ public class UIImgButton : UIButton
     {
         _deactivateColor = Color.red;
         Color.RGBToHSV(baseColor, out float h, out float s, out float v);
-        float enterS = Mathf.Clamp01(s + 0.2f);
-        float downS = Mathf.Clamp01(s + 0.4f);
-        _pointerEnterColor = Color.HSVToRGB(h, enterS, v);
-        _pointerDownColor = Color.HSVToRGB(h, downS, v);
+        float enterV = Mathf.Clamp01(v - 0.1f); // »ìÂ¦ ¾îµÓ°Ô
+        float downV = Mathf.Clamp01(v - 0.2f);  // ´õ ¾îµÓ°Ô
+
+        _pointerEnterColor = Color.HSVToRGB(h, s, enterV);
+        _pointerDownColor = Color.HSVToRGB(h, s, downV);
     }
     protected override void OnPointerClickInternal(BaseEventData data)
     {

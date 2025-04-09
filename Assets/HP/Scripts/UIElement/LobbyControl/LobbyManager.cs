@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class LobbyManager : EOS_LobbyManager
 {
+    public static new EOS_LobbyManager Instance => Instance as EOS_LobbyManager;
     public enum LobbySecurityType
     {
         Public,
@@ -15,7 +16,12 @@ public class LobbyManager : EOS_LobbyManager
     private IEnumerator Start()
     {
         yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
-        base.Init(FreeNet._instance);
+        base.Init(FreeNet.Instance);
+
+        if(SingletonSpawn(this))
+        {
+            SingletonInitialize();
+        }
     }
 
     public void CreateLobby(string mode, string name, uint maxMember, LobbySecurityType securityType, string code, Action<Result, EOS_Lobby> onComplete = null)

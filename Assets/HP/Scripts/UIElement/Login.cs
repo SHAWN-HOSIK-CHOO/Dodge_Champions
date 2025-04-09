@@ -66,7 +66,7 @@ public class Login : MonoBehaviour
     {
         if (result == Result.Success)
         {
-            FreeNet._instance._localUser._localEAID = new EOSWrapper.ETC.EAID(localEAID);
+            FreeNet.Instance._localUser._localEAID = new EOSWrapper.ETC.EAID(localEAID);
 
             var simulator = _consoleController.GetComponent<ConsoleSimulator>();
             simulator.BeginTracking();
@@ -74,11 +74,11 @@ public class Login : MonoBehaviour
             simulator.EndTracking();
             simulator.Simulate(0.05f);
 
-            EOSWrapper.UserInfo.QueryAndCopyUserInfo(FreeNet._instance._eosCore._IUSER, localEAID, localEAID, (Result result, UserInfoData? data) =>
+            EOSWrapper.UserInfo.QueryAndCopyUserInfo(FreeNet.Instance._eosCore._IUSER, localEAID, localEAID, (Result result, UserInfoData? data) =>
             {
                 if (result == Result.Success)
                 {
-                    FreeNet._instance._localUser._localUserInfo = data;
+                    FreeNet.Instance._localUser._localUserInfo = data;
                     onLogin?.Invoke();
                 }
                 else
@@ -106,7 +106,7 @@ public class Login : MonoBehaviour
     {
         if (result == Result.Success)
         {
-            FreeNet._instance._localUser._localPUID = new EOSWrapper.ETC.PUID(localPUID);
+            FreeNet.Instance._localUser._localPUID = new EOSWrapper.ETC.PUID(localPUID);
             var seq = DOTween.Sequence();
             seq.Append(_background.DOColor(Color.green, 0.2f).From(Color.white));
             seq.AppendInterval(0.2f);
@@ -131,15 +131,15 @@ public class Login : MonoBehaviour
         simulator.EndTracking();
         simulator.Simulate(0.05f);
         var username = "Unkown";
-        EOSWrapper.ConnectControl.DeviceIDConnect(FreeNet._instance._eosCore._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
+        EOSWrapper.ConnectControl.DeviceIDConnect(FreeNet.Instance._eosCore._IConnect, username, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
         {
             if (info.ResultCode == Epic.OnlineServices.Result.NotFound)
             {
-                EOSWrapper.ConnectControl.CreateDeviceID(FreeNet._instance._eosCore._IConnect, (ref Epic.OnlineServices.Connect.CreateDeviceIdCallbackInfo info) =>
+                EOSWrapper.ConnectControl.CreateDeviceID(FreeNet.Instance._eosCore._IConnect, (ref Epic.OnlineServices.Connect.CreateDeviceIdCallbackInfo info) =>
                 {
                     if (info.ResultCode == Epic.OnlineServices.Result.Success)
                     {
-                        EOSWrapper.ConnectControl.DeviceIDConnect(FreeNet._instance._eosCore._IConnect, username);
+                        EOSWrapper.ConnectControl.DeviceIDConnect(FreeNet.Instance._eosCore._IConnect, username);
                     }
                 });
             }
@@ -156,15 +156,15 @@ public class Login : MonoBehaviour
         _consoleController.AddText($"OnEpicPortalLogin Start...");
         simulator.EndTracking();
         simulator.Simulate(0.05f);
-        EOSWrapper.LoginControl.EpicPortalLogin(FreeNet._instance._eosCore._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
+        EOSWrapper.LoginControl.EpicPortalLogin(FreeNet.Instance._eosCore._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if (EOSWrapper.ETC.ErrControl<EpicAccountId>(info.ResultCode, OnLoginComplete))
             {
-                EOSWrapper.ConnectControl.EpicIDConnect(FreeNet._instance._eosCore._IAuth, FreeNet._instance._eosCore._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
+                EOSWrapper.ConnectControl.EpicIDConnect(FreeNet.Instance._eosCore._IAuth, FreeNet.Instance._eosCore._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
                 {
                     if (info.ResultCode == Epic.OnlineServices.Result.InvalidUser)
                     {
-                        EOSWrapper.ConnectControl.CreateUser(FreeNet._instance._eosCore._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
+                        EOSWrapper.ConnectControl.CreateUser(FreeNet.Instance._eosCore._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
                         {
                             if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnConnectComplete))
                             {
@@ -188,16 +188,16 @@ public class Login : MonoBehaviour
         _consoleController.AddText($"OnDeveloperLogin Start...");
         simulator.EndTracking();
         simulator.Simulate(0.05f);
-        EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet._instance._eosCore._IAuth, _LoginID, _LoginCredential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
+        EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet.Instance._eosCore._IAuth, _LoginID, _LoginCredential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
             if (EOSWrapper.ETC.ErrControl<EpicAccountId>(info.ResultCode, OnLoginComplete))
             {
                 OnLoginComplete(Result.Success, info.LocalUserId);
-                EOSWrapper.ConnectControl.EpicIDConnect(FreeNet._instance._eosCore._IAuth, FreeNet._instance._eosCore._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
+                EOSWrapper.ConnectControl.EpicIDConnect(FreeNet.Instance._eosCore._IAuth, FreeNet.Instance._eosCore._IConnect, info.LocalUserId, (ref Epic.OnlineServices.Connect.LoginCallbackInfo info) =>
                 {
                     if (info.ResultCode == Epic.OnlineServices.Result.InvalidUser)
                     {
-                        EOSWrapper.ConnectControl.CreateUser(FreeNet._instance._eosCore._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
+                        EOSWrapper.ConnectControl.CreateUser(FreeNet.Instance._eosCore._IConnect, info.ContinuanceToken, (ref Epic.OnlineServices.Connect.CreateUserCallbackInfo info) =>
                         {
                             if (EOSWrapper.ETC.ErrControl<ProductUserId>(info.ResultCode, OnConnectComplete))
                             {

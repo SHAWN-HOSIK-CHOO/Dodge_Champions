@@ -19,10 +19,13 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour
     }
     public static bool _Spwaned { get; private set; } = false;
     public static bool _Initialied { get; private set; } = false;
-    public static T _instance { get; private set; }
+    protected static T _instance;
+
+    public static T Instance => _instance;
+
     protected bool SingletonSpawn(T instance)
     {
-        if (_instance == null)
+        if (Instance == null)
         {
             _instance = instance;
             _Spwaned = true;

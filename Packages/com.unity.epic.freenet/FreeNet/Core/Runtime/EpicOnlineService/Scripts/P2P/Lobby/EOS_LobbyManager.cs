@@ -5,14 +5,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using static EOSWrapper;
 
-public abstract class EOS_LobbyManager : MonoBehaviour
+public abstract class EOS_LobbyManager : SingletonMonoBehaviour<EOS_LobbyManager>
 {
     protected EOS_Core _eosCore;
     protected EOS_LocalUser _localUser;
     protected Dictionary<string, EOS_Lobby> _lobbies;
-    public virtual void OnRelease()
+    public override void OnRelease()
     {
         RemoveLobbyCallback();
+        base.OnRelease();
     }
     public virtual void Init(FreeNet freenet)
     {
