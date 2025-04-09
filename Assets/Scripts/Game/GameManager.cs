@@ -3,6 +3,7 @@ using GameInput;
 using GameLobby;
 using GameUI;
 using System.Collections;
+using System.Globalization;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -34,8 +35,7 @@ namespace Game
 
         public GameObject uiManager;
 
-        public int currentAttackPlayerID = -1;
-        public bool isLocalPlayerAttackTurn = false;
+        public int timePerRound = 40;
 
         public override void OnNetworkSpawn()
         {
@@ -70,47 +70,26 @@ namespace Game
         public GameObject enemyPlayer = null;
 
         [ServerRpc(RequireOwnership = false)]
-        public void SwapTurnServerRPC()
+        public void RestartRoundServerRPC(int roundTime = 30, int standByTime = 10)
         {
-            SwapTurnClientRPC();
+            RestartRoundClientRPC(roundTime,standByTime);
         }
-
-        private float _turnTime = 0f;
+        
         private Coroutine _timeCheckerCoroutine = null;
 
         [ClientRpc]
-        private void SwapTurnClientRPC()
+        private void RestartRoundClientRPC(int roundTime = 30, int standByTime = 10)
         {
-            currentAttackPlayerID = currentAttackPlayerID == localClientID ? enemyClientID : localClientID;
-            isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
-
-            _turnTime = 0f;
-
-            if (isLocalPlayerAttackTurn)
             {
-                UIManager.Instance.statesUIImages[0].gameObject.SetActive(true);
-                UIManager.Instance.statesUIImages[1].gameObject.SetActive(false);
-                UIManager.Instance.coolDownImage.gameObject.SetActive(true);
-                _turnTime = localPlayer.GetComponent<CharacterManager>().turnTimeInSeconds;
                 localPlayer.GetComponent<CharacterManager>().hitApproved = true;
-                enemyPlayer.GetComponent<CharacterManager>().hitApproved = false;
-                InputManager.Instance.canThrowBall = true;
+                enemyPlayer.GetComponent<CharacterManager>().hitApproved = true;
+                InputManager.Instance.canThrowBall                       = true;
 
                 if (enemyPlayer.GetComponent<CharacterBallLauncher>().instantiatedBall != null)
                 {
                     enemyPlayer.GetComponent<CharacterBallLauncher>().DestroyInstantiatedBall();
                 }
-            }
-            else
-            {
-                UIManager.Instance.statesUIImages[0].gameObject.SetActive(false);
-                UIManager.Instance.statesUIImages[1].gameObject.SetActive(true);
-                UIManager.Instance.coolDownImage.gameObject.SetActive(false);
-                _turnTime = enemyPlayer.GetComponent<CharacterManager>().turnTimeInSeconds;
-                InputManager.Instance.canThrowBall = false;
-                localPlayer.GetComponent<CharacterManager>().hitApproved = false;
-                enemyPlayer.GetComponent<CharacterManager>().hitApproved = true;
-
+                
                 if (localPlayer.GetComponent<CharacterBallLauncher>().instantiatedBall != null)
                 {
                     localPlayer.GetComponent<CharacterBallLauncher>().DestroyInstantiatedBall();
@@ -121,65 +100,89 @@ namespace Game
             {
                 StopCoroutine(_timeCheckerCoroutine);
             }
-            _timeCheckerCoroutine = StartCoroutine(CoTurnTimeChecker(_turnTime));
+            _timeCheckerCoroutine = StartCoroutine(CoCountBeforeRoundStart((float)roundTime, (float)standByTime));
         }
 
-        private IEnumerator CoTurnTimeChecker(float times)
+        private IEnumerator CoCountBeforeRoundStart(float times, float standByTime = 10.0f)
         {
-            float elapsedTime = 0f;
-            UIManager.Instance.turnCoolDownImage.fillAmount = 0f;
-
-            while (elapsedTime <= times)
+            float elapsedStandByTime = 0f;
+            isGameReadyToStart                        = false;
+            InputManager.Instance.playerInput.enabled = false;
+            
+            foreach (var action in InputManager.Instance.playerInput.actions)
             {
-                elapsedTime += Time.deltaTime;
-                float ratio = elapsedTime / times;
+                action.Disable();
+            }
 
-                UIManager.Instance.turnCoolDownImage.fillAmount = ratio;
+            if (localPlayer != null && enemyPlayer != null)
+            {
+                {
+                    localPlayer.GetComponent<CharacterMovement>().SetAnimationIdle();
+                    enemyPlayer.GetComponent<CharacterMovement>().SetAnimationIdle();
+                    localPlayer.GetComponent<CharacterController>().Move(Vector3.zero);
+                    enemyPlayer.GetComponent<CharacterController>().Move(Vector3.zero);
+                }
+            }
+
+            UIManager.Instance.StartGameCountDown(standByTime);
+            while (elapsedStandByTime <= standByTime)
+            {
+                elapsedStandByTime += Time.deltaTime;
+                yield return null;
+            }
+
+            isGameReadyToStart = true;
+            
+            foreach (var action in InputManager.Instance.playerInput.actions)
+            {
+                action.Enable();
+            }
+            
+            InputManager.Instance.playerInput.enabled = true;
+
+            float leftTime = times;
+
+            UIManager.Instance.roundTimer.text = leftTime.ToString(CultureInfo.InvariantCulture);
+
+            while (leftTime >= 0)
+            {
+                leftTime -= Time.deltaTime;
+
+                UIManager.Instance.roundTimer.text = Mathf.Clamp(Mathf.FloorToInt(leftTime),0,times).ToString(CultureInfo.InvariantCulture);
 
                 yield return null;
             }
 
-            UIManager.Instance.turnCoolDownImage.fillAmount = 1f;
+            UIManager.Instance.roundTimer.text = times.ToString(CultureInfo.InvariantCulture);
 
             _timeCheckerCoroutine = null;
 
-            if (IsOwner)
-                SwapTurnServerRPC();
+            if (IsServer)
+                RestartRoundServerRPC(timePerRound);
         }
 
         [ServerRpc]
-        public void StartRoundServerRPC()
+        public void StartGameServerRPC()
         {
-            uiManager.SetActive(false);
             cutSceneCamera.SetActive(true);
-
-            int randomNumber = Random.Range(0, 2);
-            _isHeads = randomNumber == 0;
-
-            currentAttackPlayerID = _isHeads ? localClientID : enemyClientID;
-
-            StartRoundClientRPC(currentAttackPlayerID, randomNumber);
+            
+            StartGameClientRPC();
         }
 
         [ClientRpc]
-        private void StartRoundClientRPC(int attackPlayerID, int randomNumber)
+        private void StartGameClientRPC()
         {
-            _isHeads = randomNumber == 0;
-
-            currentAttackPlayerID = attackPlayerID;
-
-            isLocalPlayerAttackTurn = localClientID == currentAttackPlayerID;
-
             if (_cutSceneCoroutine != null)
             {
-                StopCoroutine(CoSetGameOrder());
+                StopCoroutine(CoIntroAnimationPlay());
             }
 
-            _cutSceneCoroutine = StartCoroutine(CoSetGameOrder());
+            _cutSceneCoroutine = StartCoroutine(CoIntroAnimationPlay());
         }
 
-        private IEnumerator CoSetGameOrder()
+        private IEnumerator CoIntroAnimationPlay()
         {
+            UIManager.Instance.SetActiveAllObjects(false);
             cutSceneDirector.Play();
 
             while (cutSceneDirector.state == PlayState.Playing)
@@ -187,41 +190,13 @@ namespace Game
                 yield return null;
             }
 
-            uiManager.SetActive(true);
+            if (IsServer)
+            {
+                RestartRoundServerRPC(timePerRound,5);
+            }
+            
             cutSceneCamera.SetActive(false);
-            if (isLocalPlayerAttackTurn)
-            {
-                UIManager.Instance.statesUIImages[0].gameObject.SetActive(true);
-                UIManager.Instance.statesUIImages[1].gameObject.SetActive(false);
-                InputManager.Instance.canThrowBall = true;
-                localPlayer.GetComponent<CharacterManager>().hitApproved = true;
-            }
-            else
-            {
-                UIManager.Instance.statesUIImages[0].gameObject.SetActive(false);
-                UIManager.Instance.statesUIImages[1].gameObject.SetActive(true);
-                InputManager.Instance.canThrowBall = false;
-                localPlayer.GetComponent<CharacterManager>().hitApproved = false;
-            }
-
-            UIManager.Instance.StartGameCountDown(5f);
-            UIManager.Instance.coolDownImage.gameObject.SetActive(isLocalPlayerAttackTurn);
-
-        }
-
-        //TODO: 이거 반드시 해결 이런식으로 사용 X
-        public void JustForTheBeginningCoroutine()
-        {
-            if (isLocalPlayerAttackTurn)
-            {
-                _turnTime = localPlayer.GetComponent<CharacterManager>().turnTimeInSeconds;
-            }
-            else
-            {
-                _turnTime = enemyPlayer.GetComponent<CharacterManager>().turnTimeInSeconds;
-            }
-
-            _timeCheckerCoroutine = StartCoroutine(CoTurnTimeChecker(_turnTime));
+            UIManager.Instance.SetActiveAllObjects(true);
         }
 
         public void Callback_Timeline_SetActiveAppropriateCoin()

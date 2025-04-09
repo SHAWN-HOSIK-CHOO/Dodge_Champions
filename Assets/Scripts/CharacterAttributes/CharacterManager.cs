@@ -45,9 +45,6 @@ namespace CharacterAttributes
 
         private Coroutine _pushCoroutine = null;
 
-        [Header("Turn Time")]
-        public float turnTimeInSeconds = 30f;
-
         public override void OnNetworkSpawn()
         {
             if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
@@ -135,19 +132,16 @@ namespace CharacterAttributes
             if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
             {
                 //만약 내가 공을 던진 사람이고 상대방이 Just Dodge로 피한 사람이고, 상대 턴이 아니라면(내 턴이라면)
-                if (!IsOwner && GameManager.Instance.isLocalPlayerAttackTurn)
+                if (!IsOwner )
                 {
                     //턴을 넘겨준다
-                    ResetThrowCountBeforeTurnSwap();
-                    GameManager.Instance.SwapTurnServerRPC();
+                    //TODO: 턴제 삭제로 인해 EndCurrentRoundServerRPC가 아닌 보상 매카니즘이 이식되어야 한다.
+                    //GameManager.Instance.EndCurrentRoundServerRPC();
                 }
             }
             else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                if (!SinglePlayerGM.Instance.isPlayerTurn)
-                {
-                    SinglePlayerGM.Instance.SwitchTurn();
-                }
+                
             }
 
         }
@@ -288,9 +282,9 @@ namespace CharacterAttributes
                 else
                 {
                     //그게 아니라면 턴을 넘겨받는다.
+                    //TODO: 턴제 삭제로 추가 작업 필요
                     hitApproved = false;
-                    GameManager.Instance.SwapTurnServerRPC();
-                    ResetThrowCountBeforeTurnSwap();
+                    //GameManager.Instance.EndCurrentRoundServerRPC();
                 }
             }
 
@@ -379,8 +373,8 @@ namespace CharacterAttributes
         {
             _currentThrowCount++;
         }
-
-        public void ResetThrowCountBeforeTurnSwap()
+        
+        public void ResetThrowCount()
         {
             _currentThrowCount = 0;
         }
@@ -399,33 +393,6 @@ namespace CharacterAttributes
                 GameObject effect = Instantiate(pfHitEffects[effectIndex], hitPosition, Quaternion.identity);
                 yield return new WaitForSeconds(sec);
                 Destroy(effect.gameObject);
-            }
-        }
-
-        [ServerRpc]
-        public void RequestTurnSwapServerRPC()
-        {
-            if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-            {
-                RequestTurnSwapClientRPC();
-            }
-            else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
-            {
-                SinglePlayerGM.Instance.SwitchTurn();
-            }
-        }
-
-        [ClientRpc]
-        private void RequestTurnSwapClientRPC()
-        {
-            //"내가 공을 안 맞았으니 턴을 넘겨라"고 지시하고
-            //상대방이 그 명령을 받았다면
-            if (!IsOwner)
-            {
-                //Debug.Log(OwnerClientId+"가 턴 스왑 요청을 받음");
-                //해야할 초기화를 하고 턴을 넘겨준다.
-                ResetThrowCountBeforeTurnSwap();
-                GameManager.Instance.SwapTurnServerRPC();
             }
         }
     }

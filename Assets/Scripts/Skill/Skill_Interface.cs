@@ -23,4 +23,14 @@ namespace Skill
     {
         public float HealAmount;
     }
+
+    public struct PressInput : ISkillInput
+    {
+        public bool IsPressed;
+    }
+    
+    public interface IFlashBlindable
+    {
+        public void ApplyBlind(float duration);
+    }
 }

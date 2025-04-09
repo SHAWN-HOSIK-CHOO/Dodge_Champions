@@ -3538,8 +3538,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2113
   cinemachineCameraTarget: {fileID: 7923956170369569782}
-  topClamp: 11
-  bottomClamp: 10
+  topClamp: 20
+  bottomClamp: 19
   cameraAngleOverride: 0
   lockCameraPosition: 0
   walkAnimationTargetValue: 0.3

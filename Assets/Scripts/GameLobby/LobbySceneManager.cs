@@ -1,5 +1,6 @@
 using Game;
 using System.Collections;
+using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
@@ -22,7 +23,11 @@ namespace GameLobby
 
         [Header("Debug")]
         public Button startHostDb;
-        public Button startClientDb;
+        public Button     startClientDb;
+        public TMP_Text   joinText;
+        public TMP_InputField joinField;
+        public Button     createRelay;
+        public Button     joinRelay;
 
         [Header("Confirm Button")]
         public Button confirmButton;
@@ -158,18 +163,20 @@ namespace GameLobby
         }
 
         //TODO: Delete All Legacy
-        async void Callback_btn_CreateRelay()
+        public async void Callback_btn_CreateRelay()
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-            //joinCodeText.text = "Code: " + joinCode;
+            joinText.text = joinCode;
             RelayServerData relayServerData = AllocationUtils.ToRelayServerData(allocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartHost();
         }
-        async void Callback_btn_JoinRelay(string code)
+        public async void Callback_btn_JoinRelay()
         {
-            var joinAllocation = await RelayService.Instance.JoinAllocationAsync(code);
+            string userInput = joinField.text;
+            
+            var joinAllocation = await RelayService.Instance.JoinAllocationAsync(userInput);
             var relayServerData = AllocationUtils.ToRelayServerData(joinAllocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 

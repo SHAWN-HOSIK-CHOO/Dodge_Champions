@@ -25,6 +25,9 @@ namespace CharacterAttributes
                                                                            false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server
                                                                           );
 
+        private HealthBarUI _healthBarUI;
+        public  GameObject  healthBarGo;
+        
         public override void OnNetworkSpawn()
         {
             // 소유 여부를 확인
@@ -36,32 +39,25 @@ namespace CharacterAttributes
                 playerHealth.Value = maxHp;
             }
 
-            if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
-            {
-                playerHealth.OnValueChanged += OnHealthChanged;
-                isHpZero.OnValueChanged += OnIsHpZeroChanged;
-            }
-            else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
-            {
-                playerHealth.OnValueChanged += OnHealthChangedSinglePlayer;
-                isHpZero.OnValueChanged += OnIsHpZeroChangedSinglePlayer;
-            }
+            CreateHealthUI();
 
-            // playerHealth.OnValueChanged += OnHealthChanged;
-            // isHpZero.OnValueChanged     += OnIsHpZeroChanged;
+            playerHealth.OnValueChanged += OnHealthChanged;
+            isHpZero.OnValueChanged     += OnIsHpZeroChanged;
         }
 
+        private void CreateHealthUI()
+        {
+            healthBarGo = Instantiate(UIManager.Instance.pfHealthBar, UIManager.Instance.canvas.transform);
+            _healthBarUI = healthBarGo.GetComponent<HealthBarUI>();
+            _healthBarUI.SetTarget(transform);
+            _healthBarUI.SetFill(1f); // 처음엔 체력 100%
+        }
+        
         public override void OnDestroy()
         {
-            if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
             {
                 playerHealth.OnValueChanged -= OnHealthChanged;
                 isHpZero.OnValueChanged -= OnIsHpZeroChanged;
-            }
-            else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
-            {
-                playerHealth.OnValueChanged -= OnHealthChangedSinglePlayer;
-                isHpZero.OnValueChanged -= OnIsHpZeroChangedSinglePlayer;
             }
             base.OnDestroy();
         }
@@ -69,19 +65,7 @@ namespace CharacterAttributes
         private void OnHealthChanged(int previousValue, int newValue)
         {
             float ratio = (float)newValue / maxHp;
-            UIManager.Instance.ChangeFillWithRatio(ratio, isThisPlayer);
-
-            // 서버에서 HP가 0이 되었는지 확인
-            if (IsServer && newValue == 0 && !isHpZero.Value)
-            {
-                isHpZero.Value = true;
-            }
-        }
-
-        private void OnHealthChangedSinglePlayer(int previousValue, int newValue)
-        {
-            float ratio = (float)newValue / maxHp;
-            SinglePlayerGM.Instance.SetPlayerFill(ratio);
+            _healthBarUI?.SetFill(ratio);
 
             // 서버에서 HP가 0이 되었는지 확인
             if (IsServer && newValue == 0 && !isHpZero.Value)
@@ -111,14 +95,6 @@ namespace CharacterAttributes
                 int loserID = (int)OwnerClientId;
                 GameManager.Instance.EndGameServerRPC(loserID);
                 Debug.Log("loser is : " + loserID);
-            }
-        }
-
-        private void OnIsHpZeroChangedSinglePlayer(bool previousValue, bool newValue)
-        {
-            if (newValue)
-            {
-                SinglePlayerGM.Instance.EndGame(false);
             }
         }
 
