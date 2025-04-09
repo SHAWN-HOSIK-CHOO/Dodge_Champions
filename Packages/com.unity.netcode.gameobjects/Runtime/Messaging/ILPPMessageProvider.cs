@@ -45,10 +45,15 @@ namespace Unity.Netcode
             ServerLog = 18,
             ServerRpc = 19,
             SessionOwner = 20,
-            TimeSync = 21,
-            Unnamed = 22,
-            AnticipationCounterSyncPingMessage = 23,
-            AnticipationCounterSyncPongMessage = 24,
+            
+            Unnamed = 21,
+            AnticipationCounterSyncPingMessage = 22,
+            AnticipationCounterSyncPongMessage = 23,
+            
+            // TimeSync = 21,
+            // Unnamed = 22,
+            // AnticipationCounterSyncPingMessage = 23,
+            // AnticipationCounterSyncPongMessage = 24,
         }
 
 
