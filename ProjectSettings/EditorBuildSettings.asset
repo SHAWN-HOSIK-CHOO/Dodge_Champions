@@ -12,15 +12,6 @@ EditorBuildSettings:
     path: Assets/HP/Work/MainScene/MainScene.unity
     guid: a44351457839a644aa9a80738dbc608b
   - enabled: 0
-    path: Assets/HP/Dummy/DummyScene.unity
-    guid: d866da8526aa9474fadbe1bcff3c093f
-  - enabled: 0
-    path: Assets/HP/Scene/LoginScene.unity
-    guid: 6ced2c95513a0ad4897918354a77728e
-  - enabled: 0
-    path: Assets/HP/Scene/LobbyScene.unity
-    guid: 44c538dd09f54b74d9642ad80281746e
-  - enabled: 0
     path: Assets/Scenes/Lobby.unity
     guid: 0e5cb1940f7efc448be00baf653f0fad
   - enabled: 1
