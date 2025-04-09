@@ -1626,7 +1626,7 @@ namespace Unity.Netcode.Components
                 // If the state was explicitly set, then update the network tick to match the locally calculate tick
                 if (m_LocalAuthoritativeNetworkState.ExplicitSet)
                 {
-                    m_LocalAuthoritativeNetworkState.NetworkTick = m_CachedNetworkManager.NetworkTickSystem.ServerTime.Tick;
+                    m_LocalAuthoritativeNetworkState.NetworkTick = m_CachedNetworkManager.NetworkTickSystem.Time.Tick;
                 }
 
                 // Send the state update
@@ -1759,7 +1759,7 @@ namespace Unity.Netcode.Components
             // send a full frame synch.
             var isAxisSync = false;
             // We compare against the NetworkTickSystem version since ServerTime is set when updating ticks
-            if (UseUnreliableDeltas && !isSynchronization && m_DeltaSynch && m_NextTickSync <= m_CachedNetworkManager.NetworkTickSystem.ServerTime.Tick)
+            if (UseUnreliableDeltas && !isSynchronization && m_DeltaSynch && m_NextTickSync <= m_CachedNetworkManager.NetworkTickSystem.Time.Tick)
             {
                 // Increment to the next frame synch tick position for this instance
                 m_NextTickSync += (int)m_CachedNetworkManager.NetworkConfig.TickRate;
@@ -1926,7 +1926,7 @@ namespace Unity.Netcode.Components
             {
                 // If we are teleporting then we can skip the delta threshold check
                 isPositionDirty = networkState.IsTeleportingNextFrame || isAxisSync || forceState;
-                if (m_HalfFloatTargetTickOwnership > m_CachedNetworkManager.ServerTime.Tick)
+                if (m_HalfFloatTargetTickOwnership > m_CachedNetworkManager.NetTime.Tick)
                 {
                     isPositionDirty = true;
                 }
@@ -1972,7 +1972,7 @@ namespace Unity.Netcode.Components
                         networkState.NetworkDeltaPosition = m_HalfPositionState;
 
                         // If ownership offset is greater or we are doing an axial synchronization then synchronize the base position
-                        if ((m_HalfFloatTargetTickOwnership > m_CachedNetworkManager.ServerTime.Tick || isAxisSync) && !networkState.IsTeleportingNextFrame)
+                        if ((m_HalfFloatTargetTickOwnership > m_CachedNetworkManager.NetTime.Tick || isAxisSync) && !networkState.IsTeleportingNextFrame)
                         {
                             networkState.SynchronizeBaseHalfFloat = true;
                         }
@@ -2156,7 +2156,7 @@ namespace Unity.Netcode.Components
                 if (enabled)
                 {
                     // We use the NetworkTickSystem version since ServerTime is set when updating ticks
-                    networkState.NetworkTick = m_CachedNetworkManager.NetworkTickSystem.ServerTime.Tick;
+                    networkState.NetworkTick = m_CachedNetworkManager.NetworkTickSystem.Time.Tick;
                 }
             }
 
@@ -2187,7 +2187,7 @@ namespace Unity.Netcode.Components
                 }
 
                 // If we are nested and have already sent a state update this tick, then exit early (otherwise check for any changes in state)
-                if (IsNested && m_LocalAuthoritativeNetworkState.NetworkTick == m_CachedNetworkManager.ServerTime.Tick)
+                if (IsNested && m_LocalAuthoritativeNetworkState.NetworkTick == m_CachedNetworkManager.NetTime.Tick)
                 {
                     return;
                 }
@@ -3204,7 +3204,7 @@ namespace Unity.Netcode.Components
         /// </summary>
         private void ResetInterpolatedStateToCurrentAuthoritativeState()
         {
-            var serverTime = NetworkManager.ServerTime.Time;
+            var serverTime = NetworkManager.NetTime.Time;
 #if COM_UNITY_MODULES_PHYSICS || COM_UNITY_MODULES_PHYSICS2D
             var position = m_UseRigidbodyForMotion ? m_NetworkRigidbodyInternal.GetPosition() : GetSpaceRelativePosition();
             var rotation = m_UseRigidbodyForMotion ? m_NetworkRigidbodyInternal.GetRotation() : GetSpaceRelativeRotation();
@@ -3288,7 +3288,7 @@ namespace Unity.Netcode.Components
                 m_CachedNetworkManager.NetworkTransformRegistration(NetworkObject, forUpdate, false);
                 if (UseHalfFloatPrecision)
                 {
-                    m_HalfPositionState = new NetworkDeltaPosition(currentPosition, m_CachedNetworkManager.ServerTime.Tick, math.bool3(SyncPositionX, SyncPositionY, SyncPositionZ));
+                    m_HalfPositionState = new NetworkDeltaPosition(currentPosition, m_CachedNetworkManager.NetTime.Tick, math.bool3(SyncPositionX, SyncPositionY, SyncPositionZ));
                     m_LocalAuthoritativeNetworkState.SynchronizeBaseHalfFloat = isOwnershipChange;
                     SetState(teleportDisabled: false);
                 }
@@ -3300,7 +3300,7 @@ namespace Unity.Netcode.Components
 
                 if (UseHalfFloatPrecision && isOwnershipChange && !IsServerAuthoritative() && Interpolate)
                 {
-                    m_HalfFloatTargetTickOwnership = m_CachedNetworkManager.ServerTime.Tick;
+                    m_HalfFloatTargetTickOwnership = m_CachedNetworkManager.NetTime.Tick;
                 }
             }
             else
@@ -3498,7 +3498,7 @@ namespace Unity.Netcode.Components
                         m_RotationInterpolator.Clear();
 
                         // Always use NetworkManager here as this can be invoked prior to spawning
-                        var tempTime = new NetworkTime(NetworkManager.NetworkConfig.TickRate, NetworkManager.ServerTime.Tick).Time;
+                        var tempTime = new NetworkTime(NetworkManager.NetworkConfig.TickRate, NetworkManager.NetTime.Tick).Time;
                         UpdatePositionInterpolator(m_InternalCurrentPosition, tempTime, true);
                         m_ScaleInterpolator.ResetTo(m_InternalCurrentScale, tempTime);
                         m_RotationInterpolator.ResetTo(m_InternalCurrentRotation, tempTime);
@@ -3683,7 +3683,7 @@ namespace Unity.Netcode.Components
             {
                 AdjustForChangeInTransformSpace();
 
-                var serverTime = m_CachedNetworkManager.ServerTime;
+                var serverTime = m_CachedNetworkManager.NetTime;
                 var cachedServerTime = serverTime.Time;
                 // var offset = (float)serverTime.TickOffset;
 #if COM_UNITY_MODULES_PHYSICS || COM_UNITY_MODULES_PHYSICS2D
@@ -4021,7 +4021,7 @@ namespace Unity.Netcode.Components
                 // }
 
                 // TODO FIX: The local NetworkTickSystem can invoke with the same network tick as before
-                if (m_NetworkManager.ServerTime.Tick <= m_LastTick)
+                if (m_NetworkManager.NetTime.Tick <= m_LastTick)
                 {
                     return;
                 }
@@ -4032,7 +4032,7 @@ namespace Unity.Netcode.Components
                         networkTransform.OnNetworkTick();
                     }
                 }
-                m_LastTick = m_NetworkManager.ServerTime.Tick;
+                m_LastTick = m_NetworkManager.NetTime.Tick;
             }
 
 
@@ -4084,7 +4084,7 @@ namespace Unity.Netcode.Components
         internal void RegisterForTickSynchronization()
         {
             s_TickSynchPosition++;
-            m_NextTickSync = NetworkManager.ServerTime.Tick + (s_TickSynchPosition % (int)NetworkManager.NetworkConfig.TickRate);
+            m_NextTickSync = NetworkManager.NetTime.Tick + (s_TickSynchPosition % (int)NetworkManager.NetworkConfig.TickRate);
         }
 
         private static void RegisterNetworkManagerForTickUpdate(NetworkManager networkManager)

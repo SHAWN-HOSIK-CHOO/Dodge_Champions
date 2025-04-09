@@ -37,11 +37,11 @@ namespace Unity.Netcode
         private static ProfilerMarker s_SyncTime = new ProfilerMarker($"{nameof(NetworkManager)}.SyncTime");
 #endif
 
-        private double m_TimeSec;
-        private double m_CurrentLocalTimeOffset;
-        private double m_DesiredLocalTimeOffset;
-        private double m_CurrentServerTimeOffset;
-        private double m_DesiredServerTimeOffset;
+        public double m_TimeSec { get; private set; }
+        //private double m_CurrentLocalTimeOffset;
+        //private double m_DesiredLocalTimeOffset;
+        //private double m_CurrentServerTimeOffset;
+        //private double m_DesiredServerTimeOffset;
 
         /// <summary>
         /// Gets or sets the amount of time in seconds the server should buffer incoming client messages.
@@ -69,12 +69,12 @@ namespace Unity.Netcode
         /// <summary>
         /// The current local time with the local time offset applied
         /// </summary>
-        public double LocalTime => m_TimeSec + m_CurrentLocalTimeOffset;
+        //public double LocalTime => m_TimeSec + m_CurrentLocalTimeOffset;
 
         /// <summary>
         /// The current server time with the server time offset applied
         /// </summary>
-        public double ServerTime => m_TimeSec + m_CurrentServerTimeOffset;
+        //public double ServerTime => m_TimeSec + m_CurrentServerTimeOffset;
 
         internal double LastSyncedServerTimeSec { get; private set; }
         internal double LastSyncedRttSec { get; private set; }
@@ -113,11 +113,11 @@ namespace Unity.Netcode
             m_ConnectionManager = networkManager.ConnectionManager;
             m_NetworkTransport = networkManager.NetworkConfig.NetworkTransport;
             m_TimeSyncFrequencyTicks = (int)(k_TimeSyncFrequency * networkManager.NetworkConfig.TickRate);
-            m_NetworkTickSystem = new NetworkTickSystem(networkManager.NetworkConfig.TickRate, 0, 0);
+            m_NetworkTickSystem = new NetworkTickSystem(networkManager.NetworkConfig.TickRate,0);
             // Only the server side needs to register for tick based time synchronization
             if (m_ConnectionManager.LocalClient.IsServer)
             {
-                m_NetworkTickSystem.ServerTick += OnTickSyncTime;
+                m_NetworkTickSystem.Tick += OnTickSyncTime;
             }
 
             return m_NetworkTickSystem;
@@ -131,12 +131,13 @@ namespace Unity.Netcode
             {
                 return;
             }
-            // Only update RTT here, server time is updated by time sync messages
-            Advance(m_NetworkManager.RealTimeProvider.UnscaledDeltaTime);
-            m_NetworkTickSystem.UpdateTick(LocalTime, ServerTime);
+
+            m_TimeSec += m_NetworkManager.RealTimeProvider.UnscaledDeltaTime;
+            //Advance(m_NetworkManager.RealTimeProvider.UnscaledDeltaTime);
+            m_NetworkTickSystem.UpdateTick(m_TimeSec);
 
             //if (m_NetworkManager.IsClient)
-            Sync(LastSyncedServerTimeSec + m_NetworkManager.RealTimeProvider.UnscaledDeltaTime, m_NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId) / 1000d);
+            //Sync(LastSyncedServerTimeSec + m_NetworkManager.RealTimeProvider.UnscaledDeltaTime, m_NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId) / 1000d);
         }
 
         /// <summary>
@@ -154,13 +155,14 @@ namespace Unity.Netcode
 #endif
 
             // Check if we need to send a time synchronization message, and if so send it
-            if (m_ConnectionManager.LocalClient.IsServer && m_NetworkTickSystem.ServerTime.Tick % m_TimeSyncFrequencyTicks == 0)
+            if (m_ConnectionManager.LocalClient.IsServer && m_NetworkTickSystem.Time.Tick % m_TimeSyncFrequencyTicks == 0)
             {
-                var message = new TimeSyncMessage
-                {
-                    Tick = m_NetworkTickSystem.ServerTime.Tick
-                };
-                m_ConnectionManager.SendMessage(ref message, NetworkDelivery.Unreliable, m_ConnectionManager.ConnectedClientIds);
+                Reset(m_NetworkTickSystem.Time.TickRate);
+                //var message = new TimeSyncMessage
+                //{
+                //    Tick = m_NetworkTickSystem.Time.Tick
+                //};
+                //m_ConnectionManager.SendMessage(ref message, NetworkDelivery.Unreliable, m_ConnectionManager.ConnectedClientIds);
             }
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
@@ -175,7 +177,7 @@ namespace Unity.Netcode
         {
             if (m_ConnectionManager.LocalClient.IsServer)
             {
-                m_NetworkTickSystem.ServerTick -= OnTickSyncTime;
+                m_NetworkTickSystem.Tick -= OnTickSyncTime;
             }
         }
 
@@ -194,51 +196,60 @@ namespace Unity.Netcode
         /// </summary>
         /// <param name="deltaTimeSec">The amount of time to advance. The delta time which passed since Advance was last called.</param>
         /// <returns></returns>
-        public bool Advance(double deltaTimeSec)
-        {
-            m_TimeSec += deltaTimeSec;
-            bool hardReset = false;
-            if (Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) > HardResetThresholdSec)
-            {
-                m_TimeSec += m_DesiredServerTimeOffset;
-                m_DesiredLocalTimeOffset -= m_DesiredServerTimeOffset;
-                m_CurrentLocalTimeOffset = m_DesiredLocalTimeOffset;
-                m_DesiredServerTimeOffset = 0;
-                m_CurrentServerTimeOffset = 0;
-                hardReset = true;
-            }
-            if (Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) > HardResetThresholdSec)
-            {
-                m_TimeSec += m_DesiredLocalTimeOffset;
-                m_DesiredServerTimeOffset -= m_DesiredLocalTimeOffset;
-                m_CurrentServerTimeOffset = m_DesiredServerTimeOffset;
-                m_DesiredLocalTimeOffset = 0;
-                m_CurrentLocalTimeOffset = 0;
-                hardReset = true;
-            }
-            double localRange = Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset);
-            if (localRange > double.Epsilon)
-            {
-                m_CurrentLocalTimeOffset = m_CurrentLocalTimeOffset + (m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
-            }
-            localRange = Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset);
-            if (localRange > double.Epsilon)
-            {
-                m_CurrentServerTimeOffset = m_CurrentServerTimeOffset + (m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
-            }
+        //public bool Advance(double deltaTimeSec)
+        //{
+        //    m_TimeSec += deltaTimeSec;
+        //    bool hardReset = false;
+        //    if (Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) > HardResetThresholdSec)
+        //    {
+        //        m_TimeSec += m_DesiredServerTimeOffset;
+        //        m_DesiredLocalTimeOffset -= m_DesiredServerTimeOffset;
+        //        m_CurrentLocalTimeOffset = m_DesiredLocalTimeOffset;
+        //        m_DesiredServerTimeOffset = 0;
+        //        m_CurrentServerTimeOffset = 0;
+        //        hardReset = true;
+        //    }
+        //    if (Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) > HardResetThresholdSec)
+        //    {
+        //        m_TimeSec += m_DesiredLocalTimeOffset;
+        //        m_DesiredServerTimeOffset -= m_DesiredLocalTimeOffset;
+        //        m_CurrentServerTimeOffset = m_DesiredServerTimeOffset;
+        //        m_DesiredLocalTimeOffset = 0;
+        //        m_CurrentLocalTimeOffset = 0;
+        //        hardReset = true;
+        //    }
+        //    double localRange = Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset);
+        //    if (localRange > double.Epsilon)
+        //    {
+        //        m_CurrentLocalTimeOffset = m_CurrentLocalTimeOffset + (m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
+        //    }
+        //    localRange = Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset);
+        //    if (localRange > double.Epsilon)
+        //    {
+        //        m_CurrentServerTimeOffset = m_CurrentServerTimeOffset + (m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
+        //    }
 
-            return hardReset;
-        }
+        //    return hardReset;
+        //}
 
         /// <summary>
         /// Resets the time system to a time based on the given network parameters.
         /// </summary>
         /// <param name="serverTimeSec">The most recent server time value received in seconds.</param>
         /// <param name="rttSec">The current RTT in seconds. Can be an averaged or a raw value.</param>
-        public void Reset(double serverTimeSec, double rttSec)
+
+        DateTime baseTimeUtc = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public void Reset(uint tickRate)
         {
-            Sync(serverTimeSec, rttSec);
-            Advance(0);
+            using (NtpClient client = new NtpClient("time.windows.com"))
+            {
+                DateTime nptTime = client.GetNetworkTime();
+                TimeSpan elapsed = nptTime - baseTimeUtc;
+                m_TimeSec = elapsed.TotalSeconds;
+
+                //Sync(elapsed.TotalSeconds, 0);
+                //Advance(0);
+            }
         }
 
         /// <summary>
@@ -246,15 +257,15 @@ namespace Unity.Netcode
         /// </summary>
         /// <param name="serverTimeSec">The most recent server time value received in seconds.</param>
         /// <param name="rttSec">The current RTT in seconds. Can be an averaged or a raw value.</param>
-        public void Sync(double serverTimeSec, double rttSec)
-        {
-            LastSyncedRttSec = rttSec;
-            LastSyncedServerTimeSec = serverTimeSec;
+        //public void Sync(double serverTimeSec, double rttSec)
+        //{
+        //    LastSyncedRttSec = rttSec;
+        //    LastSyncedServerTimeSec = serverTimeSec;
 
-            var timeDif = serverTimeSec - m_TimeSec;
+        //    var timeDif = serverTimeSec - m_TimeSec;
 
-            m_DesiredServerTimeOffset = timeDif - ServerBufferSec;
-            m_DesiredLocalTimeOffset = timeDif + rttSec + LocalBufferSec;
-        }
+        //    m_DesiredServerTimeOffset = timeDif - ServerBufferSec;
+        //    m_DesiredLocalTimeOffset = timeDif + rttSec + LocalBufferSec;
+        //}
     }
 }

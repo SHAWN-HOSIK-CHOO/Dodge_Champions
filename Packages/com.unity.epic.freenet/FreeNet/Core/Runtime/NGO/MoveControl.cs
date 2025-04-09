@@ -319,7 +319,7 @@ public class PlayerMoveControl : ClientPrediction
     }
     public override void OnLocalTick()
     {
-        int localTick = NetworkManager.NetworkTickSystem.LocalTime.Tick;
+        int localTick = NetworkManager.NetworkTickSystem.Time.Tick;
         if(IsOwner)
         {
             foreach (var imoveEvent in _userInput)
@@ -367,8 +367,8 @@ public class PlayerMoveControl : ClientPrediction
                 var message = (MouseInputEvent)history._iMoveEvent;
                 Vector2 mouseInput = message._mouseInput;
                 Vector3 currentRotation = _characterController.transform.rotation.eulerAngles;
-                float newYaw = currentRotation.y + mouseInput.x * NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime * _curMouseSpeed.x;
-                float newPitch = currentRotation.x - mouseInput.y * NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime * _curMouseSpeed.y;
+                float newYaw = currentRotation.y + mouseInput.x * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime * _curMouseSpeed.x;
+                float newPitch = currentRotation.x - mouseInput.y * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime * _curMouseSpeed.y;
                 // Pitch 값 클램핑 (-60 ~ 60도)
                 if (newPitch > 180f) newPitch -= 360f;
                 newPitch = Mathf.Clamp(newPitch, -60f, 60f);
@@ -382,14 +382,14 @@ public class PlayerMoveControl : ClientPrediction
                 Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
                 Quaternion yawRotation = Quaternion.Euler(0, _characterController.transform.eulerAngles.y, 0);
                 moveDirection = yawRotation * moveDirection;
-                _characterController.Move(Vector3.Scale(moveDirection, _curMoveSpeed) * NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime);
+                _characterController.Move(Vector3.Scale(moveDirection, _curMoveSpeed) * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime);
             }
             else if (history._iMoveEvent._moveEventType == MoveEvent.MoveEventType.JumpInputEvent)
             {
                 if (_curIsJumpValid)
                 {
                     _curEnvSpeed.y = Mathf.Sqrt(2 * 4.0f * 9.8f * 2.0f);
-                    _characterController.Move(Vector3.Scale(Vector3.up, _curEnvSpeed) * NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime);
+                    _characterController.Move(Vector3.Scale(Vector3.up, _curEnvSpeed) * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime);
                     if (OnGround())
                     {
                         //Maybe This Should Not Happen
@@ -404,8 +404,8 @@ public class PlayerMoveControl : ClientPrediction
     void ApplyGravity(int tick)
     {
         //Gravity Event
-        _curEnvSpeed.y -= 4.0f * 9.8f * NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime;
-        _characterController.Move(Vector3.Scale(Vector3.up, _curEnvSpeed) * NetworkManager.NetworkTickSystem.LocalTime.FixedDeltaTime);
+        _curEnvSpeed.y -= 4.0f * 9.8f * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime;
+        _characterController.Move(Vector3.Scale(Vector3.up, _curEnvSpeed) * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime);
         if (OnGround())
         {
             _curEnvSpeed.y = -0.1f;

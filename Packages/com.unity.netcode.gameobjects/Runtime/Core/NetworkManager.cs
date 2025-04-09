@@ -397,7 +397,7 @@ namespace Unity.Netcode
                         // Handle deferred despawning
                         if (DistributedAuthorityMode)
                         {
-                            SpawnManager.DeferredDespawnUpdate(ServerTime);
+                            SpawnManager.DeferredDespawnUpdate(NetTime);
                         }
 
                         // Update any NetworkObject's registered to notify of scene migration changes.
@@ -768,15 +768,17 @@ namespace Unity.Netcode
         [HideInInspector]
         public NetworkConfig NetworkConfig;
 
+        public NetworkTime NetTime => NetworkTickSystem?.Time ?? default;
+
         /// <summary>
         /// The local <see cref="NetworkTime"/>
         /// </summary>
-        public NetworkTime LocalTime => NetworkTickSystem?.LocalTime ?? default;
+        //public NetworkTime LocalTime => NetworkTickSystem?.LocalTime ?? default;
 
         /// <summary>
         /// The <see cref="NetworkTime"/> on the server
         /// </summary>
-        public NetworkTime ServerTime => NetworkTickSystem?.ServerTime ?? default;
+        //public NetworkTime ServerTime => NetworkTickSystem?.ServerTime ?? default;
 
         /// <summary>
         /// Gets or sets if the application should be set to run in background

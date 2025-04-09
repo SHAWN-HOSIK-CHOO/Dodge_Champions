@@ -38,7 +38,7 @@ public abstract class ClientPrediction : NetworkBehaviour
     public int MaxBufferedTick = 30 * 10;
     virtual public void OnLocalTick()
     {
-        int localTick = NetworkManager.NetworkTickSystem.LocalTime.Tick;
+        int localTick = NetworkManager.NetworkTickSystem.Time.Tick;
         if (IsOwner)
         {
             ClearOldEvent(localTick);
@@ -48,7 +48,7 @@ public abstract class ClientPrediction : NetworkBehaviour
     }
     virtual public void OnServerTick()
     {
-        int serverTick = NetworkManager.NetworkTickSystem.ServerTime.Tick;
+        int serverTick = NetworkManager.NetworkTickSystem.Time.Tick;
         if (!IsOwner)
         {
             Reconciliation(serverTick);
@@ -68,7 +68,7 @@ public abstract class ClientPrediction : NetworkBehaviour
     override public void OnNetworkDespawn()
     {
         NetworkManager.NetworkTickSystem.Tick -= OnLocalTick;
-        NetworkManager.NetworkTickSystem.ServerTick -= OnServerTick;
+        NetworkManager.NetworkTickSystem.Tick -= OnServerTick;
     }
     override public void OnNetworkSpawn()
     {
@@ -82,7 +82,7 @@ public abstract class ClientPrediction : NetworkBehaviour
             _tickEventHistory._buffer[i] = new LinkedList<ITickEvent>();
         }
         NetworkManager.NetworkTickSystem.Tick += OnLocalTick;
-        NetworkManager.NetworkTickSystem.ServerTick += OnServerTick;
+        NetworkManager.NetworkTickSystem.Tick += OnServerTick;
     }
     void ClearOldEvent(int tick)
     {

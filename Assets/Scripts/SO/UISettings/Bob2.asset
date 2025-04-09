@@ -18,4 +18,4 @@ MonoBehaviour:
   characterName: REVENGE
   ballDesc: "\uB9DE\uC744\uC218\uB85D \uAC15\uD574\uC9C0\uB294"
   skillDesc: "\uD53C\uD558\uACE0 \uD53C\uD558\uACE0 \uD53C\uD558\uACE0"
-  pfDancer: {fileID: 4675458648243972369, guid: de738c0048c7416418cafaa5341f0626, type: 3}
+  pfDancer: {fileID: 7763766301168784623, guid: 91bb6b54519e4a149adb36cb8dcf8efd, type: 3}

@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class ConsoleSimulator : MonoBehaviour
 {
-    [SerializeField]
-    CoroutineHandler _coroutineHandler;
     Coroutine _coroutine;
     [SerializeField]
     Scrollbar _scrollbar;
@@ -38,7 +36,7 @@ public class ConsoleSimulator : MonoBehaviour
     }
     public void BeginTracking()
     {
-        if (_coroutine != null) _coroutineHandler.EndCoroutine(_coroutine);
+        if (_coroutine != null) StopCoroutine(_coroutine);
         _coroutine = null;
         _beginSimulIndex = _textField.textComponent.textInfo.characterCount;
     }
@@ -50,7 +48,7 @@ public class ConsoleSimulator : MonoBehaviour
     {
         if (_coroutine == null)
         {
-            _coroutine = _coroutineHandler.BeginCoroutine(() => SimulateCoroutine(stepTime, reset));
+            _coroutine = StartCoroutine(SimulateCoroutine(stepTime, reset));
         }
     }
 

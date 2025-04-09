@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 658777d427abd7040b15a3ebf148d5fc
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 285383
+  packageName: NTP Client - Network Time Protocol
+  packageVersion: 1.0
+  assetPath: Assets/Network Time Protocol/Documentation/NtpClient Documentation.docx
+  uploadId: 664934

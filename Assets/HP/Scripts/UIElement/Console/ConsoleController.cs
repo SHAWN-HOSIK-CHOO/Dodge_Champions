@@ -8,7 +8,7 @@ public class ConsoleController : MonoBehaviour
     [SerializeField]
     GameObject _inputFieldObject;
     [SerializeField]
-    CutomTMPInputField _inputField;
+    TMPInputField _inputField;
     [SerializeField]
     public TMP_InputField _textField;
     [SerializeField]
@@ -17,7 +17,7 @@ public class ConsoleController : MonoBehaviour
     bool _useInputField;
     [SerializeField]
     bool _useInputMode;
-    public class Mode : CutomTMPInputField.IInputMode
+    public class Mode : TMPInputField.IInputMode
     {
         public enum InputMode
         {
@@ -26,48 +26,45 @@ public class ConsoleController : MonoBehaviour
         }
         public InputMode _mode;
 
-        void CutomTMPInputField.IInputMode.ChangeModeNext()
+        void TMPInputField.IInputMode.ChangeModeNext()
         {
             _mode = (InputMode)(((int)_mode + 1) % System.Enum.GetValues(typeof(InputMode)).Length);
         }
 
-        string CutomTMPInputField.IInputMode.GetName()
+        string TMPInputField.IInputMode.GetName()
         {
             return _mode.ToString();
         }
     }
 
-    public event Action<CutomTMPInputField.IInputMode, string> onSubmit;
+    public event Action<TMPInputField.IInputMode, string> onSubmit;
 
     private void Awake()
     {
-        _inputField.onSubmit.AddListener(OnSubmit);
+        //_inputField.onSubmit.AddListener(OnSubmit);
 
     }
     private void Start()
     {
         _inputFieldObject.SetActive(_useInputField);
         _inputField.InputMode = new Mode();
-        _inputField.ShowInputMode(_useInputMode);
+        //_inputField.ShowInputMode(_useInputMode);
     }
     public void ShowInputField(bool b)
     {
         _useInputField = b;
         _inputFieldObject.SetActive(b);
     }
-
     private void OnEnable()
     {
         ShowInputField(_useInputField);
     }
-
     public void AddText(string text, bool scroll = true, bool newLine = true)
     {
         if (newLine) _textField.text += "\n";
         _textField.text += text;
         if (scroll) _scrollbar.value = 1f;
     }
-
     void OnSubmit(string newText)
     {
         if (newText != string.Empty)
@@ -76,9 +73,8 @@ public class ConsoleController : MonoBehaviour
             onSubmit?.Invoke(_inputField.InputMode, newText);
         }
     }
-
     private void OnDestroy()
     {
-        _inputField.onSubmit.RemoveListener(OnSubmit);
+       // _inputField.onSubmit.RemoveListener(OnSubmit);
     }
 }

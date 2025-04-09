@@ -111,7 +111,9 @@ namespace Epic.OnlineServices.Achievements
         public const int PlayerstatinfoApiLatest = 1;
 
         /// <summary>
-        /// The most recent version of the <see cref="QueryDefinitions" /> struct.
+        /// The most recent version of the <see cref="
+        /// 
+        /// Definitions" /> struct.
         /// </summary>
         public const int QuerydefinitionsApiLatest = 3;
 

@@ -15,8 +15,6 @@ public class PingPong : NetworkBehaviour
     private bool _useVirtualRtt;
     [SerializeField]
     private float _virtualRtt;
-
-
     public event Action OnRttChanged;
 
     private Dictionary<ulong, double> _smoothedRTT;
@@ -24,14 +22,11 @@ public class PingPong : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _smoothedRTT = new Dictionary<ulong, double>();
-
-        if (FreeNet._instance._ngoManager._useEpicOnlineTransport)
-        {
-            FreeNet._instance._ngoManager.GetComponent<EOSNetcodeTransport>()._pingpong = this;
-        }
         NetworkManager.CustomMessagingManager.RegisterNamedMessageHandler(MessageName, ReceiveMessage);
         NetworkManager.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.OnClientDisconnectCallback += OnClientDisConnected;
+        NgoManager.Singleton._pingPong = this;
+        NgoManager.Singleton._onPingPongSpawned?.Invoke();
     }
     public void SetVirtualRtt(bool useVirtualRtt, float virtualRtt = 0)
     {

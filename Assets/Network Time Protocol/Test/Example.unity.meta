@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ba406253a9098f34a900ff64f6194e86
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 285383
+  packageName: NTP Client - Network Time Protocol
+  packageVersion: 1.0
+  assetPath: Assets/Network Time Protocol/Test/Example.unity
+  uploadId: 664934
