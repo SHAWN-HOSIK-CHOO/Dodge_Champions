@@ -8,6 +8,7 @@ namespace Skill
         Vector3Target, //방향
         Scalar3Value, // Transform Scale 등
         JustBoolean,  // 딸깍
+        RayVec3Target,
         Count
     }
 

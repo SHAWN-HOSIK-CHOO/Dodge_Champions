@@ -3,6 +3,7 @@ using GameInput;
 using GameLobby;
 using GameUI;
 using System.Collections;
+using System.Globalization;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -107,12 +108,19 @@ namespace Game
             float elapsedStandByTime = 0f;
             isGameReadyToStart                        = false;
             InputManager.Instance.playerInput.enabled = false;
+            
+            foreach (var action in InputManager.Instance.playerInput.actions)
+            {
+                action.Disable();
+            }
 
             if (localPlayer != null && enemyPlayer != null)
             {
                 {
                     localPlayer.GetComponent<CharacterMovement>().SetAnimationIdle();
                     enemyPlayer.GetComponent<CharacterMovement>().SetAnimationIdle();
+                    localPlayer.GetComponent<CharacterController>().Move(Vector3.zero);
+                    enemyPlayer.GetComponent<CharacterController>().Move(Vector3.zero);
                 }
             }
 
@@ -123,28 +131,34 @@ namespace Game
                 yield return null;
             }
 
-            isGameReadyToStart                        = true;
-            InputManager.Instance.playerInput.enabled = true;
+            isGameReadyToStart = true;
             
-            float elapsedTime = 0f;
-            UIManager.Instance.turnCoolDownImage.fillAmount = 0f;
-
-            while (elapsedTime <= times)
+            foreach (var action in InputManager.Instance.playerInput.actions)
             {
-                elapsedTime += Time.deltaTime;
-                float ratio = elapsedTime / times;
+                action.Enable();
+            }
+            
+            InputManager.Instance.playerInput.enabled = true;
 
-                UIManager.Instance.turnCoolDownImage.fillAmount = ratio;
+            float leftTime = times;
+
+            UIManager.Instance.roundTimer.text = leftTime.ToString(CultureInfo.InvariantCulture);
+
+            while (leftTime >= 0)
+            {
+                leftTime -= Time.deltaTime;
+
+                UIManager.Instance.roundTimer.text = Mathf.Clamp(Mathf.FloorToInt(leftTime),0,times).ToString(CultureInfo.InvariantCulture);
 
                 yield return null;
             }
 
-            UIManager.Instance.turnCoolDownImage.fillAmount = 1f;
+            UIManager.Instance.roundTimer.text = times.ToString(CultureInfo.InvariantCulture);
 
             _timeCheckerCoroutine = null;
 
             if (IsServer)
-                RestartRoundServerRPC();
+                RestartRoundServerRPC(timePerRound);
         }
 
         [ServerRpc]

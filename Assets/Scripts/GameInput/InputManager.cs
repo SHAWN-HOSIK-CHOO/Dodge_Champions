@@ -79,6 +79,10 @@ namespace GameInput
             
             if(GameManager.Instance.isGameReadyToStart)
                 MoveInput(value.Get<Vector2>());
+            else
+            {
+                move = Vector2.zero;
+            }
         }
 
         public void OnLook(InputValue value)
@@ -88,6 +92,10 @@ namespace GameInput
             
             if(GameManager.Instance.isGameReadyToStart)
                 LookInput(value.Get<Vector2>());
+            else
+            {
+                look = Vector2.zero;
+            }
         }
 
         public void OnJump(InputValue value)
@@ -97,6 +105,10 @@ namespace GameInput
             
             if(GameManager.Instance.isGameReadyToStart)
                 JumpInput(value.isPressed);
+            else
+            {
+                jump = false;
+            }
         }
 
         public void OnSprint(InputValue value)
@@ -106,6 +118,10 @@ namespace GameInput
             
             if(GameManager.Instance.isGameReadyToStart)
                 SprintInput(value.isPressed);
+            else
+            {
+                sprint = false;
+            }
         }
 
         public bool canThrowBall = false;
@@ -261,8 +277,22 @@ namespace GameInput
                     }
                 case ESkillInputType.JustBoolean:
                     {
+                    var input = new PressInput
+                                {
+                                    IsPressed = true
+                                };
+                        _characterSkillLauncher.StartSkill(input);
                         break;
                     }
+                case ESkillInputType.RayVec3Target:
+                {
+                    var input = new TargetVector3Input
+                                {
+                                    TargetVector = currentTargetPosition
+                                };
+                        _characterSkillLauncher.StartSkill(input);
+                    break;
+                }
             }
         }
 

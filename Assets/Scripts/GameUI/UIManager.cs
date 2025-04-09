@@ -37,8 +37,8 @@ namespace GameUI
         [Header("Skill CoolDown")]
         public Image skillCoolDownImage;
 
-        [Header("Turn CoolDown")]
-        public Image turnCoolDownImage;
+        [Header("Round CoolDown")]
+        public TMP_Text roundTimer;
 
         [Header("Debug Area")]
         public TMP_Text playerBallSkillIndex;
@@ -68,7 +68,7 @@ namespace GameUI
             startText.gameObject.SetActive(flag);
             coolDownImage.gameObject.SetActive(flag);
             skillCoolDownImage.gameObject.SetActive(flag);
-            turnCoolDownImage.gameObject.SetActive(flag);
+            roundTimer.gameObject.SetActive(flag);
         }
 
         public void StartGameCountDown(float time = 5f)
