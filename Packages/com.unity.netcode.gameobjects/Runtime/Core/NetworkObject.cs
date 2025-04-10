@@ -361,7 +361,7 @@ namespace Unity.Netcode
         /// sending a delayed despawn to all non-authority instances. The tick offset + the authority's current known network tick (ServerTime.Tick)
         /// is when non-authority instances will despawn this <see cref="NetworkObject"/> instance.
         /// </summary>
-        /// <param name="tickOffset">The number of ticks from the authority's currently known <see cref="NetworkManager.ServerTime.Tick"/> to delay the despawn.</param>
+        /// <param name="tickOffset">The number of ticks from the authority's currently known <see cref="mess.Tick"/> to delay the despawn.</param>
         /// <param name="destroy">Defaults to true, determines whether the <see cref="NetworkObject"/> will be destroyed.</param>
         public void DeferDespawn(int tickOffset, bool destroy = true)
         {

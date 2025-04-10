@@ -1,5 +1,9 @@
 using System;
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using Unity.Profiling;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace Unity.Netcode
@@ -23,61 +27,15 @@ namespace Unity.Netcode
         /// </summary>
         private const double k_TimeSyncFrequency = 1.0d;
 
-        /// <summary>
-        /// The threshold, in seconds, used to force a hard catchup of network time
-        /// </summary>
-        private const double k_HardResetThresholdSeconds = 0.2d;
-
-        /// <summary>
-        /// Default adjustment ratio
-        /// </summary>
-        private const double k_DefaultAdjustmentRatio = 0.01d;
-
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
         private static ProfilerMarker s_SyncTime = new ProfilerMarker($"{nameof(NetworkManager)}.SyncTime");
 #endif
 
-        public double m_TimeSec { get; private set; }
-        //private double m_CurrentLocalTimeOffset;
-        //private double m_DesiredLocalTimeOffset;
-        //private double m_CurrentServerTimeOffset;
-        //private double m_DesiredServerTimeOffset;
+        public double m_TimeSec { get; set; }
 
-        /// <summary>
-        /// Gets or sets the amount of time in seconds the server should buffer incoming client messages.
-        /// This increases the difference between local and server time so that messages arrive earlier on the server.
-        /// </summary>
         public double LocalBufferSec { get; set; }
 
-        /// <summary>
-        /// Gets or sets the amount of the time in seconds the client should buffer incoming messages from the server. This increases server time.
-        /// A higher value increases latency but makes the game look more smooth in bad networking conditions.
-        /// This value must be higher than the tick length client side.
-        /// </summary>
         public double ServerBufferSec { get; set; }
-
-        /// <summary>
-        /// Gets or sets a threshold in seconds used to force a hard catchup of network time.
-        /// </summary>
-        public double HardResetThresholdSec { get; set; }
-
-        /// <summary>
-        /// Gets or sets the ratio at which the NetworkTimeSystem speeds up or slows down time.
-        /// </summary>
-        public double AdjustmentRatio { get; set; }
-
-        /// <summary>
-        /// The current local time with the local time offset applied
-        /// </summary>
-        //public double LocalTime => m_TimeSec + m_CurrentLocalTimeOffset;
-
-        /// <summary>
-        /// The current server time with the server time offset applied
-        /// </summary>
-        //public double ServerTime => m_TimeSec + m_CurrentServerTimeOffset;
-
-        internal double LastSyncedServerTimeSec { get; private set; }
-        internal double LastSyncedRttSec { get; private set; }
 
         private NetworkConnectionManager m_ConnectionManager;
         private NetworkTransport m_NetworkTransport;
@@ -89,6 +47,10 @@ namespace Unity.Netcode
         /// </summary>
         private int m_TimeSyncFrequencyTicks;
 
+        public double m_BaseTime;
+        NtpClient client;
+        Coroutine m_timeSyncCoroutine;
+
         /// <summary>
         /// The constructor class for <see cref="NetworkTickSystem"/>
         /// </summary>
@@ -96,12 +58,10 @@ namespace Unity.Netcode
         /// <param name="serverBufferSec">The amount of the time in seconds the client should buffer incoming messages from the server.</param>
         /// <param name="hardResetThresholdSec">The threshold, in seconds, used to force a hard catchup of network time.</param>
         /// <param name="adjustmentRatio">The ratio at which the NetworkTimeSystem speeds up or slows down time.</param>
-        public NetworkTimeSystem(double localBufferSec, double serverBufferSec = k_DefaultBufferSizeSec, double hardResetThresholdSec = k_HardResetThresholdSeconds, double adjustmentRatio = k_DefaultAdjustmentRatio)
+        public NetworkTimeSystem(double localBufferSec, double serverBufferSec = k_DefaultBufferSizeSec)
         {
             LocalBufferSec = localBufferSec;
             ServerBufferSec = serverBufferSec;
-            HardResetThresholdSec = hardResetThresholdSec;
-            AdjustmentRatio = adjustmentRatio;
         }
 
         /// <summary>
@@ -114,30 +74,21 @@ namespace Unity.Netcode
             m_NetworkTransport = networkManager.NetworkConfig.NetworkTransport;
             m_TimeSyncFrequencyTicks = (int)(k_TimeSyncFrequency * networkManager.NetworkConfig.TickRate);
             m_NetworkTickSystem = new NetworkTickSystem(networkManager.NetworkConfig.TickRate,0);
-            // Only the server side needs to register for tick based time synchronization
-            if (m_ConnectionManager.LocalClient.IsServer)
-            {
-                m_NetworkTickSystem.Tick += OnTickSyncTime;
-            }
-
+            client = new NtpClient("time.windows.com");
+            m_BaseTime = (client.GetNetworkTime() - NtpClient.baseTime).TotalSeconds;
+            m_TimeSec = 0;
+            m_timeSyncCoroutine = m_NetworkManager.StartCoroutine(OnTickSyncTime());
             return m_NetworkTickSystem;
         }
 
         internal void UpdateTime()
         {
-            // As a client wait to run the time system until we are connected.
-            // As a client or server don't worry about the time system if we are no longer processing messages
-            if (!m_ConnectionManager.LocalClient.IsServer && !m_ConnectionManager.LocalClient.IsConnected)
+            if (!m_ConnectionManager.LocalClient.IsConnected)
             {
                 return;
             }
-
             m_TimeSec += m_NetworkManager.RealTimeProvider.UnscaledDeltaTime;
-            //Advance(m_NetworkManager.RealTimeProvider.UnscaledDeltaTime);
             m_NetworkTickSystem.UpdateTick(m_TimeSec);
-
-            //if (m_NetworkManager.IsClient)
-            //Sync(LastSyncedServerTimeSec + m_NetworkManager.RealTimeProvider.UnscaledDeltaTime, m_NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId) / 1000d);
         }
 
         /// <summary>
@@ -148,124 +99,42 @@ namespace Unity.Netcode
         /// <remarks>
         /// The default is to send 1 time synchronization message per second
         /// </remarks>
-        private void OnTickSyncTime()
+        private IEnumerator OnTickSyncTime()
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-            s_SyncTime.Begin();
-#endif
-
-            // Check if we need to send a time synchronization message, and if so send it
-            if (m_ConnectionManager.LocalClient.IsServer && m_NetworkTickSystem.Time.Tick % m_TimeSyncFrequencyTicks == 0)
+            while (true)
             {
-                Reset(m_NetworkTickSystem.Time.TickRate);
-                //var message = new TimeSyncMessage
-                //{
-                //    Tick = m_NetworkTickSystem.Time.Tick
-                //};
-                //m_ConnectionManager.SendMessage(ref message, NetworkDelivery.Unreliable, m_ConnectionManager.ConnectedClientIds);
+                if (m_NetworkTickSystem.Time.Tick % m_TimeSyncFrequencyTicks == 0)
+                {
+                    Sync();
+                    foreach (var client in m_ConnectionManager.ConnectedClients.Values)
+                    {
+                        if (client.ClientId != m_ConnectionManager.LocalClient.ClientId)
+                        {
+                            var msg = new TimeMessage
+                            {
+                                ClientId = m_ConnectionManager.LocalClient.ClientId,
+                                Time = m_TimeSec,
+                                SendDelay = client.ReceiveDelay
+                            };
+                            m_ConnectionManager.SendMessage(ref msg, NetworkDelivery.Reliable, client.ClientId);
+                        }
+                    }
+                }
+                yield return null;
             }
-
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-            s_SyncTime.End();
-#endif
         }
 
-        /// <summary>
-        /// Invoke when shutting down the NetworkManager
-        /// </summary>
+
         internal void Shutdown()
         {
-            if (m_ConnectionManager.LocalClient.IsServer)
-            {
-                m_NetworkTickSystem.Tick -= OnTickSyncTime;
-            }
+            if (m_timeSyncCoroutine != null)
+                m_NetworkManager.StopCoroutine(m_timeSyncCoroutine);
         }
 
-        /// <summary>
-        /// Creates a new instance of the <see cref="NetworkTimeSystem"/> class for a server instance.
-        /// The server will not apply any buffer values which ensures that local time equals server time.
-        /// </summary>
-        /// <returns>The instance.</returns>
-        public static NetworkTimeSystem ServerTimeSystem()
+        public void Sync()
         {
-            return new NetworkTimeSystem(0, 0, double.MaxValue);
+            DateTime netTime = client.GetNetworkTime();
+            m_TimeSec = (netTime - NtpClient.baseTime).TotalSeconds - m_BaseTime;
         }
-
-        /// <summary>
-        /// Advances the time system by a certain amount of time. Should be called once per frame with Time.unscaledDeltaTime or similar.
-        /// </summary>
-        /// <param name="deltaTimeSec">The amount of time to advance. The delta time which passed since Advance was last called.</param>
-        /// <returns></returns>
-        //public bool Advance(double deltaTimeSec)
-        //{
-        //    m_TimeSec += deltaTimeSec;
-        //    bool hardReset = false;
-        //    if (Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) > HardResetThresholdSec)
-        //    {
-        //        m_TimeSec += m_DesiredServerTimeOffset;
-        //        m_DesiredLocalTimeOffset -= m_DesiredServerTimeOffset;
-        //        m_CurrentLocalTimeOffset = m_DesiredLocalTimeOffset;
-        //        m_DesiredServerTimeOffset = 0;
-        //        m_CurrentServerTimeOffset = 0;
-        //        hardReset = true;
-        //    }
-        //    if (Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) > HardResetThresholdSec)
-        //    {
-        //        m_TimeSec += m_DesiredLocalTimeOffset;
-        //        m_DesiredServerTimeOffset -= m_DesiredLocalTimeOffset;
-        //        m_CurrentServerTimeOffset = m_DesiredServerTimeOffset;
-        //        m_DesiredLocalTimeOffset = 0;
-        //        m_CurrentLocalTimeOffset = 0;
-        //        hardReset = true;
-        //    }
-        //    double localRange = Math.Abs(m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset);
-        //    if (localRange > double.Epsilon)
-        //    {
-        //        m_CurrentLocalTimeOffset = m_CurrentLocalTimeOffset + (m_DesiredLocalTimeOffset - m_CurrentLocalTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
-        //    }
-        //    localRange = Math.Abs(m_DesiredServerTimeOffset - m_CurrentServerTimeOffset);
-        //    if (localRange > double.Epsilon)
-        //    {
-        //        m_CurrentServerTimeOffset = m_CurrentServerTimeOffset + (m_DesiredServerTimeOffset - m_CurrentServerTimeOffset) * Mathf.Clamp01((float)(deltaTimeSec / localRange));
-        //    }
-
-        //    return hardReset;
-        //}
-
-        /// <summary>
-        /// Resets the time system to a time based on the given network parameters.
-        /// </summary>
-        /// <param name="serverTimeSec">The most recent server time value received in seconds.</param>
-        /// <param name="rttSec">The current RTT in seconds. Can be an averaged or a raw value.</param>
-
-        DateTime baseTimeUtc = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        public void Reset(uint tickRate)
-        {
-            using (NtpClient client = new NtpClient("time.windows.com"))
-            {
-                DateTime nptTime = client.GetNetworkTime();
-                TimeSpan elapsed = nptTime - baseTimeUtc;
-                m_TimeSec = elapsed.TotalSeconds;
-
-                //Sync(elapsed.TotalSeconds, 0);
-                //Advance(0);
-            }
-        }
-
-        /// <summary>
-        /// Synchronizes the time system with up-to-date network statistics but does not change any time values or advance the time.
-        /// </summary>
-        /// <param name="serverTimeSec">The most recent server time value received in seconds.</param>
-        /// <param name="rttSec">The current RTT in seconds. Can be an averaged or a raw value.</param>
-        //public void Sync(double serverTimeSec, double rttSec)
-        //{
-        //    LastSyncedRttSec = rttSec;
-        //    LastSyncedServerTimeSec = serverTimeSec;
-
-        //    var timeDif = serverTimeSec - m_TimeSec;
-
-        //    m_DesiredServerTimeOffset = timeDif - ServerBufferSec;
-        //    m_DesiredLocalTimeOffset = timeDif + rttSec + LocalBufferSec;
-        //}
     }
 }

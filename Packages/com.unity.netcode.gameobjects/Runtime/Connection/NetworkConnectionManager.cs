@@ -815,7 +815,7 @@ namespace Unity.Netcode
                     var message = new ConnectionApprovedMessage
                     {
                         OwnerClientId = ownerClientId,
-                        //NetworkTick = NetworkManager.LocalTime.Tick,
+                        BaseTime = NetworkManager.NetworkTimeSystem.m_BaseTime,
                         IsDistributedAuthority = NetworkManager.DistributedAuthorityMode,
                         ConnectedClientIds = new NativeArray<ulong>(ConnectedClientIds.Count, Allocator.Temp)
                     };

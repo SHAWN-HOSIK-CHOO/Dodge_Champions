@@ -39,7 +39,6 @@ namespace GameLobby
         {
             await SceneManagerWrapper.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
 
-            Debug.Log("Load LobbyUI Success");
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
             {
                 await UnityServices.InitializeAsync();

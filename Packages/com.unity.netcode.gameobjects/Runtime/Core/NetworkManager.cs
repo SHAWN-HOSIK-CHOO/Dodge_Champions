@@ -1271,7 +1271,7 @@ namespace Unity.Netcode
             ConnectionManager.Initialize(this);
 
             // The remaining systems can then be initialized
-            NetworkTimeSystem = server ? NetworkTimeSystem.ServerTimeSystem() : new NetworkTimeSystem(1.0 / NetworkConfig.TickRate);
+            NetworkTimeSystem = new NetworkTimeSystem(1.0 / NetworkConfig.TickRate);
             NetworkTickSystem = NetworkTimeSystem.Initialize(this);
             AnticipationSystem = new AnticipationSystem(this);
 

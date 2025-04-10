@@ -26,6 +26,7 @@ public class LobbyManager : EOS_LobbyManager
 
     public void CreateLobby(string mode, string name, uint maxMember, LobbySecurityType securityType, string code, Action<Result, EOS_Lobby> onComplete = null)
     {
+        if (!_Initialied) return;
         Epic.OnlineServices.Lobby.AttributeData[] searchParams = new Epic.OnlineServices.Lobby.AttributeData[6]
         {
             new AttributeData { Key = "SOCKET", Value = "Lobby"},
@@ -51,6 +52,7 @@ public class LobbyManager : EOS_LobbyManager
     }
     public void FindLobby(uint findNum, Action<Result, List<EOS_LobbySearchResult>> onComplete = null)
     {
+        if (!_Initialied) return;
         List<Epic.OnlineServices.Lobby.AttributeData> searchParams = new List<AttributeData>();
         searchParams.Add(new AttributeData { Key = "SOCKET", Value = "Lobby" });
         FindLobby(findNum, searchParams, onComplete);

@@ -80,7 +80,6 @@ namespace Unity.Netcode
         public void UpdateTick(double timeSec)
         {
             var prevTick = Time.Tick;
-
             Time = new NetworkTime(TickRate, timeSec);
             var cacheTime = Time;
             for (int i = prevTick + 1; i <= cacheTime.Tick; i++)
