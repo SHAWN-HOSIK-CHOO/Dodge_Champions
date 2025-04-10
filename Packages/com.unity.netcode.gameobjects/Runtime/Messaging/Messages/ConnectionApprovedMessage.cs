@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Unity.Collections;
+using UnityEditor.PackageManager;
 
 namespace Unity.Netcode
 {
@@ -49,7 +50,8 @@ namespace Unity.Netcode
         public int Version => k_AddCMBServiceConfig;
 
         public ulong OwnerClientId;
-        //public int NetworkTick;
+
+        public double BaseTime;
         // The cloud state service should set this if we are restoring a session
         public ServiceConfig ServiceConfig;
         public bool IsRestoredSession;
@@ -109,7 +111,7 @@ namespace Unity.Netcode
             // ============================================================
 
             BytePacker.WriteValueBitPacked(writer, OwnerClientId);
-            //BytePacker.WriteValueBitPacked(writer, NetworkTick);
+            BytePacker.WriteValuePacked(writer, BaseTime);
             if (IsDistributedAuthority)
             {
                 if (targetVersion >= k_AddCMBServiceConfig)
@@ -200,7 +202,7 @@ namespace Unity.Netcode
             // ============================================================
             m_ReceiveMessageVersion = receivedMessageVersion;
             ByteUnpacker.ReadValueBitPacked(reader, out OwnerClientId);
-            //ByteUnpacker.ReadValueBitPacked(reader, out NetworkTick);
+            ByteUnpacker.ReadValuePacked(reader, out BaseTime);
             if (networkManager.DistributedAuthorityMode)
             {
                 if (receivedMessageVersion >= k_AddCMBServiceConfig)
@@ -249,7 +251,8 @@ namespace Unity.Netcode
                 }
             }
 
-            networkManager.NetworkTimeSystem.Reset(networkManager.NetworkTickSystem.TickRate);
+            networkManager.NetworkTimeSystem.m_BaseTime = BaseTime;
+            networkManager.NetworkTimeSystem.Sync();
             networkManager.NetworkTickSystem.Reset(networkManager.NetworkTimeSystem.m_TimeSec);
 
             networkManager.ConnectionManager.LocalClient.SetRole(false, true, networkManager);

@@ -1,3 +1,5 @@
+using Unity.Android.Gradle;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace Unity.Netcode
@@ -52,6 +54,29 @@ namespace Unity.Netcode
         /// The PlayerObject of the Client
         /// </summary>
         public NetworkObject PlayerObject;
+
+
+        private double _sendDelay;
+        public double SendDelay
+        {
+            get => _sendDelay;
+            set
+            {
+                float Alpha = 0.125f;
+                _sendDelay = (1 - Alpha) * _sendDelay + Alpha * value;
+            }
+        }
+        private double _receiveDelay;
+        public double ReceiveDelay
+        {
+            get => _receiveDelay;
+            set
+            {
+                float Alpha = 0.125f;
+                _receiveDelay = (1 - Alpha) * _receiveDelay + Alpha * value;
+            }
+        }
+        public double Rtt => (SendDelay + ReceiveDelay) / 2;
 
         /// <summary>
         /// The NetworkObject's owned by this client instance

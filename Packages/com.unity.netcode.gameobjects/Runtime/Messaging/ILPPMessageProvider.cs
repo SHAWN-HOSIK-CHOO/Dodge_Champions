@@ -45,15 +45,10 @@ namespace Unity.Netcode
             ServerLog = 18,
             ServerRpc = 19,
             SessionOwner = 20,
-            
-            Unnamed = 21,
-            AnticipationCounterSyncPingMessage = 22,
-            AnticipationCounterSyncPongMessage = 23,
-            
-            // TimeSync = 21,
-            // Unnamed = 22,
-            // AnticipationCounterSyncPingMessage = 23,
-            // AnticipationCounterSyncPongMessage = 24,
+            Time = 21,
+            Unnamed = 22,
+            AnticipationCounterSyncPingMessage = 23,
+            AnticipationCounterSyncPongMessage = 24,
         }
 
 
@@ -108,7 +103,7 @@ namespace Unity.Netcode
                 { typeof(SceneEventMessage), NetworkMessageTypes.SceneEvent },
                 { typeof(ServerLogMessage), NetworkMessageTypes.ServerLog },
                 { typeof(ServerRpcMessage), NetworkMessageTypes.ServerRpc },
-                //{ typeof(TimeSyncMessage), NetworkMessageTypes.TimeSync },
+                { typeof(TimeMessage), NetworkMessageTypes.Time },
                 { typeof(UnnamedMessage), NetworkMessageTypes.Unnamed },
                 { typeof(SessionOwnerMessage), NetworkMessageTypes.SessionOwner },
                 { typeof(AnticipationCounterSyncPingMessage), NetworkMessageTypes.AnticipationCounterSyncPingMessage},

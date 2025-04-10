@@ -12,6 +12,7 @@ public class NtpClient : IDisposable
     private Socket _socket;
     private bool disposedValue;
 
+    public static DateTime baseTime = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     public NtpClient()
     {
         _server = "pool.ntp.org";
@@ -41,7 +42,10 @@ public class NtpClient : IDisposable
 
             IPAddress[] addresses = Dns.GetHostEntry(_server).AddressList;
             IPEndPoint ipEndPoint = new IPEndPoint(addresses[0], 123);
-            _socket.Connect(ipEndPoint);
+            if(!_socket.Connected)
+            {
+                _socket.Connect(ipEndPoint);
+            }
             _socket.ReceiveTimeout = 3000;
 
             DateTime t1 = DateTime.UtcNow;
@@ -51,6 +55,7 @@ public class NtpClient : IDisposable
 
             DateTime t4 = DateTime.UtcNow;
 
+
             // 서버 응답 시간 추출 (T3 - Transmit Timestamp)
             const byte serverReplyTime = 40;
             ulong intPart = BitConverter.ToUInt32(ntpData, serverReplyTime);
@@ -59,7 +64,7 @@ public class NtpClient : IDisposable
             fractPart = SwapEndianness(fractPart);
 
             ulong milliseconds = (intPart * 1000) + (fractPart * 1000 / 0x100000000L);
-            DateTime t3 = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds((long)milliseconds);
+            DateTime t3 = baseTime.AddMilliseconds((long)milliseconds);
 
             TimeSpan rtt = t4 - t1;
             DateTime correctedTime = t3.AddMilliseconds(rtt.TotalMilliseconds / 2.0);
@@ -72,14 +77,11 @@ public class NtpClient : IDisposable
             Debug.LogException(IVOPEX);
             throw IVOPEX;
         }
-        finally
-        {
-            _socket?.Close();
-        }
     }
 
     protected virtual void Dispose(bool disposing)
     {
+        _socket?.Close();
         if (!disposedValue)
         {
             if (disposing)

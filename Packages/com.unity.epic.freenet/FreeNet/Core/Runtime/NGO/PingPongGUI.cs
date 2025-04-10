@@ -22,7 +22,6 @@ public class PingPongGUI : MonoBehaviour
     void Start()
     {
         _pingText.text = $"Ping : 0";
-
         _pingpong.OnRttChanged += OnRttChanged;
         _useVirtualRtt.onValueChanged.AddListener(OnToggleUseVirtualRtt);
         _rttSlider.onValueChanged.AddListener(OnSliderRttSlider);

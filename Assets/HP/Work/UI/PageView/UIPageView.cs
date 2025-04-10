@@ -209,7 +209,6 @@ public class UIPageView : MonoBehaviour
             {
                 if(childX.childCount > 0)
                 {
-
                     var content = childX.GetChild(0).GetComponent<UIElement>();
                     content.DeActivate();
                     content.gameObject.SetActive(false);
@@ -218,7 +217,7 @@ public class UIPageView : MonoBehaviour
             }
             Destroy(childY.gameObject);
         }
-
+        _selectHandler.Clear();
         for (int i = 0; i < y; i++)
         {
             var yElement = Instantiate(_YElementPref, _YLayout.transform);
@@ -231,6 +230,7 @@ public class UIPageView : MonoBehaviour
                     element.gameObject.SetActive(true);
                     element.Activate();
                     element.transform.SetParent(xElement.transform,false);
+                    _selectHandler.Add(element as UISelectElement);
                 }
             }
         }

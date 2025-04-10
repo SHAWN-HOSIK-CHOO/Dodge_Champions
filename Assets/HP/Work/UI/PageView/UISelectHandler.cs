@@ -18,6 +18,7 @@ public class UISelectHandler : MonoBehaviour
     public void Remove(UISelectElement element)
     {
         _UISelectElements.Remove(element);
+        element.OnSelectAction -= OnSelect;
     }
     public void Add(UISelectElement element)
     {
