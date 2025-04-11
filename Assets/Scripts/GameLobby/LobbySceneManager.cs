@@ -37,6 +37,11 @@ namespace GameLobby
 
         async void Start()
         {
+            
+#if UNITY_EDITOR
+            Application.runInBackground = true;
+#endif
+            
             await SceneManagerWrapper.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
 
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
@@ -108,6 +113,9 @@ namespace GameLobby
             Instantiate(pfNetworkManager);
             NetworkManager.Singleton.OnClientConnectedCallback += Callback_onClientsConnected;
             Debug.Log("NetworkManager restarted successfully.");
+#if UNITY_EDITOR
+            NetworkManager.Singleton.RunInBackground = true;
+#endif
         }
 
         private void InstantiateNetworkManager()
