@@ -1,5 +1,6 @@
 using System;
 using Unity.Profiling;
+using UnityEngine;
 
 namespace Unity.Netcode
 {
@@ -88,6 +89,8 @@ namespace Unity.Netcode
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
                 s_Tick.Begin();
 #endif
+                Debug.Log($"now tick : {Time.Tick},{Time.FixedTime}");
+
                 Tick?.Invoke();
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
                 s_Tick.End();
