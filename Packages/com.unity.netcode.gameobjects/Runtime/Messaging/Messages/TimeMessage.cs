@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Unity.Netcode
 {
     internal struct TimeMessage : INetworkMessage, INetworkSerializeByMemcpy
@@ -31,6 +33,11 @@ namespace Unity.Netcode
             {  
                 client.ReceiveDelay = networkManager.NetworkTimeSystem.m_TimeSec - Time;
                 client.SendDelay = SendDelay;
+
+                if (client.Rtt > 0.25)
+                {
+                    UnityEngine.Debug.LogWarning($"{client.ClientId} Rtt High ! {client.Rtt}");
+                }
             }
         }
     }
