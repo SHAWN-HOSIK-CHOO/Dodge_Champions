@@ -1,9 +1,7 @@
 using DG.Tweening;
 using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class UISelectElement : UIImgButton
 {
@@ -12,6 +10,14 @@ public class UISelectElement : UIImgButton
     public bool IsSelected => _isSelected;
     public Action OnSelectedAction;
     public Action OnDeSelectedAction;
+
+    protected override void Awake()
+    {
+        _useSelect = true;
+        _useDeselect = true;
+        base.Awake();
+    }
+
 
     protected override void GenerateColorsFrom(Color baseColor)
     {
