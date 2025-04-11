@@ -173,6 +173,31 @@ public class UIPageView : MonoBehaviour
             }
         }
     }
+
+
+    public void AddContent(UISelectElement[] contents)
+    {
+        int lastPage = _pages.Count;
+        foreach (var content in contents)
+        {
+            lastPage = _pages.Count;
+            if (_pages.TryGetValue(lastPage, out var page))
+            {
+                if (page.SpaceFull())
+                {
+                    page = new Page(_grid);
+                    lastPage += 1;
+                    _pages[lastPage] = page;
+                }
+                content.DeActivate();
+                content.gameObject.SetActive(false);
+                content.transform.SetParent(_OrphanElement.transform);
+                _selectHandler.Add(content);
+                page.AddContent(content);
+            }
+        }
+        if (_currentPage == lastPage) UpdatePage();
+    }
     public void AddContent(UISelectElement content)
     {
         int lastPage = _pages.Count;

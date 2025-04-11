@@ -47,9 +47,12 @@ public class UIElement : MonoBehaviour
         if (_useDeselect)
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.Deselect, OnDeselectInternal);
         if (_useDrag)
+        {
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.BeginDrag, OnBeginDragInternal);
-        EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.Drag, OnDragInternal);
-        EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.EndDrag, OnEndDragInternal);
+            EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.Drag, OnDragInternal);
+            EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.EndDrag, OnEndDragInternal);
+
+        }
         if (_useSelect)
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.Select, OnSelectInternal);
         if (_usePointerUp)
