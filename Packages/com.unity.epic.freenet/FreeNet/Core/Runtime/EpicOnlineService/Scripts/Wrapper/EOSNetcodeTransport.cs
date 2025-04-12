@@ -190,10 +190,6 @@ public class EOSNetcodeTransport : NetworkTransport
     public override ulong GetCurrentRtt(ulong clientId)
     {
         double rtt = 0;
-        if (_ngoManager._pingPong != null)
-        {
-            _ngoManager._pingPong.GetRtt(clientId, out rtt);
-        }
         return (ulong)rtt;
     }
     public override void Send(ulong transportID, ArraySegment<byte> payload, NetworkDelivery networkDelivery)

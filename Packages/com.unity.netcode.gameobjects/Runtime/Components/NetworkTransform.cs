@@ -3117,8 +3117,6 @@ namespace Unity.Netcode.Components
         /// <inheritdoc/>
         public override void OnNetworkSpawn()
         {
-            // 보간 예측 범위 및 지연 감소
-#if CUSTUMNETCODEFIX
             m_ParentedChildren.Clear();
             m_CachedNetworkManager = NetworkManager;
             float tickfrequency = 1 / (float)m_CachedNetworkManager.NetworkConfig.TickRate;
@@ -3134,18 +3132,6 @@ namespace Unity.Netcode.Components
             {
                 SetState(GetSpaceRelativePosition(), GetSpaceRelativeRotation(), GetScale(), false);
             }
-#else
-            m_ParentedChildren.Clear();
-            m_CachedNetworkManager = NetworkManager;
-
-            Initialize();
-
-            if (CanCommitToTransform)
-            {
-                SetState(GetSpaceRelativePosition(), GetSpaceRelativeRotation(), GetScale(), false);
-            }
-
-#endif
         }
 
         private void CleanUpOnDestroyOrDespawn()

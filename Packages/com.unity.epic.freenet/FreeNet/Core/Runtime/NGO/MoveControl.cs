@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using static PlayerMoveControl;
+using UnityEngine.InputSystem.HID;
 using static PlayerMoveControl.MoveEvent;
 
 public class PlayerMoveControl : ClientPrediction
@@ -317,22 +315,28 @@ public class PlayerMoveControl : ClientPrediction
             BindKey();
         }
     }
-    public override void OnLocalTick()
+
+    protected override void Simulate(int syncTick, int eventTick)
     {
-        int localTick = NetworkManager.NetworkTickSystem.Time.Tick;
-        if(IsOwner)
+        if (IsOwner)
         {
             foreach (var imoveEvent in _userInput)
             {
                 MoveEvent newEvent = new MoveEvent();
                 newEvent._iMoveEvent = imoveEvent;
-                newEvent._iMoveEvent._tick = localTick;
+                newEvent._iMoveEvent._tick = eventTick;
                 newEvent._iMoveEvent._isPredict = false;
                 CashEvent(newEvent);
             }
             _userInput.Clear();
         }
-        base.OnLocalTick();
+        base.Simulate(syncTick, eventTick);
+
+    }
+
+    protected override void OnEventTick(int tick)
+    {
+        base.OnEventTick(tick);
     }
     void BindKey()
     {
@@ -342,23 +346,32 @@ public class PlayerMoveControl : ClientPrediction
         _playerInput._onMoveInputChanged += OnMoveInputChanged;
         _playerInput._onJumpInputChanged += OnJumpInputChanged;
     }
-    private void Update()
+
+    override protected void Update()
     {
         if (IsSpawned)
         {
-            Vector3 capsuleBottom = _characterController.transform.position - Vector3.up * (_characterController.height / 2);
-            Vector3 capsuleTop = _characterController.transform.position + Vector3.up * (_characterController.height / 2);
-            var color = Color.cyan;
-            if (OnGround())
-            {
-                color = Color.red;
-            }
-            DebugExtension.DebugCapsule(capsuleBottom, capsuleTop, radius: _characterController.radius + 0.05f, color: color);
+            DrawDebugCapsule();
+            base.Update();
         }
     }
+    private void DrawDebugCapsule()
+    {
+        Vector3 capsuleBottom = _characterController.transform.position - Vector3.up * (_characterController.height / 2);
+        Vector3 capsuleTop = _characterController.transform.position + Vector3.up * (_characterController.height / 2);
+        var color = Color.cyan;
+        if (OnGround(out var hit))
+        {
+            color = Color.red;
+        }
+        DebugExtension.DebugCapsule(capsuleBottom, capsuleTop, radius: _characterController.radius + 0.05f, color: color);
+    }
+    
+    
     void ApplyMoveEvent(int tick)
     {
-        int historyIndex = tick % MaxBufferedTick;
+        int historyIndex = tick % EventTickRate;
+        var timeSystem = new NetworkTime((uint)EventTickRate, 1);
         foreach (var moveEvent in _tickEventHistory._buffer[historyIndex])
         {
             var history = (MoveEvent)moveEvent;
@@ -367,9 +380,8 @@ public class PlayerMoveControl : ClientPrediction
                 var message = (MouseInputEvent)history._iMoveEvent;
                 Vector2 mouseInput = message._mouseInput;
                 Vector3 currentRotation = _characterController.transform.rotation.eulerAngles;
-                float newYaw = currentRotation.y + mouseInput.x * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime * _curMouseSpeed.x;
-                float newPitch = currentRotation.x - mouseInput.y * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime * _curMouseSpeed.y;
-                // Pitch 값 클램핑 (-60 ~ 60도)
+                float newYaw = currentRotation.y + (mouseInput.x * (timeSystem.FixedDeltaTime * 1000) * _curMouseSpeed.x)  / 1000.0f;
+                float newPitch = currentRotation.x - (mouseInput.y * (timeSystem.FixedDeltaTime * 1000) * _curMouseSpeed.y) / 1000.0f ;
                 if (newPitch > 180f) newPitch -= 360f;
                 newPitch = Mathf.Clamp(newPitch, -60f, 60f);
                 Quaternion finalRotation = Quaternion.Euler(newPitch, newYaw, 0);
@@ -382,15 +394,29 @@ public class PlayerMoveControl : ClientPrediction
                 Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
                 Quaternion yawRotation = Quaternion.Euler(0, _characterController.transform.eulerAngles.y, 0);
                 moveDirection = yawRotation * moveDirection;
-                _characterController.Move(Vector3.Scale(moveDirection, _curMoveSpeed) * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime);
+
+                var vector = (Vector3.Scale(moveDirection, _curMoveSpeed) * (timeSystem.FixedDeltaTime * 1000.0f))/1000.0f;
+
+                Debug.Log($"{message._moveInput}, {vector}");
+                _characterController.Move(vector);
             }
             else if (history._iMoveEvent._moveEventType == MoveEvent.MoveEventType.JumpInputEvent)
             {
                 if (_curIsJumpValid)
                 {
-                    _curEnvSpeed.y = Mathf.Sqrt(2 * 4.0f * 9.8f * 2.0f);
-                    _characterController.Move(Vector3.Scale(Vector3.up, _curEnvSpeed) * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime);
-                    if (OnGround())
+                    var jumpHeight = 4;
+                    _curEnvSpeed.y = Mathf.Sqrt(jumpHeight * 9.8f * 2.0f);
+                    var vector = (Vector3.Scale(Vector3.up, _curEnvSpeed) * (timeSystem.FixedDeltaTime * 1000.0f))/1000.0f;
+                    if (OnGround(out var hit))
+                    {
+                        Vector3 capsuleBottom = _characterController.transform.position - Vector3.up * (_characterController.height / 2);
+                        Vector3 capsuleBottomCenter = capsuleBottom + Vector3.up * _characterController.radius;
+                        float penetrationDepth = capsuleBottomCenter.y - hit.distance;
+                        penetrationDepth += 0.01f;
+                        vector.y += penetrationDepth;
+                    }
+                    _characterController.Move(vector);
+                    if (OnGround(out var checkhit))
                     {
                         //Maybe This Should Not Happen
                         _curEnvSpeed.y = -0.1f;
@@ -403,10 +429,11 @@ public class PlayerMoveControl : ClientPrediction
     }
     void ApplyGravity(int tick)
     {
-        //Gravity Event
-        _curEnvSpeed.y -= 4.0f * 9.8f * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime;
-        _characterController.Move(Vector3.Scale(Vector3.up, _curEnvSpeed) * NetworkManager.NetworkTickSystem.Time.FixedDeltaTime);
-        if (OnGround())
+        var timeSystem = new NetworkTime((uint)EventTickRate, 1);
+        _curEnvSpeed.y -= 3*(9.8f * (timeSystem.FixedDeltaTime*1000))/1000.0f;
+        var vector = (Vector3.Scale(Vector3.up, _curEnvSpeed) * (timeSystem.FixedDeltaTime * 1000))/1000.9f;
+        _characterController.Move(vector);
+        if (OnGround(out var hit))
         {
             _curEnvSpeed.y = -0.1f;
             _curIsJumpValid = true;
@@ -416,19 +443,15 @@ public class PlayerMoveControl : ClientPrediction
             _curIsJumpValid = false;
         }
     }
-    override public void ApplyTickEvent(int tick)
+    override protected void ApplyTickEvent(int tick)
     {
         AddPrevMoveInputEvent(tick);
-        if (!CheckTickStateDirty(tick + 1))
-        {
-            return;
-        }
         ApplyMoveEvent(tick);
         ApplyGravity(tick);
     }
-    override public void SetTickStateFromHistory(int tick)
+    override protected void SetTickStateFromHistory(int tick)
     {
-        int historyIndex = tick % MaxBufferedTick;
+        int historyIndex = tick % SyncTickRate;
         var history = (MoveState)_tickStateHistory._buffer[historyIndex];
         _characterController.enabled = false;
         transform.position = history._worldPos;
@@ -439,7 +462,7 @@ public class PlayerMoveControl : ClientPrediction
         _curIsJumpValid = history._isJumpValid;
         _characterController.enabled = true;
     }
-    override public void CashCurrentState(int tick)
+    override protected void CashCurrentState(int tick)
     {
         CashState(new MoveState()
         {
@@ -453,17 +476,17 @@ public class PlayerMoveControl : ClientPrediction
             _isJumpValid = _curIsJumpValid
         });
     }
-    override public void SendTickState(int tick)
+    override protected void SendTickState(int tick)
     {
-        int historyIndex = tick % MaxBufferedTick;
+        int historyIndex = tick % SyncTickRate;
         SendTickStateRpc(new TickStateMessage()
         {
             _tickState = _tickStateHistory._buffer[historyIndex].DeepCopy()
         });
     }
-    override public void SendTickEventList(int tick)
+    override protected void SendTickEventList(int tick)
     {
-        int historyIndex = tick % MaxBufferedTick;
+        int historyIndex = tick % EventTickRate;
         if (_tickEventHistory._buffer[historyIndex].Count != 0)
         {
             var eventList = new ITickEvent[_tickEventHistory._buffer[historyIndex].Count];
@@ -480,6 +503,8 @@ public class PlayerMoveControl : ClientPrediction
             });
         }
     }
+
+
     [Rpc(SendTo.NotServer)]
     void SendTickStateRpc(TickStateMessage tickStateMessage)
     {
@@ -492,10 +517,10 @@ public class PlayerMoveControl : ClientPrediction
     }
     void AddPrevMoveInputEvent(int tick)
     {
-        int historyIndex = tick % MaxBufferedTick;
-        for (int i = 0; i < MaxBufferedTick; i++)
+        int historyIndex = tick % EventTickRate;
+        for (int i = 0; i < EventTickRate; i++)
         {
-            int prevHistoryIndex = (tick + MaxBufferedTick - i) % MaxBufferedTick;
+            int prevHistoryIndex = (tick + EventTickRate - i) % EventTickRate;
             var prevhistory = _tickEventHistory._buffer[prevHistoryIndex];
             var moveEvent = prevhistory.LastOrDefault(e => ((MoveEvent)e)._iMoveEvent._moveEventType == MoveEventType.MoveInputEvent);
             if (moveEvent != null)
@@ -516,7 +541,7 @@ public class PlayerMoveControl : ClientPrediction
             _iMoveEvent = defaultMoveInputEvent
         });
     }
-    bool OnGround()
+    bool OnGround(out RaycastHit obj)
     {
         Vector3 capsuleBottom = _characterController.transform.position - Vector3.up * (_characterController.height / 2);
         Vector3 capsuleTop = _characterController.transform.position + Vector3.up * (_characterController.height / 2);
@@ -525,8 +550,14 @@ public class PlayerMoveControl : ClientPrediction
         Vector3 capsuleTopCenter = capsuleTop - Vector3.up * _characterController.radius;
 
         float capsuleCastLength = 0.1f;
-        bool onGround = Physics.CapsuleCast(capsuleBottomCenter, capsuleTopCenter, _characterController.radius, Vector3.down, out RaycastHit hit, capsuleCastLength);
-        return onGround;
+        obj = default;
+        if (Physics.CapsuleCast(capsuleBottomCenter, capsuleTopCenter, _characterController.radius, Vector3.down, out RaycastHit hit, capsuleCastLength))
+        {
+            obj = hit;
+
+            return true;
+        }
+        return false;
     }
     private void OnMoveInputChanged(Vector3 val)
     {

@@ -349,8 +349,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1219,7 +1219,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9133135246973707818}
   m_HandleRect: {fileID: 7476043140600101927}
   m_Direction: 3
-  m_Value: -2.469
+  m_Value: -1.987
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1233,6 +1233,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1412456317599137574}
     m_Modifications:
+    - target: {fileID: 1041817323073100597, guid: b94917b0ce4a9d94c9388ef8ce27df0e, type: 3}
+      propertyPath: m_fontSize
+      value: 22.6
+      objectReference: {fileID: 0}
     - target: {fileID: 3490637383546333729, guid: b94917b0ce4a9d94c9388ef8ce27df0e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1336,6 +1340,10 @@ PrefabInstance:
     - target: {fileID: 4760718307249348260, guid: b94917b0ce4a9d94c9388ef8ce27df0e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271123934875452981, guid: b94917b0ce4a9d94c9388ef8ce27df0e, type: 3}
+      propertyPath: m_fontSize
+      value: 32.35
       objectReference: {fileID: 0}
     - target: {fileID: 7047161942016419121, guid: b94917b0ce4a9d94c9388ef8ce27df0e, type: 3}
       propertyPath: m_Name

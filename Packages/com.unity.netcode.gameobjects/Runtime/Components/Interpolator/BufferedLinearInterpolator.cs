@@ -190,8 +190,6 @@ namespace Unity.Netcode
         /// <param name="renderTime">our current time</param>
         /// <param name="serverTime">current server time</param>
         /// <returns>The newly interpolated value of type 'T'</returns>
-
-#if CUSTUMNETCODEFIX
         public T Update(float deltaTime, double renderTime, double serverTime, bool extraporation = false)
         {
             TryConsumeFromBuffer(renderTime, serverTime);
@@ -245,60 +243,6 @@ namespace Unity.Netcode
             m_NbItemsReceivedThisFrame = 0;
             return m_CurrentInterpValue;
         }
-
-#else
-        public T Update(float deltaTime, double renderTime, double serverTime)
-        {
-
-            TryConsumeFromBuffer(renderTime, serverTime);
-
-            if (InvalidState)
-            {
-                throw new InvalidOperationException("trying to update interpolator when no data has been added to it yet");
-            }
-
-            // Interpolation example to understand the math below
-            // 4   4.5      6   6.5
-            // |   |        |   |
-            // A   render   B   Server
-
-            if (m_LifetimeConsumedCount >= 1) // shouldn't interpolate between default values, let's wait to receive data first, should only interpolate between real measurements
-            {
-                float t = 1.0f;
-                double range = m_EndTimeConsumed - m_StartTimeConsumed;
-                if (range > k_SmallValue)
-                {
-                    var rangeFactor = 1.0f / (float)range;
-
-                    t = ((float)renderTime - (float)m_StartTimeConsumed) * rangeFactor;
-
-                    if (t < 0.0f)
-                    {
-                        // There is no mechanism to guarantee renderTime to not be before m_StartTimeConsumed
-                        // This clamps t to a minimum of 0 and fixes issues with longer frames and pauses
-
-                        if (NetworkLog.CurrentLogLevel <= LogLevel.Developer)
-                        {
-                            NetworkLog.LogError($"renderTime was before m_StartTimeConsumed. This should never happen. {nameof(renderTime)} is {renderTime}, {nameof(m_StartTimeConsumed)} is {m_StartTimeConsumed}");
-                        }
-                        t = 0.0f;
-                    }
-
-                    if (t > MaxInterpolationBound) // max extrapolation
-                    {
-                        // TODO this causes issues with teleport, investigate
-                        t = 1.0f;
-                    }
-                }
-
-                var target = InterpolateUnclamped(m_InterpStartValue, m_InterpEndValue, t);
-                m_CurrentInterpValue = Interpolate(m_CurrentInterpValue, target, deltaTime / MaximumInterpolationTime); // second interpolate to smooth out extrapolation jumps
-            }
-
-            m_NbItemsReceivedThisFrame = 0;
-            return m_CurrentInterpValue;
-        }
-#endif
 
         /// <summary>
         /// Add measurements to be used during interpolation. These will be buffered before being made available to be displayed as "latest value".
@@ -487,7 +431,6 @@ namespace Unity.Netcode
         /// <inheritdoc />
         protected override Vector3 InterpolateUnclamped(Vector3 start, Vector3 end, float time)
         {
-#if CUSTUMNETCODEFIX
             if (IsSlerp)
             {
                 return Vector3.SlerpUnclamped(start, end, time);
@@ -496,16 +439,6 @@ namespace Unity.Netcode
             {
                 return Vector3.LerpUnclamped(start, end, time);
             }
-#else
- if (IsSlerp)
-            {
-                return Vector3.Slerp(start, end, time);
-            }
-            else
-            {
-                return Vector3.Lerp(start, end, time);
-            }
-#endif
 
         }
         /// <inheritdoc />

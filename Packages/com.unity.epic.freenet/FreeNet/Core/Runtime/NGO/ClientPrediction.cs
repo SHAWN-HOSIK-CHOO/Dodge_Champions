@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using static PlayerMoveControl;
+using static UnityEngine.Tilemaps.Tilemap;
 public interface ITickState
 {
     int _tick { get; set; }
@@ -35,58 +37,106 @@ public abstract class ClientPrediction : NetworkBehaviour
     protected ArrayBuffer<LinkedList<ITickEvent>> _tickEventHistory;
 
     [SerializeField]
-    public int MaxBufferedTick = 30 * 10;
-    virtual public void OnLocalTick()
+    protected int SyncTickRate = 30;
+    [SerializeField]
+    protected int EventTickRate = 60;
+    [SerializeField]
+    protected float ConfirmTimeAgo = 0.3f;
+
+
+
+    protected int _lastSyncTick;
+    protected int _lastEventTick;
+
+    protected int _lastNetSyncTick;
+    protected int _lastNetEventTick;
+
+    virtual protected void Update()
     {
-        int localTick = NetworkManager.NetworkTickSystem.Time.Tick;
+        if (IsSpawned)
+        {
+            var time = NetworkManager.NetworkTickSystem.Time;
+            var eventTime = new NetworkTime((uint)EventTickRate, time.Time);
+            var syncTime = new NetworkTime((uint)SyncTickRate, time.Time);
+            Reconciliation(time.Time);
+
+            for (int eventTick = _lastEventTick+1; eventTick < eventTime.Tick; eventTick++)
+            {
+                if (eventTick < 0) continue;
+
+                var eventTickTime = new NetworkTime((uint)EventTickRate, eventTick);
+                var syncTickTime = new NetworkTime((uint)SyncTickRate, eventTickTime.Time);
+                Simulate(syncTickTime.Tick, eventTickTime.Tick);
+                _lastEventTick = eventTick;
+                _lastSyncTick = syncTickTime.Tick;
+            }
+
+
+            if(_lastNetEventTick < eventTime.Tick)
+            {
+                OnEventTick(eventTime.Tick);
+                _lastNetEventTick = eventTime.Tick;
+            }
+
+            var confirmTime =  syncTime  - new NetworkTime((uint)SyncTickRate, ConfirmTimeAgo);
+            for (int i = _lastNetSyncTick + 1; i <= confirmTime.Tick; i++)
+            {
+                if (i < 0) continue;
+                OnSyncTick(i);
+                _lastNetSyncTick = i;
+            }
+        }
+    }
+    virtual protected void OnEventTick(int tick)
+    {
         if (IsOwner)
         {
-            ClearOldEvent(localTick);
-            SendTickEventList(localTick);
-            Reconciliation(localTick);
+            ClearOldEvent(tick);
+            SendTickEventList(tick);
         }
     }
-    virtual public void OnServerTick()
+    virtual protected void OnSyncTick(int tick)
     {
-        int serverTick = NetworkManager.NetworkTickSystem.Time.Tick;
-        if (!IsOwner)
-        {
-            Reconciliation(serverTick);
-        }
         if (IsServer)
         {
-            int historyIndex = serverTick % MaxBufferedTick;
+            int historyIndex = tick % SyncTickRate;
             _tickStateHistory._buffer[historyIndex]._isPredict = false;
-            SendTickState(serverTick);
+            SendTickState(tick);
         }
     }
-    virtual public void SendTickEventList(int tick) { }
-    virtual public void SendTickState(int tick) { }
-    virtual public void ApplyTickEvent(int tick) { }
-    virtual public void SetTickStateFromHistory(int tick) { }
-    virtual public void CashCurrentState(int tick) { }
+    virtual protected void SendTickEventList(int tick) { }
+    virtual protected void SendTickState(int tick) { }
+    virtual protected void ApplyTickEvent(int tick) { }
+    virtual protected void SetTickStateFromHistory(int tick) { }
+    virtual protected void CashCurrentState(int tick) { }
     override public void OnNetworkDespawn()
-    {
-        NetworkManager.NetworkTickSystem.Tick -= OnLocalTick;
-        NetworkManager.NetworkTickSystem.Tick -= OnServerTick;
+    { 
     }
     override public void OnNetworkSpawn()
     {
-        _tickStateHistory = new ArrayBuffer<ITickState>(MaxBufferedTick);
-        _tickEventHistory = new ArrayBuffer<LinkedList<ITickEvent>>(MaxBufferedTick);
+        _tickStateHistory = new ArrayBuffer<ITickState>((int)SyncTickRate);
+        _tickEventHistory = new ArrayBuffer<LinkedList<ITickEvent>>((int)EventTickRate);
 
         _reconTickEventList = new List<ITickEventListMessage>();
         _reconTickStateList = new List<ITickStateMessage>();
-        for (int i = 0; i < MaxBufferedTick; i++)
+        for (int i = 0; i < EventTickRate; i++)
         {
             _tickEventHistory._buffer[i] = new LinkedList<ITickEvent>();
         }
-        NetworkManager.NetworkTickSystem.Tick += OnLocalTick;
-        NetworkManager.NetworkTickSystem.Tick += OnServerTick;
+
+        var time = NetworkManager.NetworkTickSystem.Time;
+        var eventTime = new NetworkTime((uint)EventTickRate, time.Time);
+        var syncTime = new NetworkTime((uint)SyncTickRate, time.Time);
+
+        _lastEventTick = eventTime.Tick;
+        _lastNetEventTick = eventTime.Tick;
+        _lastSyncTick = syncTime.Tick;
+        _lastNetSyncTick = syncTime.Tick;
+
     }
     void ClearOldEvent(int tick)
     {
-        int historyIndex = tick % MaxBufferedTick;
+        int historyIndex = tick % EventTickRate;
         var node = _tickEventHistory._buffer[historyIndex].First;
         while (node != null)
         {
@@ -105,12 +155,12 @@ public abstract class ClientPrediction : NetworkBehaviour
     }
     protected void CashState(ITickState state)
     {
-        int historyIndex = state._tick % MaxBufferedTick;
+        int historyIndex = state._tick % SyncTickRate;
         _tickStateHistory._buffer[historyIndex] = state;
     }
     protected void CashEvent(ITickEvent tickEvent)
     {
-        int historyIndex = tickEvent._tick % MaxBufferedTick;
+        int historyIndex = tickEvent._tick % EventTickRate;
         _tickEventHistory._buffer[historyIndex].AddLast(tickEvent);
     }
     int ReconciliateState(int tick)
@@ -119,7 +169,7 @@ public abstract class ClientPrediction : NetworkBehaviour
         for (int i = 0; i < _reconTickStateList.Count; i++)
         {
             var tickState = _reconTickStateList[i]._tickState;
-            int historyIndex = tickState._tick % MaxBufferedTick;
+            int historyIndex = tickState._tick % SyncTickRate;
             bool dirty = false;
             if (_reconTickStateList[i]._tickState._tick <= tick)
             {
@@ -143,7 +193,7 @@ public abstract class ClientPrediction : NetworkBehaviour
         for (int i = 0; i < _reconTickEventList.Count; i++)
         {
             bool dirty = false;
-            int historyIndex = _reconTickEventList[i]._tick % MaxBufferedTick;
+            int historyIndex = _reconTickEventList[i]._tick % EventTickRate;
             ClearOldEvent(_reconTickEventList[i]._tick);
             if (_reconTickEventList[i]._tick <= tick)
             {
@@ -182,7 +232,7 @@ public abstract class ClientPrediction : NetworkBehaviour
     }
     protected bool CheckTickStateDirty(int tick)
     {
-        int historyIndex = tick % MaxBufferedTick;
+        int historyIndex = tick % SyncTickRate;
         if (_tickStateHistory._buffer[historyIndex] == null) return true;
         bool tickDirty = _tickStateHistory._buffer[historyIndex]._tick != tick;
         if (tickDirty) return true;
@@ -199,24 +249,44 @@ public abstract class ClientPrediction : NetworkBehaviour
             SetTickStateFromHistory(tick);
         }
     }
-    void Reconciliation(int tick)
-    {
-        int moveEventDirtTick = ReconciliateEvent(tick);
-        int moveStateDirtTick = ReconciliateState(tick);
 
-        int dirtyTick = tick;
-        dirtyTick = (moveEventDirtTick == -1) ? dirtyTick : moveEventDirtTick;
-        dirtyTick = (moveStateDirtTick == -1) ? dirtyTick : moveStateDirtTick;
-        for (int i = dirtyTick; i <= tick; i++)
+
+    protected virtual void Simulate(int syncTick, int eventTick)
+    {
+        ApplyTickState(syncTick);
+        if (CheckTickStateDirty(syncTick + 1))
         {
-            int historyIndex = i % MaxBufferedTick;
-            ApplyTickState(i);
-            ClearOldEvent(i);
-            if (CheckTickStateDirty(i + 1))
+            ClearOldEvent(eventTick);
+            ApplyTickEvent(eventTick);
+        }
+        ApplyTickState(syncTick + 1);
+    }
+
+    protected void Reconciliation(double time)
+    {
+        var eventTime = new NetworkTime((uint)EventTickRate, time);
+        var syncTime = new NetworkTime((uint)SyncTickRate, time);
+
+        int moveEventDirtTick = ReconciliateEvent(eventTime.Tick);
+        int moveStateDirtTick = ReconciliateState(syncTime.Tick);
+
+        var DirtyEventTime = new NetworkTime((uint)EventTickRate, moveEventDirtTick);
+        var DirtyEventTimeToSyncTime = new NetworkTime((uint)SyncTickRate, DirtyEventTime.Time);
+        var DirtySyncTime = new NetworkTime((uint)SyncTickRate, moveStateDirtTick);
+
+ 
+        var FinalDirtySyncTime = (DirtyEventTimeToSyncTime.Time < DirtySyncTime.Time) ? DirtyEventTimeToSyncTime : DirtySyncTime;
+        int startTick = FinalDirtySyncTime.Tick;
+        if (startTick < 0) return;
+        for (int i = startTick; i <= _lastSyncTick; i++)
+        {
+            double stateEndTime = new NetworkTime((uint)SyncTickRate, _lastSyncTick).Time;
+            int eventTickStart = new NetworkTime((uint)EventTickRate, FinalDirtySyncTime.Time).Tick;
+            int eventTickEnd = new NetworkTime((uint)EventTickRate, stateEndTime).Tick;
+            for (int eventTick = eventTickStart; eventTick < eventTickEnd; eventTick++)
             {
-                ApplyTickEvent(i);
+                Simulate(i,eventTick);
             }
-            ApplyTickState(i + 1);
         }
     }
 }
