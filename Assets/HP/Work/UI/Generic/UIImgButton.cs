@@ -20,24 +20,23 @@ public class UIImgButton : UIButton
     protected override void Awake()
     {
         _image = GetComponent<Image>();
-        GenerateColorsFrom(_normalColor);
+        GenerateColors();
         base.Awake();
     }
-    protected virtual void GenerateColorsFrom(Color baseColor)
+    protected virtual void GenerateColors()
     {
         _deactivateColor = Color.red;
-        Color.RGBToHSV(baseColor, out float h, out float s, out float v);
+        Color.RGBToHSV(_normalColor, out float h, out float s, out float v);
         float enterV = Mathf.Clamp01(v - 0.1f); // »ìÂ¦ ¾îµÓ°Ô
         float downV = Mathf.Clamp01(v - 0.2f);  // ´õ ¾îµÓ°Ô
-
         _pointerEnterColor = Color.HSVToRGB(h, s, enterV);
         _pointerDownColor = Color.HSVToRGB(h, s, downV);
     }
     protected override void OnPointerClickInternal(BaseEventData data)
     {
         if (!IsActivated) return;
-        OnPointerClickAction?.Invoke(data);
         OnPointerClick(data);
+        OnPointerClickAction?.Invoke(data);
     }
     public override void OnPointerEnter(BaseEventData data)
     {

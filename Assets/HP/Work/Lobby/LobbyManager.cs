@@ -52,10 +52,12 @@ public class LobbyManager : EOS_LobbyManager
     }
     public void FindLobby(uint findNum, Action<Result, List<EOS_LobbySearchResult>> onComplete = null)
     {
-        if (!_Initialied) return;
-        List<Epic.OnlineServices.Lobby.AttributeData> searchParams = new List<AttributeData>();
-        searchParams.Add(new AttributeData { Key = "SOCKET", Value = "Lobby" });
-        FindLobby(findNum, searchParams, onComplete);
+        if(EOSWrapper.ETC.ErrControl(_Initialied, onComplete))
+        {
+            List<Epic.OnlineServices.Lobby.AttributeData> searchParams = new List<AttributeData>();
+            searchParams.Add(new AttributeData { Key = "SOCKET", Value = "Lobby" });
+            FindLobby(findNum, searchParams, onComplete);
+        }
     }
     public override EOS_Lobby CreateLobby(EOS_Core eosCore, EOS_LobbyManager lobbyManager, string lobbyID)
     {

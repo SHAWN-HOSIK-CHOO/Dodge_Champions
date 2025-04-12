@@ -131,6 +131,33 @@ public class EOSWrapper
             }
             return false;
         }
+
+        public static bool ErrControl(bool result, Action<Result> onComplete = null)
+        {
+            if (!result)
+            {
+                onComplete?.Invoke(Result.UnexpectedError);
+                return false;
+            }
+            return true;
+        }
+        public static bool ErrControl<T>(bool result, Action<Result, T> onComplete = null)
+        {
+            if (!result)
+            {
+                if (typeof(T) == typeof(string) || typeof(T).IsClass)
+                {
+                    onComplete?.Invoke(Result.UnexpectedError, (T)(object)null);
+                }
+                else if (typeof(T).IsValueType)
+                {
+                    onComplete?.Invoke(Result.UnexpectedError, default(T));
+                }
+                return false;
+            }
+            return true;
+        }
+
         public static bool ErrControl(Result result, Action<Result> onComplete = null)
         {
             if (result != Result.Success)
@@ -156,6 +183,9 @@ public class EOSWrapper
             }
             return true;
         }
+        
+        
+        
         public static bool SetApplicationStatus(PlatformInterface IPlatform, ApplicationStatus status)
         {
             if (IPlatform != null)

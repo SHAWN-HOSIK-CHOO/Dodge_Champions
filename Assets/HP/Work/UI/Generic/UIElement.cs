@@ -11,7 +11,6 @@ public class UIElement : MonoBehaviour
 
     public bool IsActivated => _isActivated;
 
-    protected bool _useDeselect;
     protected bool _useDrag;
     protected bool _useSelect;
     protected bool _usePointerUp;
@@ -20,13 +19,11 @@ public class UIElement : MonoBehaviour
     protected bool _usePointerExit;
     protected bool _usePointerDown;
 
-    public Action OnActivateAction;
-    public Action OnDeActivateAction;
-    public Action<BaseEventData> OnDeselectAction;
+    public Action<GameObject> OnActivateAction;
+    public Action<GameObject> OnDeActivateAction;
     public Action<BaseEventData> OnBeginDragAction;
     public Action<BaseEventData> OnDragAction;
     public Action<BaseEventData> OnEndDragAction;
-    public Action<BaseEventData> OnSelectAction;
     public Action<BaseEventData> OnPointerUpAction;
     public Action<BaseEventData> OnPointerClickAction;
     public Action<BaseEventData> OnPointerEnterAction;
@@ -40,21 +37,12 @@ public class UIElement : MonoBehaviour
     protected virtual void Awake()
     {
         var eventTrigger = GetComponent<EventTrigger>() ?? gameObject.AddComponent<EventTrigger>();
-        if (_isActivated)
-            Activate();
-        else
-            DeActivate();
-        if (_useDeselect)
-            EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.Deselect, OnDeselectInternal);
         if (_useDrag)
         {
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.BeginDrag, OnBeginDragInternal);
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.Drag, OnDragInternal);
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.EndDrag, OnEndDragInternal);
-
         }
-        if (_useSelect)
-            EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.Select, OnSelectInternal);
         if (_usePointerUp)
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.PointerUp, OnPointerUpInternal);
         if (_usePointerClick)
@@ -65,6 +53,10 @@ public class UIElement : MonoBehaviour
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.PointerExit, OnPointerExitInternal);
         if (_usePointerDown)
             EventTriggerHelper.AddTriggerEvent(eventTrigger, EventTriggerType.PointerDown, OnPointerDownInternal);
+        if (_isActivated)
+            Activate();
+        else
+            DeActivate();
     }
 
     protected virtual void OnEnable()
@@ -81,20 +73,14 @@ public class UIElement : MonoBehaviour
     {
         _isActivated = true;
         OnActivate();
-        OnActivateAction?.Invoke();
+        OnActivateAction?.Invoke(this.gameObject);
     }
 
     public void DeActivate()
     {
         _isActivated = false;
         OnDeActivate();
-        OnDeActivateAction?.Invoke();
-    }
-
-    protected virtual void OnDeselectInternal(BaseEventData data)
-    {
-        OnDeSelect(data);
-        OnDeselectAction?.Invoke(data);
+        OnDeActivateAction?.Invoke(this.gameObject);
     }
 
     protected virtual void OnBeginDragInternal(BaseEventData data)
@@ -111,12 +97,6 @@ public class UIElement : MonoBehaviour
     {
         OnEndDrag(data);
         OnEndDragAction?.Invoke(data);
-    }
-
-    protected virtual void OnSelectInternal(BaseEventData data)
-    {
-        OnSelect(data);
-        OnSelectAction?.Invoke(data);
     }
 
     protected virtual void OnPointerUpInternal(BaseEventData data)
@@ -151,11 +131,9 @@ public class UIElement : MonoBehaviour
 
     public virtual void OnActivate() { }
     public virtual void OnDeActivate() { }
-    public virtual void OnDeSelect(BaseEventData data) { }
     public virtual void OnBeginDrag(BaseEventData data) { }
     public virtual void OnDrag(BaseEventData data) { }
     public virtual void OnEndDrag(BaseEventData data) { }
-    public virtual void OnSelect(BaseEventData data) { }
     public virtual void OnPointerUp(BaseEventData data) { }
     public virtual void OnPointerClick(BaseEventData data) { }
     public virtual void OnPointerEnter(BaseEventData data) { }

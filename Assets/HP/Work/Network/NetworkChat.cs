@@ -1,15 +1,12 @@
 using HP;
 using Unity.Netcode;
-using UnityEngine;
-using UnityEngine.InputSystem.XR;
-using static PlayerMoveControl;
 
 public class NetworkChat : NetworkBehaviour
 {
-    ConsoleController _controller;
+    UIConsole _controller;
     public override void OnNetworkSpawn()
     {
-        _controller = GetComponent<ConsoleController>();
+        _controller = GetComponent<UIConsole>();
         _controller.onSubmit += OnSubmit;
     }
 

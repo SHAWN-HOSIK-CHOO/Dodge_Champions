@@ -81,6 +81,9 @@ namespace MainScene
             // Confirm Setting Values
             _resolution.ChangeResolution();
             _resolution.SaveResolution();
+            //
+
+            _SettingUI.SetActive(false);
 
         }
         void OnCancleClick(BaseEventData data)

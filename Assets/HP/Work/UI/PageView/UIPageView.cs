@@ -89,12 +89,14 @@ public class UIPageView : MonoBehaviour
     Vector2Int _grid;
     Dictionary<int, Page>  _pages;
     int _currentPage;
+    bool _pagedirty;
+
     UISelectHandler _selectHandler;
-    public UISelectElement _currentContent => _selectHandler.CurrentSelected;
+    public UIImgToggle _currentContent => _selectHandler.CurrentSelected;
 
     private void Awake()
     {
-        _selectHandler = GetComponent<UISelectHandler>();
+        _selectHandler = GetComponent<UISelectHandler>() ?? gameObject.AddComponent<UISelectHandler>();
         _leftPage.OnPointerClickAction += OnLeftPageClick;
         _rightPage.OnPointerClickAction += OnRightPageClick;
 
@@ -104,13 +106,11 @@ public class UIPageView : MonoBehaviour
     }
     void Start()
     {
-
         UpdatePage();
     }
 
     public void DestroyAllElement()
     {
-        _selectHandler.Clear();
         foreach (Transform child in _OrphanElement.transform)
         {
             Destroy(child.gameObject);
@@ -143,15 +143,14 @@ public class UIPageView : MonoBehaviour
         _pages = new Dictionary<int, Page>();
         _currentPage = 1;
         _pages[_currentPage] = new Page(_grid);
-        UpdatePage();
+        _pagedirty = true;
     }
-    public void RemoveContent(UISelectElement content)
+    public void ElimitnateContent(UIImgToggle content)
     {
         foreach (var item in _pages)
         {
             if(item.Value.RemoveContent(content))
             {
-                _selectHandler.Remove(content);
                 if (item.Value._contents.Count == 0)
                 {
                     _currentPage--;
@@ -163,42 +162,25 @@ public class UIPageView : MonoBehaviour
                     {
                         _pages.Remove(item.Key);
                     }
-                    UpdatePage();
+                    _pagedirty = true;
                 }
                 if(item.Key == _currentPage)
                 {
-                    UpdatePage();
+                    _pagedirty = true;
                 }
                 return;
             }
         }
     }
-
-
-    public void AddContent(UISelectElement[] contents)
+    public void AddContent(UIImgToggle[] contents)
     {
-        int lastPage = _pages.Count;
         foreach (var content in contents)
         {
-            lastPage = _pages.Count;
-            if (_pages.TryGetValue(lastPage, out var page))
-            {
-                if (page.SpaceFull())
-                {
-                    page = new Page(_grid);
-                    lastPage += 1;
-                    _pages[lastPage] = page;
-                }
-                content.DeActivate();
-                content.gameObject.SetActive(false);
-                content.transform.SetParent(_OrphanElement.transform);
-                _selectHandler.Add(content);
-                page.AddContent(content);
-            }
+            AddContent(content);
         }
-        if (_currentPage == lastPage) UpdatePage();
+        _pagedirty = true;
     }
-    public void AddContent(UISelectElement content)
+    public void AddContent(UIImgToggle content)
     {
         int lastPage = _pages.Count;
         if (_pages.TryGetValue(lastPage , out var page))
@@ -212,11 +194,18 @@ public class UIPageView : MonoBehaviour
             content.DeActivate();
             content.gameObject.SetActive(false);
             content.transform.SetParent(_OrphanElement.transform);
-            _selectHandler.Add(content);
             page.AddContent(content);
         }
+        _pagedirty = true;
+    }
 
-        if(_currentPage == lastPage) UpdatePage();
+
+    private void LateUpdate()
+    {
+        if (_pagedirty) UpdatePage();
+        _pagedirty = false;
+
+
     }
     public void UpdatePage()
     {
@@ -255,7 +244,7 @@ public class UIPageView : MonoBehaviour
                     element.gameObject.SetActive(true);
                     element.Activate();
                     element.transform.SetParent(xElement.transform,false);
-                    _selectHandler.Add(element as UISelectElement);
+                    _selectHandler.Add(element as UIImgToggle);
                 }
             }
         }
@@ -268,12 +257,12 @@ public class UIPageView : MonoBehaviour
         int lastPage = _pages.Count;
         if (_currentPage > lastPage) _currentPage = lastPage;
 
-        UpdatePage();
+        _pagedirty = true;
     }
     private void OnLeftPageClick(BaseEventData data)
     {
         _currentPage--;
         if (_currentPage < 1) _currentPage = 1;
-        UpdatePage();
+        _pagedirty = true;
     }
 }

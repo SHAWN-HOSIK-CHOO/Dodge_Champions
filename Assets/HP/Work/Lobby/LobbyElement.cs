@@ -17,8 +17,6 @@ public class LobbyElement : MonoBehaviour
     TMP_Text _security;
     [SerializeField]
     Image _image;
-    [SerializeField]
-    UISelectElement _UISelectElement;
     public EOS_LobbySearchResult _lobbySearch;
 
     private void OnDestroy()
