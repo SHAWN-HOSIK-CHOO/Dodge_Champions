@@ -53,7 +53,7 @@ namespace MainScene
             _EpicUI.gameObject.SetActive(true);
         }
 
-        void OnUserNameActivate()
+        void OnUserNameActivate(GameObject obj)
         {
             var textUI = _userName.GetComponent<TMP_Text>();
             UserInfoData? _localUserInfo = FreeNet.Instance._localUser._localUserInfo;
@@ -62,7 +62,7 @@ namespace MainScene
                 textUI.text = _localUserInfo.Value.DisplayName;
             }
         }
-        void OnUserCountryActivate()
+        void OnUserCountryActivate(GameObject obj)
         {
             var textUI = _userCountry.GetComponent<TMP_Text>();
             UserInfoData? _localUserInfo = FreeNet.Instance._localUser._localUserInfo;
@@ -71,7 +71,7 @@ namespace MainScene
                 textUI.text = _localUserInfo.Value.Country;
             }
         }
-        void OnNatTypeActivate()
+        void OnNatTypeActivate(GameObject obj)
         {
             var textUI = _NatType.GetComponent<TMP_Text>();
             EOSWrapper.P2PControl.QueryNATType(FreeNet.Instance._eosCore._IP2P, (ref OnQueryNATTypeCompleteInfo info) =>
@@ -82,7 +82,7 @@ namespace MainScene
                 }
             });
         }
-        void OnRelayControlActivate()
+        void OnRelayControlActivate(GameObject obj)
         {
             var textUI = _RelayControl.GetComponent<TMP_Text>();
             if(EOSWrapper.P2PControl.GetRelayControl(FreeNet.Instance._eosCore._IP2P, out RelayControl control))

@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 4955618535886710878}
   - component: {fileID: 8083757265833626255}
   - component: {fileID: 2587066601545946847}
-  - component: {fileID: 9207493479193137298}
+  - component: {fileID: 6805501002855315152}
   m_Layer: 5
   m_Name: LobbyElement
   m_TagString: Untagged
@@ -412,7 +412,7 @@ MonoBehaviour:
   _member: {fileID: 5480602469578775370}
   _security: {fileID: 3605260624522688106}
   _image: {fileID: 2437912525056852342}
---- !u!114 &9207493479193137298
+--- !u!114 &6805501002855315152
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -421,11 +421,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1441598596932926137}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27d40003199494f48bfd5c2f85ffaf8c, type: 3}
+  m_Script: {fileID: 11500000, guid: acfd024038a221348afa57071dd1c82a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _isActivated: 1
   _normalColor: {r: 1, g: 1, b: 1, a: 1}
+  _isOn: 0
+  _toggleActive: {r: 0.54013884, g: 0.95398736, b: 0.9622642, a: 1}
+  _imageHandleOff: {fileID: 0}
+  _imageHandleOn: {fileID: 0}
 --- !u!1 &2292348361027234902
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,14 +2,12 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIToggle : UIElement
+public class UIToggle : UIImgButton
 {
     [SerializeField]
-    bool _isOn;
+    protected bool _isOn;
     public bool IsOn => _isOn;
-    public Action OnToggleAction;
-
-
+    public Action<GameObject> OnToggleAction;
     protected override void Awake()
     {
         _usePointerUp = true;
@@ -18,37 +16,28 @@ public class UIToggle : UIElement
         _usePointerEnter = true;
         _usePointerExit = true;
         base.Awake();
-        SetToggle(IsOn);
+        OnToggleInternal(IsOn);
     }
-    public void SetToggle(bool b)
+    protected virtual void OnToggle(bool b)
     {
         if (!IsActivated) return;
         _isOn = b;
-        OnToggle();
-        OnToggleAction?.Invoke();
     }
-    public virtual void OnToggle()
+    protected override void OnPointerClickInternal(BaseEventData data)
     {
-
+        if (!IsActivated) return;
+        OnToggleInternal(!IsOn);
+        base.OnPointerClickInternal(data);
     }
-    public override void OnPointerEnter(BaseEventData data)
+    void OnToggleInternal(bool b)
     {
-
+        if (!IsActivated) return;
+        if (b == IsOn) return;
+        OnToggle(b);
+        OnToggleAction?.Invoke(this.gameObject);
     }
-    public override void OnPointerUp(BaseEventData data)
+    public void SetToggle(bool b)
     {
-
-    }
-    public override void OnPointerDown(BaseEventData data)
-    {
-
-    }
-    public override void OnPointerClick(BaseEventData data)
-    {
-
-    }
-    public override void OnPointerExit(BaseEventData data)
-    {
-
+        OnToggleInternal(b);
     }
 }

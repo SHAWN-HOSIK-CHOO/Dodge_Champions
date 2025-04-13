@@ -1,6 +1,11 @@
 using Epic.OnlineServices;
+using Epic.OnlineServices.Lobby;
+using HP;
+using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Android.Gradle;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static LobbyManager;
@@ -30,6 +35,17 @@ namespace MainScene
 
         [SerializeField]
         GameObject _LobbyPading;
+
+        [SerializeField]
+        GameObject _privateCode;
+        [SerializeField]
+        TMP_Text _privateCodeInfo;
+        [SerializeField]
+        UIImgButton _privateCodeConfirm;
+        [SerializeField]
+        UIImgButton _privateCodeCancle;
+        [SerializeField]
+        UITmpInputField _privateCodeinputField;
 
 
         [SerializeField]
@@ -84,6 +100,8 @@ namespace MainScene
 
         private void Start()
         {
+            _privateCodeConfirm.OnPointerClickAction += OnprivateCodeConfirmClick;
+            _privateCodeCancle.OnPointerClickAction += OnprivateCodeCancleClick;
 
             _findRoomCancle.OnPointerClickAction += OnfindRoomCancleClick;
             _findRoomConfirm.OnPointerClickAction += OnFindRoomConfirmClick;
@@ -96,24 +114,70 @@ namespace MainScene
             _FindRoomButton.OnPointerClickAction += OnFindRoomButtonClick;
         }
 
+        private void OnprivateCodeCancleClick(BaseEventData data)
+        {
+            _FindRoomButton.Activate();
+            _privateCodeInfo.text = "";
+            _privateCode.SetActive(false);
+        }
+
+        private void OnprivateCodeConfirmClick(BaseEventData data)
+        {
+            var lobby = _lobbyPageView._currentContent.GetComponent<LobbyElement>();
+            if (lobby._lobbySearch._attribute.GetLobbyCode(out var privateCode) && privateCode == _privateCodeinputField.text)
+            {
+                lobby._lobbySearch.JoinLobby((Result result, EOS_Lobby lobby) =>
+                {
+                    _FindRoomButton.Activate();
+                    if (result != Result.Success)
+                    {
+                        Instantiate(_systemAnouncePref, _SystemMsgCanvas.transform).GetComponent<SystemAnounce>().Show(result.ToString());
+                    }
+                    else
+                    {
+                        _privateCodeInfo.text = "";
+                        _privateCode.SetActive(false);
+                        OnJoinLobby?.Invoke(lobby);
+                    }
+                });
+            }
+            else
+            {
+                _privateCodeInfo.text = "코드가 틀렸습니다";
+            }
+        }
+
         void OnFindRoomConfirmClick(BaseEventData data)
         {
             if (_lobbyPageView._currentContent == null) return;
             var lobby = _lobbyPageView._currentContent.GetComponent<LobbyElement>();
             _FindRoomButton.DeActivate();
-            lobby._lobbySearch.JoinLobby((Result result, EOS_Lobby lobby) =>
+
+            if (lobby._lobbySearch._attribute.GetLobbySecurity(out var security))
             {
-                _FindRoomButton.Activate();
-                if (result != Result.Success)
+                if (security == LobbySecurityType.Protected)
                 {
-                    Instantiate(_systemAnouncePref, _SystemMsgCanvas.transform).GetComponent<SystemAnounce>().Show(result.ToString());
+                    _privateCode.SetActive(true);
+                    _privateCodeInfo.text = "";
                 }
                 else
                 {
-                    OnJoinLobby?.Invoke(lobby);
+                    lobby._lobbySearch.JoinLobby((Result result, EOS_Lobby lobby) =>
+                    {
+                        _FindRoomButton.Activate();
+                        if (result != Result.Success)
+                        {
+                            Instantiate(_systemAnouncePref, _SystemMsgCanvas.transform).GetComponent<SystemAnounce>().Show(result.ToString());
+                        }
+                        else
+                        {
+                            OnJoinLobby?.Invoke(lobby);
+                        }
+                    });
                 }
-            });
+            }
         }
+
         void OnfindRoomCancleClick(BaseEventData data)
         {
             _LobbyUI.SetActive(false);
@@ -165,7 +229,7 @@ namespace MainScene
                     {
                         var element = Instantiate(_LobbyElementPref,_lobbyPageView.transform);
                         element.Init(item);
-                        _lobbyPageView.AddContent(element.GetComponent<UISelectElement>());
+                        _lobbyPageView.AddContent(element.GetComponent<UIImgToggle>());
                     }
                 }
             });
@@ -182,7 +246,7 @@ namespace MainScene
             {
                 var element = Instantiate(_ModeElementPref, _modePageView.transform);
                 element._mode.text = $"Default{i}";
-                _modePageView.AddContent(element.GetComponent<UISelectElement>());
+                _modePageView.AddContent(element.GetComponent<UIImgToggle>());
             }
         }
         void OnLobbyLogoClick(BaseEventData data)

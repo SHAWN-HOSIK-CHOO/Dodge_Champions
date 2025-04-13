@@ -1,4 +1,3 @@
-#define CUSTUMNETCODEFIX
 using Epic.OnlineServices.P2P;
 using System;
 using System.Collections.Generic;
@@ -9,48 +8,27 @@ using static NetworkSpawner;
 
 public class NgoManager : NetworkManager
 {
-    /* 
-     * NetworkTickSystem Tick
-     * NTP 로 교체함.
-     * 
-     * Ngo Transform $ Interporation
-     * 이전 Tick을 캐싱하여 앞선 Tick인 경우에만 Transform을 Update하고 있음 -> 롤백에 대해 올바르게 대처하지 못할 것..
-     * 보간시 이전의 보간정보를 버리고 가장 최신의 정보만 가지고 보간하고 있음 -> 올바른 중간 경로를 시뮬레이션 하지 않음..
-     * 클라이언트 예측에는 이동 정보가 필요함 -> transform 밖에 정보가 없어서 지원하고 있지 않음..
-     *
-     * BuildProfile with PlayMode
-     * 런타임 기준으로 설계되어 PlayMode시 씬로드 및 빌드 목록 동기화가 잘 되지 않음
-     * 에디터와 빌드 기준으로 분리하여 코드를 추가 작성함.
-     *
-     * Optimization
-     * 매 프레임 Send를 제한 없이 모두 처리함 -> 필요하다면 큐잉 등의 부하 관리가 필요함
-     * 고정 주기 마다 패킷을 Receive 함 -> 최대 TickInterval 만큼의 패킷 처리 지연 발생
-     */
-
     FreeNet _freeNet;
     EOSNetcodeTransport _EOSNetcodeTransport;
 
     [SerializeField]
     public double _localBufferSec;
-
     [SerializeField]
     public double _serverBufferSec;
     [SerializeField]
     public bool _useEpicOnlineTransport;
     public byte _channel => 0;
     public byte _urgentChannel => 1;
-
     public bool _ngoReady {get; private set;}
 
     [SerializeField]
     NetworkSpawner _networkSpawnerPref;
     public NetworkSpawner _networkSpawner;
-    public PingPong _pingPong;
     public Action _onSpawnerSpawned;
-    public Action _onPingPongSpawned;
     public event Action _onNgoManagerReady;
     [SerializeField]
     private List<string> _networkScene;
+
     public static new NgoManager Singleton => (NetworkManager.Singleton as NgoManager);
     public void Init(FreeNet freeNet)
     {
@@ -78,7 +56,6 @@ public class NgoManager : NetworkManager
         {
             SetNetworkValue();
             _onSpawnerSpawned += OnSpawnedSpawner;
-            _onPingPongSpawned += OnSpawnedPingPong;
             _networkSpawner = Instantiate(_networkSpawnerPref);
             _networkSpawner.GetComponent<NetworkObject>().Spawn(false);
         }
@@ -163,22 +140,10 @@ public class NgoManager : NetworkManager
         var transportID = ConnectionManager.ClientIdToTransportId(clientID);
         _EOSNetcodeTransport.SendUrgentPacket(transportID);
     }
-    void OnSpawnedPingPong()
-    {
-        _ngoReady = true;
-        _onNgoManagerReady?.Invoke();
-    }
     void OnSpawnedSpawner()
     {
         _onSpawnerSpawned -= OnSpawnedSpawner;
-        if (IsServer)
-        {
-            var obj = _networkSpawner.Spawn(new SpawnParams()
-            {
-                prefabListName = "NetPrefabs",
-                prefabName = "PingPong",
-                destroyWithScene = false
-            });
-        }
+        _ngoReady = true;
+        _onNgoManagerReady?.Invoke();
     }
 }

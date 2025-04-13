@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3385352958211247913}
-  - component: {fileID: 3798346705544653942}
   - component: {fileID: 7689346355945248573}
   - component: {fileID: 2196418414283894934}
   - component: {fileID: 4515117737559951660}
   - component: {fileID: 1769720633050157792}
+  - component: {fileID: 6636674918302520317}
   m_Layer: 5
   m_Name: ModeElement
   m_TagString: Untagged
@@ -41,20 +41,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3798346705544653942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4462172851251790980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27d40003199494f48bfd5c2f85ffaf8c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isActivated: 1
-  _normalColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!222 &7689346355945248573
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -76,7 +62,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7877358, g: 1, b: 0.9211953, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -119,6 +105,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mode: {fileID: 4270432815116520400}
+--- !u!114 &6636674918302520317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4462172851251790980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acfd024038a221348afa57071dd1c82a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isActivated: 1
+  _normalColor: {r: 1, g: 1, b: 1, a: 1}
+  _isOn: 0
+  _toggleActive: {r: 0.3066038, g: 0.67740107, b: 1, a: 1}
+  _imageHandleOff: {fileID: 0}
+  _imageHandleOn: {fileID: 0}
 --- !u!1 &5915633927512318254
 GameObject:
   m_ObjectHideFlags: 0

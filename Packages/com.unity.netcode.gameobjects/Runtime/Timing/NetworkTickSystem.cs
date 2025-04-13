@@ -89,7 +89,7 @@ namespace Unity.Netcode
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
                 s_Tick.Begin();
 #endif
-                Debug.Log($"now tick : {Time.Tick},{Time.FixedTime}");
+                //Debug.Log($"now tick : {Time.Tick},{Time.FixedTime}");
 
                 Tick?.Invoke();
 #if DEVELOPMENT_BUILD || UNITY_EDITOR

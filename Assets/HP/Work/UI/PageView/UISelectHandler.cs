@@ -1,50 +1,57 @@
 using System;
 using System.Collections.Generic;
+using Unity.Android.Gradle;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class UISelectHandler : MonoBehaviour
 {
-    List<UISelectElement> _UISelectElements;
+    List<UIImgToggle> _UISelectElements;
 
-    UISelectElement _currentSelected;
-    public UISelectElement CurrentSelected => _currentSelected;
+    UIImgToggle _currentSelected;
+    public UIImgToggle CurrentSelected => _currentSelected;
 
 
     private void Awake()
     {
-        _UISelectElements = new List<UISelectElement>();
+        _UISelectElements = new List<UIImgToggle>();
     }
-    public void Remove(UISelectElement element)
+    public void Remove(UIImgToggle element)
     {
         _UISelectElements.Remove(element);
-        element.OnSelectAction -= OnSelect;
+        element.OnToggleAction -= OnToggle;
     }
-    public void Add(UISelectElement element)
+    public void Add(UIImgToggle element)
     {
         _UISelectElements.Add(element);
-        element.OnSelectAction += OnSelect;
+        element.OnToggleAction += OnToggle;
     }
     public void Clear()
     {
         foreach (var element in _UISelectElements)
         {
-            element.OnSelectAction -= OnSelect;
+            element.OnToggleAction -= OnToggle;
         }
         _UISelectElements.Clear();
     }
-    private void OnSelect(BaseEventData data)
+    private void OnToggle(GameObject obj)
     {
-        foreach(var element in _UISelectElements)
+        var toggle = obj.GetComponent<UIImgToggle>();
+        if(toggle.IsOn)
         {
-            if (element == data.selectedObject)
+            if (_currentSelected != null && _currentSelected.gameObject != obj)
             {
-                if (_currentSelected != null && _currentSelected != element)
+                _currentSelected.SetToggle(false);
+                _currentSelected = null;
+            }
+
+            foreach (var element in _UISelectElements)
+            {
+                if (element.gameObject == obj)
                 {
-                    _currentSelected.OnDeSelected();
+                    _currentSelected = element;
+                    _currentSelected.SetToggle(true);
                 }
-                _currentSelected = element;
-                _currentSelected.OnSelected();
             }
         }
     }

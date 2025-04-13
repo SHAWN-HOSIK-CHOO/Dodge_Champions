@@ -4,8 +4,6 @@ using static NetworkSpawner;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
-    TimeSystemGUI timesystemGUI;
-    [SerializeField]
     Transform _spawnPointB;
     void Start()
     {
@@ -21,7 +19,6 @@ public class SpawnManager : MonoBehaviour
 
     void OnNgoManagerReady()
     {
-        timesystemGUI.Init();
         if (NgoManager.Singleton.IsServer)
         {
             NgoManager.Singleton._networkSpawner.Spawn(new SpawnParams()
