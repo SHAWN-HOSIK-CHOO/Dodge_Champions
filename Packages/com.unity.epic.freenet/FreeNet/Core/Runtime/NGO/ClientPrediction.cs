@@ -1,8 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using static PlayerMoveControl;
-using static UnityEngine.Tilemaps.Tilemap;
 public interface ITickState
 {
     int _tick { get; set; }
@@ -37,19 +36,16 @@ public abstract class ClientPrediction : NetworkBehaviour
     protected ArrayBuffer<LinkedList<ITickEvent>> _tickEventHistory;
 
     [SerializeField]
-    protected int SyncTickRate = 30;
-    [SerializeField]
-    protected int EventTickRate = 60;
-    [SerializeField]
-    protected float ConfirmTimeAgo = 0.3f;
-
-
+    protected int SyncTickRate = 5;
+    protected int EventTickRate ; // SyncTickRate보다 높을 것
+    protected int SyncTickBufferSize; // rtt * SyncTickRate 보다 높을 것
+    protected int EventTickBufferSize;  // rtt * EventTickRate 보다 높을 것
+    protected float ConfirmTimeAgo; //   (BufferSize / SyncTickRate) - rtt 보다 작을 것
 
     protected int _lastSyncTick;
-    protected int _lastEventTick;
-
     protected int _lastNetSyncTick;
-    protected int _lastNetEventTick;
+
+    protected int _lastEventTick;
 
     virtual protected void Update()
     {
@@ -58,49 +54,43 @@ public abstract class ClientPrediction : NetworkBehaviour
             var time = NetworkManager.NetworkTickSystem.Time;
             var eventTime = new NetworkTime((uint)EventTickRate, time.Time);
             var syncTime = new NetworkTime((uint)SyncTickRate, time.Time);
-            Reconciliation(time.Time);
-
-            for (int eventTick = _lastEventTick+1; eventTick < eventTime.Tick; eventTick++)
+            for (int eventTick = _lastEventTick+1; eventTick <= eventTime.Tick; eventTick++)
             {
                 if (eventTick < 0) continue;
-
                 var eventTickTime = new NetworkTime((uint)EventTickRate, eventTick);
                 var syncTickTime = new NetworkTime((uint)SyncTickRate, eventTickTime.Time);
-                Simulate(syncTickTime.Tick, eventTickTime.Tick);
+                Reconciliation(eventTickTime.Time);
+                OnEventTick(eventTickTime);
                 _lastEventTick = eventTick;
                 _lastSyncTick = syncTickTime.Tick;
-            }
-
-
-            if(_lastNetEventTick < eventTime.Tick)
-            {
-                OnEventTick(eventTime.Tick);
-                _lastNetEventTick = eventTime.Tick;
             }
 
             var confirmTime =  syncTime  - new NetworkTime((uint)SyncTickRate, ConfirmTimeAgo);
             for (int i = _lastNetSyncTick + 1; i <= confirmTime.Tick; i++)
             {
-                if (i < 0) continue;
-                OnSyncTick(i);
-                _lastNetSyncTick = i;
+                if (i > 0)
+                {
+                    OnNetSyncTick(i);
+                    _lastNetSyncTick = i;
+                }
             }
         }
     }
-    virtual protected void OnEventTick(int tick)
+    virtual protected void OnEventTick(NetworkTime eventTime)
     {
+        Simulate(eventTime);
         if (IsOwner)
         {
-            ClearOldEvent(tick);
-            SendTickEventList(tick);
+            ClearOldEvent(eventTime.Tick);
+            SendTickEventList(eventTime.Tick);
         }
     }
-    virtual protected void OnSyncTick(int tick)
+    virtual protected void OnNetSyncTick(int tick)
     {
         if (IsServer)
         {
-            int historyIndex = tick % SyncTickRate;
-            _tickStateHistory._buffer[historyIndex]._isPredict = false;
+            int historyIndex = tick % SyncTickBufferSize;
+            _tickStateHistory._buffer[historyIndex]._isPredict = false;           
             SendTickState(tick);
         }
     }
@@ -114,12 +104,19 @@ public abstract class ClientPrediction : NetworkBehaviour
     }
     override public void OnNetworkSpawn()
     {
-        _tickStateHistory = new ArrayBuffer<ITickState>((int)SyncTickRate);
-        _tickEventHistory = new ArrayBuffer<LinkedList<ITickEvent>>((int)EventTickRate);
+        float rtt = 0.25f; 
+        SyncTickRate = 5;
+        EventTickRate = (SyncTickRate+10 < 60) ? 60 : SyncTickRate + 10;
+        SyncTickBufferSize = SyncTickRate + (int)Math.Ceiling(SyncTickRate * rtt);
+        EventTickBufferSize = EventTickRate + (int)Math.Ceiling(EventTickRate * rtt);
+        ConfirmTimeAgo  =  (int)Math.Floor((SyncTickBufferSize / SyncTickRate) - rtt);
+
+        _tickStateHistory = new ArrayBuffer<ITickState>((int)SyncTickBufferSize);
+        _tickEventHistory = new ArrayBuffer<LinkedList<ITickEvent>>((int)EventTickBufferSize);
 
         _reconTickEventList = new List<ITickEventListMessage>();
         _reconTickStateList = new List<ITickStateMessage>();
-        for (int i = 0; i < EventTickRate; i++)
+        for (int i = 0; i < EventTickBufferSize; i++)
         {
             _tickEventHistory._buffer[i] = new LinkedList<ITickEvent>();
         }
@@ -129,14 +126,13 @@ public abstract class ClientPrediction : NetworkBehaviour
         var syncTime = new NetworkTime((uint)SyncTickRate, time.Time);
 
         _lastEventTick = eventTime.Tick;
-        _lastNetEventTick = eventTime.Tick;
         _lastSyncTick = syncTime.Tick;
         _lastNetSyncTick = syncTime.Tick;
 
     }
-    void ClearOldEvent(int tick)
+    protected void ClearOldEvent(int tick)
     {
-        int historyIndex = tick % EventTickRate;
+        int historyIndex = tick % EventTickBufferSize;
         var node = _tickEventHistory._buffer[historyIndex].First;
         while (node != null)
         {
@@ -155,12 +151,12 @@ public abstract class ClientPrediction : NetworkBehaviour
     }
     protected void CashState(ITickState state)
     {
-        int historyIndex = state._tick % SyncTickRate;
+        int historyIndex = state._tick % SyncTickBufferSize;
         _tickStateHistory._buffer[historyIndex] = state;
     }
     protected void CashEvent(ITickEvent tickEvent)
     {
-        int historyIndex = tickEvent._tick % EventTickRate;
+        int historyIndex = tickEvent._tick % EventTickBufferSize;
         _tickEventHistory._buffer[historyIndex].AddLast(tickEvent);
     }
     int ReconciliateState(int tick)
@@ -168,14 +164,15 @@ public abstract class ClientPrediction : NetworkBehaviour
         int reconTick = -1;
         for (int i = 0; i < _reconTickStateList.Count; i++)
         {
-            var tickState = _reconTickStateList[i]._tickState;
-            int historyIndex = tickState._tick % SyncTickRate;
+            var reconTickState = _reconTickStateList[i]._tickState;
+            int historyIndex = reconTickState._tick % SyncTickBufferSize;
             bool dirty = false;
-            if (_reconTickStateList[i]._tickState._tick <= tick)
+            if (reconTickState._tick <= tick)
             {
-                dirty = tickState.CheckStateDirty(_tickStateHistory._buffer[historyIndex]);
+                dirty = (_tickStateHistory._buffer[historyIndex] == null) ? true : _tickStateHistory._buffer[historyIndex].CheckStateDirty(reconTickState);
             }
-            CashState(tickState);
+            CashState(reconTickState);
+
             if (dirty)
             {
                 if (reconTick == -1)
@@ -193,7 +190,7 @@ public abstract class ClientPrediction : NetworkBehaviour
         for (int i = 0; i < _reconTickEventList.Count; i++)
         {
             bool dirty = false;
-            int historyIndex = _reconTickEventList[i]._tick % EventTickRate;
+            int historyIndex = _reconTickEventList[i]._tick % EventTickBufferSize;
             ClearOldEvent(_reconTickEventList[i]._tick);
             if (_reconTickEventList[i]._tick <= tick)
             {
@@ -232,7 +229,7 @@ public abstract class ClientPrediction : NetworkBehaviour
     }
     protected bool CheckTickStateDirty(int tick)
     {
-        int historyIndex = tick % SyncTickRate;
+        int historyIndex = tick % SyncTickBufferSize;
         if (_tickStateHistory._buffer[historyIndex] == null) return true;
         bool tickDirty = _tickStateHistory._buffer[historyIndex]._tick != tick;
         if (tickDirty) return true;
@@ -250,16 +247,44 @@ public abstract class ClientPrediction : NetworkBehaviour
         }
     }
 
-
-    protected virtual void Simulate(int syncTick, int eventTick)
+    protected virtual void Simulate(int SyncTick)
     {
-        ApplyTickState(syncTick);
-        if (CheckTickStateDirty(syncTick + 1))
+        if(!CheckTickStateDirty(SyncTick+1))
+        {
+            SetTickStateFromHistory(SyncTick+1);
+            return;
+        }
+
+        NetworkTime syncStartTime = new NetworkTime((uint)SyncTickRate, SyncTick);
+        NetworkTime syncEndTime = new NetworkTime((uint)EventTickRate, SyncTick+1);
+        NetworkTime eventStartTime = new NetworkTime((uint)EventTickRate, syncStartTime.Time);
+        NetworkTime eventEndTime = new NetworkTime((uint)EventTickRate, syncEndTime.Time);
+
+        int endTick = eventEndTime.Tick;
+        if (eventEndTime.FixedTime == syncEndTime.FixedTime) 
+        {
+            endTick -= 1; 
+        }
+
+        SetTickStateFromHistory(SyncTick);
+        for (int eventTick = eventStartTime.Tick; eventTick <= endTick; eventTick++)
         {
             ClearOldEvent(eventTick);
             ApplyTickEvent(eventTick);
         }
-        ApplyTickState(syncTick + 1);
+        ApplyTickState(SyncTick + 1);
+    }
+    protected virtual void Simulate(NetworkTime eventTime)
+    {
+        NetworkTime syncTime = new NetworkTime((uint)SyncTickRate, eventTime.Time);
+        NetworkTime eventStartTime = new NetworkTime((uint)EventTickRate, syncTime.FixedTime);
+        SetTickStateFromHistory(syncTime.Tick);
+        for (int eventTick = eventStartTime.Tick; eventTick <= eventTime.Tick; eventTick++)
+        {
+            ClearOldEvent(eventTick);
+            ApplyTickEvent(eventTick);
+        }
+        ApplyTickState(syncTime.Tick + 1);
     }
 
     protected void Reconciliation(double time)
@@ -271,22 +296,30 @@ public abstract class ClientPrediction : NetworkBehaviour
         int moveStateDirtTick = ReconciliateState(syncTime.Tick);
 
         var DirtyEventTime = new NetworkTime((uint)EventTickRate, moveEventDirtTick);
-        var DirtyEventTimeToSyncTime = new NetworkTime((uint)SyncTickRate, DirtyEventTime.Time);
         var DirtySyncTime = new NetworkTime((uint)SyncTickRate, moveStateDirtTick);
-
- 
-        var FinalDirtySyncTime = (DirtyEventTimeToSyncTime.Time < DirtySyncTime.Time) ? DirtyEventTimeToSyncTime : DirtySyncTime;
-        int startTick = FinalDirtySyncTime.Tick;
-        if (startTick < 0) return;
-        for (int i = startTick; i <= _lastSyncTick; i++)
+        var DirtySyncTimeToEventTime = new NetworkTime((uint)EventTickRate, DirtySyncTime.Time);
+        int startTick;
+        if (DirtyEventTime.Tick < 0 && DirtySyncTimeToEventTime.Tick < 0)
         {
-            double stateEndTime = new NetworkTime((uint)SyncTickRate, _lastSyncTick).Time;
-            int eventTickStart = new NetworkTime((uint)EventTickRate, FinalDirtySyncTime.Time).Tick;
-            int eventTickEnd = new NetworkTime((uint)EventTickRate, stateEndTime).Tick;
-            for (int eventTick = eventTickStart; eventTick < eventTickEnd; eventTick++)
-            {
-                Simulate(i,eventTick);
-            }
+            return;
+        }
+        else if (DirtyEventTime.Tick < 0)
+        {
+            startTick = DirtySyncTimeToEventTime.Tick;
+        }
+        else if (DirtySyncTimeToEventTime.Tick <0)
+        {
+            startTick = DirtyEventTime.Tick;
+        }
+        else
+        {
+            startTick = (DirtyEventTime.Tick < DirtySyncTimeToEventTime.Tick) ? DirtyEventTime.Tick : DirtySyncTimeToEventTime.Tick;
+        }
+
+
+        for (int eventTick = startTick; eventTick <= _lastEventTick; eventTick++)
+        {
+            Simulate(new NetworkTime((uint)EventTickRate ,eventTick));
         }
     }
 }

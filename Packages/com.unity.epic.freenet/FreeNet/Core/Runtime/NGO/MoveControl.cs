@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 using static PlayerMoveControl.MoveEvent;
 
 public class PlayerMoveControl : ClientPrediction
@@ -109,7 +108,7 @@ public class PlayerMoveControl : ClientPrediction
         {
             if (compareState == null) return true;
             var state = (MoveState)compareState;
-            float threshold = 0.0001f;
+            float threshold = 0.001f;
             bool worldPosDirty = Vector3.Distance(_worldPos, state._worldPos) > threshold;
             bool envSpeedDirty = Vector3.Distance(_envSpeed, state._envSpeed) > threshold;
             bool moveSpeedDirty = Vector3.Distance(_moveSpeed, state._moveSpeed) > threshold;
@@ -117,7 +116,13 @@ public class PlayerMoveControl : ClientPrediction
             bool ValidJumpDirty = _isJumpValid != state._isJumpValid;
             bool worldRotDirty = Quaternion.Dot(_worldRot, state._worldRot) < (1.0f - threshold);
             bool tickDirty = _tick != state._tick;
-            return (worldPosDirty || worldRotDirty || mouseSpeedDirty || moveSpeedDirty || envSpeedDirty || ValidJumpDirty || tickDirty);
+
+            bool dirty = (worldPosDirty || worldRotDirty || mouseSpeedDirty || moveSpeedDirty || envSpeedDirty || ValidJumpDirty || tickDirty);
+            if (dirty)
+            {
+                Debug.Log($"State Dirty! reoconCiliation");
+            }
+            return dirty;
         }
         public void Serelize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
@@ -251,7 +256,7 @@ public class PlayerMoveControl : ClientPrediction
             bool typeDirty = MoveEventType.MoveInputEvent != compare._moveEventType;
             if (typeDirty) return true;
             bool valueDirty = false;
-            float threshold = 0.0001f;
+            float threshold = 0.001f;
             var moveEvent = (MoveInputEvent)compare;
             valueDirty = Vector2.Distance(_moveInput, moveEvent._moveInput) > threshold;
             bool tickDirty = _tick != moveEvent._tick;
@@ -286,7 +291,7 @@ public class PlayerMoveControl : ClientPrediction
             bool typeDirty = MoveEventType.MouseInputEvent != compare._moveEventType;
             if (typeDirty) return true;
             bool valueDirty = false;
-            float threshold = 0.0001f;
+            float threshold = 0.001f;
             var moveEvent = (MouseInputEvent)compare;
             valueDirty = Vector2.Distance(_mouseInput, moveEvent._mouseInput) > threshold;
             bool tickDirty = _tick != moveEvent._tick;
@@ -315,29 +320,39 @@ public class PlayerMoveControl : ClientPrediction
             BindKey();
         }
     }
-
-    protected override void Simulate(int syncTick, int eventTick)
+    override protected void Update()
     {
-        if (IsOwner)
+        DrawDebugCapsule();
+        base.Update();
+
+        var time = NetworkManager.NetworkTickSystem.Time;
+        var eventTime = new NetworkTime((uint)EventTickRate, time.Time);
+        AddPrevMoveInputEvent(eventTime.Tick);
+    }
+    protected override void Simulate(NetworkTime eventTime)
+    {
+        base.Simulate(eventTime);
+    }
+    override protected void OnEventTick(NetworkTime eventTime)
+    {
+        if (IsSpawned)
         {
-            foreach (var imoveEvent in _userInput)
+            if (IsOwner)
             {
-                MoveEvent newEvent = new MoveEvent();
-                newEvent._iMoveEvent = imoveEvent;
-                newEvent._iMoveEvent._tick = eventTick;
-                newEvent._iMoveEvent._isPredict = false;
-                CashEvent(newEvent);
+                foreach (var imoveEvent in _userInput)
+                {
+                    MoveEvent newEvent = new MoveEvent();
+                    newEvent._iMoveEvent = imoveEvent;
+                    newEvent._iMoveEvent._tick = eventTime.Tick;
+                    newEvent._iMoveEvent._isPredict = false;
+                    CashEvent(newEvent);
+                }
+                _userInput.Clear();
             }
-            _userInput.Clear();
         }
-        base.Simulate(syncTick, eventTick);
-
+        base.OnEventTick(eventTime);
     }
 
-    protected override void OnEventTick(int tick)
-    {
-        base.OnEventTick(tick);
-    }
     void BindKey()
     {
         _playerInput = new HP.PlayerInput("Player");
@@ -345,15 +360,6 @@ public class PlayerMoveControl : ClientPrediction
         _playerInput._onMouseInputChanged += OnMouseInputChanged;
         _playerInput._onMoveInputChanged += OnMoveInputChanged;
         _playerInput._onJumpInputChanged += OnJumpInputChanged;
-    }
-
-    override protected void Update()
-    {
-        if (IsSpawned)
-        {
-            DrawDebugCapsule();
-            base.Update();
-        }
     }
     private void DrawDebugCapsule()
     {
@@ -366,11 +372,9 @@ public class PlayerMoveControl : ClientPrediction
         }
         DebugExtension.DebugCapsule(capsuleBottom, capsuleTop, radius: _characterController.radius + 0.05f, color: color);
     }
-    
-    
     void ApplyMoveEvent(int tick)
     {
-        int historyIndex = tick % EventTickRate;
+        int historyIndex = tick % EventTickBufferSize;
         var timeSystem = new NetworkTime((uint)EventTickRate, 1);
         foreach (var moveEvent in _tickEventHistory._buffer[historyIndex])
         {
@@ -394,10 +398,7 @@ public class PlayerMoveControl : ClientPrediction
                 Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
                 Quaternion yawRotation = Quaternion.Euler(0, _characterController.transform.eulerAngles.y, 0);
                 moveDirection = yawRotation * moveDirection;
-
                 var vector = (Vector3.Scale(moveDirection, _curMoveSpeed) * (timeSystem.FixedDeltaTime * 1000.0f))/1000.0f;
-
-                Debug.Log($"{message._moveInput}, {vector}");
                 _characterController.Move(vector);
             }
             else if (history._iMoveEvent._moveEventType == MoveEvent.MoveEventType.JumpInputEvent)
@@ -421,7 +422,7 @@ public class PlayerMoveControl : ClientPrediction
                         //Maybe This Should Not Happen
                         _curEnvSpeed.y = -0.1f;
                         _curIsJumpValid = true;
-                        Debug.LogWarning("Double Jump Warning");
+                        Debug.LogWarning("Jumped But Still In Ground...");
                     }
                 }
             }
@@ -451,7 +452,8 @@ public class PlayerMoveControl : ClientPrediction
     }
     override protected void SetTickStateFromHistory(int tick)
     {
-        int historyIndex = tick % SyncTickRate;
+        int historyIndex = tick % SyncTickBufferSize;
+        if (_tickStateHistory._buffer[historyIndex] == null) return;
         var history = (MoveState)_tickStateHistory._buffer[historyIndex];
         _characterController.enabled = false;
         transform.position = history._worldPos;
@@ -478,7 +480,7 @@ public class PlayerMoveControl : ClientPrediction
     }
     override protected void SendTickState(int tick)
     {
-        int historyIndex = tick % SyncTickRate;
+        int historyIndex = tick % SyncTickBufferSize;
         SendTickStateRpc(new TickStateMessage()
         {
             _tickState = _tickStateHistory._buffer[historyIndex].DeepCopy()
@@ -486,7 +488,7 @@ public class PlayerMoveControl : ClientPrediction
     }
     override protected void SendTickEventList(int tick)
     {
-        int historyIndex = tick % EventTickRate;
+        int historyIndex = tick % EventTickBufferSize;
         if (_tickEventHistory._buffer[historyIndex].Count != 0)
         {
             var eventList = new ITickEvent[_tickEventHistory._buffer[historyIndex].Count];
@@ -504,7 +506,6 @@ public class PlayerMoveControl : ClientPrediction
         }
     }
 
-
     [Rpc(SendTo.NotServer)]
     void SendTickStateRpc(TickStateMessage tickStateMessage)
     {
@@ -517,29 +518,27 @@ public class PlayerMoveControl : ClientPrediction
     }
     void AddPrevMoveInputEvent(int tick)
     {
-        int historyIndex = tick % EventTickRate;
-        for (int i = 0; i < EventTickRate; i++)
+        int historyIndex = tick % EventTickBufferSize;
+        for (int i = 0; i < EventTickBufferSize; i++)
         {
-            int prevHistoryIndex = (tick + EventTickRate - i) % EventTickRate;
+            int prevHistoryIndex = (tick + EventTickBufferSize - i) % EventTickBufferSize;
             var prevhistory = _tickEventHistory._buffer[prevHistoryIndex];
-            var moveEvent = prevhistory.LastOrDefault(e => ((MoveEvent)e)._iMoveEvent._moveEventType == MoveEventType.MoveInputEvent);
-            if (moveEvent != null)
+            MoveEvent moveEvent = prevhistory.OfType<MoveEvent>().LastOrDefault(e => e._iMoveEvent._moveEventType == MoveEventType.MoveInputEvent);
+            if (moveEvent._iMoveEvent != null)
             {
                 if (i == 0) return;
-                var moveInputEvent = (MoveEvent)moveEvent;
+                var moveInputEvent = new MoveEvent()
+                {
+                    _iMoveEvent = moveEvent._iMoveEvent.DeepCopy() 
+                } ;
                 moveInputEvent._iMoveEvent._tick = tick;
                 moveInputEvent._iMoveEvent._isPredict = true;
                 _tickEventHistory._buffer[historyIndex].AddFirst(moveInputEvent);
                 return;
             }
         }
-        var defaultMoveInputEvent = new MoveInputEvent();
-        defaultMoveInputEvent._tick = tick;
-        defaultMoveInputEvent._isPredict = true;
-        _tickEventHistory._buffer[historyIndex].AddFirst(new MoveEvent()
-        {
-            _iMoveEvent = defaultMoveInputEvent
-        });
+
+        Debug.LogWarning("cant Detect Prev Key");
     }
     bool OnGround(out RaycastHit obj)
     {

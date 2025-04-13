@@ -213,8 +213,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   SyncTickRate: 10
-  EventTickRate: 120
-  ConfirmTimeAgo: 0.3
   _characterController: {fileID: 4471449990706994904}
   _curMouseSpeed: {x: 10, y: 10}
   _curMoveSpeed: {x: 10, y: 0, z: 10}
