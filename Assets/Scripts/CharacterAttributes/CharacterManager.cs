@@ -1,7 +1,6 @@
 using Ball;
 using Game;
 using GameInput;
-using SinglePlayer;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -132,7 +131,7 @@ namespace CharacterAttributes
             if (GameMode.Instance.CurrentGameMode == EGameMode.MULTIPLAER)
             {
                 //만약 내가 공을 던진 사람이고 상대방이 Just Dodge로 피한 사람이고, 상대 턴이 아니라면(내 턴이라면)
-                if (!IsOwner )
+                if (!IsOwner)
                 {
                     //턴을 넘겨준다
                     //TODO: 턴제 삭제로 인해 EndCurrentRoundServerRPC가 아닌 보상 매카니즘이 이식되어야 한다.
@@ -141,7 +140,7 @@ namespace CharacterAttributes
             }
             else if (GameMode.Instance.CurrentGameMode == EGameMode.SINGLEPLAYER)
             {
-                
+
             }
 
         }
@@ -373,7 +372,7 @@ namespace CharacterAttributes
         {
             _currentThrowCount++;
         }
-        
+
         public void ResetThrowCount()
         {
             _currentThrowCount = 0;

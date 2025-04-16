@@ -1,9 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static InputSystemNaming;
-using UnityEngine.InputSystem;
-using static UnityEngine.InputSystem.InputAction;
 
 namespace HP
 {

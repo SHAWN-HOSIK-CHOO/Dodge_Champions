@@ -2,7 +2,6 @@ using Epic.OnlineServices;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 namespace BootScene
 {
@@ -59,9 +58,9 @@ namespace BootScene
 
         void OnAuthComplete()
         {
-            if(!_resolution.ApplySavedResolution())
+            if (!_resolution.ApplySavedResolution())
             {
-                _resolution.ChangeResolution(1280,720, true);
+                _resolution.ChangeResolution(1280, 720, true);
             }
             SceneManagerWrapper.LoadSceneAsync("MainScene", LoadSceneMode.Single);
         }

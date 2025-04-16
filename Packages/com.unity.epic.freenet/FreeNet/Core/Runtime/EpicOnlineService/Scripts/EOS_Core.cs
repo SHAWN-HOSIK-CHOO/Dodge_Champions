@@ -57,7 +57,6 @@ public partial class EOS_Core : MonoBehaviour
     LogLevel level;
     Coroutine _tick;
     private IEOS_PlatformFactory _factory;
-
     public void Run()
     {
         if (_sdkState == SDKState.Released)
@@ -79,7 +78,7 @@ public partial class EOS_Core : MonoBehaviour
     {
         if (_sdkState == SDKState.Initialized)
         {
-            ReleaseP2P();
+            RleasePartialClass();
             _factory.Dispose();
             _sdkState = SDKState.Released;
         }
@@ -99,7 +98,7 @@ public partial class EOS_Core : MonoBehaviour
 #endif
         _factory = EOS_Factory.GetFactory();
         if (!_factory.LoadDLL()) return SDKState.Released;
-         _credential = null;
+        _credential = null;
         if (type == EOS_Credential.CredentialType.Dev)
         {
             _credential = _dev;
@@ -128,11 +127,31 @@ public partial class EOS_Core : MonoBehaviour
         _IUSER = _IPlatform.GetUserInfoInterface();
         _IDATA = _IPlatform.GetPlayerDataStorageInterface();
         _ITitle = _IPlatform.GetTitleStorageInterface();
-        InitP2P();
+        InitPartialClass();
         EOSWrapper.ETC.SetApplicationStatus(_IPlatform, ApplicationStatus.Foreground);
         return SDKState.Initialized;
-
     }
+
+    void InitPartialClass()
+    {
+        InitP2P();
+        InitLogin();
+        InitConnect();
+    }
+    void RleasePartialClass()
+    {
+        try
+        {
+            ReleaseP2P();
+            ReleaseConnect();
+            ReleaseLogin();
+        }
+        catch
+        {
+            Debug.LogError("RleasePartialClass Failed");
+        }
+    }
+
     IEnumerator Tick()
     {
         while (true)

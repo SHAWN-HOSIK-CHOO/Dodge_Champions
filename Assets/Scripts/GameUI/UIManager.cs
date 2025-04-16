@@ -12,7 +12,7 @@ namespace GameUI
     {
         private static UIManager _instance = null;
         public static UIManager Instance => _instance == null ? null : _instance;
-        
+
         public bool IsInitialized { get; private set; } = false;
 
         private void Awake()
@@ -44,11 +44,11 @@ namespace GameUI
         public TMP_Text playerBallSkillIndex;
         public TMP_Text enemyBallSkillIndex;
 
-        [Header("Canvas")] 
+        [Header("Canvas")]
         public Canvas canvas;
 
         [Header("HealthBar")] public GameObject pfHealthBar;
-        
+
         private void Start()
         {
             Initialize();
@@ -59,7 +59,7 @@ namespace GameUI
             //Debug
             playerBallSkillIndex.text = "Player Character No.  " + PlayerSelectionManager.Instance.GetLocalPlayerSelection();
             enemyBallSkillIndex.text = "Enemy Character No.  " + PlayerSelectionManager.Instance.GetEnemySelection();
-            
+
             IsInitialized = true;
         }
 

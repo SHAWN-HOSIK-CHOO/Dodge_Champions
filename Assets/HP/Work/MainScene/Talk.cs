@@ -32,8 +32,8 @@ public class Talk : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         seq.Append(group.DOFade(1f, fadeInDuration))
             .AppendInterval(stayDuration)
-            .Append(group.DOFade(0f, fadeOutDuration)) 
-            .OnComplete(() => 
+            .Append(group.DOFade(0f, fadeOutDuration))
+            .OnComplete(() =>
             {
                 gameObject.SetActive(false);
                 onComplete?.Invoke();

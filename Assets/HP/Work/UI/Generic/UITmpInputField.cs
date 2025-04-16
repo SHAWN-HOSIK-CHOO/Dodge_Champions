@@ -2,8 +2,6 @@ using HP;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using static UnityEngine.InputSystem.InputAction;
 
 public class UITmpInputField : UIKeyEvent
 {
@@ -44,7 +42,7 @@ public class UITmpInputField : UIKeyEvent
         _mode.SetActive(_useInputMode);
         base.Awake();
     }
-    public override void OnActivate() 
+    public override void OnActivate()
     {
         _inputAction.Enable();
     }

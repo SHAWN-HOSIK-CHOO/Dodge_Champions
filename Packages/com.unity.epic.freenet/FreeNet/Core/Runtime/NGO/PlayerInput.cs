@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
-using static InputSystemNaming;
 using UnityEngine.InputSystem;
-using HP;
+using static InputSystemNaming;
 
 namespace HP
 {
@@ -33,7 +32,7 @@ namespace HP
             InputActionAssetHelper.AddControlScheme(controlSyntax, InputSystemNaming.Device.Mouse);
 
             _inputActionMap = InputActionAssetHelper.CreateActionMap(_inputActionAsset, "WASD_MouseBinding");
-            _WASDAction = InputActionAssetHelper.AddAction(_inputActionMap,"WASD", InputActionType.PassThrough);
+            _WASDAction = InputActionAssetHelper.AddAction(_inputActionMap, "WASD", InputActionType.PassThrough);
             var compositeSyntax = InputActionAssetHelper.AddCompositeBinding(_WASDAction, CompositeType.Vector2D);
             InputActionAssetHelper.AddCompositeBinding(compositeSyntax, InputSystemNaming.Vector2DSyntax.Up, Device.Keyboard, Key.W);
             InputActionAssetHelper.AddCompositeBinding(compositeSyntax, InputSystemNaming.Vector2DSyntax.Down, Device.Keyboard, Key.S);
@@ -41,12 +40,12 @@ namespace HP
             InputActionAssetHelper.AddCompositeBinding(compositeSyntax, InputSystemNaming.Vector2DSyntax.Right, Device.Keyboard, Key.D);
             _WASDAction.performed += OnWASD;
 
-            _jumpAction = InputActionAssetHelper.AddAction(_inputActionMap,"Jump", InputActionType.Value);
+            _jumpAction = InputActionAssetHelper.AddAction(_inputActionMap, "Jump", InputActionType.Value);
             InputActionAssetHelper.AddKeyboardBinding(_jumpAction, Key.Space);
             _jumpAction.performed += OnJump;
 
 
-            _mouseAction = InputActionAssetHelper.AddAction(_inputActionMap,"MouseMove", InputActionType.Value);
+            _mouseAction = InputActionAssetHelper.AddAction(_inputActionMap, "MouseMove", InputActionType.Value);
             var bindsyntax = InputActionAssetHelper.AddMouseBinding(_mouseAction, MouseType.delta);
             bindsyntax.WithProcessor(InputSystemNaming.Processor.ScaleVector2.ToInputSystemName(new Vector2(0.5f, 0.5f)));
             bindsyntax.WithProcessor(InputSystemNaming.Processor.Invert.ToInputSystemName());

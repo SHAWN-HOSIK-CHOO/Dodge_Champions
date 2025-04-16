@@ -1,6 +1,7 @@
 using Epic.OnlineServices;
 using Epic.OnlineServices.Lobby;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static EOSWrapper;
@@ -10,6 +11,18 @@ public abstract class EOS_LobbyManager : SingletonMonoBehaviour<EOS_LobbyManager
     protected EOS_Core _eosCore;
     protected EOS_LocalUser _localUser;
     protected Dictionary<string, EOS_Lobby> _lobbies;
+
+    private IEnumerator Start()
+    {
+        yield return SingletonMonoBehaviour<FreeNet>.WaitInitialize();
+        Init(FreeNet.Instance);
+
+        if (SingletonSpawn(this))
+        {
+            SingletonInitialize();
+        }
+    }
+
     public override void OnRelease()
     {
         RemoveLobbyCallback();
@@ -73,13 +86,13 @@ public abstract class EOS_LobbyManager : SingletonMonoBehaviour<EOS_LobbyManager
             }
         });
     }
-    public void FindLobby(uint findNum, List<Epic.OnlineServices.Lobby.AttributeData> searchParams, Action<Result, List<EOS_LobbySearchResult>> onComplete = null)
+    public void FindLobby(uint findNum, List<(Epic.OnlineServices.Lobby.AttributeData, ComparisonOp)> searchParams, Action<Result, List<EOS_LobbySearchResult>> onComplete = null)
     {
         if (EOSWrapper.ETC.ErrControl(EOSWrapper.LobbyControl.GetLobbySearch(_eosCore._ILobby, findNum, out var search), onComplete))
         {
             foreach (var item in searchParams)
             {
-                if (!ETC.ErrControl(EOSWrapper.LobbyControl.SetSearchParamAttribute(search, item, ComparisonOp.Equal), onComplete))
+                if (!ETC.ErrControl(EOSWrapper.LobbyControl.SetSearchParamAttribute(search, item.Item1, item.Item2), onComplete))
                 {
                     return;
                 }

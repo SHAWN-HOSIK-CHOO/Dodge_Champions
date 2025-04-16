@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Unity.Netcode
 {
     internal struct TimeMessage : INetworkMessage, INetworkSerializeByMemcpy
@@ -30,7 +28,7 @@ namespace Unity.Netcode
         {
             var networkManager = (NetworkManager)context.SystemOwner;
             if (networkManager.ConnectionManager.ConnectedClients.TryGetValue(ClientId, out var client))
-            {  
+            {
                 client.ReceiveDelay = networkManager.NetworkTimeSystem.m_TimeSec - Time;
                 client.SendDelay = SendDelay;
 

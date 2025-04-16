@@ -1,10 +1,10 @@
 using GameLobby;
+using GameUI;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
-using GameUI;
-using System.Collections.Generic; 
 
 namespace Game
 {
@@ -65,9 +65,9 @@ namespace Game
             {
                 yield return null;
             }
-            
+
             SpawnPlayers();
-            
+
             GameManager.Instance.StartGameServerRPC();
         }
 

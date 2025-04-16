@@ -33,16 +33,6 @@ public class EOS_Lobby
     {
         _joined = joined;
     }
-    public bool GetLobbyInfo(out string info)
-    {
-        info = null;
-        if (_attribute.TryGetValue("LOBBYINFO", out Epic.OnlineServices.Lobby.Attribute attr))
-        {
-            info = attr.Data.Value.Value.AsUtf8;
-            return true;
-        }
-        return false;
-    }
     public void UpdateMembers(LobbyDetails details)
     {
         uint memberCount = EOSWrapper.LobbyControl.GetCurrentMemberCount(details);

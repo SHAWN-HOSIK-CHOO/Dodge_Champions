@@ -11,7 +11,7 @@ public class UIDraggable : UIElement
         _useDrag = true;
         base.Awake();
     }
-    public override void OnBeginDrag(BaseEventData data) 
+    public override void OnBeginDrag(BaseEventData data)
     {
         var pointerData = data as PointerEventData;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -24,7 +24,7 @@ public class UIDraggable : UIElement
         }
 
     }
-    public override void OnDrag(BaseEventData data) 
+    public override void OnDrag(BaseEventData data)
     {
         var pointerData = data as PointerEventData;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(

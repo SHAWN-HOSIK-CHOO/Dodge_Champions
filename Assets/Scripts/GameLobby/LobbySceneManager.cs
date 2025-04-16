@@ -23,11 +23,11 @@ namespace GameLobby
 
         [Header("Debug")]
         public Button startHostDb;
-        public Button     startClientDb;
-        public TMP_Text   joinText;
+        public Button startClientDb;
+        public TMP_Text joinText;
         public TMP_InputField joinField;
-        public Button     createRelay;
-        public Button     joinRelay;
+        public Button createRelay;
+        public Button joinRelay;
 
         [Header("Confirm Button")]
         public Button confirmButton;
@@ -37,11 +37,11 @@ namespace GameLobby
 
         async void Start()
         {
-            
+
 #if UNITY_EDITOR
             Application.runInBackground = true;
 #endif
-            
+
             await SceneManagerWrapper.LoadSceneAsync("LobbyUI", LoadSceneMode.Additive);
 
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
@@ -182,7 +182,7 @@ namespace GameLobby
         public async void Callback_btn_JoinRelay()
         {
             string userInput = joinField.text;
-            
+
             var joinAllocation = await RelayService.Instance.JoinAllocationAsync(userInput);
             var relayServerData = AllocationUtils.ToRelayServerData(joinAllocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);

@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using Unity.Android.Gradle;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class UISelectHandler : MonoBehaviour
 {
@@ -37,7 +34,7 @@ public class UISelectHandler : MonoBehaviour
     private void OnToggle(GameObject obj)
     {
         var toggle = obj.GetComponent<UIImgToggle>();
-        if(toggle.IsOn)
+        if (toggle.IsOn)
         {
             if (_currentSelected != null && _currentSelected.gameObject != obj)
             {

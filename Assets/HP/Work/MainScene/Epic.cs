@@ -76,7 +76,7 @@ namespace MainScene
             var textUI = _NatType.GetComponent<TMP_Text>();
             EOSWrapper.P2PControl.QueryNATType(FreeNet.Instance._eosCore._IP2P, (ref OnQueryNATTypeCompleteInfo info) =>
             {
-                if(info.ResultCode == Result.Success)
+                if (info.ResultCode == Result.Success)
                 {
                     textUI.text = info.NATType.ToString();
                 }
@@ -85,7 +85,7 @@ namespace MainScene
         void OnRelayControlActivate(GameObject obj)
         {
             var textUI = _RelayControl.GetComponent<TMP_Text>();
-            if(EOSWrapper.P2PControl.GetRelayControl(FreeNet.Instance._eosCore._IP2P, out RelayControl control))
+            if (EOSWrapper.P2PControl.GetRelayControl(FreeNet.Instance._eosCore._IP2P, out RelayControl control))
             {
                 textUI.text = control.ToString();
             }
@@ -100,9 +100,9 @@ namespace MainScene
         {
             var options = new DeletePersistentAuthOptions();
             FreeNet.Instance._eosCore._IAuth.DeletePersistentAuth(ref options, null, null);
-            EOSWrapper.LoginControl.LogOut(FreeNet.Instance._eosCore._IAuth, FreeNet.Instance._localUser._localEAID._EAID,(ref LogoutCallbackInfo info) =>
+            EOSWrapper.LoginControl.LogOut(FreeNet.Instance._eosCore._IAuth, FreeNet.Instance._localUser._localEAID._EAID, (ref LogoutCallbackInfo info) =>
             {
-                SceneManagerWrapper.LoadScene("BootScene",LoadSceneMode.Single);
+                SceneManagerWrapper.LoadScene("BootScene", LoadSceneMode.Single);
             });
         }
     }

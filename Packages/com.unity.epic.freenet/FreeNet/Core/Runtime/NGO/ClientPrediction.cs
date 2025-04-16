@@ -37,7 +37,7 @@ public abstract class ClientPrediction : NetworkBehaviour
 
     [SerializeField]
     protected int SyncTickRate = 5;
-    protected int EventTickRate ; // SyncTickRate보다 높을 것
+    protected int EventTickRate; // SyncTickRate보다 높을 것
     protected int SyncTickBufferSize; // rtt * SyncTickRate 보다 높을 것
     protected int EventTickBufferSize;  // rtt * EventTickRate 보다 높을 것
     protected float ConfirmTimeAgo; //   (BufferSize / SyncTickRate) - rtt 보다 작을 것
@@ -54,7 +54,7 @@ public abstract class ClientPrediction : NetworkBehaviour
             var time = NetworkManager.NetworkTickSystem.Time;
             var eventTime = new NetworkTime((uint)EventTickRate, time.Time);
             var syncTime = new NetworkTime((uint)SyncTickRate, time.Time);
-            for (int eventTick = _lastEventTick+1; eventTick <= eventTime.Tick; eventTick++)
+            for (int eventTick = _lastEventTick + 1; eventTick <= eventTime.Tick; eventTick++)
             {
                 if (eventTick < 0) continue;
                 var eventTickTime = new NetworkTime((uint)EventTickRate, eventTick);
@@ -65,7 +65,7 @@ public abstract class ClientPrediction : NetworkBehaviour
                 _lastSyncTick = syncTickTime.Tick;
             }
 
-            var confirmTime =  syncTime  - new NetworkTime((uint)SyncTickRate, ConfirmTimeAgo);
+            var confirmTime = syncTime - new NetworkTime((uint)SyncTickRate, ConfirmTimeAgo);
             for (int i = _lastNetSyncTick + 1; i <= confirmTime.Tick; i++)
             {
                 if (i > 0)
@@ -90,7 +90,7 @@ public abstract class ClientPrediction : NetworkBehaviour
         if (IsServer)
         {
             int historyIndex = tick % SyncTickBufferSize;
-            _tickStateHistory._buffer[historyIndex]._isPredict = false;           
+            _tickStateHistory._buffer[historyIndex]._isPredict = false;
             SendTickState(tick);
         }
     }
@@ -100,16 +100,16 @@ public abstract class ClientPrediction : NetworkBehaviour
     virtual protected void SetTickStateFromHistory(int tick) { }
     virtual protected void CashCurrentState(int tick) { }
     override public void OnNetworkDespawn()
-    { 
+    {
     }
     override public void OnNetworkSpawn()
     {
-        float rtt = 0.25f; 
+        float rtt = 0.25f;
         SyncTickRate = 5;
-        EventTickRate = (SyncTickRate+10 < 60) ? 60 : SyncTickRate + 10;
+        EventTickRate = (SyncTickRate + 10 < 60) ? 60 : SyncTickRate + 10;
         SyncTickBufferSize = SyncTickRate + (int)Math.Ceiling(SyncTickRate * rtt);
         EventTickBufferSize = EventTickRate + (int)Math.Ceiling(EventTickRate * rtt);
-        ConfirmTimeAgo  =  (int)Math.Floor((SyncTickBufferSize / SyncTickRate) - rtt);
+        ConfirmTimeAgo = (int)Math.Floor((SyncTickBufferSize / SyncTickRate) - rtt);
 
         _tickStateHistory = new ArrayBuffer<ITickState>((int)SyncTickBufferSize);
         _tickEventHistory = new ArrayBuffer<LinkedList<ITickEvent>>((int)EventTickBufferSize);
@@ -249,21 +249,21 @@ public abstract class ClientPrediction : NetworkBehaviour
 
     protected virtual void Simulate(int SyncTick)
     {
-        if(!CheckTickStateDirty(SyncTick+1))
+        if (!CheckTickStateDirty(SyncTick + 1))
         {
-            SetTickStateFromHistory(SyncTick+1);
+            SetTickStateFromHistory(SyncTick + 1);
             return;
         }
 
         NetworkTime syncStartTime = new NetworkTime((uint)SyncTickRate, SyncTick);
-        NetworkTime syncEndTime = new NetworkTime((uint)EventTickRate, SyncTick+1);
+        NetworkTime syncEndTime = new NetworkTime((uint)EventTickRate, SyncTick + 1);
         NetworkTime eventStartTime = new NetworkTime((uint)EventTickRate, syncStartTime.Time);
         NetworkTime eventEndTime = new NetworkTime((uint)EventTickRate, syncEndTime.Time);
 
         int endTick = eventEndTime.Tick;
-        if (eventEndTime.FixedTime == syncEndTime.FixedTime) 
+        if (eventEndTime.FixedTime == syncEndTime.FixedTime)
         {
-            endTick -= 1; 
+            endTick -= 1;
         }
 
         SetTickStateFromHistory(SyncTick);
@@ -307,7 +307,7 @@ public abstract class ClientPrediction : NetworkBehaviour
         {
             startTick = DirtySyncTimeToEventTime.Tick;
         }
-        else if (DirtySyncTimeToEventTime.Tick <0)
+        else if (DirtySyncTimeToEventTime.Tick < 0)
         {
             startTick = DirtyEventTime.Tick;
         }
@@ -319,7 +319,7 @@ public abstract class ClientPrediction : NetworkBehaviour
 
         for (int eventTick = startTick; eventTick <= _lastEventTick; eventTick++)
         {
-            Simulate(new NetworkTime((uint)EventTickRate ,eventTick));
+            Simulate(new NetworkTime((uint)EventTickRate, eventTick));
         }
     }
 }

@@ -7,7 +7,6 @@ using System.Globalization;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Playables;
-using Random = UnityEngine.Random;
 
 namespace Game
 {
@@ -72,9 +71,9 @@ namespace Game
         [ServerRpc(RequireOwnership = false)]
         public void RestartRoundServerRPC(int roundTime = 30, int standByTime = 10)
         {
-            RestartRoundClientRPC(roundTime,standByTime);
+            RestartRoundClientRPC(roundTime, standByTime);
         }
-        
+
         private Coroutine _timeCheckerCoroutine = null;
 
         [ClientRpc]
@@ -83,13 +82,13 @@ namespace Game
             {
                 localPlayer.GetComponent<CharacterManager>().hitApproved = true;
                 enemyPlayer.GetComponent<CharacterManager>().hitApproved = true;
-                InputManager.Instance.canThrowBall                       = true;
+                InputManager.Instance.canThrowBall = true;
 
                 if (enemyPlayer.GetComponent<CharacterBallLauncher>().instantiatedBall != null)
                 {
                     enemyPlayer.GetComponent<CharacterBallLauncher>().DestroyInstantiatedBall();
                 }
-                
+
                 if (localPlayer.GetComponent<CharacterBallLauncher>().instantiatedBall != null)
                 {
                     localPlayer.GetComponent<CharacterBallLauncher>().DestroyInstantiatedBall();
@@ -106,9 +105,9 @@ namespace Game
         private IEnumerator CoCountBeforeRoundStart(float times, float standByTime = 10.0f)
         {
             float elapsedStandByTime = 0f;
-            isGameReadyToStart                        = false;
+            isGameReadyToStart = false;
             InputManager.Instance.playerInput.enabled = false;
-            
+
             foreach (var action in InputManager.Instance.playerInput.actions)
             {
                 action.Disable();
@@ -132,12 +131,12 @@ namespace Game
             }
 
             isGameReadyToStart = true;
-            
+
             foreach (var action in InputManager.Instance.playerInput.actions)
             {
                 action.Enable();
             }
-            
+
             InputManager.Instance.playerInput.enabled = true;
 
             float leftTime = times;
@@ -148,7 +147,7 @@ namespace Game
             {
                 leftTime -= Time.deltaTime;
 
-                UIManager.Instance.roundTimer.text = Mathf.Clamp(Mathf.FloorToInt(leftTime),0,times).ToString(CultureInfo.InvariantCulture);
+                UIManager.Instance.roundTimer.text = Mathf.Clamp(Mathf.FloorToInt(leftTime), 0, times).ToString(CultureInfo.InvariantCulture);
 
                 yield return null;
             }
@@ -165,7 +164,7 @@ namespace Game
         public void StartGameServerRPC()
         {
             cutSceneCamera.SetActive(true);
-            
+
             StartGameClientRPC();
         }
 
@@ -192,9 +191,9 @@ namespace Game
 
             if (IsServer)
             {
-                RestartRoundServerRPC(timePerRound,5);
+                RestartRoundServerRPC(timePerRound, 5);
             }
-            
+
             cutSceneCamera.SetActive(false);
             UIManager.Instance.SetActiveAllObjects(true);
         }

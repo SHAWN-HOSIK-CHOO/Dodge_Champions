@@ -7,21 +7,21 @@ public class SpawnManager : MonoBehaviour
     Transform _spawnPointB;
     void Start()
     {
-        if(NgoManager.Singleton._ngoReady)
+        if (NgoManager.Instance._ngoReady)
         {
             OnNgoManagerReady();
         }
         else
         {
-            NgoManager.Singleton._onNgoManagerReady += OnNgoManagerReady;
+            NgoManager.Instance._onNgoManagerReady += OnNgoManagerReady;
         }
     }
 
     void OnNgoManagerReady()
     {
-        if (NgoManager.Singleton.IsServer)
+        if (NgoManager.Instance.IsServer)
         {
-            NgoManager.Singleton._networkSpawner.Spawn(new SpawnParams()
+            NgoManager.Instance._networkSpawner.Spawn(new SpawnParams()
             {
                 pos = _spawnPointB.position,
                 rot = _spawnPointB.rotation,
@@ -30,7 +30,7 @@ public class SpawnManager : MonoBehaviour
                 destroyWithScene = true
             });
 
-            NgoManager.Singleton._networkSpawner.Spawn(new SpawnParams()
+            NgoManager.Instance._networkSpawner.Spawn(new SpawnParams()
             {
                 pos = _spawnPointB.position,
                 rot = _spawnPointB.rotation,
@@ -42,7 +42,7 @@ public class SpawnManager : MonoBehaviour
         }
         else
         {
-            NgoManager.Singleton._networkSpawner.SpawnObjectRpc(true, new SpawnParams()
+            NgoManager.Instance._networkSpawner.SpawnObjectRpc(true, new SpawnParams()
             {
                 pos = _spawnPointB.position,
                 rot = _spawnPointB.rotation,

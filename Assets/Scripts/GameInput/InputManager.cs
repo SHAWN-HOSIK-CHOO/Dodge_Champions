@@ -74,10 +74,10 @@ namespace GameInput
 
         public void OnMove(InputValue value)
         {
-            if(GameManager.Instance == null)
+            if (GameManager.Instance == null)
                 return;
-            
-            if(GameManager.Instance.isGameReadyToStart)
+
+            if (GameManager.Instance.isGameReadyToStart)
                 MoveInput(value.Get<Vector2>());
             else
             {
@@ -87,10 +87,10 @@ namespace GameInput
 
         public void OnLook(InputValue value)
         {
-            if(GameManager.Instance == null)
+            if (GameManager.Instance == null)
                 return;
-            
-            if(GameManager.Instance.isGameReadyToStart)
+
+            if (GameManager.Instance.isGameReadyToStart)
                 LookInput(value.Get<Vector2>());
             else
             {
@@ -100,10 +100,10 @@ namespace GameInput
 
         public void OnJump(InputValue value)
         {
-            if(GameManager.Instance == null)
+            if (GameManager.Instance == null)
                 return;
-            
-            if(GameManager.Instance.isGameReadyToStart)
+
+            if (GameManager.Instance.isGameReadyToStart)
                 JumpInput(value.isPressed);
             else
             {
@@ -113,10 +113,10 @@ namespace GameInput
 
         public void OnSprint(InputValue value)
         {
-            if(GameManager.Instance == null)
+            if (GameManager.Instance == null)
                 return;
-            
-            if(GameManager.Instance.isGameReadyToStart)
+
+            if (GameManager.Instance.isGameReadyToStart)
                 SprintInput(value.isPressed);
             else
             {
@@ -277,22 +277,22 @@ namespace GameInput
                     }
                 case ESkillInputType.JustBoolean:
                     {
-                    var input = new PressInput
-                                {
-                                    IsPressed = true
-                                };
+                        var input = new PressInput
+                        {
+                            IsPressed = true
+                        };
                         _characterSkillLauncher.StartSkill(input);
                         break;
                     }
                 case ESkillInputType.RayVec3Target:
-                {
-                    var input = new TargetVector3Input
-                                {
-                                    TargetVector = currentTargetPosition
-                                };
+                    {
+                        var input = new TargetVector3Input
+                        {
+                            TargetVector = currentTargetPosition
+                        };
                         _characterSkillLauncher.StartSkill(input);
-                    break;
-                }
+                        break;
+                    }
             }
         }
 
@@ -353,8 +353,8 @@ namespace GameInput
         {
             Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
             Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
-            
-            if(GameManager.Instance.isGameReadyToStart)
+
+            if (GameManager.Instance.isGameReadyToStart)
                 if (Physics.Raycast(ray, out RaycastHit hit, 999f, mouseColliderLayerMask))
                 {
                     currentTargetPosition = hit.point;
