@@ -113,7 +113,7 @@ namespace Unity.Netcode
                                 Time = m_TimeSec,
                                 SendDelay = client.ReceiveDelay
                             };
-                            m_ConnectionManager.SendMessage(ref msg, NetworkDelivery.UnreliableSequenced, client.ClientId);
+                            //m_ConnectionManager.SendMessage(ref msg, NetworkDelivery.UnreliableSequenced, client.ClientId);
                         }
                     }
                 }

@@ -39,7 +39,6 @@ namespace MainScene
         [SerializeField]
         UITmpInputField _privateCodeinputField;
 
-
         [SerializeField]
         UIPageView _modePageView;
 
@@ -124,7 +123,7 @@ namespace MainScene
                     {
                         _privateCodeInfo.text = "";
                         _privateCode.SetActive(false);
-                        HP.NetworkManager.Instance.JoinLobby(lobby);
+                        HP.CustomNetworkManager.Instance.JoinLobby(lobby);
                     }
                 });
             }
@@ -158,7 +157,7 @@ namespace MainScene
                         }
                         else
                         {
-                            HP.NetworkManager.Instance.JoinLobby(lobby);
+                            HP.CustomNetworkManager.Instance.JoinLobby(lobby);
                         }
                     });
                 }
@@ -187,7 +186,7 @@ namespace MainScene
                     }
                     else
                     {
-                        HP.NetworkManager.Instance.JoinLobby(lobby);
+                        HP.CustomNetworkManager.Instance.JoinLobby(lobby);
                     }
                 });
         }

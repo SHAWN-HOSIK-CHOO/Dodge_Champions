@@ -109,7 +109,12 @@ namespace Unity.Netcode
             // ============================================================
 
             BytePacker.WriteValueBitPacked(writer, OwnerClientId);
-            BytePacker.WriteValuePacked(writer, BaseTime);
+
+            int NetworkTick = 3;
+            BytePacker.WriteValueBitPacked(writer, NetworkTick);
+
+            //writer.WriteValueSafe(BaseTime);
+            //BytePacker.WriteValuePacked(writer, BaseTime);
             if (IsDistributedAuthority)
             {
                 if (targetVersion >= k_AddCMBServiceConfig)
@@ -200,7 +205,11 @@ namespace Unity.Netcode
             // ============================================================
             m_ReceiveMessageVersion = receivedMessageVersion;
             ByteUnpacker.ReadValueBitPacked(reader, out OwnerClientId);
-            ByteUnpacker.ReadValuePacked(reader, out BaseTime);
+            ByteUnpacker.ReadValueBitPacked(reader, out int NetworkTick);
+            NetworkTick = 3;
+            //ByteUnpacker.ReadValuePacked(reader, out BaseTime);
+            //reader.ReadValueSafe(out BaseTime);
+            //ByteUnpacker.ReadValuePacked(reader, out BaseTime);
             if (networkManager.DistributedAuthorityMode)
             {
                 if (receivedMessageVersion >= k_AddCMBServiceConfig)

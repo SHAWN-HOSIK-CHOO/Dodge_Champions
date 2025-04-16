@@ -18,6 +18,9 @@ namespace Unity.Netcode
     [AddComponentMenu("Netcode/Network Manager", -100)]
     public class NetworkManager : MonoBehaviour, INetworkUpdateSystem
     {
+        [SerializeField]
+        public NetworkSceneNames _networkScene;
+
         /// <summary>
         /// Subscribe to this static event to get notifications when a <see cref="NetworkManager"/> instance has been instantiated.
         /// </summary>
@@ -900,7 +903,6 @@ namespace Unity.Netcode
         internal NetworkMetricsManager MetricsManager = new NetworkMetricsManager();
         internal NetworkConnectionManager ConnectionManager = new NetworkConnectionManager();
         internal NetworkMessageManager MessageManager = null;
-
         internal struct Override<T>
         {
             private T m_Value;
@@ -1246,7 +1248,6 @@ namespace Unity.Netcode
 
             {
                 MessageManager = new NetworkMessageManager(new DefaultMessageSender(this), this);
-
                 MessageManager.Hook(new NetworkManagerHooks(this));
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
