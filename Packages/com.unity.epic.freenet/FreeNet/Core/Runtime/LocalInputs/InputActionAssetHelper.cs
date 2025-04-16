@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,7 +5,7 @@ using static UnityEngine.InputSystem.InputActionSetupExtensions;
 
 public class InputActionAssetHelper
 {
-    Dictionary<string,(int, InputActionAsset)> _inputActionAssets;
+    Dictionary<string, (int, InputActionAsset)> _inputActionAssets;
     private static InputActionAssetHelper _singleton;
     public static InputActionAssetHelper Singleton
     {
@@ -19,8 +18,8 @@ public class InputActionAssetHelper
     }
     public InputActionAssetHelper()
     {
-        _inputActionAssets = new Dictionary<string, (int,InputActionAsset)>();
-        
+        _inputActionAssets = new Dictionary<string, (int, InputActionAsset)>();
+
     }
     public static void ReleaseInputActionAsset(string name)
     {
@@ -36,19 +35,19 @@ public class InputActionAssetHelper
     }
     public static InputActionAsset CreateInputActionAsset(string name)
     {
-        if(Singleton._inputActionAssets.TryGetValue(name,out var value))
+        if (Singleton._inputActionAssets.TryGetValue(name, out var value))
         {
             value.Item1++;
             return value.Item2;
         }
         var asset = ScriptableObject.CreateInstance<InputActionAsset>();
-        Singleton._inputActionAssets.Add(name, (1,asset));
+        Singleton._inputActionAssets.Add(name, (1, asset));
         return asset;
     }
     public static ControlSchemeSyntax CreateControlScheme(InputActionAsset asset, string schemeName)
     {
         int index = asset.FindControlSchemeIndex(schemeName);
-        if (index !=-1)
+        if (index != -1)
         {
             asset.RemoveControlScheme(schemeName);
         }
@@ -61,7 +60,7 @@ public class InputActionAssetHelper
     public static InputActionMap CreateActionMap(InputActionAsset asset, string actionMap)
     {
         var actionmap = asset.FindActionMap(actionMap);
-        if(actionmap != null)
+        if (actionmap != null)
         {
             return actionmap;
         }

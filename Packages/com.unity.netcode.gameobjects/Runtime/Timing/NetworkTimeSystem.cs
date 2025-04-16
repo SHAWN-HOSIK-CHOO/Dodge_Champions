@@ -70,7 +70,7 @@ namespace Unity.Netcode
             m_ConnectionManager = networkManager.ConnectionManager;
             m_NetworkTransport = networkManager.NetworkConfig.NetworkTransport;
             m_TimeSyncFrequencyTicks = (int)(k_TimeSyncFrequency * networkManager.NetworkConfig.TickRate);
-            m_NetworkTickSystem = new NetworkTickSystem(networkManager.NetworkConfig.TickRate,0);
+            m_NetworkTickSystem = new NetworkTickSystem(networkManager.NetworkConfig.TickRate, 0);
             client = new NtpClient("time.windows.com");
             m_BaseTime = (client.GetNetworkTime() - NtpClient.baseTime).TotalSeconds;
             m_TimeSec = 0;

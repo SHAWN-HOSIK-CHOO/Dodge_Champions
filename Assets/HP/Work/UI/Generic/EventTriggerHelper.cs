@@ -1,20 +1,19 @@
-using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class EventTriggerHelper
 {
-    public static void RemoveTriggerEvent(EventTrigger eventTrigger,EventTriggerType eventType, UnityEngine.Events.UnityAction<BaseEventData> callback)
+    public static void RemoveTriggerEvent(EventTrigger eventTrigger, EventTriggerType eventType, UnityEngine.Events.UnityAction<BaseEventData> callback)
     {
-        if (GetType(eventTrigger,eventType, out var entry))
+        if (GetType(eventTrigger, eventType, out var entry))
         {
             entry.callback.RemoveListener(callback);
         }
     }
     public static void AddTriggerEvent(EventTrigger eventTrigger, EventTriggerType eventType, UnityEngine.Events.UnityAction<BaseEventData> callback)
     {
-        if (!GetType(eventTrigger,eventType, out var entry))
+        if (!GetType(eventTrigger, eventType, out var entry))
         {
-            entry = AddType(eventTrigger,eventType);
+            entry = AddType(eventTrigger, eventType);
         }
         entry.callback.AddListener(callback);
     }
@@ -33,7 +32,7 @@ public class EventTriggerHelper
     }
     static EventTrigger.Entry AddType(EventTrigger eventTrigger, EventTriggerType eventType)
     {
-        if (GetType(eventTrigger,eventType, out var entry))
+        if (GetType(eventTrigger, eventType, out var entry))
         {
             return entry;
         }
@@ -44,7 +43,7 @@ public class EventTriggerHelper
     }
     public static void RemoveType(EventTrigger eventTrigger, EventTriggerType eventType)
     {
-        if (GetType(eventTrigger,eventType, out var entry))
+        if (GetType(eventTrigger, eventType, out var entry))
         {
             eventTrigger.triggers.Remove(entry);
         }

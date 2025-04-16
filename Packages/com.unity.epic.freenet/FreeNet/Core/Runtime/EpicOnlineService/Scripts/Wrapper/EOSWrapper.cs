@@ -183,9 +183,9 @@ public class EOSWrapper
             }
             return true;
         }
-        
-        
-        
+
+
+
         public static bool SetApplicationStatus(PlatformInterface IPlatform, ApplicationStatus status)
         {
             if (IPlatform != null)
@@ -201,6 +201,11 @@ public class EOSWrapper
     }
     public class LoginControl
     {
+        static public ulong AddNotifyLoginStatusChangedOptions(Epic.OnlineServices.Auth.AuthInterface IAuth, Epic.OnlineServices.Auth.OnLoginStatusChangedCallback callback)
+        {
+            var options = new Epic.OnlineServices.Auth.AddNotifyLoginStatusChangedOptions();
+            return IAuth.AddNotifyLoginStatusChanged(ref options, null, callback);
+        }
         static public void DeveloperToolLogin(Epic.OnlineServices.Auth.AuthInterface IAuth, string host, string credential, Epic.OnlineServices.Auth.OnLoginCallback onComplete = null)
         {
             var loginOptions = new Epic.OnlineServices.Auth.LoginOptions
@@ -232,7 +237,7 @@ public class EOSWrapper
             IAuth.Login(ref loginOptions, null, onComplete);
         }
 
-        static public void PersistentLogin(Epic.OnlineServices.Auth.AuthInterface IAuth,Epic.OnlineServices.Auth.OnLoginCallback onComplete)
+        static public void PersistentLogin(Epic.OnlineServices.Auth.AuthInterface IAuth, Epic.OnlineServices.Auth.OnLoginCallback onComplete)
         {
             var loginOptions = new Epic.OnlineServices.Auth.LoginOptions
             {
@@ -272,7 +277,51 @@ public class EOSWrapper
     }
     public class ConnectControl
     {
+
+        static public ulong AddNotifyAuthExpiration(Epic.OnlineServices.Connect.ConnectInterface IConnect, Epic.OnlineServices.Connect.OnAuthExpirationCallback callback)
+        {
+            var options = new Epic.OnlineServices.Connect.AddNotifyAuthExpirationOptions();
+            return IConnect.AddNotifyAuthExpiration(ref options, null, callback);
+        }
+        static public ulong AddNotifyLoginStatusChanged(Epic.OnlineServices.Connect.ConnectInterface IConnect, Epic.OnlineServices.Connect.OnLoginStatusChangedCallback callback)
+        {
+            var options = new Epic.OnlineServices.Connect.AddNotifyLoginStatusChangedOptions();
+            return IConnect.AddNotifyLoginStatusChanged(ref options, null, callback);
+        }
+
+        static public void QueryProductUserIdMappings(Epic.OnlineServices.Connect.ConnectInterface IConnect, ProductUserId localPUID, ProductUserId[] targetPUID, Action<Result, List<(ProductUserId, EpicAccountId)>> onComplete)
+        {
+            var options = new QueryProductUserIdMappingsOptions()
+            {
+                LocalUserId = localPUID,
+                ProductUserIds = targetPUID
+            };
+            IConnect.QueryProductUserIdMappings(ref options, null, (ref QueryProductUserIdMappingsCallbackInfo info) =>
+            {
+                if (ETC.ErrControl(info.ResultCode, onComplete))
+                {
+                    List<(ProductUserId, EpicAccountId)> list = new List<(ProductUserId, EpicAccountId)>();
+                    foreach (var puid in targetPUID)
+                    {
+                        var options = new GetProductUserIdMappingOptions()
+                        {
+                            LocalUserId = info.LocalUserId,
+                            AccountIdType = ExternalAccountType.Epic,
+                            TargetProductUserId = puid
+                        };
+
+                        if (ETC.ErrControl(IConnect.GetProductUserIdMapping(ref options, out Utf8String outBuffer), onComplete))
+                        {
+                            list.Add((puid, EpicAccountId.FromString(outBuffer)));
+                        }
+                    }
+                    onComplete?.Invoke(Result.Success, list);
+                }
+            });
+        }
+
         #region Device Connect
+
         static public void CreateDeviceID(Epic.OnlineServices.Connect.ConnectInterface IConnect, OnCreateDeviceIdCallback onComplete)
         {
             var options = new CreateDeviceIdOptions()
@@ -1394,7 +1443,7 @@ public class EOSWrapper
                 WriteResult WriteFileDataCallback(ref WriteFileDataCallbackInfo info, out ArraySegment<byte> outDataBuffer)
                 {
                     outDataBuffer = new ArraySegment<byte>();
-                    if(totalFileSize == transferredFileSize) return WriteResult.CompleteRequest;
+                    if (totalFileSize == transferredFileSize) return WriteResult.CompleteRequest;
                     if (playerData == null) return Epic.OnlineServices.PlayerDataStorage.WriteResult.FailRequest;
                     int writeSize = (int)Math.Min(info.DataBufferLengthBytes, totalFileSize - transferredFileSize);
                     var Buffer = new byte[writeSize];
@@ -1449,7 +1498,7 @@ public class EOSWrapper
             };
             IData.QueryFileList(ref options, null, (ref Epic.OnlineServices.PlayerDataStorage.QueryFileListCallbackInfo info) =>
             {
-                if (ETC.ErrControl(info.ResultCode))
+                if (ETC.ErrControl(info.ResultCode, onComplete))
                 {
                     for (uint fileIndex = 0; fileIndex < info.FileCount; fileIndex++)
                     {
@@ -1484,7 +1533,7 @@ public class EOSWrapper
 
             IData.QueryFile(ref options, null, (ref Epic.OnlineServices.PlayerDataStorage.QueryFileCallbackInfo data) =>
             {
-                if (ETC.ErrControl(data.ResultCode))
+                if (ETC.ErrControl(data.ResultCode, onComplete))
                 {
                     var options = new Epic.OnlineServices.PlayerDataStorage.CopyFileMetadataByFilenameOptions
                     {
@@ -1492,7 +1541,7 @@ public class EOSWrapper
                         LocalUserId = localPUID
                     };
 
-                    if (ETC.ErrControl(IData.CopyFileMetadataByFilename(ref options, out Epic.OnlineServices.PlayerDataStorage.FileMetadata? fileMetadata)))
+                    if (ETC.ErrControl(IData.CopyFileMetadataByFilename(ref options, out Epic.OnlineServices.PlayerDataStorage.FileMetadata? fileMetadata), onComplete))
                     {
                         onComplete?.Invoke(Result.Success, new ReadAsyncOperator(IData, filename, localPUID));
                     }
@@ -1510,7 +1559,7 @@ public class EOSWrapper
                 LocalUserId = localPUID,
                 Filename = filename
             };
-            IData.DeleteFile(ref options,null,(ref DeleteFileCallbackInfo info) =>
+            IData.DeleteFile(ref options, null, (ref DeleteFileCallbackInfo info) =>
             {
                 onComplete?.Invoke(info.ResultCode);
             });
@@ -1552,7 +1601,7 @@ public class EOSWrapper
                     info.DataChunk.CopyTo(data, transferredFileSize);
                     transferredFileSize += info.DataChunk.Count;
                     if (data == null) return Epic.OnlineServices.TitleStorage.ReadResult.RrFailrequest;
-                    if(cancle) return Epic.OnlineServices.TitleStorage.ReadResult.RrCancelrequest;
+                    if (cancle) return Epic.OnlineServices.TitleStorage.ReadResult.RrCancelrequest;
                     return Epic.OnlineServices.TitleStorage.ReadResult.RrContinuereading;
                 }
 
@@ -1568,7 +1617,7 @@ public class EOSWrapper
                 var transferReq = ITitle.ReadFile(ref ReadFileOptions, null, (ref Epic.OnlineServices.TitleStorage.ReadFileCallbackInfo info) =>
                 {
                     result = info.ResultCode;
-                    if(transferredFileSize != totalFileSize)
+                    if (transferredFileSize != totalFileSize)
                     {
                         Debug.LogWarning("Title Storage failed");
                     }
@@ -1576,8 +1625,8 @@ public class EOSWrapper
                 });
             }
         }
-        public static void DownLoadFile(TitleStorageInterface ITitle, string filename, ProductUserId localPUID , Action<Result, AsyncOperator> onComplete)
-        {   
+        public static void DownLoadFile(TitleStorageInterface ITitle, string filename, ProductUserId localPUID, Action<Result, AsyncOperator> onComplete)
+        {
             var options = new Epic.OnlineServices.TitleStorage.QueryFileOptions
             {
                 Filename = filename,
@@ -1586,7 +1635,7 @@ public class EOSWrapper
 
             ITitle.QueryFile(ref options, null, (ref Epic.OnlineServices.TitleStorage.QueryFileCallbackInfo data) =>
             {
-                if (ETC.ErrControl(data.ResultCode))
+                if (ETC.ErrControl(data.ResultCode, onComplete))
                 {
                     var options = new Epic.OnlineServices.TitleStorage.CopyFileMetadataByFilenameOptions
                     {
@@ -1611,7 +1660,7 @@ public class EOSWrapper
             };
             ITitle.QueryFileList(ref queryOptions, null, (ref Epic.OnlineServices.TitleStorage.QueryFileListCallbackInfo info) =>
             {
-                if (ETC.ErrControl(info.ResultCode))
+                if (ETC.ErrControl(info.ResultCode, onComplete))
                 {
                     for (uint fileIndex = 0; fileIndex < info.FileCount; fileIndex++)
                     {

@@ -1,6 +1,5 @@
 using Game;
 using GameUI;
-using SinglePlayer;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -26,8 +25,8 @@ namespace CharacterAttributes
                                                                           );
 
         private HealthBarUI _healthBarUI;
-        public  GameObject  healthBarGo;
-        
+        public GameObject healthBarGo;
+
         public override void OnNetworkSpawn()
         {
             // 소유 여부를 확인
@@ -42,7 +41,7 @@ namespace CharacterAttributes
             CreateHealthUI();
 
             playerHealth.OnValueChanged += OnHealthChanged;
-            isHpZero.OnValueChanged     += OnIsHpZeroChanged;
+            isHpZero.OnValueChanged += OnIsHpZeroChanged;
         }
 
         private void CreateHealthUI()
@@ -52,7 +51,7 @@ namespace CharacterAttributes
             _healthBarUI.SetTarget(transform);
             _healthBarUI.SetFill(1f); // 처음엔 체력 100%
         }
-        
+
         public override void OnDestroy()
         {
             {

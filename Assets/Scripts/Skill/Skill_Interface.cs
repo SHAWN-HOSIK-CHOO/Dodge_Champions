@@ -28,7 +28,7 @@ namespace Skill
     {
         public bool IsPressed;
     }
-    
+
     public interface IFlashBlindable
     {
         public void ApplyBlind(float duration);

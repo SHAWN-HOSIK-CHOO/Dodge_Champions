@@ -1,8 +1,6 @@
 using DG.Tweening;
 using Epic.OnlineServices;
 using Epic.OnlineServices.Auth;
-using Epic.OnlineServices.UserInfo;
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,7 +8,6 @@ public class EpicPortalLogin : EpicLogin
 {
     [SerializeField]
     UIImgButton _LoginButton;
-
 
     void Start()
     {
@@ -57,11 +54,11 @@ public class EpicPortalLogin : EpicLogin
     {
         EOSWrapper.LoginControl.PersistentLogin(FreeNet.Instance._eosCore._IAuth, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {
-            if(info.ResultCode == Result.InvalidAuth)
+            if (info.ResultCode == Result.InvalidAuth)
             {
                 OnEpicPortalLogin();
             }
-            else if(info.ResultCode ==  Result.AuthInvalidRefreshToken)
+            else if (info.ResultCode == Result.AuthInvalidRefreshToken)
             {
                 OnEpicPortalLogin();
             }

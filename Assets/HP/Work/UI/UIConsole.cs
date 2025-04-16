@@ -12,11 +12,11 @@ public class UIConsole : MonoBehaviour
     public TMP_InputField _textField;
     [SerializeField]
     Scrollbar _scrollbar;
-    
+
     public event Action<TMPInputField.IInputMode, string> onSubmit;
     private void Awake()
     {
-       _inputField.onSubmit.AddListener(OnSubmit);
+        _inputField.onSubmit.AddListener(OnSubmit);
     }
     public void AddText(string text, bool scroll = true, bool newLine = true)
     {

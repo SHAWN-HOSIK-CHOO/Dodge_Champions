@@ -6,19 +6,13 @@ using UnityEngine;
 [CustomEditor(typeof(NgoManager), true)]
 public class NgoManagerEditor : NetworkManagerEditor
 {
-    // Serialized Properties
-    private SerializedProperty _localBufferSec;
-    private SerializedProperty _serverBufferSec;
-    private SerializedProperty _useEpicOnlineTransport;
-
+    private SerializedProperty _EOSNetcodeTransport;
     private SerializedProperty _networkSpawnerPref;
     private SerializedProperty _networkScene;
 
     private new void OnEnable()
     {
-        _localBufferSec = serializedObject.FindProperty("_localBufferSec");
-        _serverBufferSec = serializedObject.FindProperty("_serverBufferSec");
-        _useEpicOnlineTransport = serializedObject.FindProperty("_useEpicOnlineTransport");
+        _EOSNetcodeTransport = serializedObject.FindProperty("_EOSNetcodeTransport");
         _networkSpawnerPref = serializedObject.FindProperty("_networkSpawnerPref");
         _networkScene = serializedObject.FindProperty("_networkScene");
     }
@@ -99,10 +93,7 @@ public class NgoManagerEditor : NetworkManagerEditor
         base.OnInspectorGUI();
 
         EditorGUI.BeginChangeCheck();
-
-        EditorGUILayout.PropertyField(_localBufferSec);
-        EditorGUILayout.PropertyField(_serverBufferSec);
-        EditorGUILayout.PropertyField(_useEpicOnlineTransport);
+        EditorGUILayout.PropertyField(_EOSNetcodeTransport);
         EditorGUILayout.PropertyField(_networkSpawnerPref);
         EditorGUILayout.PropertyField(_networkScene);
 

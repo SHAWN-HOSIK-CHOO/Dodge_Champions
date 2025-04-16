@@ -4,22 +4,19 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static NetworkSpawner;
 
 public class NgoManager : NetworkManager
 {
     FreeNet _freeNet;
+    [SerializeField]
     EOSNetcodeTransport _EOSNetcodeTransport;
-
     [SerializeField]
     public double _localBufferSec;
     [SerializeField]
     public double _serverBufferSec;
-    [SerializeField]
-    public bool _useEpicOnlineTransport;
     public byte _channel => 0;
     public byte _urgentChannel => 1;
-    public bool _ngoReady {get; private set;}
+    public bool _ngoReady { get; private set; }
 
     [SerializeField]
     NetworkSpawner _networkSpawnerPref;
@@ -29,11 +26,10 @@ public class NgoManager : NetworkManager
     [SerializeField]
     private List<string> _networkScene;
 
-    public static new NgoManager Singleton => (NetworkManager.Singleton as NgoManager);
+    public static NgoManager Instance => (NetworkManager.Singleton as NgoManager);
     public void Init(FreeNet freeNet)
     {
         _freeNet = freeNet;
-        _EOSNetcodeTransport = GetComponent<EOSNetcodeTransport>();
     }
     public void SetNetworkValue()
     {

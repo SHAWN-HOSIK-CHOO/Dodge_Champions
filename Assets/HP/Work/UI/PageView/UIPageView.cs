@@ -32,7 +32,7 @@ public class UIPageView : MonoBehaviour
             {
                 if (item.Value == content)
                 {
-                   _contents.Remove(item.Key);
+                    _contents.Remove(item.Key);
                     ReAlign();
                     return true;
                 }
@@ -52,8 +52,8 @@ public class UIPageView : MonoBehaviour
             int x = _grid.x;
             int y = _grid.y;
 
-            int lastX = _contents.Count % x +1;
-            int lastY = _contents.Count / x +1;
+            int lastX = _contents.Count % x + 1;
+            int lastY = _contents.Count / x + 1;
             _contents[(lastY, lastX)] = content;
         }
         public Page(Vector2Int grid)
@@ -85,7 +85,7 @@ public class UIPageView : MonoBehaviour
 
     [SerializeField]
     Vector2Int _grid;
-    Dictionary<int, Page>  _pages;
+    Dictionary<int, Page> _pages;
     int _currentPage;
     bool _pagedirty;
 
@@ -122,13 +122,13 @@ public class UIPageView : MonoBehaviour
                 Destroy(content);
             }
         }
-        
+
         foreach (Transform childY in _YLayout.transform)
         {
             Transform xLayout = childY.Find("XLayout");
             foreach (Transform childX in xLayout.transform)
             {
-                if(childX.childCount >0)
+                if (childX.childCount > 0)
                 {
                     var content = childX.GetChild(0).GetComponent<UIElement>();
                     content.DeActivate();
@@ -147,7 +147,7 @@ public class UIPageView : MonoBehaviour
     {
         foreach (var item in _pages)
         {
-            if(item.Value.RemoveContent(content))
+            if (item.Value.RemoveContent(content))
             {
                 if (item.Value._contents.Count == 0)
                 {
@@ -162,7 +162,7 @@ public class UIPageView : MonoBehaviour
                     }
                     _pagedirty = true;
                 }
-                if(item.Key == _currentPage)
+                if (item.Key == _currentPage)
                 {
                     _pagedirty = true;
                 }
@@ -181,9 +181,9 @@ public class UIPageView : MonoBehaviour
     public void AddContent(UIImgToggle content)
     {
         int lastPage = _pages.Count;
-        if (_pages.TryGetValue(lastPage , out var page))
+        if (_pages.TryGetValue(lastPage, out var page))
         {
-            if(page.SpaceFull())
+            if (page.SpaceFull())
             {
                 page = new Page(_grid);
                 lastPage += 1;
@@ -219,7 +219,7 @@ public class UIPageView : MonoBehaviour
             Transform xLayout = childY.Find("XLayout");
             foreach (Transform childX in xLayout.transform)
             {
-                if(childX.childCount > 0)
+                if (childX.childCount > 0)
                 {
                     var content = childX.GetChild(0).GetComponent<UIElement>();
                     content.DeActivate();
@@ -237,11 +237,11 @@ public class UIPageView : MonoBehaviour
             for (int j = 0; j < x; j++)
             {
                 var xElement = Instantiate(_XElementPref, xLayout.transform);
-                if(page._contents.TryGetValue((i + 1, j + 1),out var element))
+                if (page._contents.TryGetValue((i + 1, j + 1), out var element))
                 {
                     element.gameObject.SetActive(true);
                     element.Activate();
-                    element.transform.SetParent(xElement.transform,false);
+                    element.transform.SetParent(xElement.transform, false);
                     _selectHandler.Add(element as UIImgToggle);
                 }
             }

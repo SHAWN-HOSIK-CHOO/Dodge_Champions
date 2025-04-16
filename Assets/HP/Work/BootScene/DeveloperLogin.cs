@@ -1,10 +1,7 @@
 using DG.Tweening;
 using Epic.OnlineServices;
-using Epic.OnlineServices.UserInfo;
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 
 public class DeveloperLogin : EpicLogin
 {
@@ -26,7 +23,7 @@ public class DeveloperLogin : EpicLogin
         OnDeveloperLogin(_id, _credential);
         DOVirtual.DelayedCall(3f, () => _LoginButton.Activate());
     }
-    void OnDeveloperLogin(string id , string credential)
+    void OnDeveloperLogin(string id, string credential)
     {
         EOSWrapper.LoginControl.DeveloperToolLogin(FreeNet.Instance._eosCore._IAuth, id, credential, (ref Epic.OnlineServices.Auth.LoginCallbackInfo info) =>
         {

@@ -1,7 +1,7 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using DG.Tweening;
 public class UIImgButton : UIButton
 {
     protected Image _image;

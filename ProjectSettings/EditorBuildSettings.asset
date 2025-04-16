@@ -5,22 +5,22 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/HP/Work/BootScene/BootScene.unity
     guid: 17a9c27d15b91c6429e9cd466fc87b37
-  - enabled: 0
+  - enabled: 1
     path: Assets/HP/Work/MainScene/MainScene.unity
     guid: a44351457839a644aa9a80738dbc608b
   - enabled: 1
     path: Assets/HP/Work/LobbyScene/LobbyScene.unity
     guid: d288abc450904ab49b83403ceeebe009
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: 0e5cb1940f7efc448be00baf653f0fad
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/LobbyUI.unity
     guid: a504c92784692f94aa9a09a28fd2e3f0
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Stage.unity
     guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:

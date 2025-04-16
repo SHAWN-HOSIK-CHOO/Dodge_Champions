@@ -369,8 +369,8 @@ namespace CharacterAttributes
             {
                 xVelocity = 0f;
                 zVelocity = 0f;
-                _animator.SetFloat(_animIDXVelocity,   0); // 좌/우 (-1: 왼쪽, 1: 오른쪽)
-                _animator.SetFloat(_animIDZVelocity,   0); // 앞/뒤 (-1: 뒤로, 1: 앞으로)
+                _animator.SetFloat(_animIDXVelocity, 0); // 좌/우 (-1: 왼쪽, 1: 오른쪽)
+                _animator.SetFloat(_animIDZVelocity, 0); // 앞/뒤 (-1: 뒤로, 1: 앞으로)
                 _animator.SetFloat(_animIDMotionSpeed, 1);
             }
         }
@@ -576,7 +576,7 @@ namespace CharacterAttributes
             {
                 characterController.enabled = true;
             }
-            
+
         }
     }
 }

@@ -42,7 +42,7 @@ public class NtpClient : IDisposable
 
             IPAddress[] addresses = Dns.GetHostEntry(_server).AddressList;
             IPEndPoint ipEndPoint = new IPEndPoint(addresses[0], 123);
-            if(!_socket.Connected)
+            if (!_socket.Connected)
             {
                 _socket.Connect(ipEndPoint);
             }

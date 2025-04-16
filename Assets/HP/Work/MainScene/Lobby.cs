@@ -1,20 +1,15 @@
 using Epic.OnlineServices;
-using Epic.OnlineServices.Lobby;
 using HP;
-using Mono.Cecil.Cil;
-using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Android.Gradle;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static LobbyManager;
+using static HP.LobbyManager;
 
 namespace MainScene
 {
     public class Lobby : MonoBehaviour
     {
-
         [SerializeField]
         Canvas _SystemMsgCanvas;
 
@@ -26,9 +21,6 @@ namespace MainScene
 
         [SerializeField]
         ModeElement _ModeElementPref;
-
-        [SerializeField]
-        LobbyManager _LobbyManager;
 
         [SerializeField]
         UIPageView _lobbyPageView;
@@ -50,9 +42,6 @@ namespace MainScene
 
         [SerializeField]
         UIPageView _modePageView;
-
-        [SerializeField]
-        UISelectHandler _UISelectHandler;
 
         [SerializeField]
         UITmpInputField _roomNameInput;
@@ -96,8 +85,6 @@ namespace MainScene
         [SerializeField]
         UIImgButton _CreateRoomCancle;
 
-        public event Action<EOS_Lobby> OnJoinLobby;
-
         private void Start()
         {
             _privateCodeConfirm.OnPointerClickAction += OnprivateCodeConfirmClick;
@@ -137,7 +124,7 @@ namespace MainScene
                     {
                         _privateCodeInfo.text = "";
                         _privateCode.SetActive(false);
-                        OnJoinLobby?.Invoke(lobby);
+                        HP.NetworkManager.Instance.JoinLobby(lobby);
                     }
                 });
             }
@@ -171,7 +158,7 @@ namespace MainScene
                         }
                         else
                         {
-                            OnJoinLobby?.Invoke(lobby);
+                            HP.NetworkManager.Instance.JoinLobby(lobby);
                         }
                     });
                 }
@@ -190,7 +177,7 @@ namespace MainScene
             string roomName = _roomNameInput.text;
             string roomCode = _roomCodeInput.text;
             _CreateRoomButton.DeActivate();
-            _LobbyManager.CreateLobby(mode._mode.text, roomName, 16, security,
+            HP.LobbyManager.Instance.CreateLobby(mode._mode.text, roomName, 16, security,
                 roomCode, (Result result, EOS_Lobby lobby) =>
                 {
                     _CreateRoomButton.Activate();
@@ -200,7 +187,7 @@ namespace MainScene
                     }
                     else
                     {
-                        OnJoinLobby?.Invoke(lobby);
+                        HP.NetworkManager.Instance.JoinLobby(lobby);
                     }
                 });
         }
@@ -216,7 +203,7 @@ namespace MainScene
 
             _FindRoomButton.DeActivate();
             _lobbyPageView.DestroyAllElement();
-            _LobbyManager.FindLobby(10, (Result result, List<EOS_LobbySearchResult> list) =>
+            HP.LobbyManager.Instance.FindLobby(10, (Result result, List<EOS_LobbySearchResult> list) =>
             {
                 _FindRoomButton.Activate();
                 if (result != Result.Success)
@@ -227,7 +214,7 @@ namespace MainScene
                 {
                     foreach (var item in list)
                     {
-                        var element = Instantiate(_LobbyElementPref,_lobbyPageView.transform);
+                        var element = Instantiate(_LobbyElementPref, _lobbyPageView.transform);
                         element.Init(item);
                         _lobbyPageView.AddContent(element.GetComponent<UIImgToggle>());
                     }
@@ -241,7 +228,7 @@ namespace MainScene
             _CreateRoomUI.gameObject.SetActive(true);
 
             _modePageView.DestroyAllElement();
-            
+
             for (int i = 0; i < 3; i++)
             {
                 var element = Instantiate(_ModeElementPref, _modePageView.transform);

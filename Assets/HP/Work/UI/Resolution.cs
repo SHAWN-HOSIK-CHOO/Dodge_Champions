@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 
 public class Resolution : MonoBehaviour
@@ -13,7 +12,7 @@ public class Resolution : MonoBehaviour
     {
         ChangeResolution(_screenWidth, _screenHeight, _fullScreen);
     }
-    public void ChangeResolution(int width,int height, bool fullscreen)
+    public void ChangeResolution(int width, int height, bool fullscreen)
     {
         _screenWidth = width;
         _screenHeight = height;
