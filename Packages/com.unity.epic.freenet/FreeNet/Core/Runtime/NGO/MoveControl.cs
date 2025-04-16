@@ -8,6 +8,7 @@ public class PlayerMoveControl : ClientPrediction
 {
     [SerializeField]
     CharacterController _characterController;
+    [SerializeField]
     HP.PlayerInput _playerInput;
 
     [SerializeField]
@@ -270,7 +271,7 @@ public class PlayerMoveControl : ClientPrediction
     public struct MouseInputEvent : IMoveEvent
     {
         public int _tick;
-        public Vector2 _mouseInput;
+        public Vector2 _mouseDeltaInput;
         public bool _isPredict;
         int IMoveEvent._tick { get => _tick; set => _tick = value; }
         bool IMoveEvent._isPredict { get => _isPredict; set => _isPredict = value; }
@@ -281,7 +282,7 @@ public class PlayerMoveControl : ClientPrediction
             return new MouseInputEvent()
             {
                 _tick = _tick,
-                _mouseInput = _mouseInput,
+                _mouseDeltaInput = _mouseDeltaInput,
                 _isPredict = _isPredict,
             };
         }
@@ -292,13 +293,13 @@ public class PlayerMoveControl : ClientPrediction
             bool valueDirty = false;
             float threshold = 0.001f;
             var moveEvent = (MouseInputEvent)compare;
-            valueDirty = Vector2.Distance(_mouseInput, moveEvent._mouseInput) > threshold;
+            valueDirty = Vector2.Distance(_mouseDeltaInput, moveEvent._mouseDeltaInput) > threshold;
             bool tickDirty = _tick != moveEvent._tick;
             return (valueDirty || tickDirty);
         }
         void IMoveEvent.Serelize<T>(BufferSerializer<T> serializer)
         {
-            serializer.SerializeValue(ref _mouseInput);
+            serializer.SerializeValue(ref _mouseDeltaInput);
             serializer.SerializeValue(ref _tick);
         }
     }
@@ -324,9 +325,22 @@ public class PlayerMoveControl : ClientPrediction
         DrawDebugCapsule();
         base.Update();
     }
-    protected override void Simulate(NetworkTime eventTime)
+    protected override void Simulate(NetworkTime eventTime, bool recon)
     {
-        base.Simulate(eventTime);
+        bool oldEnable = _characterController.enabled;
+        bool oldDetect = _characterController.detectCollisions;
+        if (recon)
+        {
+            _characterController.enabled = false;
+            _characterController.detectCollisions = false;
+            base.Simulate(eventTime, recon);
+            _characterController.detectCollisions = oldDetect;
+            _characterController.enabled = oldEnable;
+        }
+        else
+        {
+            base.Simulate(eventTime, recon);
+        }
     }
     override protected void OnEventTick(NetworkTime eventTime)
     {
@@ -349,10 +363,8 @@ public class PlayerMoveControl : ClientPrediction
     }
 
     void BindKey()
-    {
-        _playerInput = new HP.PlayerInput("Player");
-        _playerInput.Enable(true);
-        _playerInput._onMouseInputChanged += OnMouseInputChanged;
+    { 
+        _playerInput._onMouseDeltaInputChanged += OnMouseDeltaInputChanged;
         _playerInput._onMoveInputChanged += OnMoveInputChanged;
         _playerInput._onJumpInputChanged += OnJumpInputChanged;
     }
@@ -377,7 +389,7 @@ public class PlayerMoveControl : ClientPrediction
             if (history._iMoveEvent._moveEventType == MoveEvent.MoveEventType.MouseInputEvent)
             {
                 var message = (MouseInputEvent)history._iMoveEvent;
-                Vector2 mouseInput = message._mouseInput;
+                Vector2 mouseInput = message._mouseDeltaInput;
                 Vector3 currentRotation = _characterController.transform.rotation.eulerAngles;
                 float newYaw = currentRotation.y + (mouseInput.x * (timeSystem.FixedDeltaTime * 1000) * _curMouseSpeed.x) / 1000.0f;
                 float newPitch = currentRotation.x - (mouseInput.y * (timeSystem.FixedDeltaTime * 1000) * _curMouseSpeed.y) / 1000.0f;
@@ -450,6 +462,10 @@ public class PlayerMoveControl : ClientPrediction
         int historyIndex = tick % SyncTickBufferSize;
         if (_tickStateHistory._buffer[historyIndex] == null) return;
         var history = (MoveState)_tickStateHistory._buffer[historyIndex];
+
+        bool oldEnable = _characterController.enabled;
+        bool oldDetect = _characterController.detectCollisions;
+        _characterController.detectCollisions = false;
         _characterController.enabled = false;
         transform.position = history._worldPos;
         transform.rotation = history._worldRot;
@@ -457,7 +473,8 @@ public class PlayerMoveControl : ClientPrediction
         _curMouseSpeed = history._mouseSpeed;
         _curEnvSpeed = history._envSpeed;
         _curIsJumpValid = history._isJumpValid;
-        _characterController.enabled = true;
+        _characterController.enabled = oldEnable;
+        _characterController.detectCollisions = oldDetect;
     }
     override protected void CashCurrentState(int tick)
     {
@@ -560,18 +577,18 @@ public class PlayerMoveControl : ClientPrediction
         moveEvent._moveInput = val;
         _userInput.AddLast(moveEvent);
     }
-    private void OnMouseInputChanged(Vector2 val)
+    private void OnMouseDeltaInputChanged(Vector2 val)
     {
         if (!IsSpawned) return;
         var moveEvent = new MouseInputEvent();
-        moveEvent._mouseInput = val;
+        moveEvent._mouseDeltaInput = val;
 
         var input = _userInput.Last;
         if (input != null)
         {
             if (input.Value is MouseInputEvent inputMouse)
             {
-                inputMouse._mouseInput += val;
+                inputMouse._mouseDeltaInput += val;
                 input.Value = inputMouse;
                 return;
             }

@@ -417,9 +417,6 @@ namespace Unity.Netcode
                     // No user-land message handler exceptions should escape the receive loop.
                     // If an exception is throw, the message is ignored.
                     // Example use case: A bad message is received that can't be deserialized and throws an OverflowException because it specifies a length greater than the number of bytes in it for some dynamic-length value.
-
-
-                    handler.Invoke(reader, ref context, this);
                     try
                     {
                         handler.Invoke(reader, ref context, this);

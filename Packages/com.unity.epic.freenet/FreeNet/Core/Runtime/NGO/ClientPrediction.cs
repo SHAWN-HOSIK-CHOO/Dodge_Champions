@@ -78,7 +78,7 @@ public abstract class ClientPrediction : NetworkBehaviour
     }
     virtual protected void OnEventTick(NetworkTime eventTime)
     {
-        Simulate(eventTime);
+        Simulate(eventTime, false);
         if (IsOwner)
         {
             ClearOldEvent(eventTime.Tick);
@@ -274,7 +274,7 @@ public abstract class ClientPrediction : NetworkBehaviour
         }
         ApplyTickState(SyncTick + 1);
     }
-    protected virtual void Simulate(NetworkTime eventTime)
+    protected virtual void Simulate(NetworkTime eventTime , bool recon)
     {
         NetworkTime syncTime = new NetworkTime((uint)SyncTickRate, eventTime.Time);
         NetworkTime eventStartTime = new NetworkTime((uint)EventTickRate, syncTime.FixedTime);
@@ -319,7 +319,7 @@ public abstract class ClientPrediction : NetworkBehaviour
 
         for (int eventTick = startTick; eventTick <= _lastEventTick; eventTick++)
         {
-            Simulate(new NetworkTime((uint)EventTickRate, eventTick));
+            Simulate(new NetworkTime((uint)EventTickRate, eventTick), true);
         }
     }
 }

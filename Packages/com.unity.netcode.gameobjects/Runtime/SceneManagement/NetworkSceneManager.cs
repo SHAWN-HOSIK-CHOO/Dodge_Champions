@@ -834,33 +834,12 @@ namespace Unity.Netcode
         /// </summary>
         /// <param name="networkManager">one <see cref="Netcode.NetworkManager"/> instance per <see cref="NetworkSceneManager"/> instance</param>
         /// <param name="sceneEventDataPoolSize">maximum <see cref="SceneEventData"/> pool size</param>
-
-        private bool NetworkSceneValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)
-        {
-            int index = NetworkManager._networkScene.sceneNames.FindIndex(x => x == sceneName);
-            if (index != -1)
-            {
-                Debug.Log($"Network Scene {sceneName} Validation Success");
-                return true;
-            }
-            return false;
-        }
-        private bool NetworkSceneValidation(Scene scene)
-        {
-            int index = NetworkManager._networkScene.sceneNames.FindIndex(x => x == scene.name);
-            if (index != -1)
-            {
-                Debug.Log($"Network Scene {scene.name} Validation Success");
-                return true;
-            }
-            return false;
-        }
         internal NetworkSceneManager(NetworkManager networkManager)
         {
             NetworkManager = networkManager;
             SceneEventDataStore = new Dictionary<uint, SceneEventData>();
-            //VerifySceneBeforeLoading = NetworkSceneValidation;
-            //VerifySceneBeforeUnloading = NetworkSceneValidation;
+            VerifySceneBeforeLoading = NetworkSceneValidation;
+            VerifySceneBeforeUnloading = NetworkSceneValidation;
             // Generates the scene name to hash value
             GenerateScenesInBuild();
 
@@ -884,7 +863,26 @@ namespace Unity.Netcode
             // Add to the server to client scene handle table
             UpdateServerClientSceneHandle(DontDestroyOnLoadScene.handle, DontDestroyOnLoadScene.handle, DontDestroyOnLoadScene);
         }
-
+        private bool NetworkSceneValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)
+        {
+            int index = NetworkManager._networkScene.sceneNames.FindIndex(x => x == sceneName);
+            if (index != -1)
+            {
+                Debug.Log($"Network Scene {sceneName} Validation Success");
+                return true;
+            }
+            return false;
+        }
+        private bool NetworkSceneValidation(Scene scene)
+        {
+            int index = NetworkManager._networkScene.sceneNames.FindIndex(x => x == scene.name);
+            if (index != -1)
+            {
+                Debug.Log($"Network Scene {scene.name} Validation Success");
+                return true;
+            }
+            return false;
+        }
         internal void InitializeScenesLoaded()
         {
             if (!NetworkManager.DistributedAuthorityMode)

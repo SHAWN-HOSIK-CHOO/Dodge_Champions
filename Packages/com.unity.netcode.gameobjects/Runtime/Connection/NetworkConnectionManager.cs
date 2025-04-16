@@ -719,12 +719,12 @@ namespace Unity.Netcode
             var response = new NetworkManager.ConnectionApprovalResponse();
             ClientsToApprove[context.SenderId] = response;
 
-            var request = new NetworkManager.ConnectionApprovalRequest()
+            ConnectionApprovalCallback(
+                new NetworkManager.ConnectionApprovalRequest
             {
                 Payload = connectionRequestMessage.ConnectionData,
                 ClientNetworkId = context.SenderId
-            };
-            ConnectionApprovalCallback(request, response);
+                }, response);
         }
 
         /// <summary>

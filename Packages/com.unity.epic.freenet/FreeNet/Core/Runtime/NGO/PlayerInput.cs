@@ -5,27 +5,33 @@ using static InputSystemNaming;
 
 namespace HP
 {
-    public class PlayerInput
+    public class PlayerInput : MonoBehaviour
     {
-        string _inputActionAssetName;
+        [SerializeField]
+        string _inputActionAssetName = "PlayerInput";
         public InputActionAsset _inputActionAsset;
         public InputActionMap _inputActionMap;
         public InputAction _WASDAction;
-        public InputAction _mouseAction;
+        public InputAction _mouseDeltaAction;
+        public InputAction _mouseLeftClickAction;
+        public InputAction _mouseRightClickAction;
         public InputAction _jumpAction;
 
         public Vector3 _moveInput { get; private set; }
-        public Vector2 _mouseInput { get; private set; }
+        public Vector2 _mouseDeltaInput { get; private set; }
         public float _jumpInput { get; private set; }
-
+        public float _mouseLeftInput { get; private set; }
+        public float _mouseRightInput { get; private set; }
 
         public event Action<Vector3> _onMoveInputChanged;
-        public event Action<Vector2> _onMouseInputChanged;
+        public event Action<Vector2> _onMouseDeltaInputChanged;
         public event Action<float> _onJumpInputChanged;
+        public event Action<float> _onMouseLeftInputChanged;
+        public event Action<float> _onMouseRightInputChanged;
 
-        public PlayerInput(string inputActionAssetName)
+
+        private void Awake()
         {
-            _inputActionAssetName = inputActionAssetName;
             _inputActionAsset = InputActionAssetHelper.CreateInputActionAsset(_inputActionAssetName);
             var controlSyntax = InputActionAssetHelper.CreateControlScheme(_inputActionAsset, "KeyboardMouse");
             InputActionAssetHelper.AddControlScheme(controlSyntax, InputSystemNaming.Device.Keyboard);
@@ -45,13 +51,22 @@ namespace HP
             _jumpAction.performed += OnJump;
 
 
-            _mouseAction = InputActionAssetHelper.AddAction(_inputActionMap, "MouseMove", InputActionType.Value);
-            var bindsyntax = InputActionAssetHelper.AddMouseBinding(_mouseAction, MouseType.delta);
+            _mouseDeltaAction = InputActionAssetHelper.AddAction(_inputActionMap, "MouseMove", InputActionType.Value);
+            var bindsyntax = InputActionAssetHelper.AddMouseBinding(_mouseDeltaAction, MouseType.delta);
             bindsyntax.WithProcessor(InputSystemNaming.Processor.ScaleVector2.ToInputSystemName(new Vector2(0.5f, 0.5f)));
             bindsyntax.WithProcessor(InputSystemNaming.Processor.Invert.ToInputSystemName());
-            _mouseAction.performed += OnMouse;
-            _inputActionAssetName = inputActionAssetName;
+            _mouseDeltaAction.performed += OnMouseDelta;
+
+
+            _mouseLeftClickAction = InputActionAssetHelper.AddAction(_inputActionMap, "MouseLeftClick", InputActionType.Button);
+            InputActionAssetHelper.AddMouseBinding(_mouseLeftClickAction, MouseType.leftButton);
+            _mouseLeftClickAction.performed += OnMouseLeft;
+
+            _mouseRightClickAction = InputActionAssetHelper.AddAction(_inputActionMap, "MouseRightClick", InputActionType.Button);
+            InputActionAssetHelper.AddMouseBinding(_mouseRightClickAction, MouseType.rightButton);
+            _mouseRightClickAction.performed += OnMouseRight;
         }
+
         public void Enable(bool b)
         {
             if (b)
@@ -72,10 +87,20 @@ namespace HP
             _moveInput = ctx.ReadValue<Vector2>();
             _onMoveInputChanged?.Invoke(_moveInput);
         }
-        private void OnMouse(InputAction.CallbackContext ctx)
+        private void OnMouseDelta(InputAction.CallbackContext ctx)
         {
-            _mouseInput = ctx.ReadValue<Vector2>();
-            _onMouseInputChanged?.Invoke(_mouseInput);
+            _mouseDeltaInput = ctx.ReadValue<Vector2>();
+            _onMouseDeltaInputChanged?.Invoke(_mouseDeltaInput);
+        }
+        private void OnMouseRight(InputAction.CallbackContext ctx)
+        {
+            _mouseRightInput = ctx.ReadValue<float>();
+            _onMouseRightInputChanged?.Invoke(_mouseRightInput);
+        }
+        private void OnMouseLeft(InputAction.CallbackContext ctx)
+        {
+            _mouseLeftInput = ctx.ReadValue<float>();
+            _onMouseLeftInputChanged?.Invoke(_mouseLeftInput);
         }
         private void OnJump(InputAction.CallbackContext ctx)
         {
