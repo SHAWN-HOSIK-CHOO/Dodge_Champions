@@ -1418,7 +1418,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 5.3
+  m_fontSize: 5.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2064,18 +2064,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb28942c55f5e564c9ac8a8fe14d2b8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _networkScene: {fileID: 11400000, guid: f20dee7ce5d23e845a60977d89677af1, type: 2}
   NetworkManagerExpanded: 1
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1990473881}
-    PlayerPrefab: {fileID: 0}
+    PlayerPrefab: {fileID: 2872828456396335698, guid: 7970f57b61d88e848a1d41f8fae54ff7, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 96d8296871211e44284bccd9a0f0496a, type: 2}
       - {fileID: 11400000, guid: 5cd35b9d37ba14d49b0625f1545c4347, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
-    ConnectionApproval: 1
+    ConnectionApproval: 0
     ConnectionData: 
     EnableTimeResync: 0
     TimeResyncInterval: 30
@@ -2096,12 +2097,11 @@ MonoBehaviour:
     OldPrefabList: []
   RunInBackground: 1
   LogLevel: 0
-  _EOSNetcodeTransport: {fileID: 1990473881}
   _localBufferSec: 0
   _serverBufferSec: 0
   _networkSpawnerPref: {fileID: 5844752406703323982, guid: 01fce0d3821c66f4db49b1efd7c73206, type: 3}
+  _EOSNetcodeTransport: {fileID: 1990473881}
   _networkSpawner: {fileID: 0}
-  _networkScene: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

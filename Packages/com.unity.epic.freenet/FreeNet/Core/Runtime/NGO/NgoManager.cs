@@ -9,8 +9,6 @@ public class NgoManager : NetworkManager
 {
     FreeNet _freeNet;
     [SerializeField]
-    EOSNetcodeTransport _EOSNetcodeTransport;
-    [SerializeField]
     public double _localBufferSec;
     [SerializeField]
     public double _serverBufferSec;
@@ -20,11 +18,11 @@ public class NgoManager : NetworkManager
 
     [SerializeField]
     NetworkSpawner _networkSpawnerPref;
+    [SerializeField]
+    EOSNetcodeTransport _EOSNetcodeTransport;
     public NetworkSpawner _networkSpawner;
     public Action _onSpawnerSpawned;
     public event Action _onNgoManagerReady;
-    [SerializeField]
-    private List<string> _networkScene;
 
     public static NgoManager Instance => (NetworkManager.Singleton as NgoManager);
     public void Init(FreeNet freeNet)
@@ -77,7 +75,6 @@ public class NgoManager : NetworkManager
         if (result)
         {
             SetNetworkValue();
-            SceneManager.VerifySceneBeforeLoading = NetworkSceneValidation;
             _onSpawnerSpawned += OnSpawnedSpawner;
         }
         return result;
@@ -89,20 +86,9 @@ public class NgoManager : NetworkManager
         if (result)
         {
             SetNetworkValue();
-            SceneManager.VerifySceneBeforeLoading = NetworkSceneValidation;
             _onSpawnerSpawned += OnSpawnedSpawner;
         }
         return result;
-    }
-    private bool NetworkSceneValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)
-    {
-        int index = _networkScene.FindIndex(x => x == sceneName);
-        if (index != -1)
-        {
-            Debug.Log($"Network Scene {sceneName} Validation Success");
-            return true;
-        }
-        return false;
     }
     public new bool StartHost()
     {

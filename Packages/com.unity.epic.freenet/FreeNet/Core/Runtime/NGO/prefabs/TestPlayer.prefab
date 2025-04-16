@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7613390778316567863}
   - component: {fileID: 609559776386557002}
   - component: {fileID: 4357145707866573019}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,9 @@ GameObject:
   - component: {fileID: 7046139596350415694}
   - component: {fileID: 3134160655272773637}
   - component: {fileID: 590361430217047372}
-  m_Layer: 0
+  - component: {fileID: 6741980587617771929}
+  - component: {fileID: 9201136800360428780}
+  m_Layer: 15
   m_Name: TestPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +167,87 @@ MonoBehaviour:
   target: {fileID: 2104482551404369160}
   _camera: {fileID: 2631456776209145903}
   positionSmoothTime: 0.03
-  rotationSmoothTime: 30
+  rotationSmooth: 15
+--- !u!114 &6741980587617771929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2872828456396335698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d954b0de8036ef74da035095ab1c505a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  _camera: {fileID: 2631456776209145903}
+  _input: {fileID: 9201136800360428780}
+--- !u!114 &9201136800360428780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2872828456396335698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42d0b8d44cc6ebc4fab79efc3198dbd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inputActionAssetName: PlayerInput
+  _inputActionAsset: {fileID: 0}
+  _inputActionMap:
+    m_Name: Input
+    m_Id: ff017121-03c5-4998-8078-ed8900d3aece
+    m_Asset: {fileID: 0}
+    m_Actions: []
+    m_Bindings: []
+  _WASDAction:
+    m_Name: WASD
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: d9714a9a-62c2-4e39-ac21-34013ab3feca
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _mouseDeltaAction:
+    m_Name: Mouse Delta
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 6f470467-391d-4333-876a-cf74aaef35f8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _mouseLeftClickAction:
+    m_Name: Mouse Left Click
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: a64fa6bf-a176-4c1e-b4f5-e8ad7aa08ed0
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _mouseRightClickAction:
+    m_Name: Mouse Right Click
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 074181b3-b345-4465-9f42-7af236ac26c3
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _jumpAction:
+    m_Name: Jump
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: b89f03a2-ab70-4173-bfab-b43a1be51ca7
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!1 &6547670445419521753
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,7 +259,7 @@ GameObject:
   - component: {fileID: 2104482551404369160}
   - component: {fileID: 3883065835812219014}
   - component: {fileID: 4471449990706994904}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: NetworkTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,6 +296,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   SyncTickRate: 10
   _characterController: {fileID: 4471449990706994904}
+  _playerInput: {fileID: 9201136800360428780}
   _curMouseSpeed: {x: 10, y: 10}
   _curMoveSpeed: {x: 10, y: 0, z: 10}
   _curEnvSpeed: {x: 0, y: 0, z: 0}
@@ -255,13 +338,13 @@ GameObject:
   - component: {fileID: 2631456776209145903}
   - component: {fileID: 6150562073851316260}
   - component: {fileID: 3686503290723313497}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: PlayerCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7280184345292448363
 Transform:
   m_ObjectHideFlags: 0
@@ -391,7 +474,7 @@ GameObject:
   - component: {fileID: 9139047929361829584}
   - component: {fileID: 6880926811783923167}
   - component: {fileID: 6377994263424056627}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
